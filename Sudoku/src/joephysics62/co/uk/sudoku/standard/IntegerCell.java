@@ -16,4 +16,9 @@ public class IntegerCell extends Cell<Integer> {
     super(inits, id);
   }
 
+  @Override
+  public String toString() {
+    return String.format("IntegerCell(id=%s, vals=%s)", getIdentifier(), getCurrentValues());
+  }
+
 }

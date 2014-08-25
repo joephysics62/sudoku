@@ -5,7 +5,9 @@ import java.util.Set;
 
 public class CellGroup<T> {
   private final Set<Cell<T>> _cells;
-  public CellGroup(Set<Cell<T>> cells) {
+  private final String _groupId;
+  public CellGroup(final String groupId, Set<Cell<T>> cells) {
+    _groupId = groupId;
     _cells = Collections.unmodifiableSet(cells);
   }
   public boolean isSolved() {
@@ -26,5 +28,8 @@ public class CellGroup<T> {
   }
   public Set<Cell<T>> getCells() {
     return _cells;
+  }
+  public String getGroupId() {
+    return _groupId;
   }
 }

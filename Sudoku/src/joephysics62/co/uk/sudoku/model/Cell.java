@@ -30,4 +30,7 @@ public class Cell<T> {
   public Set<T> getCurrentValues() {
     return _currentValues;
   }
+  public String getIdentifier() {
+    return _identifier;
+  }
 }

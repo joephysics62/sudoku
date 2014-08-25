@@ -1,6 +1,8 @@
 package joephysics62.co.uk.sudoku.model;
 
+import java.util.Set;
+
 public interface Restriction<T> {
-  boolean satisfiedBy(CellGroup<T> group);
-  void eliminateValues(CellGroup<T> group);
+  boolean satisfied();
+  Set<Cell<T>> eliminateValues();
 }
