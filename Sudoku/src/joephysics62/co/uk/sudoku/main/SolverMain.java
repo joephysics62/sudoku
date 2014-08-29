@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.main;
 import java.io.File;
 import java.io.IOException;
 
+import joephysics62.co.uk.sudoku.solver.StandardPuzzleSolver;
 import joephysics62.co.uk.sudoku.standard.StandardParser;
 import joephysics62.co.uk.sudoku.standard.StandardPuzzle;
 
@@ -12,6 +13,8 @@ public class SolverMain {
     final File input = new File(args[0]);
     StandardParser parser = new StandardParser();
     StandardPuzzle standardPuzzle = parser.parse(input);
+    StandardPuzzleSolver solver = new StandardPuzzleSolver();
+    solver.solve(standardPuzzle);
   }
 
 }
