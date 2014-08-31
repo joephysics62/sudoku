@@ -166,7 +166,7 @@ public class StandardPuzzle implements Puzzle<Integer> {
           out.print("|");
         }
         Object value = array[i][j];
-        out.print(value == null ? "?|" : value + "|");
+        out.print(value == null ? "-|" : value + "|");
       }
       out.println("");
     }

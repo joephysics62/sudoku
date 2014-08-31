@@ -16,7 +16,8 @@ public class PuzzleSolver {
 
   public <T> Set<PuzzleSolution<T>> solve(final Puzzle<T> puzzle) {
     while (elim(puzzle)) {
-      // do
+      puzzle.write(System.out);
+      System.out.println();
     }
     if (puzzle.isSolved()) {
       final Map<Coord, T> solutionMap = new LinkedHashMap<>();
