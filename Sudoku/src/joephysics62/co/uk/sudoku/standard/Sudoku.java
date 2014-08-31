@@ -2,32 +2,32 @@ package joephysics62.co.uk.sudoku.standard;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.Restriction;
+import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
 import joephysics62.co.uk.sudoku.parse.CellValueReader;
 import joephysics62.co.uk.sudoku.parse.TableValueParser;
 
-public abstract class Sudoku implements Puzzle<Integer> {
+public abstract class Sudoku extends MapBackedPuzzle<Integer> {
   private final int _outerSize;
   private final int _subTableHeight;
   private final int _subTableWidth;
   private final Set<Integer> _inits;
-  private Map<Cell<Integer>, Set<Restriction<Integer>>> _constraints;
 
   public Sudoku(final int outerSize, final int subTableHeight, final int subTableWidth) {
+    if (subTableHeight >= outerSize || outerSize % subTableHeight != 0) {
+      throw new IllegalArgumentException(subTableHeight + " is not an appropriate subtable height for outer size " + outerSize);
+    }
+    if (subTableWidth >= outerSize || outerSize % subTableWidth != 0) {
+      throw new IllegalArgumentException(subTableWidth + " is not an appropriate subtable width for outer size " + outerSize);
+    }
     _outerSize = outerSize;
     _subTableHeight = subTableHeight;
     _subTableWidth = subTableWidth;
@@ -38,10 +38,7 @@ public abstract class Sudoku implements Puzzle<Integer> {
     _inits = Collections.unmodifiableSet(inits);
   }
 
-  private void setConstraints(Map<Cell<Integer>, Set<Restriction<Integer>>> constraints) {
-    _constraints = constraints;
-  }
-
+  @Override
   protected Set<Integer> getInits() {
     return _inits;
   }
@@ -57,44 +54,6 @@ public abstract class Sudoku implements Puzzle<Integer> {
   }
 
   @Override
-  public Set<Cell<Integer>> getAllCells() {
-    return _constraints.keySet();
-  }
-
-  @Override
-  public boolean isSolved() {
-    Set<Cell<Integer>> allCells = getAllCells();
-    for (Cell<Integer> cell : allCells) {
-      if (!cell.isSolved()) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  @Override
-  public Collection<Restriction<Integer>> getAllRestrictions() {
-    final Set<Restriction<Integer>> out = new LinkedHashSet<>();
-    for (Set<Restriction<Integer>> set : _constraints.values()) {
-      out.addAll(set);
-    }
-    return Collections.unmodifiableSet(out);
-  }
-
-  @Override
-  public int completeness() {
-    int completeness = 0;
-    for (Cell<Integer> cell : getAllCells()) {
-      completeness += cell.getCurrentValues().size();
-    }
-    return completeness;
-  }
-
-  @Override
-  public Set<Restriction<Integer>> getRestrictions(final Cell<Integer> cell) {
-    return Collections.unmodifiableSet(_constraints.get(cell));
-  }
-
   public void loadValues(final File file) throws IOException {
     TableValueParser<Integer> parser = new TableValueParser<Integer>(getMaxValue(), new CellValueReader<Integer>() {
       @Override
@@ -134,9 +93,8 @@ public abstract class Sudoku implements Puzzle<Integer> {
       }
       wholePuzzle.add(rowCells);
     }
-    final Map<Cell<Integer>, Set<Restriction<Integer>>> constraints = new LinkedHashMap<>();
     for (List<Cell<Integer>> row : wholePuzzle) {
-      addToMap(Uniqueness.of(row), constraints);
+      addConstraint(Uniqueness.of(row));
     }
     for (int i = 0; i < getMaxValue(); i++) {
       final Set<Cell<Integer>> colCells = new LinkedHashSet<>();
@@ -144,7 +102,7 @@ public abstract class Sudoku implements Puzzle<Integer> {
         Cell<Integer> cell = row.get(i);
         colCells.add(cell);
       }
-      addToMap(Uniqueness.of(colCells), constraints);
+      addConstraint(Uniqueness.of(colCells));
     }
     for (int i = 0; i < getMaxValue() / getSubTableHeight(); i++) {
       for (int j = 0; j < getMaxValue() / getSubTableWidth(); j++) {
@@ -157,43 +115,10 @@ public abstract class Sudoku implements Puzzle<Integer> {
             subTableCells.add(cell);
           }
         }
-        addToMap(Uniqueness.of(subTableCells), constraints);
+        addConstraint(Uniqueness.of(subTableCells));
       }
-    }
-    setConstraints(constraints);
-  }
-
-  private static void addToMap(Restriction<Integer> restriction, final Map<Cell<Integer>, Set<Restriction<Integer>>> constraints) {
-    for (Cell<Integer> cell : restriction.getCells()) {
-      if (!constraints.containsKey(cell)) {
-        constraints.put(cell, new LinkedHashSet<Restriction<Integer>>());
-      }
-      constraints.get(cell).add(restriction);
     }
   }
 
-  @Override
-  public void write(PrintStream out) {
-    int maxRow = 0;
-    int maxCol = 0;
-    for (Cell<Integer> cell : _constraints.keySet()) {
-      maxRow = Math.max(cell.getIdentifier().getRow(), maxRow);
-      maxCol = Math.max(cell.getIdentifier().getCol(), maxCol);
-    }
-    Object[][] array = new Object[maxRow][maxCol];
-    for (Cell<Integer> cell : _constraints.keySet()) {
-      Coord coord = cell.getIdentifier();
-      array[coord.getRow() - 1][coord.getCol() - 1] = cell.getCurrentValues().size() == 1 ? cell.getValue() : null;
-    }
-    for (int i = 0; i < maxRow; i++) {
-      for (int j = 0; j < maxCol; j++) {
-        if (j == 0) {
-          out.print("|");
-        }
-        Object value = array[i][j];
-        out.print(value == null ? "-|" : value + "|");
-      }
-      out.println("");
-    }
-  }
+
 }
