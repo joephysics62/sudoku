@@ -6,13 +6,11 @@ import java.util.Set;
 
 public interface Puzzle<T> {
 
-  Set<String> getGroups(Coord cellId);
-
   Set<Cell<T>> getAllCells();
 
   Collection<Restriction<T>> getAllRestrictions();
 
-  Set<Restriction<T>> getRestrictions(Coord cellId);
+  Set<Restriction<T>> getRestrictions(Cell<T> cell);
 
   boolean isSolved();
 

@@ -5,4 +5,5 @@ import java.util.Set;
 public interface Restriction<T> {
   boolean satisfied();
   Set<Cell<T>> eliminateValues();
+  Set<Cell<T>> getCells();
 }

@@ -42,7 +42,7 @@ public class PuzzleSolver {
     boolean stateChanged = false;
     for (Cell<T> cell : cells) {
       if (cell.canApplyElimination()) {
-        stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell.getIdentifier()), puzzle);
+        stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell), puzzle);
         cell.setSolved();
       }
     }

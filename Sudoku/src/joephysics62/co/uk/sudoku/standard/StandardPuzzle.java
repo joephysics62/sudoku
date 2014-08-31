@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.CellGroup;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.InitialValues;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -29,26 +28,15 @@ public class StandardPuzzle implements Puzzle<Integer> {
     }
   }
   public static InitialValues<Integer> INITS = new InitialValues<>(INITS_SET);
-  private final Map<String, Restriction<Integer>> _constraintsByGroup;
-  private final Map<Coord, Set<String>> _groupsByCell;
-  private final Set<Cell<Integer>> _allCells;
+  private final Map<Cell<Integer>, Set<Restriction<Integer>>> _constraints;
 
-  @Override
-  public Set<String> getGroups(final Coord cellId) {
-    return _groupsByCell.get(cellId);
-  }
-
-  public StandardPuzzle(Set<Cell<Integer>> wholePuzzle, Map<String, Restriction<Integer>> constraints, Map<Coord, Set<String>> groupsByCell) {
-    _groupsByCell = Collections.unmodifiableMap(groupsByCell);
-    _constraintsByGroup = Collections.unmodifiableMap(constraints);
-
-
-    _allCells = Collections.unmodifiableSet(wholePuzzle);
+  public StandardPuzzle(Map<Cell<Integer>, Set<Restriction<Integer>>> constraints) {
+    _constraints = constraints;
   }
 
   @Override
   public Set<Cell<Integer>> getAllCells() {
-    return _allCells;
+    return _constraints.keySet();
   }
 
   @Override
@@ -64,94 +52,71 @@ public class StandardPuzzle implements Puzzle<Integer> {
 
   @Override
   public Collection<Restriction<Integer>> getAllRestrictions() {
-    return _constraintsByGroup.values();
+    final Set<Restriction<Integer>> out = new LinkedHashSet<>();
+    for (Set<Restriction<Integer>> set : _constraints.values()) {
+      out.addAll(set);
+    }
+    return Collections.unmodifiableSet(out);
   }
 
   @Override
-  public Set<Restriction<Integer>> getRestrictions(final Coord cellId) {
-    Set<String> groups = _groupsByCell.get(cellId);
-    Set<Restriction<Integer>> out = new LinkedHashSet<>();
-    for (String groupId : groups) {
-      out.add(_constraintsByGroup.get(groupId));
-    }
-    return out;
+  public Set<Restriction<Integer>> getRestrictions(final Cell<Integer> cell) {
+    return Collections.unmodifiableSet(_constraints.get(cell));
   }
 
 
   public static Puzzle<Integer> fromTableValues(final List<List<Integer>> input) {
-    final List<List<IntegerCell>> wholePuzzle = asIntegerCellTable(input);
-    int rowNum = 0;
-    final Map<String, Restriction<Integer>> constraintsByGroup = new LinkedHashMap<>();
-    final Map<Coord, Set<String>> groupsByCell = new LinkedHashMap<>();
-    for (List<IntegerCell> row : wholePuzzle) {
-      String rowGroupId = "row_" + ++rowNum;
-      CellGroup<Integer> rowGroup = new CellGroup<Integer>(rowGroupId, new LinkedHashSet<Cell<Integer>>(row));
-      for (IntegerCell cell : row) {
-        Coord cellId = cell.getIdentifier();
-        if (!groupsByCell.containsKey(cellId)) {
-          groupsByCell.put(cellId, new LinkedHashSet<String>());
-        }
-        groupsByCell.get(cellId).add(rowGroupId);
-      }
-      constraintsByGroup.put(rowGroupId, Uniqueness.of(rowGroup));
+    final List<List<Cell<Integer>>> wholePuzzle = asIntegerCellTable(input);
+    final Map<Cell<Integer>, Set<Restriction<Integer>>> constraints = new LinkedHashMap<>();
+    for (List<Cell<Integer>> row : wholePuzzle) {
+      addToMap(Uniqueness.of(row), constraints);
     }
     for (int i = 0; i < STANDARD_MAX_VALUE; i++) {
-      String colGroupId = "col_" + i;
       final Set<Cell<Integer>> colCells = new LinkedHashSet<>();
-      for (List<IntegerCell> row : wholePuzzle) {
-        IntegerCell cell = row.get(i);
+      for (List<Cell<Integer>> row : wholePuzzle) {
+        Cell<Integer> cell = row.get(i);
         colCells.add(cell);
-        Coord cellId = cell.getIdentifier();
-        if (!groupsByCell.containsKey(cellId)) {
-          groupsByCell.put(cellId, new LinkedHashSet<String>());
-        }
-        groupsByCell.get(cellId).add(colGroupId);
       }
-      CellGroup<Integer> cellGroup = new CellGroup<Integer>(colGroupId, colCells);
-      constraintsByGroup.put(colGroupId, Uniqueness.of(cellGroup));
+      addToMap(Uniqueness.of(colCells), constraints);
     }
     for (int i = 0; i < STANDARD_MAX_VALUE / 3; i++) {
       for (int j = 0; j < STANDARD_MAX_VALUE / 3; j++) {
-        String subTableId = "subTable_" + i + "_" + j;
         final Set<Cell<Integer>> subTableCells = new LinkedHashSet<>();
         for (int ii = 0; ii < STANDARD_MAX_VALUE / 3; ii++) {
           for (int jj = 0; jj < STANDARD_MAX_VALUE / 3; jj++) {
             int row = i * 3 + ii;
             int col = j * 3 + jj;
-            IntegerCell cell = wholePuzzle.get(row).get(col);
+            Cell<Integer> cell = wholePuzzle.get(row).get(col);
             subTableCells.add(cell);
-            Coord cellId = cell.getIdentifier();
-            if (!groupsByCell.containsKey(cellId)) {
-              groupsByCell.put(cellId, new LinkedHashSet<String>());
-            }
-            groupsByCell.get(cellId).add(subTableId);
           }
         }
-        CellGroup<Integer> subTableGroup = new CellGroup<>(subTableId, subTableCells);
-        constraintsByGroup.put(subTableId, Uniqueness.of(subTableGroup));
+        addToMap(Uniqueness.of(subTableCells), constraints);
       }
     }
-    final Set<Cell<Integer>> cells = new LinkedHashSet<>();
-    for (List<IntegerCell> row : wholePuzzle) {
-      for (IntegerCell integerCell : row) {
-        cells.add(integerCell);
-      }
-    }
-    return new StandardPuzzle(cells, constraintsByGroup, groupsByCell);
+    return new StandardPuzzle(constraints);
   }
 
-  private static List<List<IntegerCell>> asIntegerCellTable(final List<List<Integer>> input) {
+  private static void addToMap(Restriction<Integer> restriction, final Map<Cell<Integer>, Set<Restriction<Integer>>> constraints) {
+    for (Cell<Integer> cell : restriction.getCells()) {
+      if (!constraints.containsKey(cell)) {
+        constraints.put(cell, new LinkedHashSet<Restriction<Integer>>());
+      }
+      constraints.get(cell).add(restriction);
+    }
+  }
+
+  private static List<List<Cell<Integer>>> asIntegerCellTable(final List<List<Integer>> input) {
     if (input.size() != STANDARD_MAX_VALUE) {
       throw new IllegalArgumentException();
     }
     int rowNum = 0;
-    final List<List<IntegerCell>> wholePuzzle = new ArrayList<>(STANDARD_MAX_VALUE);
+    final List<List<Cell<Integer>>> wholePuzzle = new ArrayList<>(STANDARD_MAX_VALUE);
     for (List<Integer> row : input) {
       rowNum++;
       if (row.size() != STANDARD_MAX_VALUE) {
         throw new IllegalArgumentException();
       }
-      final List<IntegerCell> rowCells = new ArrayList<IntegerCell>(STANDARD_MAX_VALUE);
+      final List<Cell<Integer>> rowCells = new ArrayList<Cell<Integer>>(STANDARD_MAX_VALUE);
       int colNum = 0;
       for (Integer integer : row) {
         Coord id = new Coord(rowNum, ++colNum);
@@ -166,12 +131,12 @@ public class StandardPuzzle implements Puzzle<Integer> {
   public void write(PrintStream out) {
     int maxRow = 0;
     int maxCol = 0;
-    for (Cell<Integer> cell : _allCells) {
+    for (Cell<Integer> cell : _constraints.keySet()) {
       maxRow = Math.max(cell.getIdentifier().getRow(), maxRow);
       maxCol = Math.max(cell.getIdentifier().getCol(), maxCol);
     }
     Object[][] array = new Object[maxRow][maxCol];
-    for (Cell<Integer> cell : _allCells) {
+    for (Cell<Integer> cell : _constraints.keySet()) {
       Coord coord = cell.getIdentifier();
       array[coord.getRow() - 1][coord.getCol() - 1] = cell.isSolved() ? cell.getValue() : null;
     }
