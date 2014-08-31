@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.model;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -35,12 +36,23 @@ public class Cell<T> {
     }
     throw new UnsupportedOperationException("Cannot get value of an unsolved cell. Id " + _identifier + ". Current values " + _currentValues);
   }
+
   public boolean isUnsolveable() {
     return _currentValues.isEmpty();
   }
+
   public Set<T> getCurrentValues() {
-    return _currentValues;
+    return Collections.unmodifiableSet(_currentValues);
   }
+
+  public boolean remove(final T value) {
+    return _currentValues.remove(value);
+  }
+
+  public boolean removeAll(final Collection<T> values) {
+    return _currentValues.removeAll(values);
+  }
+
   public Coord getIdentifier() {
     return _identifier;
   }

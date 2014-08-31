@@ -16,4 +16,6 @@ public interface Puzzle<T> {
 
   void write(PrintStream out);
 
+  int completeness();
+
 }

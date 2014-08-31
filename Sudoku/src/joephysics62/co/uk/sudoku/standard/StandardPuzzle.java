@@ -64,6 +64,15 @@ public class StandardPuzzle implements Puzzle<Integer> {
   }
 
   @Override
+  public int completeness() {
+    int completeness = 0;
+    for (Cell<Integer> cell : getAllCells()) {
+      completeness += cell.getCurrentValues().size();
+    }
+    return completeness;
+  }
+
+  @Override
   public Set<Restriction<Integer>> getRestrictions(final Cell<Integer> cell) {
     return Collections.unmodifiableSet(_constraints.get(cell));
   }

@@ -1,14 +1,18 @@
 package joephysics62.co.uk.sudoku.model;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 public class Uniqueness<T> implements Restriction<T> {
+
+  private static final List<Integer> AB_ELIMINATION_SIZES = Arrays.asList(2, 3);
 
   private final Set<Cell<T>> _group;
 
@@ -68,9 +72,9 @@ public class Uniqueness<T> implements Restriction<T> {
     for (Entry<Set<T>, Set<Cell<T>>> entry : abEliminationMap.entrySet()) {
       Set<Cell<T>> abCells = entry.getValue();
       Set<T> abValue = entry.getKey();
-      if (abCells.size() == 2 && abValue.size() == 2) {
+      if (AB_ELIMINATION_SIZES.contains(abCells.size()) && abValue.size() == abCells.size()) {
         for (Cell<T> cell : _group) {
-          if (!abCells.contains(cell) && cell.getCurrentValues().removeAll(abValue)) {
+          if (!abCells.contains(cell) && cell.removeAll(abValue)) {
             changedCells.add(cell);
           }
         }
@@ -83,7 +87,7 @@ public class Uniqueness<T> implements Restriction<T> {
     final Set<Cell<T>> changed = new LinkedHashSet<>();
     for (Cell<T> cellInner : _group) {
       if (!cellInner.getIdentifier().equals(cell.getIdentifier())) {
-        if (cellInner.getCurrentValues().remove(cell.getValue())) {
+        if (cellInner.remove(cell.getValue())) {
           changed.add(cellInner);
         }
       }

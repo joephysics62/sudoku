@@ -17,6 +17,7 @@ public class PuzzleSolver {
   public <T> Set<PuzzleSolution<T>> solve(final Puzzle<T> puzzle) {
     while (elim(puzzle)) {
       puzzle.write(System.out);
+      System.out.println("Completeness =  " + puzzle.completeness());
       System.out.println();
     }
     if (puzzle.isSolved()) {
