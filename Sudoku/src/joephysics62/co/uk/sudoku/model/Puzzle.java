@@ -1,5 +1,7 @@
 package joephysics62.co.uk.sudoku.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Set;
@@ -17,5 +19,7 @@ public interface Puzzle<T> {
   void write(PrintStream out);
 
   int completeness();
+
+  void loadValues(File input) throws IOException;
 
 }

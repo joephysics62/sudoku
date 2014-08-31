@@ -13,9 +13,9 @@ public class Cell<T> {
     _identifier = identifier;
     _currentValues = Collections.singleton(fixedInitialValue);
   }
-  public Cell(InitialValues<T> inits, Coord identifier) {
+  public Cell(Set<T> inits, Coord identifier) {
     _identifier = identifier;
-    _currentValues = new LinkedHashSet<>(inits.getValues());
+    _currentValues = new LinkedHashSet<>(inits);
   }
 
   public void setSolved() {
