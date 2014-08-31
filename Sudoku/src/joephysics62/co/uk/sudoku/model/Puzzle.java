@@ -13,4 +13,6 @@ public interface Puzzle<T> {
 
   Set<Restriction<T>> getRestrictions(String cellId);
 
+  boolean isSolved();
+
 }

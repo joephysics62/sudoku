@@ -50,6 +50,17 @@ public class StandardPuzzle implements Puzzle<Integer> {
   }
 
   @Override
+  public boolean isSolved() {
+    Set<Cell<Integer>> allCells = getAllCells();
+    for (Cell<Integer> cell : allCells) {
+      if (!cell.isSolved()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  @Override
   public Collection<Restriction<Integer>> getAllRestrictions() {
     return _constraintsByGroup.values();
   }
@@ -139,7 +150,6 @@ public class StandardPuzzle implements Puzzle<Integer> {
         throw new IllegalArgumentException();
       }
       final List<IntegerCell> rowCells = new ArrayList<IntegerCell>(STANDARD_MAX_VALUE);
-      wholePuzzle.add(rowCells);
       int colNum = 0;
       for (Integer integer : row) {
         String id = rowNum + "," + ++colNum;

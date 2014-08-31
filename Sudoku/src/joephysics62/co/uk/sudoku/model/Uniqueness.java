@@ -30,19 +30,23 @@ public class Uniqueness<T> implements Restriction<T> {
 
   @Override
   public Set<Cell<T>> eliminateValues() {
+    //System.out.println("Eliminating for uniqueness on group : " + _group.getGroupId());
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
     for (Cell<T> cell : _group.getCells()) {
       if (cell.isSolved()) {
-        for (Cell<T> cellInner : _group.getCells()) {
-          if (cellInner != cell) {
-            if (cellInner.getCurrentValues().remove(cell.getValue())) {
-              changedCells.add(cellInner);
-            }
-          }
-        }
+        elminateSolvedValue(changedCells, cell);
       }
     }
     return changedCells;
+  }
+  private void elminateSolvedValue(final Set<Cell<T>> changedCells, Cell<T> cell) {
+    for (Cell<T> cellInner : _group.getCells()) {
+      if (!cellInner.getIdentifier().equals(cell.getIdentifier())) {
+        if (cellInner.getCurrentValues().remove(cell.getValue())) {
+          changedCells.add(cellInner);
+        }
+      }
+    }
   }
 
 }
