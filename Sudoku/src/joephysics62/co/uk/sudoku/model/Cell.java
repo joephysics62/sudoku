@@ -17,6 +17,10 @@ public class Cell<T> {
     _identifier = identifier;
     _currentValues = new LinkedHashSet<>(inits);
   }
+  public Cell(Cell<T> old) {
+    _identifier = old._identifier;
+    _currentValues = new LinkedHashSet<>(old._currentValues);
+  }
 
   public void setSolved() {
     _isSolved = true;

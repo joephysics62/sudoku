@@ -1,21 +1,51 @@
 package joephysics62.co.uk.sudoku.model;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
   private final Map<Cell<T>, Set<Restriction<T>>> _constraints = new LinkedHashMap<>();
+
+  private MapBackedPuzzle(MapBackedPuzzle<T> old) {
+    Map<Coord, Cell<T>> newCells = new LinkedHashMap<>();
+    for (Cell<T> oldCell : old._constraints.keySet()) {
+      newCells.put(oldCell.getIdentifier(), new Cell<T>(oldCell));
+    }
+    for (Entry<Cell<T>, Set<Restriction<T>>> entry : old._constraints.entrySet()) {
+      final Set<Restriction<T>> newRestrictions = new LinkedHashSet<>();
+      for (Restriction<T> oldRestriction : entry.getValue()) {
+        newRestrictions.add(oldRestriction.copy(newCells));
+      }
+      _constraints.put(newCells.get(entry.getKey().getIdentifier()), newRestrictions);
+    }
+  }
+
+  public MapBackedPuzzle() {
+    // normal one
+  }
 
   protected abstract Set<T> getInits();
 
   @Override
   public Set<Cell<T>> getAllCells() {
     return _constraints.keySet();
+  }
+
+  @Override
+  public Puzzle<T> deepCopy() {
+    return new MapBackedPuzzle<T>(this) {
+
+      @Override public void loadValues(File input) throws IOException { throw new UnsupportedOperationException(); }
+      @Override protected Set<T> getInits() { throw new UnsupportedOperationException(); }
+    };
   }
 
   @Override

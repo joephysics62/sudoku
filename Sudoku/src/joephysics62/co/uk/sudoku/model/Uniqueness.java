@@ -43,6 +43,15 @@ public class Uniqueness<T> implements Restriction<T> {
   }
 
   @Override
+  public Restriction<T> copy(Map<Coord, Cell<T>> copiedCells) {
+    final Set<Cell<T>> newGroup = new LinkedHashSet<>();
+    for (Cell<T> oldCell : _group) {
+      newGroup.add(copiedCells.get(oldCell.getIdentifier()));
+    }
+    return new Uniqueness<>(newGroup);
+  }
+
+  @Override
   public Set<Cell<T>> eliminateValues() {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
     changedCells.addAll(directElimination());

@@ -12,9 +12,9 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleSolution;
 import joephysics62.co.uk.sudoku.model.Restriction;
 
-public class PuzzleSolver {
+public class PuzzleSolver<T> {
 
-  public <T> Set<PuzzleSolution<T>> solve(final Puzzle<T> puzzle) {
+  public Set<PuzzleSolution<T>> solve(final Puzzle<T> puzzle) {
     while (elim(puzzle)) {
       puzzle.write(System.out);
       System.out.println("Completeness =  " + puzzle.completeness());
@@ -28,8 +28,30 @@ public class PuzzleSolver {
       return Collections.singleton(new PuzzleSolution<T>(solutionMap));
     }
     else {
+      Cell<T> cellToGuess = findCellToGuess(puzzle);
+      for (T candidateValue : cellToGuess.getCurrentValues()) {
+        Puzzle<T> copy = puzzle.deepCopy();
+      }
       return Collections.emptySet();
     }
+  }
+
+  private Cell<T> findCellToGuess(final Puzzle<T> puzzle) {
+    int minPossibles = Integer.MAX_VALUE;
+    Cell<T> minCell = null;
+    for (Cell<T> cell : puzzle.getAllCells()) {
+      if (!cell.isSolved()) {
+        int possiblesSize = cell.getCurrentValues().size();
+        if (possiblesSize == 2) {
+          return cell;
+        }
+        if (possiblesSize < minPossibles) {
+          minPossibles = possiblesSize;
+          minCell = cell;
+        }
+      }
+    }
+    return minCell;
   }
 
   private <T> boolean elim(final Puzzle<T> puzzle) {

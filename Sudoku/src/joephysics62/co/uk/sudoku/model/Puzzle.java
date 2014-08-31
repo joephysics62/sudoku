@@ -22,4 +22,6 @@ public interface Puzzle<T> {
 
   void loadValues(File input) throws IOException;
 
+  Puzzle<T> deepCopy();
+
 }
