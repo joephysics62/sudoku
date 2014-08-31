@@ -25,6 +25,10 @@ public class Cell<T> {
     return _isSolved;
   }
 
+  public boolean canApplyElimination() {
+    return !isSolved() && _currentValues.size() == 1;
+  }
+
   public T getValue() {
     if (_currentValues.size() == 1) {
       return _currentValues.iterator().next();

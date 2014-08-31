@@ -12,34 +12,37 @@ public class PuzzleSolver {
   public <T> void solve(final Puzzle<T> puzzle) {
     print(puzzle);
 
-    // Initial sweep over all cells
-    for (Cell<T> cell : puzzle.getAllCells()) {
-      solveForCell(puzzle, cell);
-    }
-
-    while (recursivelyEliminate(puzzle.getAllRestrictions(), puzzle)) {
+    while (elim(puzzle)) {
       // do
     }
     print(puzzle);
   }
 
-  private <T> void solveForCell(final Puzzle<T> puzzle, Cell<T> cell) {
-    if (!cell.isSolved() && cell.getCurrentValues().size() == 1) {
-      recursivelyEliminate(puzzle.getRestrictions(cell.getIdentifier()), puzzle);
-      cell.setSolved();
-    }
+  private <T> boolean elim(final Puzzle<T> puzzle) {
+    boolean cellSolveChanged = solveOnCells(puzzle.getAllCells(), puzzle);
+    boolean restrictSolveChanged = solveOnRestrictions(puzzle.getAllRestrictions(), puzzle);
+    return cellSolveChanged || restrictSolveChanged;
   }
 
-  private <T> boolean recursivelyEliminate(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
+  private <T> boolean solveOnCells(Set<Cell<T>> cells, final Puzzle<T> puzzle) {
+    boolean stateChanged = false;
+    for (Cell<T> cell : cells) {
+      if (cell.canApplyElimination()) {
+        stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell.getIdentifier()), puzzle);
+        cell.setSolved();
+      }
+    }
+    return stateChanged;
+  }
+
+  private <T> boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
     boolean stateChanged = false;
     for (Restriction<T> restriction : restrictions) {
       Set<Cell<T>> changedCells = restriction.eliminateValues();
       if (!changedCells.isEmpty()) {
         stateChanged = true;
       }
-      for (Cell<T> cell : changedCells) {
-        solveForCell(puzzle, cell);
-      }
+      solveOnCells(changedCells, puzzle);
     }
     return stateChanged;
   }
