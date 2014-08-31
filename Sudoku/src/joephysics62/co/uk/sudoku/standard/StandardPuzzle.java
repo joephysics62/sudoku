@@ -1,5 +1,7 @@
 package joephysics62.co.uk.sudoku.standard;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,6 +18,8 @@ import joephysics62.co.uk.sudoku.model.InitialValues;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Restriction;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
+import joephysics62.co.uk.sudoku.parse.CellValueReader;
+import joephysics62.co.uk.sudoku.parse.TableValueParser;
 
 public class StandardPuzzle implements Puzzle<Integer> {
 
@@ -64,8 +68,24 @@ public class StandardPuzzle implements Puzzle<Integer> {
     return Collections.unmodifiableSet(_constraints.get(cell));
   }
 
+  public static Puzzle<Integer> fromFile(final File file) throws IOException {
+    TableValueParser<Integer> parser = new TableValueParser<Integer>(STANDARD_MAX_VALUE, new CellValueReader<Integer>() {
+      @Override
+      public Integer parseCellValue(String value) {
+        if (value.isEmpty()) {
+          return null;
+        }
+        else {
+          return Integer.valueOf(value);
+        }
+      }
+    });
+    List<List<Integer>> tableInts = parser.parse(file);
+    return fromTableValues(tableInts);
+  }
 
-  public static Puzzle<Integer> fromTableValues(final List<List<Integer>> input) {
+
+  private static Puzzle<Integer> fromTableValues(final List<List<Integer>> input) {
     final List<List<Cell<Integer>>> wholePuzzle = asIntegerCellTable(input);
     final Map<Cell<Integer>, Set<Restriction<Integer>>> constraints = new LinkedHashMap<>();
     for (List<Cell<Integer>> row : wholePuzzle) {
@@ -138,7 +158,7 @@ public class StandardPuzzle implements Puzzle<Integer> {
     Object[][] array = new Object[maxRow][maxCol];
     for (Cell<Integer> cell : _constraints.keySet()) {
       Coord coord = cell.getIdentifier();
-      array[coord.getRow() - 1][coord.getCol() - 1] = cell.isSolved() ? cell.getValue() : null;
+      array[coord.getRow() - 1][coord.getCol() - 1] = cell.getCurrentValues().size() == 1 ? cell.getValue() : null;
     }
     for (int i = 0; i < maxRow; i++) {
       for (int j = 0; j < maxCol; j++) {

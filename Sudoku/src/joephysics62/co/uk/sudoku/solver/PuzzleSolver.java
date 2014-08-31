@@ -33,8 +33,6 @@ public class PuzzleSolver {
   private <T> boolean elim(final Puzzle<T> puzzle) {
     boolean cellSolveChanged = solveOnCells(puzzle.getAllCells(), puzzle);
     boolean restrictSolveChanged = solveOnRestrictions(puzzle.getAllRestrictions(), puzzle);
-    puzzle.write(System.out);
-    System.out.println();
     return cellSolveChanged || restrictSolveChanged;
   }
 
