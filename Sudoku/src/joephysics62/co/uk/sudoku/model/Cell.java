@@ -6,13 +6,13 @@ import java.util.Set;
 
 public class Cell<T> {
   private final Set<T> _currentValues;
-  private final String _identifier;
+  private final Coord _identifier;
   private boolean _isSolved;
-  public Cell(T fixedInitialValue, String identifier) {
+  public Cell(T fixedInitialValue, Coord identifier) {
     _identifier = identifier;
     _currentValues = Collections.singleton(fixedInitialValue);
   }
-  public Cell(InitialValues<T> inits, String identifier) {
+  public Cell(InitialValues<T> inits, Coord identifier) {
     _identifier = identifier;
     _currentValues = new LinkedHashSet<>(inits.getValues());
   }
@@ -41,7 +41,7 @@ public class Cell<T> {
   public Set<T> getCurrentValues() {
     return _currentValues;
   }
-  public String getIdentifier() {
+  public Coord getIdentifier() {
     return _identifier;
   }
 }

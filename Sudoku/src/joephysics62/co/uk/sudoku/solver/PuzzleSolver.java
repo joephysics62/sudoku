@@ -1,26 +1,40 @@
 package joephysics62.co.uk.sudoku.solver;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Cell;
+import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleSolution;
 import joephysics62.co.uk.sudoku.model.Restriction;
 
 public class PuzzleSolver {
 
-  public <T> void solve(final Puzzle<T> puzzle) {
-    print(puzzle);
-
+  public <T> Set<PuzzleSolution<T>> solve(final Puzzle<T> puzzle) {
     while (elim(puzzle)) {
       // do
     }
-    print(puzzle);
+    if (puzzle.isSolved()) {
+      final Map<Coord, T> solutionMap = new LinkedHashMap<>();
+      for (Cell<T> cell : puzzle.getAllCells()) {
+        solutionMap.put(cell.getIdentifier(), cell.getValue());
+      }
+      return Collections.singleton(new PuzzleSolution<T>(solutionMap));
+    }
+    else {
+      return Collections.emptySet();
+    }
   }
 
   private <T> boolean elim(final Puzzle<T> puzzle) {
     boolean cellSolveChanged = solveOnCells(puzzle.getAllCells(), puzzle);
     boolean restrictSolveChanged = solveOnRestrictions(puzzle.getAllRestrictions(), puzzle);
+    puzzle.write(System.out);
+    System.out.println();
     return cellSolveChanged || restrictSolveChanged;
   }
 
@@ -47,13 +61,4 @@ public class PuzzleSolver {
     return stateChanged;
   }
 
-  private <T> void print(final Puzzle<T> puzzle) {
-    int completeness = 0;
-    for (Cell<T> cell : puzzle.getAllCells()) {
-      completeness += cell.getCurrentValues().size();
-      System.out.println(cell.getIdentifier() + ": " + cell.getCurrentValues());
-    }
-    System.out.println(completeness);
-    System.out.println("------------------------------------------------");
-  }
 }

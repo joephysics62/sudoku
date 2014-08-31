@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.standard;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGroup;
+import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.InitialValues;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Restriction;
@@ -28,15 +30,15 @@ public class StandardPuzzle implements Puzzle<Integer> {
   }
   public static InitialValues<Integer> INITS = new InitialValues<>(INITS_SET);
   private final Map<String, Restriction<Integer>> _constraintsByGroup;
-  private final Map<String, Set<String>> _groupsByCell;
+  private final Map<Coord, Set<String>> _groupsByCell;
   private final Set<Cell<Integer>> _allCells;
 
   @Override
-  public Set<String> getGroups(final String cellId) {
+  public Set<String> getGroups(final Coord cellId) {
     return _groupsByCell.get(cellId);
   }
 
-  public StandardPuzzle(Set<Cell<Integer>> wholePuzzle, Map<String, Restriction<Integer>> constraints, Map<String, Set<String>> groupsByCell) {
+  public StandardPuzzle(Set<Cell<Integer>> wholePuzzle, Map<String, Restriction<Integer>> constraints, Map<Coord, Set<String>> groupsByCell) {
     _groupsByCell = Collections.unmodifiableMap(groupsByCell);
     _constraintsByGroup = Collections.unmodifiableMap(constraints);
 
@@ -66,7 +68,7 @@ public class StandardPuzzle implements Puzzle<Integer> {
   }
 
   @Override
-  public Set<Restriction<Integer>> getRestrictions(final String cellId) {
+  public Set<Restriction<Integer>> getRestrictions(final Coord cellId) {
     Set<String> groups = _groupsByCell.get(cellId);
     Set<Restriction<Integer>> out = new LinkedHashSet<>();
     for (String groupId : groups) {
@@ -80,12 +82,12 @@ public class StandardPuzzle implements Puzzle<Integer> {
     final List<List<IntegerCell>> wholePuzzle = asIntegerCellTable(input);
     int rowNum = 0;
     final Map<String, Restriction<Integer>> constraintsByGroup = new LinkedHashMap<>();
-    final Map<String, Set<String>> groupsByCell = new LinkedHashMap<>();
+    final Map<Coord, Set<String>> groupsByCell = new LinkedHashMap<>();
     for (List<IntegerCell> row : wholePuzzle) {
       String rowGroupId = "row_" + ++rowNum;
       CellGroup<Integer> rowGroup = new CellGroup<Integer>(rowGroupId, new LinkedHashSet<Cell<Integer>>(row));
       for (IntegerCell cell : row) {
-        String cellId = cell.getIdentifier();
+        Coord cellId = cell.getIdentifier();
         if (!groupsByCell.containsKey(cellId)) {
           groupsByCell.put(cellId, new LinkedHashSet<String>());
         }
@@ -99,7 +101,7 @@ public class StandardPuzzle implements Puzzle<Integer> {
       for (List<IntegerCell> row : wholePuzzle) {
         IntegerCell cell = row.get(i);
         colCells.add(cell);
-        String cellId = cell.getIdentifier();
+        Coord cellId = cell.getIdentifier();
         if (!groupsByCell.containsKey(cellId)) {
           groupsByCell.put(cellId, new LinkedHashSet<String>());
         }
@@ -118,7 +120,7 @@ public class StandardPuzzle implements Puzzle<Integer> {
             int col = j * 3 + jj;
             IntegerCell cell = wholePuzzle.get(row).get(col);
             subTableCells.add(cell);
-            String cellId = cell.getIdentifier();
+            Coord cellId = cell.getIdentifier();
             if (!groupsByCell.containsKey(cellId)) {
               groupsByCell.put(cellId, new LinkedHashSet<String>());
             }
@@ -152,11 +154,37 @@ public class StandardPuzzle implements Puzzle<Integer> {
       final List<IntegerCell> rowCells = new ArrayList<IntegerCell>(STANDARD_MAX_VALUE);
       int colNum = 0;
       for (Integer integer : row) {
-        String id = rowNum + "," + ++colNum;
+        Coord id = new Coord(rowNum, ++colNum);
         rowCells.add(null == integer ? new IntegerCell(INITS, id) : new IntegerCell(integer, id));
       }
       wholePuzzle.add(rowCells);
     }
     return wholePuzzle;
   }
+
+  @Override
+  public void write(PrintStream out) {
+    int maxRow = 0;
+    int maxCol = 0;
+    for (Cell<Integer> cell : _allCells) {
+      maxRow = Math.max(cell.getIdentifier().getRow(), maxRow);
+      maxCol = Math.max(cell.getIdentifier().getCol(), maxCol);
+    }
+    Object[][] array = new Object[maxRow][maxCol];
+    for (Cell<Integer> cell : _allCells) {
+      Coord coord = cell.getIdentifier();
+      array[coord.getRow() - 1][coord.getCol() - 1] = cell.isSolved() ? cell.getValue() : null;
+    }
+    for (int i = 0; i < maxRow; i++) {
+      for (int j = 0; j < maxCol; j++) {
+        if (j == 0) {
+          out.print("|");
+        }
+        Object value = array[i][j];
+        out.print(value == null ? "?|" : value + "|");
+      }
+      out.println("");
+    }
+  }
+
 }
