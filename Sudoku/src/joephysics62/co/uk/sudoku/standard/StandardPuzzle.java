@@ -12,10 +12,12 @@ import java.util.Set;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGroup;
 import joephysics62.co.uk.sudoku.model.InitialValues;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Restriction;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
 
-public class StandardPuzzle {
+public class StandardPuzzle implements Puzzle<Integer> {
+
   public static final int STANDARD_MIN_VALUE = 1;
   public static final int STANDARD_MAX_VALUE = 9;
   private static Set<Integer> INITS_SET = new LinkedHashSet<>();
@@ -27,13 +29,14 @@ public class StandardPuzzle {
   public static InitialValues<Integer> INITS = new InitialValues<>(INITS_SET);
   private final Map<String, Restriction<Integer>> _constraintsByGroup;
   private final Map<String, Set<String>> _groupsByCell;
-  private final Set<IntegerCell> _allCells;
+  private final Set<Cell<Integer>> _allCells;
 
+  @Override
   public Set<String> getGroups(final String cellId) {
     return _groupsByCell.get(cellId);
   }
 
-  public StandardPuzzle(Set<IntegerCell> wholePuzzle, Map<String, Restriction<Integer>> constraints, Map<String, Set<String>> groupsByCell) {
+  public StandardPuzzle(Set<Cell<Integer>> wholePuzzle, Map<String, Restriction<Integer>> constraints, Map<String, Set<String>> groupsByCell) {
     _groupsByCell = Collections.unmodifiableMap(groupsByCell);
     _constraintsByGroup = Collections.unmodifiableMap(constraints);
 
@@ -41,14 +44,17 @@ public class StandardPuzzle {
     _allCells = Collections.unmodifiableSet(wholePuzzle);
   }
 
-  public Set<IntegerCell> getAllCells() {
+  @Override
+  public Set<Cell<Integer>> getAllCells() {
     return _allCells;
   }
 
+  @Override
   public Collection<Restriction<Integer>> getAllRestrictions() {
     return _constraintsByGroup.values();
   }
 
+  @Override
   public Set<Restriction<Integer>> getRestrictions(final String cellId) {
     Set<String> groups = _groupsByCell.get(cellId);
     Set<Restriction<Integer>> out = new LinkedHashSet<>();
@@ -59,7 +65,7 @@ public class StandardPuzzle {
   }
 
 
-  public static StandardPuzzle fromTableValues(final List<List<Integer>> input) {
+  public static Puzzle<Integer> fromTableValues(final List<List<Integer>> input) {
     final List<List<IntegerCell>> wholePuzzle = asIntegerCellTable(input);
     int rowNum = 0;
     final Map<String, Restriction<Integer>> constraintsByGroup = new LinkedHashMap<>();
@@ -112,7 +118,7 @@ public class StandardPuzzle {
         constraintsByGroup.put(subTableId, Uniqueness.of(subTableGroup));
       }
     }
-    final Set<IntegerCell> cells = new LinkedHashSet<>();
+    final Set<Cell<Integer>> cells = new LinkedHashSet<>();
     for (List<IntegerCell> row : wholePuzzle) {
       for (IntegerCell integerCell : row) {
         cells.add(integerCell);

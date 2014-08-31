@@ -7,6 +7,7 @@ import java.util.Set;
 public class Cell<T> {
   private final Set<T> _currentValues;
   private final String _identifier;
+  private boolean _isSolved;
   public Cell(T fixedInitialValue, String identifier) {
     _identifier = identifier;
     _currentValues = Collections.singleton(fixedInitialValue);
@@ -15,11 +16,17 @@ public class Cell<T> {
     _identifier = identifier;
     _currentValues = new LinkedHashSet<>(inits.getValues());
   }
-  public boolean isSolved() {
-    return _currentValues.size() == 1;
+
+  public void setSolved() {
+    _isSolved = true;
   }
+
+  public boolean isSolved() {
+    return _isSolved;
+  }
+
   public T getValue() {
-    if (isSolved()) {
+    if (_currentValues.size() == 1) {
       return _currentValues.iterator().next();
     }
     throw new UnsupportedOperationException("Cannot get value of an unsolved cell. Id " + _identifier + ". Current values " + _currentValues);

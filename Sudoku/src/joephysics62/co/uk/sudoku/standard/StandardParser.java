@@ -7,11 +7,13 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import joephysics62.co.uk.sudoku.model.Puzzle;
+
 public class StandardParser {
 
   public static int PUZZLE_SIZE = 9;
 
-  public StandardPuzzle parse(final File csv) throws IOException {
+  public Puzzle<Integer> parse(final File csv) throws IOException {
     List<List<Integer>> inputLists = new ArrayList<>();
     for (final String line : Files.readAllLines(csv.toPath(), Charset.forName("UTF-8"))) {
       String[] split = line.split("\\|");
