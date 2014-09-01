@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.solver;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,25 +15,39 @@ import joephysics62.co.uk.sudoku.model.Restriction;
 
 public class PuzzleSolver<T> {
 
-  public Set<PuzzleSolution<T>> solve(final Puzzle<T> puzzle) {
+  public PuzzleSolution<T> solve(final Puzzle<T> puzzle) {
+    final Set<PuzzleSolution<T>> solutions = new LinkedHashSet<>();
+    solve(puzzle, solutions);
+    return solutions.size() == 1 ? solutions.iterator().next() : null;
+  }
+
+  private void solve(final Puzzle<T> puzzle, final Set<PuzzleSolution<T>> solutions) {
     while (elim(puzzle)) {
-      puzzle.write(System.out);
-      System.out.println("Completeness =  " + puzzle.completeness());
-      System.out.println();
+      if (puzzle.isUnsolveable()) {
+        return;
+      }
     }
     if (puzzle.isSolved()) {
       final Map<Coord, T> solutionMap = new LinkedHashMap<>();
       for (Cell<T> cell : puzzle.getAllCells()) {
         solutionMap.put(cell.getIdentifier(), cell.getValue());
       }
-      return Collections.singleton(new PuzzleSolution<T>(solutionMap));
+      solutions.add(new PuzzleSolution<T>(solutionMap));
     }
     else {
+      if (puzzle.isUnsolveable()) {
+        return;
+      }
       Cell<T> cellToGuess = findCellToGuess(puzzle);
       for (T candidateValue : cellToGuess.getCurrentValues()) {
         Puzzle<T> copy = puzzle.deepCopy();
+        Cell<T> cell = copy.getCell(cellToGuess.getIdentifier());
+        final Set<T> removes = new LinkedHashSet<>(cell.getCurrentValues());
+        removes.remove(candidateValue);
+        cell.removeAll(removes);
+        solveOnCells(Collections.singleton(cell), copy);
+        solve(copy, solutions);
       }
-      return Collections.emptySet();
     }
   }
 

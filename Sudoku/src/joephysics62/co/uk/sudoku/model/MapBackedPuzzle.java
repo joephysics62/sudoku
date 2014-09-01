@@ -64,13 +64,22 @@ public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
 
   @Override
   public boolean isSolved() {
-    Set<Cell<T>> allCells = getAllCells();
-    for (Cell<T> cell : allCells) {
+    for (Cell<T> cell : getAllCells()) {
       if (!cell.isSolved()) {
         return false;
       }
     }
     return true;
+  }
+
+  @Override
+  public boolean isUnsolveable() {
+    for (Cell<T> cell : getAllCells()) {
+      if (cell.isUnsolveable()) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

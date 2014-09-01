@@ -18,6 +18,8 @@ public interface Puzzle<T> {
 
   boolean isSolved();
 
+  boolean isUnsolveable();
+
   void write(PrintStream out);
 
   int completeness();

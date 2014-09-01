@@ -38,6 +38,9 @@ public class Cell<T> {
     if (_currentValues.size() == 1) {
       return _currentValues.iterator().next();
     }
+    else if (_currentValues.isEmpty()) {
+      return null;
+    }
     throw new UnsupportedOperationException("Cannot get value of an unsolved cell. Id " + _identifier + ". Current values " + _currentValues);
   }
 
