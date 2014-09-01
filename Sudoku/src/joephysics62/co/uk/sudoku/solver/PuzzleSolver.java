@@ -54,27 +54,27 @@ public class PuzzleSolver<T> {
     return minCell;
   }
 
-  private <T> boolean elim(final Puzzle<T> puzzle) {
+  private boolean elim(final Puzzle<T> puzzle) {
     boolean cellSolveChanged = solveOnCells(puzzle.getAllCells(), puzzle);
     boolean restrictSolveChanged = solveOnRestrictions(puzzle.getAllRestrictions(), puzzle);
     return cellSolveChanged || restrictSolveChanged;
   }
 
-  private <T> boolean solveOnCells(Set<Cell<T>> cells, final Puzzle<T> puzzle) {
+  private boolean solveOnCells(Set<Cell<T>> cells, final Puzzle<T> puzzle) {
     boolean stateChanged = false;
     for (Cell<T> cell : cells) {
       if (cell.canApplyElimination()) {
-        stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell), puzzle);
+        stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell.getIdentifier()), puzzle);
         cell.setSolved();
       }
     }
     return stateChanged;
   }
 
-  private <T> boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
+  private boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
     boolean stateChanged = false;
     for (Restriction<T> restriction : restrictions) {
-      Set<Cell<T>> changedCells = restriction.eliminateValues();
+      Set<Cell<T>> changedCells = restriction.eliminateValues(puzzle);
       if (!changedCells.isEmpty()) {
         stateChanged = true;
       }

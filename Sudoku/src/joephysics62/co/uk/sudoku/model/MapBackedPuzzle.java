@@ -7,25 +7,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
-  private final Map<Cell<T>, Set<Restriction<T>>> _constraints = new LinkedHashMap<>();
+  private final Map<Coord, Set<Restriction<T>>> _constraints = new LinkedHashMap<>();
+  private final Map<Coord, Cell<T>> _cells = new LinkedHashMap<>();
 
   private MapBackedPuzzle(MapBackedPuzzle<T> old) {
-    Map<Coord, Cell<T>> newCells = new LinkedHashMap<>();
-    for (Cell<T> oldCell : old._constraints.keySet()) {
-      newCells.put(oldCell.getIdentifier(), new Cell<T>(oldCell));
+    for (Entry<Coord, Cell<T>> entry : old._cells.entrySet()) {
+      _cells.put(entry.getKey(), new Cell<T>(entry.getValue()));
     }
-    for (Entry<Cell<T>, Set<Restriction<T>>> entry : old._constraints.entrySet()) {
-      final Set<Restriction<T>> newRestrictions = new LinkedHashSet<>();
-      for (Restriction<T> oldRestriction : entry.getValue()) {
-        newRestrictions.add(oldRestriction.copy(newCells));
-      }
-      _constraints.put(newCells.get(entry.getKey().getIdentifier()), newRestrictions);
-    }
+    _constraints.putAll(old._constraints);
   }
 
   public MapBackedPuzzle() {
@@ -35,8 +30,13 @@ public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
   protected abstract Set<T> getInits();
 
   @Override
-  public Set<Cell<T>> getAllCells() {
-    return _constraints.keySet();
+  public final Set<Cell<T>> getAllCells() {
+    return new LinkedHashSet<>(_cells.values());
+  }
+
+  @Override
+  public final Cell<T> getCell(Coord coord) {
+    return _cells.get(coord);
   }
 
   @Override
@@ -58,8 +58,8 @@ public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
   }
 
   @Override
-  public Set<Restriction<T>> getRestrictions(final Cell<T> cell) {
-    return Collections.unmodifiableSet(_constraints.get(cell));
+  public Set<Restriction<T>> getRestrictions(final Coord coord) {
+    return Collections.unmodifiableSet(_constraints.get(coord));
   }
 
   @Override
@@ -83,25 +83,37 @@ public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
   }
 
   protected void addConstraint(Restriction<T> restriction) {
-    for (Cell<T> cell : restriction.getCells()) {
-      if (!_constraints.containsKey(cell)) {
-        _constraints.put(cell, new LinkedHashSet<Restriction<T>>());
+    for (Coord cellCoord : restriction.getCells()) {
+      if (!_constraints.containsKey(cellCoord)) {
+        _constraints.put(cellCoord, new LinkedHashSet<Restriction<T>>());
       }
-      _constraints.get(cell).add(restriction);
+      _constraints.get(cellCoord).add(restriction);
     }
   }
+
+  protected void addCells(List<List<Cell<T>>> wholePuzzle) {
+    for (List<Cell<T>> row : wholePuzzle) {
+      for (Cell<T> cell : row) {
+        _cells.put(cell.getIdentifier(), cell);
+      }
+    }
+  }
+
 
   @Override
   public void write(PrintStream out) {
     int maxRow = 0;
     int maxCol = 0;
-    for (Cell<T> cell : _constraints.keySet()) {
-      maxRow = Math.max(cell.getIdentifier().getRow(), maxRow);
-      maxCol = Math.max(cell.getIdentifier().getCol(), maxCol);
+    for (Coord coord : _constraints.keySet()) {
+      maxRow = Math.max(coord.getRow(), maxRow);
+      maxCol = Math.max(coord.getCol(), maxCol);
     }
     Object[][] array = new Object[maxRow][maxCol];
-    for (Cell<T> cell : _constraints.keySet()) {
-      Coord coord = cell.getIdentifier();
+    for (Coord coord : _constraints.keySet()) {
+      final Cell<T> cell = _cells.get(coord);
+      if (null == cell) {
+        throw new RuntimeException("No cell at '" + coord + "'");
+      }
       array[coord.getRow() - 1][coord.getCol() - 1] = cell.getCurrentValues().size() == 1 ? cell.getValue() : null;
     }
     for (int i = 0; i < maxRow; i++) {

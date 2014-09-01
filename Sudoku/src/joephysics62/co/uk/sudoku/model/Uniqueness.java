@@ -14,20 +14,21 @@ public class Uniqueness<T> implements Restriction<T> {
 
   private static final List<Integer> AB_ELIMINATION_SIZES = Arrays.asList(2, 3);
 
-  private final Set<Cell<T>> _group;
+  private final Set<Coord> _group;
 
-  private Uniqueness(Set<Cell<T>> group) {
+  private Uniqueness(Set<Coord> group) {
     _group = Collections.unmodifiableSet(group);
   }
 
-  public static <T> Uniqueness<T> of(Collection<Cell<T>> group) {
+  public static <T> Uniqueness<T> of(Collection<Coord> group) {
     return new Uniqueness<T>(new LinkedHashSet<>(group));
   }
 
   @Override
-  public boolean satisfied() {
+  public boolean satisfied(Puzzle<T> puzzle) {
     final Set<T> solvedValues = new LinkedHashSet<>();
-    for (Cell<T> cell : _group) {
+    for (Coord coord : _group) {
+      final Cell<T> cell = puzzle.getCell(coord);
       if (cell.isSolved()) {
         if (!solvedValues.add(cell.getValue())) {
           return false;
@@ -38,41 +39,34 @@ public class Uniqueness<T> implements Restriction<T> {
   }
 
   @Override
-  public Set<Cell<T>> getCells() {
+  public Set<Coord> getCells() {
     return _group;
   }
 
   @Override
-  public Restriction<T> copy(Map<Coord, Cell<T>> copiedCells) {
-    final Set<Cell<T>> newGroup = new LinkedHashSet<>();
-    for (Cell<T> oldCell : _group) {
-      newGroup.add(copiedCells.get(oldCell.getIdentifier()));
-    }
-    return new Uniqueness<>(newGroup);
-  }
-
-  @Override
-  public Set<Cell<T>> eliminateValues() {
+  public Set<Cell<T>> eliminateValues(Puzzle<T> puzzle) {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
-    changedCells.addAll(directElimination());
-    changedCells.addAll(doABElimination());
+    changedCells.addAll(directElimination(puzzle));
+    changedCells.addAll(doABElimination(puzzle));
     return changedCells;
   }
 
-  private Set<Cell<T>> directElimination() {
+  private Set<Cell<T>> directElimination(Puzzle<T> puzzle) {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
-    for (Cell<T> cell : _group) {
+    for (Coord coord : _group) {
+      final Cell<T> cell = puzzle.getCell(coord);
       if (cell.isSolved()) {
-        changedCells.addAll(eliminateSolvedValue(cell));
+        changedCells.addAll(eliminateSolvedValue(cell, puzzle));
       }
     }
     return changedCells;
   }
 
-  private Set<Cell<T>> doABElimination() {
+  private Set<Cell<T>> doABElimination(Puzzle<T> puzzle) {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
     Map<Set<T>, Set<Cell<T>>> abEliminationMap = new LinkedHashMap<>();
-    for (Cell<T> cell : _group) {
+    for (Coord coord : _group) {
+      final Cell<T> cell = puzzle.getCell(coord);
       if (!abEliminationMap.containsKey(cell.getCurrentValues())) {
         abEliminationMap.put(cell.getCurrentValues(), new LinkedHashSet<Cell<T>>());
       }
@@ -82,7 +76,8 @@ public class Uniqueness<T> implements Restriction<T> {
       Set<Cell<T>> abCells = entry.getValue();
       Set<T> abValue = entry.getKey();
       if (AB_ELIMINATION_SIZES.contains(abCells.size()) && abValue.size() == abCells.size()) {
-        for (Cell<T> cell : _group) {
+        for (Coord coord : _group) {
+          final Cell<T> cell = puzzle.getCell(coord);
           if (!abCells.contains(cell) && cell.removeAll(abValue)) {
             changedCells.add(cell);
           }
@@ -92,9 +87,10 @@ public class Uniqueness<T> implements Restriction<T> {
     return changedCells;
   }
 
-  private Set<Cell<T>> eliminateSolvedValue(Cell<T> cell) {
+  private Set<Cell<T>> eliminateSolvedValue(Cell<T> cell, Puzzle<T> puzzle) {
     final Set<Cell<T>> changed = new LinkedHashSet<>();
-    for (Cell<T> cellInner : _group) {
+    for (Coord innerCoord : _group) {
+      final Cell<T> cellInner = puzzle.getCell(innerCoord);
       if (!cellInner.getIdentifier().equals(cell.getIdentifier())) {
         if (cellInner.remove(cell.getValue())) {
           changed.add(cellInner);

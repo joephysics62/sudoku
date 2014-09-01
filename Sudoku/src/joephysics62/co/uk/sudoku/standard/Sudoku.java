@@ -93,32 +93,38 @@ public abstract class Sudoku extends MapBackedPuzzle<Integer> {
       }
       wholePuzzle.add(rowCells);
     }
+    addCells(wholePuzzle);
     for (List<Cell<Integer>> row : wholePuzzle) {
-      addConstraint(Uniqueness.of(row));
+      final List<Coord> rowCoords = new ArrayList<>();
+      for (Cell<Integer> cell : row) {
+        rowCoords.add(cell.getIdentifier());
+      }
+      addConstraint(Uniqueness.<Integer>of(rowCoords));
     }
     for (int i = 0; i < getMaxValue(); i++) {
-      final Set<Cell<Integer>> colCells = new LinkedHashSet<>();
+      final Set<Coord> colCells = new LinkedHashSet<>();
       for (List<Cell<Integer>> row : wholePuzzle) {
         Cell<Integer> cell = row.get(i);
-        colCells.add(cell);
+        colCells.add(cell.getIdentifier());
       }
-      addConstraint(Uniqueness.of(colCells));
+      addConstraint(Uniqueness.<Integer>of(colCells));
     }
     for (int i = 0; i < getMaxValue() / getSubTableHeight(); i++) {
       for (int j = 0; j < getMaxValue() / getSubTableWidth(); j++) {
-        final Set<Cell<Integer>> subTableCells = new LinkedHashSet<>();
+        final Set<Coord> subTableCells = new LinkedHashSet<>();
         for (int ii = 0; ii < getSubTableHeight(); ii++) {
           for (int jj = 0; jj < getSubTableWidth(); jj++) {
             int row = i * getSubTableHeight() + ii;
             int col = j * getSubTableWidth() + jj;
             Cell<Integer> cell = wholePuzzle.get(row).get(col);
-            subTableCells.add(cell);
+            subTableCells.add(cell.getIdentifier());
           }
         }
-        addConstraint(Uniqueness.of(subTableCells));
+        addConstraint(Uniqueness.<Integer>of(subTableCells));
       }
     }
   }
+
 
 
 }

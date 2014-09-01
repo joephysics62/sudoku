@@ -10,9 +10,11 @@ public interface Puzzle<T> {
 
   Set<Cell<T>> getAllCells();
 
+  Cell<T> getCell(Coord coord);
+
   Collection<Restriction<T>> getAllRestrictions();
 
-  Set<Restriction<T>> getRestrictions(Cell<T> cell);
+  Set<Restriction<T>> getRestrictions(Coord coord);
 
   boolean isSolved();
 

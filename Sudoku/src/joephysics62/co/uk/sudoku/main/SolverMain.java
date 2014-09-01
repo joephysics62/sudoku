@@ -29,7 +29,7 @@ public class SolverMain {
     puzzle.write(System.out);
     System.out.println("Initial completeness: " + puzzle.completeness());
     System.out.println();
-    PuzzleSolver solver = new PuzzleSolver();
+    PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
     long start = System.currentTimeMillis();
     Set<PuzzleSolution<Integer>> solve = solver.solve(puzzle);
     System.out.println("Found " + solve.size() + " solution(s)");

@@ -1,11 +1,9 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.util.Map;
 import java.util.Set;
 
 public interface Restriction<T> {
-  boolean satisfied();
-  Set<Cell<T>> eliminateValues();
-  Set<Cell<T>> getCells();
-  Restriction<T> copy(Map<Coord, Cell<T>> copiedCells);
+  boolean satisfied(Puzzle<T> puzzle);
+  Set<Cell<T>> eliminateValues(Puzzle<T> puzzle);
+  Set<Coord> getCells();
 }
