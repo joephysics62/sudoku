@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
 
@@ -21,21 +22,7 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
   }
 
   public static <T extends Comparable<T>> Uniqueness<T> of(Collection<Coord> group) {
-    return new Uniqueness<T>(new LinkedHashSet<>(group));
-  }
-
-  @Override
-  public boolean satisfied(Puzzle<T> puzzle) {
-    final Set<T> solvedValues = new LinkedHashSet<>();
-    for (Coord coord : _group) {
-      final Cell<T> cell = puzzle.getCell(coord);
-      if (cell.isSolved()) {
-        if (!solvedValues.add(cell.getValue())) {
-          return false;
-        }
-      }
-    }
-    return true;
+    return new Uniqueness<T>(new TreeSet<>(group));
   }
 
   @Override
