@@ -13,7 +13,7 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleSolution;
 import joephysics62.co.uk.sudoku.model.Restriction;
 
-public class PuzzleSolver<T> {
+public class PuzzleSolver<T extends Comparable<T>> {
 
   public PuzzleSolution<T> solve(final Puzzle<T> puzzle) {
     final Set<PuzzleSolution<T>> solutions = new LinkedHashSet<>();

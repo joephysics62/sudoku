@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class Uniqueness<T> implements Restriction<T> {
+public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
 
   private static final List<Integer> AB_ELIMINATION_SIZES = Arrays.asList(2, 3);
 
@@ -20,7 +20,7 @@ public class Uniqueness<T> implements Restriction<T> {
     _group = Collections.unmodifiableSet(group);
   }
 
-  public static <T> Uniqueness<T> of(Collection<Coord> group) {
+  public static <T extends Comparable<T>> Uniqueness<T> of(Collection<Coord> group) {
     return new Uniqueness<T>(new LinkedHashSet<>(group));
   }
 
@@ -92,8 +92,11 @@ public class Uniqueness<T> implements Restriction<T> {
     for (Coord innerCoord : _group) {
       final Cell<T> cellInner = puzzle.getCell(innerCoord);
       if (!cellInner.getIdentifier().equals(cell.getIdentifier())) {
-        if (cellInner.remove(cell.getValue())) {
-          changed.add(cellInner);
+        T value = cell.getValue();
+        if (null != value) {
+          if (cellInner.remove(value)) {
+            changed.add(cellInner);
+          }
         }
       }
     }

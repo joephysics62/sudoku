@@ -6,7 +6,7 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Set;
 
-public interface Puzzle<T> {
+public interface Puzzle<T extends Comparable<T>> {
 
   Set<Cell<T>> getAllCells();
 

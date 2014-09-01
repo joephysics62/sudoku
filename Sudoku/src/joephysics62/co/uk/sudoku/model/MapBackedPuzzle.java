@@ -5,16 +5,16 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
-public abstract class MapBackedPuzzle<T> implements Puzzle<T> {
-  private final Map<Coord, Set<Restriction<T>>> _constraints = new LinkedHashMap<>();
-  private final Map<Coord, Cell<T>> _cells = new LinkedHashMap<>();
+public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
+  private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
+  private final Map<Coord, Cell<T>> _cells = new TreeMap<>();
 
   private MapBackedPuzzle(MapBackedPuzzle<T> old) {
     for (Entry<Coord, Cell<T>> entry : old._cells.entrySet()) {

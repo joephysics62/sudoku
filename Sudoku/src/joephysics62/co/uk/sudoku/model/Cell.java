@@ -2,10 +2,10 @@ package joephysics62.co.uk.sudoku.model;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
-public class Cell<T> {
+public class Cell<T extends Comparable<T>> {
   private final Set<T> _currentValues;
   private final Coord _identifier;
   private boolean _isSolved;
@@ -15,11 +15,11 @@ public class Cell<T> {
   }
   public Cell(Set<T> inits, Coord identifier) {
     _identifier = identifier;
-    _currentValues = new LinkedHashSet<>(inits);
+    _currentValues = new TreeSet<>(inits);
   }
   public Cell(Cell<T> old) {
     _identifier = old._identifier;
-    _currentValues = new LinkedHashSet<>(old._currentValues);
+    _currentValues = new TreeSet<>(old._currentValues);
   }
 
   public void setSolved() {
