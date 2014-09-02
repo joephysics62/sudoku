@@ -3,49 +3,33 @@ package joephysics62.co.uk.sudoku.standard;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
-import joephysics62.co.uk.sudoku.parse.CellValueReader;
 import joephysics62.co.uk.sudoku.parse.TableValueParser;
 
-public abstract class Sudoku extends MapBackedPuzzle<Integer> {
-  private final int _outerSize;
+public class Sudoku<T extends Comparable<T>> extends MapBackedPuzzle<T> {
   private final int _subTableHeight;
   private final int _subTableWidth;
-  private final Set<Integer> _inits;
 
-  public Sudoku(final int outerSize, final int subTableHeight, final int subTableWidth) {
-    if (subTableHeight >= outerSize || outerSize % subTableHeight != 0) {
-      throw new IllegalArgumentException(subTableHeight + " is not an appropriate subtable height for outer size " + outerSize);
+  public Sudoku(final Set<T> inits, final int subTableHeight, final int subTableWidth) {
+    super(inits);
+    if (subTableHeight >= inits.size() || inits.size() % subTableHeight != 0) {
+      throw new IllegalArgumentException(subTableHeight + " is not an appropriate subtable height for outer size " + inits.size());
     }
-    if (subTableWidth >= outerSize || outerSize % subTableWidth != 0) {
-      throw new IllegalArgumentException(subTableWidth + " is not an appropriate subtable width for outer size " + outerSize);
+    if (subTableWidth >= inits.size() || inits.size() % subTableWidth != 0) {
+      throw new IllegalArgumentException(subTableWidth + " is not an appropriate subtable width for outer size " + inits.size());
     }
-    _outerSize = outerSize;
     _subTableHeight = subTableHeight;
     _subTableWidth = subTableWidth;
-    final Set<Integer> inits = new LinkedHashSet<>();
-    for (int i = 1; i <= _outerSize; i++) {
-      inits.add(i);
-    }
-    _inits = Collections.unmodifiableSet(inits);
   }
 
-  @Override
-  protected Set<Integer> getInits() {
-    return _inits;
-  }
-
-  protected Integer getMaxValue() {
-    return _outerSize;
-  }
   protected int getSubTableHeight() {
     return _subTableHeight;
   }
@@ -53,76 +37,44 @@ public abstract class Sudoku extends MapBackedPuzzle<Integer> {
     return _subTableWidth;
   }
 
-  @Override
-  public void loadValues(final File file) throws IOException {
-    TableValueParser<Integer> parser = new TableValueParser<Integer>(getMaxValue(), new CellValueReader<Integer>() {
-      @Override
-      public Integer parseCellValue(String value) {
-        if (value.isEmpty()) {
-          return null;
-        }
-        else {
-          return Integer.valueOf(value);
-        }
-      }
-    });
-    List<List<Integer>> tableInts = parser.parse(file);
-    if (tableInts.size() != getMaxValue()) {
-      throw new IllegalArgumentException();
+  public static <T extends Comparable<T>> Puzzle<T> loadValues(final File file, final Set<T> inits, final int subTableHeight, final int subTableWidth, TableValueParser<T> parser) throws IOException {
+    List<List<T>> tableInts = parser.parse(file);
+    if (tableInts.size() != inits.size()) {
+      throw new IllegalArgumentException("Error: number of rows is " + tableInts.size() + " but inits size is " + inits.size());
     }
-    int rowNum = 0;
-    final List<List<Cell<Integer>>> wholePuzzle = new ArrayList<>(getMaxValue());
-    for (List<Integer> row : tableInts) {
-      rowNum++;
-      if (row.size() != getMaxValue()) {
-        throw new IllegalArgumentException();
+    final Coord[][] wholePuzzle = new Coord[inits.size()][inits.size()];
+    for (int row = 0; row < inits.size(); row++) {
+      for (int col = 0; col < inits.size(); col++) {
+        wholePuzzle[row][col] = new Coord(row + 1, col + 1);
       }
-      final List<Cell<Integer>> rowCells = new ArrayList<Cell<Integer>>(getMaxValue());
-      int colNum = 0;
-      for (Integer integer : row) {
-        Coord id = new Coord(rowNum, ++colNum);
-        if (integer == null) {
-          rowCells.add(new IntegerCell(getInits(), id));
-        }
-        else {
-          if (integer < 1 || integer > getMaxValue()) {
-            throw new IllegalArgumentException("Bad init: " + integer);
-          }
-          rowCells.add(new IntegerCell(integer, id));
-        }
-      }
-      wholePuzzle.add(rowCells);
     }
-    addCells(wholePuzzle);
-    for (List<Cell<Integer>> row : wholePuzzle) {
-      final List<Coord> rowCoords = new ArrayList<>();
-      for (Cell<Integer> cell : row) {
-        rowCoords.add(cell.getIdentifier());
-      }
-      addConstraint(Uniqueness.<Integer>of(rowCoords));
+    Sudoku<T> sudoku = new Sudoku<T>(inits, subTableHeight, subTableWidth);
+    sudoku.addCells(tableInts);
+
+    for (Coord[] rowArray : wholePuzzle) {
+      sudoku.addConstraint(Uniqueness.<T>of(Arrays.asList(rowArray)));
     }
-    for (int i = 0; i < getMaxValue(); i++) {
-      final Set<Coord> colCells = new LinkedHashSet<>();
-      for (List<Cell<Integer>> row : wholePuzzle) {
-        Cell<Integer> cell = row.get(i);
-        colCells.add(cell.getIdentifier());
+    for (int col = 0; col < inits.size(); col++) {
+      List<Coord> colCells = new ArrayList<>();
+      for (int row = 0; row < inits.size(); row++) {
+        colCells.add(wholePuzzle[row][col]);
       }
-      addConstraint(Uniqueness.<Integer>of(colCells));
+      sudoku.addConstraint(Uniqueness.<T>of(colCells));
     }
-    for (int i = 0; i < getMaxValue() / getSubTableHeight(); i++) {
-      for (int j = 0; j < getMaxValue() / getSubTableWidth(); j++) {
+    for (int i = 0; i < inits.size() / subTableHeight; i++) {
+      for (int j = 0; j < inits.size() / subTableWidth; j++) {
         final Set<Coord> subTableCells = new LinkedHashSet<>();
-        for (int ii = 0; ii < getSubTableHeight(); ii++) {
-          for (int jj = 0; jj < getSubTableWidth(); jj++) {
-            int row = i * getSubTableHeight() + ii;
-            int col = j * getSubTableWidth() + jj;
-            Cell<Integer> cell = wholePuzzle.get(row).get(col);
-            subTableCells.add(cell.getIdentifier());
+        for (int ii = 0; ii < subTableHeight; ii++) {
+          for (int jj = 0; jj < subTableWidth; jj++) {
+            int row = i * subTableHeight + ii;
+            int col = j * subTableWidth + jj;
+            subTableCells.add(wholePuzzle[row][col]);
           }
         }
-        addConstraint(Uniqueness.<Integer>of(subTableCells));
+        sudoku.addConstraint(Uniqueness.<T>of(subTableCells));
       }
     }
+    return sudoku;
   }
 
 

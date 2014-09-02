@@ -1,7 +1,5 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -15,23 +13,31 @@ import java.util.TreeMap;
 public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
   private final Map<Coord, Cell<T>> _cells = new TreeMap<>();
+  private Set<T> _inits;
 
   private MapBackedPuzzle(MapBackedPuzzle<T> old) {
     for (Entry<Coord, Cell<T>> entry : old._cells.entrySet()) {
-      _cells.put(entry.getKey(), new Cell<T>(entry.getValue()));
+      _cells.put(entry.getKey(), Cell.copyOf(entry.getValue()));
     }
     _constraints.putAll(old._constraints);
+    _inits = old._inits;
   }
 
   public MapBackedPuzzle() {
     // normal one
   }
 
-  protected abstract Set<T> getInits();
+  public MapBackedPuzzle(Set<T> inits) {
+    _inits = Collections.unmodifiableSet(inits);
+  }
 
   @Override
   public final Set<Cell<T>> getAllCells() {
     return new LinkedHashSet<>(_cells.values());
+  }
+
+  protected Set<T> getInits() {
+    return _inits;
   }
 
   @Override
@@ -42,8 +48,6 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
   @Override
   public Puzzle<T> deepCopy() {
     return new MapBackedPuzzle<T>(this) {
-
-      @Override public void loadValues(File input) throws IOException { throw new UnsupportedOperationException(); }
       @Override protected Set<T> getInits() { throw new UnsupportedOperationException(); }
     };
   }
@@ -100,10 +104,13 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
     }
   }
 
-  protected void addCells(List<List<Cell<T>>> wholePuzzle) {
-    for (List<Cell<T>> row : wholePuzzle) {
-      for (Cell<T> cell : row) {
-        _cells.put(cell.getIdentifier(), cell);
+  protected void addCells(List<List<T>> givenValues) {
+    for (int rowIndex = 0; rowIndex < givenValues.size(); rowIndex++) {
+      final List<T> row = givenValues.get(rowIndex);
+      for (int colIndex = 0; colIndex < row.size(); colIndex++) {
+        T value = givenValues.get(rowIndex).get(colIndex);
+        Coord coord = new Coord(rowIndex + 1, colIndex + 1);
+        _cells.put(coord, value == null ? Cell.of(getInits(), coord) : Cell.of(value, coord));
       }
     }
   }

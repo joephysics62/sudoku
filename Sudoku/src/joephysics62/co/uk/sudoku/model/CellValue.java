@@ -1,5 +1,5 @@
 package joephysics62.co.uk.sudoku.model;
 
-public interface CellValue<T> {
+public interface CellValue extends Comparable<CellValue> {
 
 }

@@ -1,16 +1,10 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Set;
 
-public interface Puzzle<T extends Comparable<T>> {
-
-  Set<Cell<T>> getAllCells();
-
-  Cell<T> getCell(Coord coord);
+public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
 
   Collection<Restriction<T>> getAllRestrictions();
 
@@ -24,8 +18,8 @@ public interface Puzzle<T extends Comparable<T>> {
 
   int completeness();
 
-  void loadValues(File input) throws IOException;
-
   Puzzle<T> deepCopy();
+
+  Set<Cell<T>> getAllCells();
 
 }

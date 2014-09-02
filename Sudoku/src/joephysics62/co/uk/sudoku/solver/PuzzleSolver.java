@@ -18,10 +18,22 @@ public class PuzzleSolver<T extends Comparable<T>> {
   public PuzzleSolution<T> solve(final Puzzle<T> puzzle) {
     final Set<PuzzleSolution<T>> solutions = new LinkedHashSet<>();
     solve(puzzle, solutions);
-    return solutions.size() == 1 ? solutions.iterator().next() : null;
+    if (solutions.size() == 1) {
+      return solutions.iterator().next();
+    }
+    else if (solutions.size() > 1) {
+      System.out.println("Found puzzle with multiple solutions");
+      return null;
+    }
+    else {
+      return null;
+    }
   }
 
   private void solve(final Puzzle<T> puzzle, final Set<PuzzleSolution<T>> solutions) {
+    if (solutions.size() > 1) {
+      return;
+    }
     while (elim(puzzle)) {
       if (puzzle.isUnsolveable()) {
         return;

@@ -17,20 +17,19 @@ public class TableValueParser<T> {
     _cellValueReader = cellValueReader;
   }
 
-  public List<List<T>> parse(final File csv) throws IOException {
+  public List<List<T>>parse(final File csv) throws IOException {
     List<List<T>> inputLists = new ArrayList<>();
     for (final String line : Files.readAllLines(csv.toPath(), Charset.forName("UTF-8"))) {
+      final List<T> row = new ArrayList<>();
       String[] split = line.split("\\|");
       if (split.length != _puzzleSize + 1) {
         throw new RuntimeException("Bad input: has " + split.length + " |'s on a line: " + line);
       }
-      final List<T> rowList = new ArrayList<>();
-      for (int i = 1; i < split.length; i++) {
-       String cellInput = split[i].trim() ;
-       T input = _cellValueReader.parseCellValue(cellInput);
-       rowList.add(input);
+      for (int colNum = 1; colNum < split.length; colNum++) {
+       String cellInput = split[colNum].trim() ;
+       row.add(_cellValueReader.parseCellValue(cellInput));
       }
-      inputLists.add(rowList);
+      inputLists.add(row);
     }
     return inputLists;
   }

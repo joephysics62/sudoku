@@ -31,29 +31,29 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
-  public Set<Cell<T>> eliminateValues(Puzzle<T> puzzle) {
+  public Set<Cell<T>> eliminateValues(CellGrid<T> cellGrid) {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
-    changedCells.addAll(directElimination(puzzle));
-    changedCells.addAll(doABElimination(puzzle));
+    changedCells.addAll(directElimination(cellGrid));
+    changedCells.addAll(doABElimination(cellGrid));
     return changedCells;
   }
 
-  private Set<Cell<T>> directElimination(Puzzle<T> puzzle) {
+  private Set<Cell<T>> directElimination(CellGrid<T> cellGrid) {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
     for (Coord coord : _group) {
-      final Cell<T> cell = puzzle.getCell(coord);
+      final Cell<T> cell = cellGrid.getCell(coord);
       if (cell.isSolved()) {
-        changedCells.addAll(eliminateSolvedValue(cell, puzzle));
+        changedCells.addAll(eliminateSolvedValue(cell, cellGrid));
       }
     }
     return changedCells;
   }
 
-  private Set<Cell<T>> doABElimination(Puzzle<T> puzzle) {
+  private Set<Cell<T>> doABElimination(CellGrid<T> cellGrid) {
     final Set<Cell<T>> changedCells = new LinkedHashSet<>();
     Map<Set<T>, Set<Cell<T>>> abEliminationMap = new LinkedHashMap<>();
     for (Coord coord : _group) {
-      final Cell<T> cell = puzzle.getCell(coord);
+      final Cell<T> cell = cellGrid.getCell(coord);
       if (!abEliminationMap.containsKey(cell.getCurrentValues())) {
         abEliminationMap.put(cell.getCurrentValues(), new LinkedHashSet<Cell<T>>());
       }
@@ -64,7 +64,7 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
       Set<T> abValue = entry.getKey();
       if (AB_ELIMINATION_SIZES.contains(abCells.size()) && abValue.size() == abCells.size()) {
         for (Coord coord : _group) {
-          final Cell<T> cell = puzzle.getCell(coord);
+          final Cell<T> cell = cellGrid.getCell(coord);
           if (!abCells.contains(cell) && cell.removeAll(abValue)) {
             changedCells.add(cell);
           }
@@ -74,10 +74,10 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     return changedCells;
   }
 
-  private Set<Cell<T>> eliminateSolvedValue(Cell<T> cell, Puzzle<T> puzzle) {
+  private Set<Cell<T>> eliminateSolvedValue(Cell<T> cell, CellGrid<T> cellGrid) {
     final Set<Cell<T>> changed = new LinkedHashSet<>();
     for (Coord innerCoord : _group) {
-      final Cell<T> cellInner = puzzle.getCell(innerCoord);
+      final Cell<T> cellInner = cellGrid.getCell(innerCoord);
       if (!cellInner.getIdentifier().equals(cell.getIdentifier())) {
         T value = cell.getValue();
         if (null != value) {

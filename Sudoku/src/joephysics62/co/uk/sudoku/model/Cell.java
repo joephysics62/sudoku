@@ -9,17 +9,36 @@ public class Cell<T extends Comparable<T>> {
   private final Set<T> _currentValues;
   private final Coord _identifier;
   private boolean _isSolved;
-  public Cell(T fixedInitialValue, Coord identifier) {
+
+  private Cell(T fixedInitialValue, Coord identifier) {
     _identifier = identifier;
     _currentValues = Collections.singleton(fixedInitialValue);
   }
-  public Cell(Set<T> inits, Coord identifier) {
+
+  public static <T extends Comparable<T>> Cell<T> of(T givenValue, Coord coord) {
+    return new Cell<T>(givenValue, coord);
+  }
+
+  public static <T extends Comparable<T>> Cell<T> of(Set<T> inits, Coord coord) {
+    return new Cell<T>(inits, coord);
+  }
+
+  public static <T extends Comparable<T>> Cell<T> copyOf(Cell<T> otherCell) {
+    return new Cell<T>(otherCell);
+  }
+
+  private Cell(Set<T> inits, Coord identifier) {
     _identifier = identifier;
     _currentValues = new TreeSet<>(inits);
   }
-  public Cell(Cell<T> old) {
+  private Cell(Cell<T> old) {
     _identifier = old._identifier;
     _currentValues = new TreeSet<>(old._currentValues);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("Cell(coord=%s,values=%s)", _identifier, _currentValues);
   }
 
   public void setSolved() {

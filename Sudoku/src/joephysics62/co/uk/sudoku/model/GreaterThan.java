@@ -1,8 +1,10 @@
 package joephysics62.co.uk.sudoku.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -17,25 +19,32 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
-  public Set<Cell<T>> eliminateValues(Puzzle<T> puzzle) {
+  public Set<Cell<T>> eliminateValues(CellGrid<T> cellGrid) {
     Set<Cell<T>> changed = new LinkedHashSet<>();
-    Cell<T> leftCell = puzzle.getCell(_left);
-    Cell<T> rightCell = puzzle.getCell(_right);
-    Set<T> leftValues = leftCell.getCurrentValues();
-    Set<T> rightValues = rightCell.getCurrentValues();
-    T maxLeft = Collections.max(leftValues);
-    T minRight = Collections.min(rightValues);
-    for (T rightVal : rightValues) {
+    Cell<T> left = cellGrid.getCell(_left);
+    Cell<T> right = cellGrid.getCell(_right);
+    T maxLeft = Collections.max(left.getCurrentValues());
+    T minRight = Collections.min(right.getCurrentValues());
+
+    final List<T> toRemoveRight = new ArrayList<>();
+    for (T rightVal : right.getCurrentValues()) {
       if (rightVal.compareTo(maxLeft) >= 0) {
-        // remove right Value
-        // if changed changed.add(rightCell)
+        toRemoveRight.add(rightVal);
       }
     }
-    for (T leftVal : leftValues) {
+    if (!toRemoveRight.isEmpty()) {
+      right.removeAll(toRemoveRight);
+      changed.add(right);
+    }
+    final List<T> toRemoveLeft = new ArrayList<>();
+    for (T leftVal : left.getCurrentValues()) {
       if (leftVal.compareTo(minRight) <= 0) {
-        // remove left value.
-        // if changed changed.add(leftCell)
+        toRemoveLeft.add(leftVal);
       }
+    }
+    if (!toRemoveLeft.isEmpty()) {
+      left.removeAll(toRemoveLeft);
+      changed.add(left);
     }
     return changed;
   }
