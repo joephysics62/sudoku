@@ -14,9 +14,10 @@ import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleSolution;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
+import joephysics62.co.uk.sudoku.solver.SolutionResult;
+import joephysics62.co.uk.sudoku.solver.SolutionType;
 
 public class FutoshikiParser {
   public Puzzle<Integer> parse(final File input, final int puzzleSize) throws IOException {
@@ -98,8 +99,11 @@ public class FutoshikiParser {
   public static final void main(final String args[]) throws IOException {
     Puzzle<Integer> puzzle = new FutoshikiParser().parse(new File("examples/futoshiki/5by5/times2198.txt"), 5);
     PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
-    PuzzleSolution<Integer> puzzleSolution = solver.solve(puzzle);
-    puzzleSolution.write(System.out);
+    SolutionResult<Integer> result = solver.solve(puzzle);
+    if (result.getType() == SolutionType.UNIQUE) {
+      result.getSolution().write(System.out);
+    }
+    System.out.println("Solution took " + result.getTiming() + "ms");
   }
 
 }

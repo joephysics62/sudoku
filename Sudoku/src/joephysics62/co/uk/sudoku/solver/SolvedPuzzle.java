@@ -1,14 +1,16 @@
-package joephysics62.co.uk.sudoku.model;
+package joephysics62.co.uk.sudoku.solver;
 
 import java.io.PrintStream;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-public class PuzzleSolution<T> {
+import joephysics62.co.uk.sudoku.model.Coord;
+
+public class SolvedPuzzle<T> {
   private final Map<Coord, T> _valueMap;
 
-  public PuzzleSolution(final Map<Coord, T> valueMap) {
+  public SolvedPuzzle(final Map<Coord, T> valueMap) {
     _valueMap = valueMap;
   }
 

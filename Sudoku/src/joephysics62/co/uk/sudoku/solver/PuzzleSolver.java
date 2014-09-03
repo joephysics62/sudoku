@@ -10,27 +10,27 @@ import java.util.Set;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleSolution;
 import joephysics62.co.uk.sudoku.model.Restriction;
 
 public class PuzzleSolver<T extends Comparable<T>> {
 
-  public PuzzleSolution<T> solve(final Puzzle<T> puzzle) {
-    final Set<PuzzleSolution<T>> solutions = new LinkedHashSet<>();
+  public SolutionResult<T> solve(final Puzzle<T> puzzle) {
+    final Set<SolvedPuzzle<T>> solutions = new LinkedHashSet<>();
+    final long start = System.currentTimeMillis();
     solve(puzzle, solutions);
+    final long timing = System.currentTimeMillis() - start;
     if (solutions.size() == 1) {
-      return solutions.iterator().next();
+      return new SolutionResult<>(SolutionType.UNIQUE, solutions.iterator().next(), timing);
     }
     else if (solutions.size() > 1) {
-      System.out.println("Found puzzle with multiple solutions");
-      return null;
+      return new SolutionResult<>(SolutionType.MULTIPLE, solutions.iterator().next(), timing);
     }
     else {
-      return null;
+      return new SolutionResult<>(SolutionType.NONE, null, timing);
     }
   }
 
-  private void solve(final Puzzle<T> puzzle, final Set<PuzzleSolution<T>> solutions) {
+  private void solve(final Puzzle<T> puzzle, final Set<SolvedPuzzle<T>> solutions) {
     if (solutions.size() > 1) {
       return;
     }
@@ -44,7 +44,7 @@ public class PuzzleSolver<T extends Comparable<T>> {
       for (Cell<T> cell : puzzle.getAllCells()) {
         solutionMap.put(cell.getIdentifier(), cell.getValue());
       }
-      solutions.add(new PuzzleSolution<T>(solutionMap));
+      solutions.add(new SolvedPuzzle<T>(solutionMap));
     }
     else {
       if (puzzle.isUnsolveable()) {

@@ -7,10 +7,11 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleSolution;
 import joephysics62.co.uk.sudoku.parse.CellValueReader;
 import joephysics62.co.uk.sudoku.parse.TableValueParser;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
+import joephysics62.co.uk.sudoku.solver.SolutionResult;
+import joephysics62.co.uk.sudoku.solver.SolutionType;
 import joephysics62.co.uk.sudoku.standard.Sudoku;
 
 public class SolverMain {
@@ -51,14 +52,12 @@ public class SolverMain {
     System.out.println("Initial completeness: " + puzzle.completeness());
     System.out.println();
     PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
-    long start = System.currentTimeMillis();
-    PuzzleSolution<Integer> solution = solver.solve(puzzle);
-    if (null != solution) {
+    SolutionResult<Integer> result = solver.solve(puzzle);
+    if (SolutionType.UNIQUE == result.getType()) {
       System.out.println("Found a unique solution solution(s)");
-      solution.write(System.out);
+      result.getSolution().write(System.out);
     }
-    long end = System.currentTimeMillis();
-    System.err.println(end - start + " time ms");
+    System.err.println(result.getTiming() + " time ms");
   }
 
 }
