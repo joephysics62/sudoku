@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
-public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
+public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
   private final Map<Coord, Cell<T>> _cells = new TreeMap<>();
   private final Set<T> _inits;
@@ -23,8 +23,12 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
     _inits = old._inits;
   }
 
-  public MapBackedPuzzle(Set<T> inits) {
-    _inits = Collections.unmodifiableSet(inits);
+  protected MapBackedPuzzle(Collection<T> inits) {
+    _inits = Collections.unmodifiableSet(new LinkedHashSet<>(inits));
+  }
+
+  public static <T extends Comparable<T>> MapBackedPuzzle<T> forInits(List<T> inits) {
+    return new MapBackedPuzzle<>(inits);
   }
 
   @Override

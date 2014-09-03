@@ -6,13 +6,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashSet;
 import java.util.List;
 
-import joephysics62.co.uk.sudoku.futoshiki.Futoshiki;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.GreaterThan;
+import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
@@ -24,7 +23,7 @@ public class FutoshikiParser {
     String[][] stringTable = asTableOfStrings(input, puzzleSize);
 
 
-    Futoshiki<Integer> futoshiki = new Futoshiki<Integer>(new LinkedHashSet<>(Arrays.asList(1, 2, 3, 4, 5)));
+    MapBackedPuzzle<Integer> futoshiki = MapBackedPuzzle.forInits(Arrays.asList(1, 2, 3, 4, 5));
     List<List<Integer>> givenValues = new ArrayList<>();
 
 
