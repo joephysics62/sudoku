@@ -90,6 +90,9 @@ public class PuzzleSolver<T extends Comparable<T>> {
   private boolean solveOnCells(Set<Cell<T>> cells, final Puzzle<T> puzzle) {
     boolean stateChanged = false;
     for (Cell<T> cell : cells) {
+      if (cell.isUnsolveable()) {
+        return false;
+      }
       if (cell.canApplyElimination()) {
         stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell.getIdentifier()), puzzle);
         cell.setSolved();
@@ -99,12 +102,12 @@ public class PuzzleSolver<T extends Comparable<T>> {
   }
 
   private boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
-    final Set<Cell<T>> changedCells = new LinkedHashSet<>();
+    final Set<Cell<T>> allChangedCells = new LinkedHashSet<>();
     for (Restriction<T> restriction : restrictions) {
-      changedCells.addAll(restriction.eliminateValues(puzzle));
+      allChangedCells.addAll(restriction.eliminateValues(puzzle));
     }
-    solveOnCells(changedCells, puzzle);
-    return !changedCells.isEmpty();
+    solveOnCells(allChangedCells, puzzle);
+    return !allChangedCells.isEmpty();
   }
 
 }
