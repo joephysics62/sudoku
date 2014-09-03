@@ -88,26 +88,25 @@ public class PuzzleSolver<T extends Comparable<T>> {
   }
 
   private boolean solveOnCells(Set<Cell<T>> cells, final Puzzle<T> puzzle) {
-    boolean stateChanged = false;
+    Set<Restriction<T>> restricts = new LinkedHashSet<>();
     for (Cell<T> cell : cells) {
       if (cell.isUnsolveable()) {
         return false;
       }
       if (cell.canApplyElimination()) {
-        stateChanged |= solveOnRestrictions(puzzle.getRestrictions(cell.getIdentifier()), puzzle);
+        restricts.addAll(puzzle.getRestrictions(cell.getIdentifier()));
         cell.setSolved();
       }
     }
-    return stateChanged;
+    return solveOnRestrictions(restricts, puzzle);
   }
 
   private boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
-    final Set<Cell<T>> allChangedCells = new LinkedHashSet<>();
+    boolean changed = false;
     for (Restriction<T> restriction : restrictions) {
-      allChangedCells.addAll(restriction.eliminateValues(puzzle));
+      changed |= !restriction.eliminateValues(puzzle).isEmpty();
     }
-    solveOnCells(allChangedCells, puzzle);
-    return !allChangedCells.isEmpty();
+    return changed;
   }
 
 }
