@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.parse;
+package joephysics62.co.uk.sudoku.puzzleBuilders;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class TableValueParser<T> {
 

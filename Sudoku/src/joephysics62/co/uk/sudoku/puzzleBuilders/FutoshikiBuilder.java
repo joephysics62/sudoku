@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.parse;
+package joephysics62.co.uk.sudoku.puzzleBuilders;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,24 +14,25 @@ import joephysics62.co.uk.sudoku.model.GreaterThan;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Uniqueness;
-import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
-import joephysics62.co.uk.sudoku.solver.SolutionResult;
-import joephysics62.co.uk.sudoku.solver.SolutionType;
 
-public class FutoshikiParser {
-  public Puzzle<Integer> parse(final File input, final int puzzleSize) throws IOException {
-    String[][] stringTable = asTableOfStrings(input, puzzleSize);
+public class FutoshikiBuilder implements PuzzleBuilder<Integer> {
 
+  private final int _puzzleSize;
 
-    MapBackedPuzzle<Integer> futoshiki = MapBackedPuzzle.forInits(Arrays.asList(1, 2, 3, 4, 5));
-    List<List<Integer>> givenValues = new ArrayList<>();
+  public FutoshikiBuilder(final int puzzleSize) {
+    _puzzleSize = puzzleSize;
+  }
 
+  @Override
+  public Puzzle<Integer> read(final File input) throws IOException {
+    String[][] stringTable = asTableOfStrings(input);
 
-    for (int row = 0; row < puzzleSize; row++) {
-      for (int col = 0; col < puzzleSize; col++) {
-
-      }
+    final List<Integer> inits = new ArrayList<>();
+    for (int i = 1; i <= _puzzleSize; i++) {
+      inits.add(i);
     }
+    MapBackedPuzzle<Integer> futoshiki = MapBackedPuzzle.forInits(inits);
+    List<List<Integer>> givenValues = new ArrayList<>();
     for (String[] row : stringTable) {
       List<Integer> rowOut = new ArrayList<>();
       givenValues.add(rowOut);
@@ -42,7 +43,7 @@ public class FutoshikiParser {
     }
     futoshiki.addCells(givenValues);
 
-    final Coord[][] wholePuzzle = new Coord[puzzleSize][puzzleSize];
+    final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
     for (Cell<Integer> cell : futoshiki.getAllCells()) {
       Coord coord = cell.getIdentifier();
       wholePuzzle[coord.getRow() - 1][coord.getCol() - 1] = coord;
@@ -50,15 +51,15 @@ public class FutoshikiParser {
     for (Coord[] row : wholePuzzle) {
       futoshiki.addConstraint(Uniqueness.<Integer>of(Arrays.asList(row)));
     }
-    for (int col = 0; col < puzzleSize; col++) {
+    for (int col = 0; col < _puzzleSize; col++) {
       final List<Coord> colCells = new ArrayList<>();
-      for (int row = 0; row < puzzleSize; row++) {
+      for (int row = 0; row < _puzzleSize; row++) {
         colCells.add(wholePuzzle[row][col]);
       }
       futoshiki.addConstraint(Uniqueness.<Integer>of(colCells));
     }
-    for (int row = 0; row < puzzleSize; row++) {
-      for (int col = 0; col < puzzleSize; col++) {
+    for (int row = 0; row < _puzzleSize; row++) {
+      for (int col = 0; col < _puzzleSize; col++) {
         String cellString = stringTable[row][col];
         final Coord left = wholePuzzle[row][col];
         if (cellString.contains(">")) {
@@ -78,31 +79,21 @@ public class FutoshikiParser {
     return futoshiki;
   }
 
-  private String[][] asTableOfStrings(final File input, final int puzzleSize) throws IOException {
+  private String[][] asTableOfStrings(final File input) throws IOException {
     List<String> allLines = Files.readAllLines(input.toPath(), Charset.forName("UTF-8"));
-    if (allLines.size() != puzzleSize) {
+    if (allLines.size() != _puzzleSize) {
       throw new RuntimeException(allLines.size() + "");
     }
-    String[][] stringTable = new String[puzzleSize][puzzleSize];
+    String[][] stringTable = new String[_puzzleSize][_puzzleSize];
     int rowIndex = 0;
     for (String line : allLines) {
       String[] split = line.split("\\|");
-      if (split.length != puzzleSize + 1) {
+      if (split.length != _puzzleSize + 1) {
         throw new RuntimeException(split.length + "");
       }
-      stringTable[rowIndex++] = Arrays.copyOfRange(split, 1, puzzleSize + 1);
+      stringTable[rowIndex++] = Arrays.copyOfRange(split, 1, _puzzleSize + 1);
     }
     return stringTable;
-  }
-
-  public static final void main(final String args[]) throws IOException {
-    Puzzle<Integer> puzzle = new FutoshikiParser().parse(new File("examples/futoshiki/5by5/times2198.txt"), 5);
-    PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
-    SolutionResult<Integer> result = solver.solve(puzzle);
-    if (result.getType() == SolutionType.UNIQUE) {
-      result.getSolution().write(System.out);
-    }
-    System.out.println("Solution took " + result.getTiming() + "ms");
   }
 
 }

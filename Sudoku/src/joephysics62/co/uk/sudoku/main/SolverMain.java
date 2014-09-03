@@ -2,62 +2,42 @@ package joephysics62.co.uk.sudoku.main;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.parse.CellValueReader;
-import joephysics62.co.uk.sudoku.parse.TableValueParser;
+import joephysics62.co.uk.sudoku.puzzleBuilders.FutoshikiBuilder;
+import joephysics62.co.uk.sudoku.puzzleBuilders.PuzzleBuilder;
+import joephysics62.co.uk.sudoku.puzzleBuilders.SudokuBuilder;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
-import joephysics62.co.uk.sudoku.standard.Sudoku;
 
 public class SolverMain {
-
-  private static Set<Integer> upTo(final int max) {
-    final Set<Integer> inits = new LinkedHashSet<>();
-    for (int i = 1; i <= max; i++) {
-      inits.add(i);
-    }
-    return Collections.unmodifiableSet(inits);
-  }
 
   public static void main(final String[] args) throws IOException {
     final File input = new File(args[1]);
     final String type = args[0];
-    Puzzle<Integer> puzzle;
-    CellValueReader<Integer> cellValueReader = new CellValueReader<Integer>() {
-      @Override
-      public Integer parseCellValue(String value) {
-        if (value.isEmpty()) {
-          return null;
-        }
-        return Integer.valueOf(value);
-      }
-    };
+    PuzzleBuilder<Integer> sudokuBuilder;
     if (type.equals("timesMini")) {
-      final TableValueParser<Integer> parser = new TableValueParser<Integer>(6, cellValueReader);
-      puzzle = Sudoku.loadValues(input, upTo(6), 2, 3, parser);
+      sudokuBuilder = new SudokuBuilder(2, 3, 6);
     }
     else if (type.equals("classic")) {
-      final TableValueParser<Integer> parser = new TableValueParser<Integer>(9, cellValueReader);
-      puzzle = Sudoku.loadValues(input, upTo(9), 3, 3, parser);
+      sudokuBuilder = new SudokuBuilder(3, 3, 9);
+    }
+    else if (type.equals("futoshiki")) {
+      sudokuBuilder = new FutoshikiBuilder(5);
     }
     else {
       throw new IllegalArgumentException();
     }
+    Puzzle<Integer> puzzle = sudokuBuilder.read(input);
     puzzle.write(System.out);
-    System.out.println("Initial completeness: " + puzzle.completeness());
-    System.out.println();
     PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
     SolutionResult<Integer> result = solver.solve(puzzle);
     if (SolutionType.UNIQUE == result.getType()) {
       System.out.println("Found a unique solution solution(s)");
       result.getSolution().write(System.out);
     }
-    System.err.println(result.getTiming() + " time ms");
+    System.out.println(result.getTiming() + " time ms");
   }
 
 }
