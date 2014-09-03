@@ -99,15 +99,12 @@ public class PuzzleSolver<T extends Comparable<T>> {
   }
 
   private boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
-    boolean stateChanged = false;
+    final Set<Cell<T>> changedCells = new LinkedHashSet<>();
     for (Restriction<T> restriction : restrictions) {
-      Set<Cell<T>> changedCells = restriction.eliminateValues(puzzle);
-      if (!changedCells.isEmpty()) {
-        stateChanged = true;
-      }
-      solveOnCells(changedCells, puzzle);
+      changedCells.addAll(restriction.eliminateValues(puzzle));
     }
-    return stateChanged;
+    solveOnCells(changedCells, puzzle);
+    return !changedCells.isEmpty();
   }
 
 }

@@ -18,7 +18,7 @@ public class TableValueParser<T> {
     _cellValueReader = cellValueReader;
   }
 
-  public List<List<T>>parse(final File csv) throws IOException {
+  public List<List<T>> parse(final File csv) throws IOException {
     List<List<T>> inputLists = new ArrayList<>();
     for (final String line : Files.readAllLines(csv.toPath(), Charset.forName("UTF-8"))) {
       final List<T> row = new ArrayList<>();
