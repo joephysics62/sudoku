@@ -23,7 +23,7 @@ public class TestGreaterThan {
     final Coord right = new Coord(2, 2);
     final Cell<Integer> cellLeft = Cell.of(new LinkedHashSet<>(leftInits), left);
     final Cell<Integer> cellRight = Cell.of(new LinkedHashSet<>(rightInits), right);
-    final GreaterThan<Integer> gt = new GreaterThan<>(left, right);
+    final GreaterThan<Integer> gt = GreaterThan.of(left, right);
     return gt.eliminateValues(new CellGrid<Integer>() {
       @Override
       public Cell<Integer> getCell(Coord coord) {

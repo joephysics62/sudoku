@@ -13,9 +13,13 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
   private final Coord _left;
   private final Coord _right;
 
-  public GreaterThan(final Coord left, final Coord right) {
+  private GreaterThan(final Coord left, final Coord right) {
     _left = left;
     _right = right;
+  }
+
+  public static <T extends Comparable<T>> GreaterThan<T> of(final Coord left, final Coord right) {
+    return new GreaterThan<T>(left, right);
   }
 
   @Override
@@ -23,6 +27,9 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
     Set<Cell<T>> changed = new LinkedHashSet<>();
     Cell<T> left = cellGrid.getCell(_left);
     Cell<T> right = cellGrid.getCell(_right);
+    if (left.isUnsolveable() || right.isUnsolveable()) {
+      return Collections.emptySet();
+    }
     T maxLeft = Collections.max(left.getCurrentValues());
     T minRight = Collections.min(right.getCurrentValues());
 

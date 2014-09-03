@@ -13,7 +13,7 @@ import java.util.TreeMap;
 public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
   private final Map<Coord, Cell<T>> _cells = new TreeMap<>();
-  private Set<T> _inits;
+  private final Set<T> _inits;
 
   private MapBackedPuzzle(MapBackedPuzzle<T> old) {
     for (Entry<Coord, Cell<T>> entry : old._cells.entrySet()) {
@@ -21,10 +21,6 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
     }
     _constraints.putAll(old._constraints);
     _inits = old._inits;
-  }
-
-  public MapBackedPuzzle() {
-    // normal one
   }
 
   public MapBackedPuzzle(Set<T> inits) {
@@ -95,7 +91,7 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
     return completeness;
   }
 
-  protected void addConstraint(Restriction<T> restriction) {
+  public void addConstraint(Restriction<T> restriction) {
     for (Coord cellCoord : restriction.getCells()) {
       if (!_constraints.containsKey(cellCoord)) {
         _constraints.put(cellCoord, new LinkedHashSet<Restriction<T>>());
@@ -104,7 +100,7 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
     }
   }
 
-  protected void addCells(List<List<T>> givenValues) {
+  public void addCells(List<List<T>> givenValues) {
     for (int rowIndex = 0; rowIndex < givenValues.size(); rowIndex++) {
       final List<T> row = givenValues.get(rowIndex);
       for (int colIndex = 0; colIndex < row.size(); colIndex++) {
@@ -120,13 +116,14 @@ public abstract class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle
   public void write(PrintStream out) {
     int maxRow = 0;
     int maxCol = 0;
-    for (Coord coord : _constraints.keySet()) {
+    for (Coord coord : _cells.keySet()) {
       maxRow = Math.max(coord.getRow(), maxRow);
       maxCol = Math.max(coord.getCol(), maxCol);
     }
     Object[][] array = new Object[maxRow][maxCol];
-    for (Coord coord : _constraints.keySet()) {
-      final Cell<T> cell = _cells.get(coord);
+    for (Entry<Coord, Cell<T>> entry : _cells.entrySet()) {
+      final Cell<T> cell = entry.getValue();
+      final Coord coord = entry.getKey();
       if (null == cell) {
         throw new RuntimeException("No cell at '" + coord + "'");
       }
