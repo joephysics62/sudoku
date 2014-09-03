@@ -65,13 +65,13 @@ public class FutoshikiBuilder implements PuzzleBuilder<Integer> {
         if (cellString.contains(">")) {
           futoshiki.addConstraint(GreaterThan.<Integer>of(left, wholePuzzle[row][col + 1]));
         }
-        else if (cellString.contains("<")) {
+        if (cellString.contains("<")) {
           futoshiki.addConstraint(GreaterThan.<Integer>of(left, wholePuzzle[row][col - 1]));
         }
-        else if (cellString.contains("V")) {
+        if (cellString.contains("V")) {
           futoshiki.addConstraint(GreaterThan.<Integer>of(left, wholePuzzle[row + 1][col]));
         }
-        else if (cellString.contains("^")) {
+        if (cellString.contains("^")) {
           futoshiki.addConstraint(GreaterThan.<Integer>of(left, wholePuzzle[row - 1][col]));
         }
       }

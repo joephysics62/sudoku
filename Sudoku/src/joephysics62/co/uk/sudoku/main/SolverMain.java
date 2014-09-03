@@ -37,6 +37,9 @@ public class SolverMain {
       System.out.println("Found a unique solution solution(s)");
       result.getSolution().write(System.out);
     }
+    else {
+      System.err.println("No unique solution: " + result.getType());
+    }
     System.out.println(result.getTiming() + " time ms");
   }
 
