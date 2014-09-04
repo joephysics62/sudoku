@@ -15,11 +15,11 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class FutoshikiBuilder implements PuzzleBuilder<Integer> {
+public class FutoshikiReader implements PuzzleReader<Integer> {
 
   private final int _puzzleSize;
 
-  public FutoshikiBuilder(final int puzzleSize) {
+  public FutoshikiReader(final int puzzleSize) {
     _puzzleSize = puzzleSize;
   }
 

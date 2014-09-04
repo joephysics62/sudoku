@@ -13,13 +13,13 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class SudokuBuilder implements PuzzleBuilder<Integer> {
+public class SudokuReader implements PuzzleReader<Integer> {
   private final int _subTableHeight;
   private final int _subTableWidth;
   private final int _outerSize;
   private TableValueParser<Integer> _tableValueParser;
 
-  public SudokuBuilder(final int subTableHeight, final int subTableWidth, final int outerSize) {
+  public SudokuReader(final int subTableHeight, final int subTableWidth, final int outerSize) {
     _subTableHeight = subTableHeight;
     _subTableWidth = subTableWidth;
     _outerSize = outerSize;

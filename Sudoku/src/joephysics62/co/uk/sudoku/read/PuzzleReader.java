@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public interface PuzzleBuilder<T extends Comparable<T>> {
+public interface PuzzleReader<T extends Comparable<T>> {
 
   Puzzle<T> read(File input) throws IOException;
 
