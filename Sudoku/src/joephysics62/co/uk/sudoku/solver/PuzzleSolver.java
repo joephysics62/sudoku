@@ -40,17 +40,13 @@ public class PuzzleSolver<T extends Comparable<T>> {
       }
     }
     if (puzzle.isSolved()) {
-      final Map<Coord, T> solutionMap = new LinkedHashMap<>();
-      for (Cell<T> cell : puzzle.getAllCells()) {
-        solutionMap.put(cell.getCoord(), cell.getValue());
-      }
-      solutions.add(new SolvedPuzzle<T>(solutionMap));
+      addAsSolution(puzzle, solutions);
     }
     else {
       if (puzzle.isUnsolveable()) {
         return;
       }
-      Cell<T> cellToGuess = findCellToGuess(puzzle);
+      final Cell<T> cellToGuess = findCellToGuess(puzzle);
       for (T candidateValue : cellToGuess.getCurrentValues()) {
         Puzzle<T> copy = puzzle.deepCopy();
         Cell<T> cell = copy.getCell(cellToGuess.getCoord());
@@ -59,6 +55,14 @@ public class PuzzleSolver<T extends Comparable<T>> {
         solve(copy, solutions);
       }
     }
+  }
+
+  private void addAsSolution(final Puzzle<T> puzzle, final Set<SolvedPuzzle<T>> solutions) {
+    final Map<Coord, T> solutionMap = new LinkedHashMap<>();
+    for (Cell<T> cell : puzzle.getAllCells()) {
+      solutionMap.put(cell.getCoord(), cell.getValue());
+    }
+    solutions.add(new SolvedPuzzle<T>(solutionMap));
   }
 
   private Cell<T> findCellToGuess(final Puzzle<T> puzzle) {
