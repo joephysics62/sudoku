@@ -33,8 +33,8 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   }
 
   @Override
-  public final Set<Cell<T>> getAllCells() {
-    return new LinkedHashSet<>(_cells.values());
+  public final Collection<Cell<T>> getAllCells() {
+    return _cells.values();
   }
 
   protected Set<T> getInits() {

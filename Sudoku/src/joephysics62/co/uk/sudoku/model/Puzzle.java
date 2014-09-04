@@ -19,6 +19,6 @@ public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
 
   Puzzle<T> deepCopy();
 
-  Set<Cell<T>> getAllCells();
+  Collection<Cell<T>> getAllCells();
 
 }

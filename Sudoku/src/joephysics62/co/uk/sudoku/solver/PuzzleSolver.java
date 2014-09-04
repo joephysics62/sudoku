@@ -14,11 +14,14 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleSolver<T extends Comparable<T>> {
 
+  private int _callCount = 0;
+
   public SolutionResult<T> solve(final Puzzle<T> puzzle) {
     final Set<SolvedPuzzle<T>> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
     solve(puzzle, solutions);
     final long timing = System.currentTimeMillis() - start;
+    System.err.println("CALL COUNT = " + _callCount);
     if (solutions.size() == 1) {
       return new SolutionResult<>(SolutionType.UNIQUE, solutions.iterator().next(), timing);
     }
@@ -48,6 +51,7 @@ public class PuzzleSolver<T extends Comparable<T>> {
       }
       final Cell<T> cellToGuess = findCellToGuess(puzzle);
       for (T candidateValue : cellToGuess.getCurrentValues()) {
+        _callCount++;
         Puzzle<T> copy = puzzle.deepCopy();
         Cell<T> cell = copy.getCell(cellToGuess.getCoord());
         cell.fixValue(candidateValue);
@@ -89,7 +93,7 @@ public class PuzzleSolver<T extends Comparable<T>> {
     return cellSolveChanged || restrictSolveChanged;
   }
 
-  private boolean checkForCellsToSetSolved(final Set<Cell<T>> cells, final Puzzle<T> puzzle) {
+  private boolean checkForCellsToSetSolved(final Collection<Cell<T>> cells, final Puzzle<T> puzzle) {
     boolean changed = false;
     for (Cell<T> cell : cells) {
       if (cell.isUnsolveable()) {
