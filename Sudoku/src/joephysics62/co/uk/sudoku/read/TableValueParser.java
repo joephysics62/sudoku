@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.puzzleBuilders;
+package joephysics62.co.uk.sudoku.read;
 
 import java.io.File;
 import java.io.IOException;

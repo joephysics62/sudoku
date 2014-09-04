@@ -5,6 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.sudoku.constraints.GreaterThan;
+
 import org.junit.Test;
 
 public class TestGreaterThan {

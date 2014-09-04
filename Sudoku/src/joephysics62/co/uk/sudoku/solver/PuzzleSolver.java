@@ -7,10 +7,10 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import joephysics62.co.uk.sudoku.constraints.Restriction;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.Restriction;
 
 public class PuzzleSolver<T extends Comparable<T>> {
 

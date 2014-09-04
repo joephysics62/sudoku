@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.model;
+package joephysics62.co.uk.sudoku.constraints;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
+
+import joephysics62.co.uk.sudoku.model.Cell;
+import joephysics62.co.uk.sudoku.model.CellGrid;
+import joephysics62.co.uk.sudoku.model.Coord;
 
 public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
 

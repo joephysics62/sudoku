@@ -1,6 +1,5 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -9,6 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+
+import joephysics62.co.uk.sudoku.constraints.Restriction;
 
 public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
@@ -115,34 +116,5 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
     }
   }
 
-
-  @Override
-  public void write(PrintStream out) {
-    int maxRow = 0;
-    int maxCol = 0;
-    for (Coord coord : _cells.keySet()) {
-      maxRow = Math.max(coord.getRow(), maxRow);
-      maxCol = Math.max(coord.getCol(), maxCol);
-    }
-    Object[][] array = new Object[maxRow][maxCol];
-    for (Entry<Coord, Cell<T>> entry : _cells.entrySet()) {
-      final Cell<T> cell = entry.getValue();
-      final Coord coord = entry.getKey();
-      if (null == cell) {
-        throw new RuntimeException("No cell at '" + coord + "'");
-      }
-      array[coord.getRow() - 1][coord.getCol() - 1] = cell.getCurrentValues().size() == 1 ? cell.getValue() : null;
-    }
-    for (int i = 0; i < maxRow; i++) {
-      for (int j = 0; j < maxCol; j++) {
-        if (j == 0) {
-          out.print("|");
-        }
-        Object value = array[i][j];
-        out.print(value == null ? "-|" : value + "|");
-      }
-      out.println("");
-    }
-  }
 
 }

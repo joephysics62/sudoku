@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.puzzleBuilders;
+package joephysics62.co.uk.sudoku.read;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,10 +8,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.Uniqueness;
 
 public class SudokuBuilder implements PuzzleBuilder<Integer> {
   private final int _subTableHeight;

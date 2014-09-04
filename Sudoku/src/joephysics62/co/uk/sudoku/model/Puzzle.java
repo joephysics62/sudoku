@@ -1,8 +1,9 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Set;
+
+import joephysics62.co.uk.sudoku.constraints.Restriction;
 
 public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
 
@@ -13,8 +14,6 @@ public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
   boolean isSolved();
 
   boolean isUnsolveable();
-
-  void write(PrintStream out);
 
   int completeness();
 

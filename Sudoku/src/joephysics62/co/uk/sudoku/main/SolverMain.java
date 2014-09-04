@@ -4,12 +4,13 @@ import java.io.File;
 import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.puzzleBuilders.FutoshikiBuilder;
-import joephysics62.co.uk.sudoku.puzzleBuilders.PuzzleBuilder;
-import joephysics62.co.uk.sudoku.puzzleBuilders.SudokuBuilder;
+import joephysics62.co.uk.sudoku.read.FutoshikiBuilder;
+import joephysics62.co.uk.sudoku.read.PuzzleBuilder;
+import joephysics62.co.uk.sudoku.read.SudokuBuilder;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
+import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class SolverMain {
 
@@ -30,7 +31,7 @@ public class SolverMain {
       throw new IllegalArgumentException();
     }
     Puzzle<Integer> puzzle = sudokuBuilder.read(input);
-    puzzle.write(System.out);
+    new PuzzleWriter<>(puzzle).write(System.out);
     PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
     SolutionResult<Integer> result = solver.solve(puzzle);
     if (SolutionType.UNIQUE == result.getType()) {

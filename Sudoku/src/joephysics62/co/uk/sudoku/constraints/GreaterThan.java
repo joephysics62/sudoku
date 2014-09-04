@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.model;
+package joephysics62.co.uk.sudoku.constraints;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +7,10 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+
+import joephysics62.co.uk.sudoku.model.Cell;
+import joephysics62.co.uk.sudoku.model.CellGrid;
+import joephysics62.co.uk.sudoku.model.Coord;
 
 public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
 
