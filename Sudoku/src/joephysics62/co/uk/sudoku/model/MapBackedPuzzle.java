@@ -39,7 +39,8 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
     return _cells.values();
   }
 
-  protected Set<T> getInits() {
+  @Override
+  public Set<T> getInits() {
     return _inits;
   }
 
@@ -50,9 +51,7 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
 
   @Override
   public Puzzle<T> deepCopy() {
-    return new MapBackedPuzzle<T>(this) {
-      @Override protected Set<T> getInits() { throw new UnsupportedOperationException(); }
-    };
+    return new MapBackedPuzzle<T>(this);
   }
 
   @Override

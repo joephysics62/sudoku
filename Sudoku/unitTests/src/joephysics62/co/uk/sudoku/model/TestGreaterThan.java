@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.model;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 
@@ -34,6 +35,10 @@ public class TestGreaterThan {
         else if (coord == right) {
           return cellRight;
         }
+        throw new UnsupportedOperationException();
+      }
+      @Override
+      public Set<Integer> getInits() {
         throw new UnsupportedOperationException();
       }
     });

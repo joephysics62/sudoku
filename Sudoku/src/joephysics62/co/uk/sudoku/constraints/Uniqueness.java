@@ -36,12 +36,36 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
 
   @Override
   public boolean eliminateValues(CellGrid<T> cellGrid) {
-    boolean directChanged = directElimination(cellGrid);
-    boolean abChanged = doABElimination(cellGrid);
-    return directChanged || abChanged;
+    boolean eliminationHadEffect = false;
+    //eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
+    eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
+    eliminationHadEffect |= doABElimination(cellGrid);
+    return eliminationHadEffect;
   }
 
-  private boolean directElimination(CellGrid<T> cellGrid) {
+  private boolean applyOnlyPossibleCellElimination(CellGrid<T> cellGrid) {
+    boolean hadEffect = false;
+    for (Coord coord : _group) {
+      Cell<T> cell = cellGrid.getCell(coord);
+      if (cell.getCurrentValues().size() == 1) {
+        continue;
+      }
+      final Set<T> cellValues = new LinkedHashSet<>(cell.getCurrentValues());
+      for (Coord coordInner : _group) {
+        if (!coordInner.equals(coord)) {
+          Cell<T> cellInner = cellGrid.getCell(coordInner);
+          cellValues.removeAll(cellInner.getCurrentValues());
+        }
+      }
+      if (cellValues.size() == 1) {
+        cell.fixValue(cellValues.iterator().next());
+        hadEffect = true;
+      }
+    }
+    return hadEffect;
+  }
+
+  private boolean applyUniquenessToKnownValue(CellGrid<T> cellGrid) {
     boolean changed = false;
     for (Coord coord : _group) {
       final Cell<T> cell = cellGrid.getCell(coord);
