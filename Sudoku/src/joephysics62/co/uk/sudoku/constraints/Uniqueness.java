@@ -82,7 +82,7 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     final Set<Cell<T>> changed = new LinkedHashSet<>();
     for (Coord innerCoord : _group) {
       final Cell<T> cellInner = cellGrid.getCell(innerCoord);
-      if (!cellInner.getIdentifier().equals(cell.getIdentifier())) {
+      if (!cellInner.getCoord().equals(cell.getCoord())) {
         T value = cell.getValue();
         if (null != value) {
           if (cellInner.remove(value)) {

@@ -71,6 +71,13 @@ public class Cell<T extends Comparable<T>> {
     return Collections.unmodifiableSet(_currentValues);
   }
 
+  public void fixValue(final T value) {
+    if (!_currentValues.contains(value)) {
+      throw new UnsupportedOperationException("Can't fix as " + value);
+    }
+    _currentValues.retainAll(Collections.singleton(value));
+  }
+
   public boolean remove(final T value) {
     return _currentValues.remove(value);
   }
@@ -79,7 +86,7 @@ public class Cell<T extends Comparable<T>> {
     return _currentValues.removeAll(values);
   }
 
-  public Coord getIdentifier() {
+  public Coord getCoord() {
     return _identifier;
   }
 }

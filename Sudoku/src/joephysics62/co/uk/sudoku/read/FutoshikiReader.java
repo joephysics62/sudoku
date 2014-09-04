@@ -45,7 +45,7 @@ public class FutoshikiReader implements PuzzleReader<Integer> {
 
     final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
     for (Cell<Integer> cell : futoshiki.getAllCells()) {
-      Coord coord = cell.getIdentifier();
+      Coord coord = cell.getCoord();
       wholePuzzle[coord.getRow() - 1][coord.getCol() - 1] = coord;
     }
     for (Coord[] row : wholePuzzle) {

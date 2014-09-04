@@ -16,13 +16,13 @@ public class PuzzleWriter<T extends Comparable<T>> {
     int maxRow = 0;
     int maxCol = 0;
     for (Cell<T> cell : _puzzle.getAllCells()) {
-      final Coord coord = cell.getIdentifier();
+      final Coord coord = cell.getCoord();
       maxRow = Math.max(coord.getRow(), maxRow);
       maxCol = Math.max(coord.getCol(), maxCol);
     }
     Object[][] array = new Object[maxRow][maxCol];
     for (Cell<T> cell : _puzzle.getAllCells()) {
-      final Coord coord = cell.getIdentifier();
+      final Coord coord = cell.getCoord();
       array[coord.getRow() - 1][coord.getCol() - 1] = cell.getCurrentValues().size() == 1 ? cell.getValue() : null;
     }
     for (int i = 0; i < maxRow; i++) {
