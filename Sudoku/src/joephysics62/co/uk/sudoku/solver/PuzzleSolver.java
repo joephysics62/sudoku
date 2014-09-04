@@ -51,7 +51,7 @@ public class PuzzleSolver<T extends Comparable<T>> {
         Puzzle<T> copy = puzzle.deepCopy();
         Cell<T> cell = copy.getCell(cellToGuess.getCoord());
         cell.fixValue(candidateValue);
-        solveOnCells(Collections.singleton(cell), copy);
+        checkForCellsToSetSolved(Collections.singleton(cell), copy);
         solve(copy, solutions);
       }
     }
@@ -84,29 +84,31 @@ public class PuzzleSolver<T extends Comparable<T>> {
   }
 
   private boolean elim(final Puzzle<T> puzzle) {
-    boolean cellSolveChanged = solveOnCells(puzzle.getAllCells(), puzzle);
+    boolean cellSolveChanged = checkForCellsToSetSolved(puzzle.getAllCells(), puzzle);
     boolean restrictSolveChanged = solveOnRestrictions(puzzle.getAllRestrictions(), puzzle);
     return cellSolveChanged || restrictSolveChanged;
   }
 
-  private boolean solveOnCells(Set<Cell<T>> cells, final Puzzle<T> puzzle) {
-    Set<Restriction<T>> restricts = new LinkedHashSet<>();
+  private boolean checkForCellsToSetSolved(final Set<Cell<T>> cells, final Puzzle<T> puzzle) {
+    boolean changed = false;
     for (Cell<T> cell : cells) {
       if (cell.isUnsolveable()) {
         return false;
       }
       if (cell.canApplyElimination()) {
-        restricts.addAll(puzzle.getRestrictions(cell.getCoord()));
         cell.setSolved();
+        changed = true;
       }
     }
-    return solveOnRestrictions(restricts, puzzle);
+    return changed;
   }
 
   private boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
     boolean changed = false;
     for (Restriction<T> restriction : restrictions) {
-      changed |= !restriction.eliminateValues(puzzle).isEmpty();
+      if (restriction.eliminateValues(puzzle)) {
+        changed = true;
+      }
     }
     return changed;
   }

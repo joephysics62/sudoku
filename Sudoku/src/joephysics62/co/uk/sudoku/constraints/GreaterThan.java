@@ -3,7 +3,6 @@ package joephysics62.co.uk.sudoku.constraints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -27,12 +26,12 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
-  public Set<Cell<T>> eliminateValues(CellGrid<T> cellGrid) {
-    Set<Cell<T>> changed = new LinkedHashSet<>();
+  public boolean eliminateValues(CellGrid<T> cellGrid) {
+    boolean changed = false;
     Cell<T> left = cellGrid.getCell(_left);
     Cell<T> right = cellGrid.getCell(_right);
     if (left.isUnsolveable() || right.isUnsolveable()) {
-      return Collections.emptySet();
+      return false;
     }
     T maxLeft = Collections.max(left.getCurrentValues());
     T minRight = Collections.min(right.getCurrentValues());
@@ -44,8 +43,7 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
       }
     }
     if (!toRemoveRight.isEmpty()) {
-      right.removeAll(toRemoveRight);
-      changed.add(right);
+      changed |= right.removeAll(toRemoveRight);
     }
     final List<T> toRemoveLeft = new ArrayList<>();
     for (T leftVal : left.getCurrentValues()) {
@@ -54,8 +52,7 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
       }
     }
     if (!toRemoveLeft.isEmpty()) {
-      left.removeAll(toRemoveLeft);
-      changed.add(left);
+      changed |= left.removeAll(toRemoveLeft);
     }
     return changed;
   }

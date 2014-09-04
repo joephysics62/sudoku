@@ -35,27 +35,26 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
-  public Set<Cell<T>> eliminateValues(CellGrid<T> cellGrid) {
-    final Set<Cell<T>> changedCells = new LinkedHashSet<>();
-    changedCells.addAll(directElimination(cellGrid));
-    changedCells.addAll(doABElimination(cellGrid));
-    return changedCells;
+  public boolean eliminateValues(CellGrid<T> cellGrid) {
+    boolean directChanged = directElimination(cellGrid);
+    boolean abChanged = doABElimination(cellGrid);
+    return directChanged || abChanged;
   }
 
-  private Set<Cell<T>> directElimination(CellGrid<T> cellGrid) {
-    final Set<Cell<T>> changedCells = new LinkedHashSet<>();
+  private boolean directElimination(CellGrid<T> cellGrid) {
+    boolean changed = false;
     for (Coord coord : _group) {
       final Cell<T> cell = cellGrid.getCell(coord);
       if (cell.isSolved()) {
-        changedCells.addAll(eliminateSolvedValue(cell, cellGrid));
+        changed |= eliminateSolvedValue(cell, cellGrid);
       }
     }
-    return changedCells;
+    return changed;
   }
 
-  private Set<Cell<T>> doABElimination(CellGrid<T> cellGrid) {
-    final Set<Cell<T>> changedCells = new LinkedHashSet<>();
+  private boolean doABElimination(CellGrid<T> cellGrid) {
     Map<Set<T>, Set<Cell<T>>> abEliminationMap = new LinkedHashMap<>();
+    boolean changed = false;
     for (Coord coord : _group) {
       final Cell<T> cell = cellGrid.getCell(coord);
       if (!abEliminationMap.containsKey(cell.getCurrentValues())) {
@@ -70,23 +69,23 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
         for (Coord coord : _group) {
           final Cell<T> cell = cellGrid.getCell(coord);
           if (!abCells.contains(cell) && cell.removeAll(abValue)) {
-            changedCells.add(cell);
+            changed = true;
           }
         }
       }
     }
-    return changedCells;
+    return changed;
   }
 
-  private Set<Cell<T>> eliminateSolvedValue(Cell<T> cell, CellGrid<T> cellGrid) {
-    final Set<Cell<T>> changed = new LinkedHashSet<>();
+  private boolean eliminateSolvedValue(Cell<T> cell, CellGrid<T> cellGrid) {
+    boolean changed = false;
     for (Coord innerCoord : _group) {
       final Cell<T> cellInner = cellGrid.getCell(innerCoord);
       if (!cellInner.getCoord().equals(cell.getCoord())) {
         T value = cell.getValue();
         if (null != value) {
           if (cellInner.remove(value)) {
-            changed.add(cellInner);
+            changed = true;
           }
         }
       }

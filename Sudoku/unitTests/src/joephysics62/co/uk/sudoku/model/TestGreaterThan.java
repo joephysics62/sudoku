@@ -3,10 +3,10 @@ package joephysics62.co.uk.sudoku.model;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 public class TestGreaterThan {
@@ -16,11 +16,10 @@ public class TestGreaterThan {
     final List<Integer> leftInits = Arrays.asList(1, 2, 3, 4, 5);
     final List<Integer> rightInits = Arrays.asList(1, 2, 3, 4, 5);
 
-    Set<Cell<Integer>> eliminate = eliminate(leftInits, rightInits);
-    System.out.println(eliminate);
+    Assert.assertTrue(eliminate(leftInits, rightInits));
   }
 
-  private Set<Cell<Integer>> eliminate(final List<Integer> leftInits, final List<Integer> rightInits) {
+  private boolean eliminate(final List<Integer> leftInits, final List<Integer> rightInits) {
     final Coord left = new Coord(1, 2);
     final Coord right = new Coord(2, 2);
     final Cell<Integer> cellLeft = Cell.of(new LinkedHashSet<>(leftInits), left);
