@@ -76,6 +76,7 @@ public class Cell<T extends Comparable<T>> {
       throw new UnsupportedOperationException("Can't fix as " + value);
     }
     _currentValues.retainAll(Collections.singleton(value));
+    setSolved();
   }
 
   public boolean remove(final T value) {

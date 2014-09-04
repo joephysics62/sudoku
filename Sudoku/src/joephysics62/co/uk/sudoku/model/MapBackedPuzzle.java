@@ -14,6 +14,7 @@ import joephysics62.co.uk.sudoku.constraints.Restriction;
 public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
   private final Map<Coord, Cell<T>> _cells = new TreeMap<>();
+  private final Set<Restriction<T>> _restrictions = new LinkedHashSet<>();
   private final Set<T> _inits;
 
   private MapBackedPuzzle(MapBackedPuzzle<T> old) {
@@ -21,6 +22,7 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
       _cells.put(entry.getKey(), Cell.copyOf(entry.getValue()));
     }
     _constraints.putAll(old._constraints);
+    _restrictions.addAll(old._restrictions);
     _inits = old._inits;
   }
 
@@ -54,12 +56,8 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   }
 
   @Override
-  public Collection<Restriction<T>> getAllRestrictions() {
-    final Set<Restriction<T>> out = new LinkedHashSet<>();
-    for (Set<Restriction<T>> set : _constraints.values()) {
-      out.addAll(set);
-    }
-    return Collections.unmodifiableSet(out);
+  public Set<Restriction<T>> getAllRestrictions() {
+    return _restrictions;
   }
 
   @Override
@@ -97,6 +95,7 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   }
 
   public void addConstraint(Restriction<T> restriction) {
+    _restrictions.add(restriction);
     for (Coord cellCoord : restriction.getCells()) {
       if (!_constraints.containsKey(cellCoord)) {
         _constraints.put(cellCoord, new LinkedHashSet<Restriction<T>>());

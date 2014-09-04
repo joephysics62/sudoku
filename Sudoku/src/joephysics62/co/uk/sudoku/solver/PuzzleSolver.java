@@ -1,7 +1,5 @@
 package joephysics62.co.uk.sudoku.solver;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -14,14 +12,11 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleSolver<T extends Comparable<T>> {
 
-  private int _callCount = 0;
-
   public SolutionResult<T> solve(final Puzzle<T> puzzle) {
     final Set<SolvedPuzzle<T>> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
     solve(puzzle, solutions);
     final long timing = System.currentTimeMillis() - start;
-    System.err.println("CALL COUNT = " + _callCount);
     if (solutions.size() == 1) {
       return new SolutionResult<>(SolutionType.UNIQUE, solutions.iterator().next(), timing);
     }
@@ -51,11 +46,9 @@ public class PuzzleSolver<T extends Comparable<T>> {
       }
       final Cell<T> cellToGuess = findCellToGuess(puzzle);
       for (T candidateValue : cellToGuess.getCurrentValues()) {
-        _callCount++;
         Puzzle<T> copy = puzzle.deepCopy();
         Cell<T> cell = copy.getCell(cellToGuess.getCoord());
         cell.fixValue(candidateValue);
-        checkForCellsToSetSolved(Collections.singleton(cell), copy);
         solve(copy, solutions);
       }
     }
@@ -88,14 +81,14 @@ public class PuzzleSolver<T extends Comparable<T>> {
   }
 
   private boolean elim(final Puzzle<T> puzzle) {
-    boolean cellSolveChanged = checkForCellsToSetSolved(puzzle.getAllCells(), puzzle);
-    boolean restrictSolveChanged = solveOnRestrictions(puzzle.getAllRestrictions(), puzzle);
+    boolean cellSolveChanged = checkForCellsToSetSolved(puzzle);
+    boolean restrictSolveChanged = solveOnRestrictions(puzzle);
     return cellSolveChanged || restrictSolveChanged;
   }
 
-  private boolean checkForCellsToSetSolved(final Collection<Cell<T>> cells, final Puzzle<T> puzzle) {
+  private boolean checkForCellsToSetSolved(final Puzzle<T> puzzle) {
     boolean changed = false;
-    for (Cell<T> cell : cells) {
+    for (Cell<T> cell : puzzle.getAllCells()) {
       if (cell.isUnsolveable()) {
         return false;
       }
@@ -107,9 +100,9 @@ public class PuzzleSolver<T extends Comparable<T>> {
     return changed;
   }
 
-  private boolean solveOnRestrictions(final Collection<Restriction<T>> restrictions, final Puzzle<T> puzzle) {
+  private boolean solveOnRestrictions(final Puzzle<T> puzzle) {
     boolean changed = false;
-    for (Restriction<T> restriction : restrictions) {
+    for (Restriction<T> restriction : puzzle.getAllRestrictions()) {
       if (restriction.eliminateValues(puzzle)) {
         changed = true;
       }

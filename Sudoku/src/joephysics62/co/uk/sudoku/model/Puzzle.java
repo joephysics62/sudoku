@@ -7,7 +7,7 @@ import joephysics62.co.uk.sudoku.constraints.Restriction;
 
 public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
 
-  Collection<Restriction<T>> getAllRestrictions();
+  Set<Restriction<T>> getAllRestrictions();
 
   Set<Restriction<T>> getRestrictions(Coord coord);
 
