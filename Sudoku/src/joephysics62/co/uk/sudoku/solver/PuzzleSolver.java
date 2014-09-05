@@ -36,21 +36,17 @@ public class PuzzleSolver<T extends Comparable<T>> {
       if (puzzle.isUnsolveable()) {
         return;
       }
-    }
-    if (puzzle.isSolved()) {
-      addAsSolution(puzzle, solutions);
-    }
-    else {
-      if (puzzle.isUnsolveable()) {
+      if (puzzle.isSolved()) {
+        addAsSolution(puzzle, solutions);
         return;
       }
-      final Cell<T> cellToGuess = findCellToGuess(puzzle);
-      for (T candidateValue : cellToGuess.getCurrentValues()) {
-        Puzzle<T> copy = puzzle.deepCopy();
-        Cell<T> cell = copy.getCell(cellToGuess.getCoord());
-        cell.fixValue(candidateValue);
-        solve(copy, solutions);
-      }
+    }
+    final Cell<T> cellToGuess = findCellToGuess(puzzle);
+    for (T candidateValue : cellToGuess.getCurrentValues()) {
+      Puzzle<T> copy = puzzle.deepCopy();
+      Cell<T> cell = copy.getCell(cellToGuess.getCoord());
+      cell.fixValue(candidateValue);
+      solve(copy, solutions);
     }
   }
 

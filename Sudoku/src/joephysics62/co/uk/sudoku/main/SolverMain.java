@@ -31,7 +31,8 @@ public class SolverMain {
       throw new IllegalArgumentException();
     }
     Puzzle<Integer> puzzle = sudokuBuilder.read(input);
-    new PuzzleWriter<>(puzzle).write(System.out);
+    PuzzleWriter puzzleWriter = new PuzzleWriter();
+    puzzleWriter.write(puzzle, System.out);
     PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
     SolutionResult<Integer> result = solver.solve(puzzle);
     if (SolutionType.UNIQUE == result.getType()) {

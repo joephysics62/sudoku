@@ -67,7 +67,7 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   @Override
   public boolean isSolved() {
     for (Cell<T> cell : getAllCells()) {
-      if (!cell.isSolved()) {
+      if (cell.getCurrentValues().size() > 1) {
         return false;
       }
     }
