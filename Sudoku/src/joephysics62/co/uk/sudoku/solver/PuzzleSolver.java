@@ -78,6 +78,9 @@ public class PuzzleSolver<T extends Comparable<T>> {
 
   private void analyticElimination(final Puzzle<T> puzzle) {
     while (recursiveCellSolve(puzzle, puzzle.getAllCoords())) {
+      if (puzzle.isSolved()) {
+        return;
+      }
       solveOnRestrictions(puzzle);
     }
   }
