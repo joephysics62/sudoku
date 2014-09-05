@@ -26,6 +26,11 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
     _inits = old._inits;
   }
 
+  @Override
+  public Collection<Coord> getAllCoords() {
+    return _cells.keySet();
+  }
+
   protected MapBackedPuzzle(Collection<T> inits) {
     _inits = Collections.unmodifiableSet(new LinkedHashSet<>(inits));
   }

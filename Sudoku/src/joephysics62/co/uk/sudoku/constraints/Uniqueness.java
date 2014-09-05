@@ -43,34 +43,39 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     return eliminationHadEffect;
   }
 
-//  private boolean applyOnlyPossibleCellElimination(CellGrid<T> cellGrid) {
-//    boolean hadEffect = false;
-//    for (Coord coord : _group) {
-//      Cell<T> cell = cellGrid.getCell(coord);
-//      if (cell.getCurrentValues().size() == 1) {
-//        continue;
-//      }
-//      final Set<T> cellValues = new LinkedHashSet<>(cell.getCurrentValues());
-//      for (Coord coordInner : _group) {
-//        if (!coordInner.equals(coord)) {
-//          Cell<T> cellInner = cellGrid.getCell(coordInner);
-//          cellValues.removeAll(cellInner.getCurrentValues());
-//        }
-//      }
-//      if (cellValues.size() == 1) {
-//        cell.fixValue(cellValues.iterator().next());
-//        hadEffect = true;
-//      }
-//    }
-//    return hadEffect;
-//  }
+  @Override
+  public Set<Coord> forSolvedCell(CellGrid<T> cellGrid, Cell<T> solvedCell) {
+    return eliminateSolvedValue(solvedCell, cellGrid);
+  }
+
+  private boolean applyOnlyPossibleCellElimination(CellGrid<T> cellGrid) {
+    boolean hadEffect = false;
+    for (Coord coord : _group) {
+      Cell<T> cell = cellGrid.getCell(coord);
+      if (cell.getCurrentValues().size() == 1) {
+        continue;
+      }
+      final Set<T> cellValues = new LinkedHashSet<>(cell.getCurrentValues());
+      for (Coord coordInner : _group) {
+        if (!coordInner.equals(coord)) {
+          Cell<T> cellInner = cellGrid.getCell(coordInner);
+          cellValues.removeAll(cellInner.getCurrentValues());
+        }
+      }
+      if (cellValues.size() == 1) {
+        cell.fixValue(cellValues.iterator().next());
+        hadEffect = true;
+      }
+    }
+    return hadEffect;
+  }
 
   private boolean applyUniquenessToKnownValue(CellGrid<T> cellGrid) {
     boolean changed = false;
     for (Coord coord : _group) {
       final Cell<T> cell = cellGrid.getCell(coord);
       if (cell.isSolved()) {
-        changed |= eliminateSolvedValue(cell, cellGrid);
+        changed |= !eliminateSolvedValue(cell, cellGrid).isEmpty();
       }
     }
     return changed;
@@ -101,20 +106,21 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     return changed;
   }
 
-  private boolean eliminateSolvedValue(Cell<T> cell, CellGrid<T> cellGrid) {
-    boolean changed = false;
-    for (Coord innerCoord : _group) {
-      final Cell<T> cellInner = cellGrid.getCell(innerCoord);
-      if (!cellInner.getCoord().equals(cell.getCoord())) {
+  private Set<Coord> eliminateSolvedValue(Cell<T> cell, CellGrid<T> cellGrid) {
+    final Set<Coord> forElimination = new LinkedHashSet<>();
+    for (Coord otherCoord : _group) {
+      final Cell<T> otherCell = cellGrid.getCell(otherCoord);
+      if (!otherCell.getCoord().equals(cell.getCoord())) {
         T value = cell.getValue();
-        if (null != value) {
-          if (cellInner.remove(value)) {
-            changed = true;
+        if (null != value && !otherCell.isSolved()) {
+          otherCell.remove(value);
+          if (otherCell.canApplyElimination()) {
+            forElimination.add(otherCoord);
           }
         }
       }
     }
-    return changed;
+    return forElimination;
   }
 
 }

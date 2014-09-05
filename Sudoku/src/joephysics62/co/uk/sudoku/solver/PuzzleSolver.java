@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.solver;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -32,14 +33,13 @@ public class PuzzleSolver<T extends Comparable<T>> {
     if (solutions.size() > 1) {
       return;
     }
-    while (elim(puzzle)) {
-      if (puzzle.isUnsolveable()) {
-        return;
-      }
-      if (puzzle.isSolved()) {
-        addAsSolution(puzzle, solutions);
-        return;
-      }
+    analyticElimination(puzzle);
+    if (puzzle.isUnsolveable()) {
+      return;
+    }
+    if (puzzle.isSolved()) {
+      addAsSolution(puzzle, solutions);
+      return;
     }
     final Cell<T> cellToGuess = findCellToGuess(puzzle);
     for (T candidateValue : cellToGuess.getCurrentValues()) {
@@ -76,24 +76,32 @@ public class PuzzleSolver<T extends Comparable<T>> {
     return minCell;
   }
 
-  private boolean elim(final Puzzle<T> puzzle) {
-    boolean cellSolveChanged = checkForCellsToSetSolved(puzzle);
-    boolean restrictSolveChanged = solveOnRestrictions(puzzle);
-    return cellSolveChanged || restrictSolveChanged;
+  private void analyticElimination(final Puzzle<T> puzzle) {
+    while (recursiveCellSolve(puzzle, puzzle.getAllCoords())) {
+      solveOnRestrictions(puzzle);
+    }
   }
 
-  private boolean checkForCellsToSetSolved(final Puzzle<T> puzzle) {
-    boolean changed = false;
-    for (Cell<T> cell : puzzle.getAllCells()) {
-      if (cell.isUnsolveable()) {
-        return false;
-      }
+  private boolean recursiveCellSolve(final Puzzle<T> puzzle, final Collection<Coord> cells) {
+    if (puzzle.isUnsolveable() || puzzle.isSolved()) {
+      return false;
+    }
+    boolean cellsWereSolved = false;
+    Set<Coord> forElimination = new LinkedHashSet<>();
+    for (Coord coord : cells) {
+      final Cell<T> cell = puzzle.getCell(coord);
       if (cell.canApplyElimination()) {
         cell.setSolved();
-        changed = true;
+        cellsWereSolved = true;
+        for (Restriction<T> restriction : puzzle.getRestrictions(cell.getCoord())) {
+          forElimination.addAll(restriction.forSolvedCell(puzzle, cell));
+        }
       }
     }
-    return changed;
+    if (!forElimination.isEmpty()) {
+      recursiveCellSolve(puzzle, forElimination);
+    }
+    return cellsWereSolved;
   }
 
   private boolean solveOnRestrictions(final Puzzle<T> puzzle) {

@@ -26,6 +26,11 @@ public class GreaterThan<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
+  public Set<Coord> forSolvedCell(CellGrid<T> cellGrid, Cell<T> solvedCell) {
+    return Collections.emptySet();
+  }
+
+  @Override
   public boolean eliminateValues(CellGrid<T> cellGrid) {
     boolean changed = false;
     Cell<T> left = cellGrid.getCell(_left);

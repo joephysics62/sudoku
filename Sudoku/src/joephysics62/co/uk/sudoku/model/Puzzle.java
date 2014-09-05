@@ -11,6 +11,8 @@ public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
 
   Set<Restriction<T>> getRestrictions(Coord coord);
 
+  Collection<Coord> getAllCoords();
+
   boolean isSolved();
 
   boolean isUnsolveable();
