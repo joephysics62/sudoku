@@ -17,7 +17,7 @@ public class SolverMain {
   public static void main(final String[] args) throws IOException {
     final File input = new File(args[1]);
     final String type = args[0];
-    PuzzleReader<Integer> sudokuBuilder;
+    PuzzleReader sudokuBuilder;
     if (type.equals("timesMini")) {
       sudokuBuilder = new SudokuReader(2, 3, 6);
     }
@@ -30,11 +30,11 @@ public class SolverMain {
     else {
       throw new IllegalArgumentException();
     }
-    Puzzle<Integer> puzzle = sudokuBuilder.read(input);
+    Puzzle puzzle = sudokuBuilder.read(input);
     PuzzleWriter puzzleWriter = new PuzzleWriter();
     puzzleWriter.write(puzzle, System.out);
-    PuzzleSolver<Integer> solver = new PuzzleSolver<Integer>();
-    SolutionResult<Integer> result = solver.solve(puzzle);
+    PuzzleSolver solver = new PuzzleSolver();
+    SolutionResult result = solver.solve(puzzle);
     if (SolutionType.UNIQUE == result.getType()) {
       System.out.println("Found a unique solution solution(s)");
       result.getSolution().write(System.out);

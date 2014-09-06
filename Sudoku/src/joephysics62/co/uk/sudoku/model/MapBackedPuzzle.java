@@ -11,14 +11,14 @@ import java.util.TreeMap;
 
 import joephysics62.co.uk.sudoku.constraints.Restriction;
 
-public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
-  private final Map<Coord, Set<Restriction<T>>> _constraints = new TreeMap<>();
-  private final Map<Coord, Cell<T>> _cells = new TreeMap<>();
-  private final Set<Restriction<T>> _restrictions = new LinkedHashSet<>();
-  private final Set<T> _inits;
+public class MapBackedPuzzle implements Puzzle {
+  private final Map<Coord, Set<Restriction>> _constraints = new TreeMap<>();
+  private final Map<Coord, Cell> _cells = new TreeMap<>();
+  private final Set<Restriction> _restrictions = new LinkedHashSet<>();
+  private final int _inits;
 
-  private MapBackedPuzzle(MapBackedPuzzle<T> old) {
-    for (Entry<Coord, Cell<T>> entry : old._cells.entrySet()) {
+  private MapBackedPuzzle(MapBackedPuzzle old) {
+    for (Entry<Coord, Cell> entry : old._cells.entrySet()) {
       _cells.put(entry.getKey(), Cell.copyOf(entry.getValue()));
     }
     _constraints.putAll(old._constraints);
@@ -31,48 +31,48 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
     return _cells.keySet();
   }
 
-  protected MapBackedPuzzle(Collection<T> inits) {
-    _inits = Collections.unmodifiableSet(new LinkedHashSet<>(inits));
+  private MapBackedPuzzle(final int inits) {
+    _inits = inits;
   }
 
-  public static <T extends Comparable<T>> MapBackedPuzzle<T> forInits(List<T> inits) {
-    return new MapBackedPuzzle<>(inits);
+  public static MapBackedPuzzle forPossiblesSize(final int possiblesSize) {
+    int inits = (1 << possiblesSize) - 1;
+    return new MapBackedPuzzle(inits);
   }
 
   @Override
-  public final Collection<Cell<T>> getAllCells() {
+  public final Collection<Cell> getAllCells() {
     return _cells.values();
   }
 
-  @Override
-  public Set<T> getInits() {
+  public int getInits() {
     return _inits;
   }
 
   @Override
-  public final Cell<T> getCell(Coord coord) {
+  public final Cell getCell(Coord coord) {
     return _cells.get(coord);
   }
 
   @Override
-  public Puzzle<T> deepCopy() {
-    return new MapBackedPuzzle<T>(this);
+  public Puzzle deepCopy() {
+    return new MapBackedPuzzle(this);
   }
 
   @Override
-  public Set<Restriction<T>> getAllRestrictions() {
+  public Set<Restriction> getAllRestrictions() {
     return _restrictions;
   }
 
   @Override
-  public Set<Restriction<T>> getRestrictions(final Coord coord) {
+  public Set<Restriction> getRestrictions(final Coord coord) {
     return Collections.unmodifiableSet(_constraints.get(coord));
   }
 
   @Override
   public boolean isSolved() {
-    for (Cell<T> cell : getAllCells()) {
-      if (cell.getCurrentValues().size() > 1) {
+    for (Cell cell : getAllCells()) {
+      if (Integer.bitCount(cell.getCurrentValues()) > 1) {
         return false;
       }
     }
@@ -81,8 +81,8 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
 
   @Override
   public boolean isUnsolveable() {
-    for (Cell<T> cell : getAllCells()) {
-      if (cell.isUnsolveable()) {
+    for (Cell cell : getAllCells()) {
+      if (cell.isUnsolvable()) {
         return true;
       }
     }
@@ -92,29 +92,29 @@ public class MapBackedPuzzle<T extends Comparable<T>> implements Puzzle<T> {
   @Override
   public int completeness() {
     int completeness = 0;
-    for (Cell<T> cell : getAllCells()) {
-      completeness += cell.getCurrentValues().size();
+    for (Cell cell : getAllCells()) {
+      completeness += Integer.bitCount(cell.getCurrentValues());
     }
     return completeness;
   }
 
-  public void addConstraint(Restriction<T> restriction) {
+  public void addConstraint(Restriction restriction) {
     _restrictions.add(restriction);
     for (Coord cellCoord : restriction.getCells()) {
       if (!_constraints.containsKey(cellCoord)) {
-        _constraints.put(cellCoord, new LinkedHashSet<Restriction<T>>());
+        _constraints.put(cellCoord, new LinkedHashSet<Restriction>());
       }
       _constraints.get(cellCoord).add(restriction);
     }
   }
 
-  public void addCells(List<List<T>> givenValues) {
+  public void addCells(List<List<Integer>> givenValues) {
     for (int rowIndex = 0; rowIndex < givenValues.size(); rowIndex++) {
-      final List<T> row = givenValues.get(rowIndex);
+      final List<Integer> row = givenValues.get(rowIndex);
       for (int colIndex = 0; colIndex < row.size(); colIndex++) {
-        T value = givenValues.get(rowIndex).get(colIndex);
+        Integer value = givenValues.get(rowIndex).get(colIndex);
         Coord coord = new Coord(rowIndex + 1, colIndex + 1);
-        _cells.put(coord, value == null ? Cell.of(getInits(), coord) : Cell.of(value, coord));
+        _cells.put(coord, value == null ? Cell.unknown(_inits, coord) : Cell.given(value, coord));
       }
     }
   }

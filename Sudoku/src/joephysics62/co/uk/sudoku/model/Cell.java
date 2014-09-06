@@ -1,90 +1,75 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
 
-public class Cell<T extends Comparable<T>> {
-  private final Set<T> _currentValues;
+public class Cell {
+  private int _bitwiseValue;
   private final Coord _identifier;
-  private boolean _isSolved;
+  private boolean _solved = false;
 
-  private Cell(T fixedInitialValue, Coord identifier) {
+  public boolean isSolved() {
+    return _solved;
+  }
+
+  public static boolean isPower2(final int value) {
+    return value != 0 && (value & (value - 1)) == 0;
+  }
+
+  public boolean isUnsolvable() {
+    return _bitwiseValue == 0;
+  }
+
+  private Cell(int initialBitwise, Coord identifier) {
+    _bitwiseValue = initialBitwise;
     _identifier = identifier;
-    _currentValues = Collections.singleton(fixedInitialValue);
   }
 
-  public static <T extends Comparable<T>> Cell<T> of(T givenValue, Coord coord) {
-    return new Cell<T>(givenValue, coord);
+  public static Cell given(int givenValue, Coord coord) {
+    return new Cell(cellValueAsBitwise(givenValue), coord);
   }
 
-  public static <T extends Comparable<T>> Cell<T> of(Set<T> inits, Coord coord) {
-    return new Cell<T>(inits, coord);
+  public static Cell unknown(int inits, Coord coord) {
+    return new Cell(inits, coord);
   }
 
-  public static <T extends Comparable<T>> Cell<T> copyOf(Cell<T> otherCell) {
-    return new Cell<T>(otherCell);
+  public static Cell copyOf(Cell otherCell) {
+    return new Cell(otherCell);
   }
 
-  private Cell(Set<T> inits, Coord identifier) {
-    _identifier = identifier;
-    _currentValues = new TreeSet<>(inits);
-  }
-  private Cell(Cell<T> old) {
+  private Cell(Cell old) {
     _identifier = old._identifier;
-    _currentValues = new TreeSet<>(old._currentValues);
+    _bitwiseValue = old._bitwiseValue;
   }
 
   @Override
   public String toString() {
-    return String.format("Cell(coord=%s,values=%s)", _identifier, _currentValues);
-  }
-
-  public void setSolved() {
-    _isSolved = true;
-  }
-
-  public boolean isSolved() {
-    return _isSolved;
+    return String.format("Cell(coord=%s,values=%s)", _identifier, _bitwiseValue);
   }
 
   public boolean canApplyElimination() {
-    return !isSolved() && _currentValues.size() == 1;
+    return !isSolved() && isPower2(_bitwiseValue);
   }
 
-  public T getValue() {
-    if (_currentValues.size() == 1) {
-      return _currentValues.iterator().next();
-    }
-    else if (_currentValues.isEmpty()) {
-      return null;
-    }
-    throw new UnsupportedOperationException("Cannot get value of an unsolved cell. Id " + _identifier + ". Current values " + _currentValues);
+  public int getCurrentValues() {
+    return _bitwiseValue;
   }
 
-  public boolean isUnsolveable() {
-    return _currentValues.isEmpty();
-  }
-
-  public Set<T> getCurrentValues() {
-    return Collections.unmodifiableSet(_currentValues);
-  }
-
-  public void fixValue(final T value) {
-    if (!_currentValues.contains(value)) {
-      throw new UnsupportedOperationException("Can't fix as " + value);
-    }
-    _currentValues.retainAll(Collections.singleton(value));
+  public void fixValue(final int value) {
+    _bitwiseValue = cellValueAsBitwise(value);
     setSolved();
   }
 
-  public boolean remove(final T value) {
-    return _currentValues.remove(value);
+  public void setSolved() {
+    _solved = true;
   }
 
-  public boolean removeAll(final Collection<T> values) {
-    return _currentValues.removeAll(values);
+  private static int cellValueAsBitwise(final Integer cellValue) {
+    return 1 << (cellValue - 1);
+  }
+
+  public boolean remove(final int cellValue) {
+    final int oldValue = _bitwiseValue;
+    _bitwiseValue = _bitwiseValue & (~cellValue);
+    return oldValue != _bitwiseValue;
   }
 
   public Coord getCoord() {

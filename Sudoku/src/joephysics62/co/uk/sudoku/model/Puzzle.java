@@ -5,11 +5,11 @@ import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.Restriction;
 
-public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
+public interface Puzzle extends CellGrid {
 
-  Set<Restriction<T>> getAllRestrictions();
+  Set<Restriction> getAllRestrictions();
 
-  Set<Restriction<T>> getRestrictions(Coord coord);
+  Set<Restriction> getRestrictions(Coord coord);
 
   Collection<Coord> getAllCoords();
 
@@ -19,8 +19,8 @@ public interface Puzzle<T extends Comparable<T>> extends CellGrid<T> {
 
   int completeness();
 
-  Puzzle<T> deepCopy();
+  Puzzle deepCopy();
 
-  Collection<Cell<T>> getAllCells();
+  Collection<Cell> getAllCells();
 
 }

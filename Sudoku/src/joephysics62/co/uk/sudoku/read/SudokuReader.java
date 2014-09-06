@@ -13,7 +13,7 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class SudokuReader implements PuzzleReader<Integer> {
+public class SudokuReader implements PuzzleReader {
   private final int _subTableHeight;
   private final int _subTableWidth;
   private final int _outerSize;
@@ -35,7 +35,7 @@ public class SudokuReader implements PuzzleReader<Integer> {
   }
 
   @Override
-  public Puzzle<Integer> read(final File file) throws IOException {
+  public Puzzle read(final File file) throws IOException {
     List<List<Integer>> tableInts = _tableValueParser.parse(file);
     if (tableInts.size() != _outerSize) {
       throw new IllegalArgumentException("Error: number of rows is " + tableInts.size() + " but inits size is " + _outerSize);
@@ -46,22 +46,18 @@ public class SudokuReader implements PuzzleReader<Integer> {
         wholePuzzle[row][col] = new Coord(row + 1, col + 1);
       }
     }
-    List<Integer> inits = new ArrayList<>();
-    for (int i = 1; i <= _outerSize; i++) {
-      inits.add(i);
-    }
-    MapBackedPuzzle<Integer> sudoku = MapBackedPuzzle.forInits(inits);
+    MapBackedPuzzle sudoku = MapBackedPuzzle.forPossiblesSize(_outerSize);
     sudoku.addCells(tableInts);
 
     for (Coord[] rowArray : wholePuzzle) {
-      sudoku.addConstraint(Uniqueness.<Integer>of(Arrays.asList(rowArray)));
+      sudoku.addConstraint(Uniqueness.of(Arrays.asList(rowArray)));
     }
-    for (int col = 0; col < inits.size(); col++) {
+    for (int col = 0; col < _outerSize; col++) {
       List<Coord> colCells = new ArrayList<>();
-      for (int row = 0; row < inits.size(); row++) {
+      for (int row = 0; row < _outerSize; row++) {
         colCells.add(wholePuzzle[row][col]);
       }
-      sudoku.addConstraint(Uniqueness.<Integer>of(colCells));
+      sudoku.addConstraint(Uniqueness.of(colCells));
     }
     for (int i = 0; i < _outerSize / _subTableHeight; i++) {
       for (int j = 0; j < _outerSize / _subTableWidth; j++) {
@@ -73,7 +69,7 @@ public class SudokuReader implements PuzzleReader<Integer> {
             subTableCells.add(wholePuzzle[row][col]);
           }
         }
-        sudoku.addConstraint(Uniqueness.<Integer>of(subTableCells));
+        sudoku.addConstraint(Uniqueness.of(subTableCells));
       }
     }
     return sudoku;

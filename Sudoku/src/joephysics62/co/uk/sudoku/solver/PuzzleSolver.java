@@ -10,26 +10,27 @@ import joephysics62.co.uk.sudoku.constraints.Restriction;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
-public class PuzzleSolver<T extends Comparable<T>> {
+public class PuzzleSolver {
 
-  public SolutionResult<T> solve(final Puzzle<T> puzzle) {
-    final Set<SolvedPuzzle<T>> solutions = new LinkedHashSet<>();
+  public SolutionResult solve(final Puzzle puzzle) {
+    final Set<SolvedPuzzle> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
     solve(puzzle, solutions);
     final long timing = System.currentTimeMillis() - start;
     if (solutions.size() == 1) {
-      return new SolutionResult<>(SolutionType.UNIQUE, solutions.iterator().next(), timing);
+      return new SolutionResult(SolutionType.UNIQUE, solutions.iterator().next(), timing);
     }
     else if (solutions.size() > 1) {
-      return new SolutionResult<>(SolutionType.MULTIPLE, solutions.iterator().next(), timing);
+      return new SolutionResult(SolutionType.MULTIPLE, solutions.iterator().next(), timing);
     }
     else {
-      return new SolutionResult<>(SolutionType.NONE, null, timing);
+      return new SolutionResult(SolutionType.NONE, null, timing);
     }
   }
 
-  private void solve(final Puzzle<T> puzzle, final Set<SolvedPuzzle<T>> solutions) {
+  private void solve(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
     if (solutions.size() > 1) {
       return;
     }
@@ -41,29 +42,32 @@ public class PuzzleSolver<T extends Comparable<T>> {
       addAsSolution(puzzle, solutions);
       return;
     }
-    final Cell<T> cellToGuess = findCellToGuess(puzzle);
-    for (T candidateValue : cellToGuess.getCurrentValues()) {
-      Puzzle<T> copy = puzzle.deepCopy();
-      Cell<T> cell = copy.getCell(cellToGuess.getCoord());
-      cell.fixValue(candidateValue);
-      solve(copy, solutions);
+    final Cell cellToGuess = findCellToGuess(puzzle);
+    char[] charArray = Integer.toBinaryString(cellToGuess.getCurrentValues()).toCharArray();
+    for (int i = 1; i <= charArray.length; i++) {
+      if ('1' == charArray[charArray.length - i]) {
+        Puzzle copy = puzzle.deepCopy();
+        Cell cell = copy.getCell(cellToGuess.getCoord());
+        cell.fixValue(i);
+        solve(copy, solutions);
+      }
     }
   }
 
-  private void addAsSolution(final Puzzle<T> puzzle, final Set<SolvedPuzzle<T>> solutions) {
-    final Map<Coord, T> solutionMap = new LinkedHashMap<>();
-    for (Cell<T> cell : puzzle.getAllCells()) {
-      solutionMap.put(cell.getCoord(), cell.getValue());
+  private void addAsSolution(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
+    final Map<Coord, Integer> solutionMap = new LinkedHashMap<>();
+    for (Cell cell : puzzle.getAllCells()) {
+      solutionMap.put(cell.getCoord(), PuzzleWriter.convertToNiceValue(cell));
     }
-    solutions.add(new SolvedPuzzle<T>(solutionMap));
+    solutions.add(new SolvedPuzzle(solutionMap));
   }
 
-  private Cell<T> findCellToGuess(final Puzzle<T> puzzle) {
+  private Cell findCellToGuess(final Puzzle puzzle) {
     int minPossibles = Integer.MAX_VALUE;
-    Cell<T> minCell = null;
-    for (Cell<T> cell : puzzle.getAllCells()) {
+    Cell minCell = null;
+    for (Cell cell : puzzle.getAllCells()) {
       if (!cell.isSolved()) {
-        int possiblesSize = cell.getCurrentValues().size();
+        int possiblesSize = Integer.bitCount(cell.getCurrentValues());
         if (possiblesSize == 2) {
           return cell;
         }
@@ -76,7 +80,7 @@ public class PuzzleSolver<T extends Comparable<T>> {
     return minCell;
   }
 
-  private void analyticElimination(final Puzzle<T> puzzle) {
+  private void analyticElimination(final Puzzle puzzle) {
     while (recursiveCellSolve(puzzle, puzzle.getAllCoords())) {
       if (puzzle.isSolved()) {
         return;
@@ -85,18 +89,18 @@ public class PuzzleSolver<T extends Comparable<T>> {
     }
   }
 
-  private boolean recursiveCellSolve(final Puzzle<T> puzzle, final Collection<Coord> cells) {
+  private boolean recursiveCellSolve(final Puzzle puzzle, final Collection<Coord> cells) {
     if (puzzle.isUnsolveable() || puzzle.isSolved()) {
       return false;
     }
     boolean cellsWereSolved = false;
     Set<Coord> forElimination = new LinkedHashSet<>();
     for (Coord coord : cells) {
-      final Cell<T> cell = puzzle.getCell(coord);
+      final Cell cell = puzzle.getCell(coord);
       if (cell.canApplyElimination()) {
         cell.setSolved();
         cellsWereSolved = true;
-        for (Restriction<T> restriction : puzzle.getRestrictions(cell.getCoord())) {
+        for (Restriction restriction : puzzle.getRestrictions(cell.getCoord())) {
           forElimination.addAll(restriction.forSolvedCell(puzzle, cell));
         }
       }
@@ -107,9 +111,9 @@ public class PuzzleSolver<T extends Comparable<T>> {
     return cellsWereSolved;
   }
 
-  private boolean solveOnRestrictions(final Puzzle<T> puzzle) {
+  private boolean solveOnRestrictions(final Puzzle puzzle) {
     boolean changed = false;
-    for (Restriction<T> restriction : puzzle.getAllRestrictions()) {
+    for (Restriction restriction : puzzle.getAllRestrictions()) {
       if (restriction.eliminateValues(puzzle)) {
         changed = true;
       }

@@ -8,18 +8,18 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleWriter {
 
-  public <T extends Comparable<T>> void write(Puzzle<T> puzzle, PrintStream out) {
+  public void write(Puzzle puzzle, PrintStream out) {
     int maxRow = 0;
     int maxCol = 0;
-    for (Cell<T> cell : puzzle.getAllCells()) {
+    for (Cell cell : puzzle.getAllCells()) {
       final Coord coord = cell.getCoord();
       maxRow = Math.max(coord.getRow(), maxRow);
       maxCol = Math.max(coord.getCol(), maxCol);
     }
     Object[][] array = new Object[maxRow][maxCol];
-    for (Cell<T> cell : puzzle.getAllCells()) {
+    for (Cell cell : puzzle.getAllCells()) {
       final Coord coord = cell.getCoord();
-      array[coord.getRow() - 1][coord.getCol() - 1] = cell.getCurrentValues().size() == 1 ? cell.getValue() : null;
+      array[coord.getRow() - 1][coord.getCol() - 1] = convertToNiceValue(cell);
     }
     for (int i = 0; i < maxRow; i++) {
       for (int j = 0; j < maxCol; j++) {
@@ -32,5 +32,15 @@ public class PuzzleWriter {
       out.println();
     }
     out.println();
+  }
+
+  public static Integer convertToNiceValue(Cell cell) {
+    int currentValues = cell.getCurrentValues();
+    if (Integer.bitCount(currentValues) == 1) {
+      return Integer.numberOfTrailingZeros(currentValues) + 1;
+    }
+    else {
+      return null;
+    }
   }
 }

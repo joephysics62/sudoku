@@ -15,7 +15,7 @@ import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGrid;
 import joephysics62.co.uk.sudoku.model.Coord;
 
-public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
+public class Uniqueness implements Restriction {
 
   private static final List<Integer> AB_ELIMINATION_SIZES = Arrays.asList(2, 3);
 
@@ -25,8 +25,8 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     _group = Collections.unmodifiableSet(group);
   }
 
-  public static <T extends Comparable<T>> Uniqueness<T> of(Collection<Coord> group) {
-    return new Uniqueness<T>(new TreeSet<>(group));
+  public static Uniqueness of(Collection<Coord> group) {
+    return new Uniqueness(new TreeSet<>(group));
   }
 
   @Override
@@ -35,7 +35,7 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
-  public boolean eliminateValues(CellGrid<T> cellGrid) {
+  public boolean eliminateValues(CellGrid cellGrid) {
     boolean eliminationHadEffect = false;
     //eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
     eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
@@ -44,36 +44,36 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
   }
 
   @Override
-  public Set<Coord> forSolvedCell(CellGrid<T> cellGrid, Cell<T> solvedCell) {
+  public Set<Coord> forSolvedCell(CellGrid cellGrid, Cell solvedCell) {
     return eliminateSolvedValue(solvedCell, cellGrid);
   }
 
-  private boolean applyOnlyPossibleCellElimination(CellGrid<T> cellGrid) {
+  private boolean applyOnlyPossibleCellElimination(CellGrid cellGrid) {
     boolean hadEffect = false;
     for (Coord coord : _group) {
-      Cell<T> cell = cellGrid.getCell(coord);
-      if (cell.getCurrentValues().size() == 1) {
+      Cell cell = cellGrid.getCell(coord);
+      if (!cell.isSolved()) {
         continue;
       }
-      final Set<T> cellValues = new LinkedHashSet<>(cell.getCurrentValues());
+      int cellValues = cell.getCurrentValues();
       for (Coord coordInner : _group) {
         if (!coordInner.equals(coord)) {
-          Cell<T> cellInner = cellGrid.getCell(coordInner);
-          cellValues.removeAll(cellInner.getCurrentValues());
+          Cell cellInner = cellGrid.getCell(coordInner);
+          cellValues = cellValues & (~cellInner.getCurrentValues());
         }
       }
-      if (cellValues.size() == 1) {
-        cell.fixValue(cellValues.iterator().next());
+      if (Cell.isPower2(cellValues)) {
+        cell.fixValue(cellValues);
         hadEffect = true;
       }
     }
     return hadEffect;
   }
 
-  private boolean applyUniquenessToKnownValue(CellGrid<T> cellGrid) {
+  private boolean applyUniquenessToKnownValue(CellGrid cellGrid) {
     boolean changed = false;
     for (Coord coord : _group) {
-      final Cell<T> cell = cellGrid.getCell(coord);
+      final Cell cell = cellGrid.getCell(coord);
       if (cell.isSolved()) {
         changed |= !eliminateSolvedValue(cell, cellGrid).isEmpty();
       }
@@ -81,23 +81,23 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     return changed;
   }
 
-  private boolean doABElimination(CellGrid<T> cellGrid) {
-    Map<Set<T>, Set<Cell<T>>> abEliminationMap = new LinkedHashMap<>();
+  private boolean doABElimination(CellGrid cellGrid) {
+    Map<Integer, Set<Cell>> abEliminationMap = new LinkedHashMap<>();
     boolean changed = false;
     for (Coord coord : _group) {
-      final Cell<T> cell = cellGrid.getCell(coord);
+      final Cell cell = cellGrid.getCell(coord);
       if (!abEliminationMap.containsKey(cell.getCurrentValues())) {
-        abEliminationMap.put(cell.getCurrentValues(), new LinkedHashSet<Cell<T>>());
+        abEliminationMap.put(cell.getCurrentValues(), new LinkedHashSet<Cell>());
       }
       abEliminationMap.get(cell.getCurrentValues()).add(cell);
     }
-    for (Entry<Set<T>, Set<Cell<T>>> entry : abEliminationMap.entrySet()) {
-      Set<Cell<T>> abCells = entry.getValue();
-      Set<T> abValue = entry.getKey();
-      if (AB_ELIMINATION_SIZES.contains(abCells.size()) && abValue.size() == abCells.size()) {
+    for (Entry<Integer, Set<Cell>> entry : abEliminationMap.entrySet()) {
+      Set<Cell> abCells = entry.getValue();
+      Integer abValue = entry.getKey();
+      if (AB_ELIMINATION_SIZES.contains(abCells.size()) && Integer.bitCount(abValue) == abCells.size()) {
         for (Coord coord : _group) {
-          final Cell<T> cell = cellGrid.getCell(coord);
-          if (!abCells.contains(cell) && cell.removeAll(abValue)) {
+          final Cell cell = cellGrid.getCell(coord);
+          if (!abCells.contains(cell) && cell.remove(abValue)) {
             changed = true;
           }
         }
@@ -106,14 +106,14 @@ public class Uniqueness<T extends Comparable<T>> implements Restriction<T> {
     return changed;
   }
 
-  private Set<Coord> eliminateSolvedValue(Cell<T> cell, CellGrid<T> cellGrid) {
+  private Set<Coord> eliminateSolvedValue(Cell cell, CellGrid cellGrid) {
     final Set<Coord> forElimination = new LinkedHashSet<>();
     for (Coord otherCoord : _group) {
-      final Cell<T> otherCell = cellGrid.getCell(otherCoord);
+      final Cell otherCell = cellGrid.getCell(otherCoord);
       if (!otherCell.getCoord().equals(cell.getCoord())) {
-        T value = cell.getValue();
-        if (null != value && !otherCell.isSolved()) {
-          otherCell.remove(value);
+        final int values = cell.getCurrentValues();
+        if (Cell.isPower2(values) && !otherCell.isSolved()) {
+          otherCell.remove(values);
           if (otherCell.canApplyElimination()) {
             forElimination.add(otherCoord);
           }

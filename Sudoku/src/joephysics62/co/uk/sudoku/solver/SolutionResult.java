@@ -1,12 +1,12 @@
 package joephysics62.co.uk.sudoku.solver;
 
-public class SolutionResult<T extends Comparable<T>> {
+public class SolutionResult {
 
   private final SolutionType _type;
-  private final SolvedPuzzle<T> _solution;
+  private final SolvedPuzzle _solution;
   private final long _timing;
 
-  public SolutionResult(SolutionType type, SolvedPuzzle<T> solution, final long timing) {
+  public SolutionResult(SolutionType type, SolvedPuzzle solution, final long timing) {
     _type = type;
     _solution = solution;
     _timing = timing;
@@ -15,7 +15,7 @@ public class SolutionResult<T extends Comparable<T>> {
   public SolutionType getType() {
     return _type;
   }
-  public SolvedPuzzle<T> getSolution() {
+  public SolvedPuzzle getSolution() {
     return _solution;
   }
   public long getTiming() {
