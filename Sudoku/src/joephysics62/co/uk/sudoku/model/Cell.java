@@ -2,7 +2,7 @@ package joephysics62.co.uk.sudoku.model;
 
 public class Cell {
 
-  public static boolean isPower2(final int value) {
+  public static boolean isSolved(final int value) {
     return value != 0 && (value & (value - 1)) == 0;
   }
 

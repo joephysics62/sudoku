@@ -74,7 +74,7 @@ public class Uniqueness implements Restriction {
     boolean changed = false;
     for (Coord coord : _group) {
       final int value = cellGrid.getCellValue(coord);
-      if (Integer.bitCount(value) == 1) {
+      if (Cell.isSolved(value)) {
         changed |= !eliminateSolvedValue(value, cellGrid).isEmpty();
       }
     }
@@ -111,7 +111,7 @@ public class Uniqueness implements Restriction {
   }
 
   private Set<Coord> eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
-    assert Cell.isPower2(solvedValue);
+    assert Cell.isSolved(solvedValue);
     final Set<Coord> forElimination = new LinkedHashSet<>();
     boolean seenSame = false;
     for (Coord otherCoord : _group) {

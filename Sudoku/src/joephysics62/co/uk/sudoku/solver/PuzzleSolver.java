@@ -73,7 +73,7 @@ public class PuzzleSolver {
     for (int[] row : puzzle.getAllCells()) {
       int colNum = 1;
       for (int value : row) {
-        if (Integer.bitCount(value) != 1) {
+        if (!Cell.isSolved(value)) {
           int possiblesSize = Integer.bitCount(value);
           if (possiblesSize == 2) {
             return new Coord(rowNum, colNum);
@@ -124,7 +124,7 @@ public class PuzzleSolver {
   }
 
   private void doStuff(final Puzzle puzzle, final Set<Coord> forElimination, int value, Coord coord) {
-    if (Integer.bitCount(value) == 1) {
+    if (Cell.isSolved(value)) {
       for (Restriction restriction : puzzle.getRestrictions(coord)) {
         forElimination.addAll(restriction.forSolvedCell(puzzle, value));
       }

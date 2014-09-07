@@ -2,6 +2,7 @@ package joephysics62.co.uk.sudoku.write;
 
 import java.io.PrintStream;
 
+import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleWriter {
@@ -11,7 +12,7 @@ public class PuzzleWriter {
     for (int[] row: allCells) {
       out.print("|");
       for (int value : row) {
-        out.print(Integer.bitCount(value) == 1 ? convertToNiceValue(value) : "-");
+        out.print(Cell.isSolved(value) ? convertToNiceValue(value) : "-");
         out.print("|");
       }
       out.println();
@@ -20,7 +21,7 @@ public class PuzzleWriter {
   }
 
   public static Integer convertToNiceValue(int bitwiseValue) {
-    if (Integer.bitCount(bitwiseValue) == 1) {
+    if (Cell.isSolved(bitwiseValue)) {
       return Integer.numberOfTrailingZeros(bitwiseValue) + 1;
     }
     else {

@@ -81,7 +81,7 @@ public class MapBackedPuzzle implements Puzzle {
   public boolean isSolved() {
     for (int[] cell : _cells) {
       for (int value : cell) {
-        if (Integer.bitCount(value) > 1) {
+        if (!Cell.isSolved(value)) {
           return false;
         }
       }
