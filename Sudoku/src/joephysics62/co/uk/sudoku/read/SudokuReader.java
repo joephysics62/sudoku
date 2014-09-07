@@ -17,28 +17,20 @@ public class SudokuReader implements PuzzleReader {
   private final int _subTableHeight;
   private final int _subTableWidth;
   private final int _outerSize;
-  private TableValueParser<Integer> _tableValueParser;
+  private final TableValueParser _tableValueParser;
 
   public SudokuReader(final int subTableHeight, final int subTableWidth, final int outerSize) {
     _subTableHeight = subTableHeight;
     _subTableWidth = subTableWidth;
     _outerSize = outerSize;
-    _tableValueParser = new TableValueParser<>(outerSize, new CellValueReader<Integer>() {
-      @Override
-      public Integer parseCellValue(String value) {
-        if (value.isEmpty()) {
-          return null;
-        }
-        return Integer.valueOf(value);
-      }
-    });
+    _tableValueParser = new TableValueParser(outerSize);
   }
 
   @Override
   public Puzzle read(final File file) throws IOException {
-    List<List<Integer>> tableInts = _tableValueParser.parse(file);
-    if (tableInts.size() != _outerSize) {
-      throw new IllegalArgumentException("Error: number of rows is " + tableInts.size() + " but inits size is " + _outerSize);
+    Integer[][] tableInts = _tableValueParser.parse(file);
+    if (tableInts.length != _outerSize) {
+      throw new IllegalArgumentException("Error: number of rows is " + tableInts.length + " but inits size is " + _outerSize);
     }
     final Coord[][] wholePuzzle = new Coord[_outerSize][_outerSize];
     for (int row = 0; row < _outerSize; row++) {

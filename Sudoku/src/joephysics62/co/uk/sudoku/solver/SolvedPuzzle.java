@@ -1,43 +1,25 @@
 package joephysics62.co.uk.sudoku.solver;
 
 import java.io.PrintStream;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import joephysics62.co.uk.sudoku.model.Coord;
 
 public class SolvedPuzzle {
-  private final Map<Coord, Integer> _valueMap;
+  private final int[][] _table;
 
-  public SolvedPuzzle(final Map<Coord, Integer> valueMap) {
-    _valueMap = valueMap;
+  public SolvedPuzzle(final int[][] table) {
+    _table = table;
   }
 
-  public Integer getValue(final Coord cellId) {
-    return _valueMap.get(cellId);
+  public int getValue(final Coord cellId) {
+    return _table[cellId.getRow() - 1][cellId.getCol() - 1];
   }
 
   public void write(PrintStream out) {
-    int maxRow = 0;
-    int maxCol = 0;
-    Set<Coord> keySet = _valueMap.keySet();
-    for (Coord coord : keySet) {
-      maxRow = Math.max(coord.getRow(), maxRow);
-      maxCol = Math.max(coord.getCol(), maxCol);
-    }
-    Object[][] array = new Object[maxRow][maxCol];
-    for (Entry<Coord, Integer> entry : _valueMap.entrySet()) {
-      Coord coord = entry.getKey();
-      array[coord.getRow() - 1][coord.getCol() - 1] = entry.getValue();
-    }
-    for (int i = 0; i < maxRow; i++) {
-      for (int j = 0; j < maxCol; j++) {
-        if (j == 0) {
-          out.print("|");
-        }
-        Object value = array[i][j];
-        out.print(value == null ? " " : value + "|");
+    for (int[] row : _table) {
+      out.print("|");
+      for (int value : row) {
+        out.print(value + "|");
       }
       out.println("");
     }

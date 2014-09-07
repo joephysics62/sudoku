@@ -24,22 +24,25 @@ public class GreaterThan implements Restriction {
   }
 
   @Override
-  public Set<Coord> forSolvedCell(CellGrid cellGrid, Cell solvedCell) {
+  public Set<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
     return Collections.emptySet();
   }
 
   @Override
   public boolean eliminateValues(CellGrid cellGrid) {
-    Cell left = cellGrid.getCell(_left);
-    Cell right = cellGrid.getCell(_right);
-    if (left.isUnsolvable() || right.isUnsolvable()) {
+    int left = cellGrid.getCellValue(_left);
+    int right = cellGrid.getCellValue(_right);
+    if (left == 0|| right == 0) {
       return false;
     }
-    int lowestBitRight = Integer.lowestOneBit(right.getCurrentValues());
-    int highestBitLeft = Integer.highestOneBit(left.getCurrentValues());
-    boolean leftRem = left.remove(2 * lowestBitRight - 1);
-    boolean rightRem = right.remove(~(highestBitLeft - 1));
-    return leftRem || rightRem;
+    int lowestBitRight = Integer.lowestOneBit(right);
+    int highestBitLeft = Integer.highestOneBit(left);
+
+    final int newLeft = Cell.remove(left, 2 * lowestBitRight - 1);
+    final int newRight = Cell.remove(right, ~(highestBitLeft - 1));
+    cellGrid.setCellValue(newLeft, _left.getRow(), _left.getCol());
+    cellGrid.setCellValue(newRight, _right.getRow(), _right.getCol());
+    return newLeft != left || newRight != right;
   }
 
   @Override

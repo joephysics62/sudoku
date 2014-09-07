@@ -44,61 +44,65 @@ public class Uniqueness implements Restriction {
   }
 
   @Override
-  public Set<Coord> forSolvedCell(CellGrid cellGrid, Cell solvedCell) {
+  public Set<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
     return eliminateSolvedValue(solvedCell, cellGrid);
   }
 
-  private boolean applyOnlyPossibleCellElimination(CellGrid cellGrid) {
-    boolean hadEffect = false;
-    for (Coord coord : _group) {
-      Cell cell = cellGrid.getCell(coord);
-      if (!cell.isSolved()) {
-        continue;
-      }
-      int cellValues = cell.getCurrentValues();
-      for (Coord coordInner : _group) {
-        if (!coordInner.equals(coord)) {
-          Cell cellInner = cellGrid.getCell(coordInner);
-          cellValues = cellValues & (~cellInner.getCurrentValues());
-        }
-      }
-      if (Cell.isPower2(cellValues)) {
-        cell.fixValue(cellValues);
-        hadEffect = true;
-      }
-    }
-    return hadEffect;
-  }
+//  private boolean applyOnlyPossibleCellElimination(CellGrid cellGrid) {
+//    boolean hadEffect = false;
+//    for (Coord coord : _group) {
+//      Cell cell = cellGrid.getCell(coord);
+//      if (!cell.isSolved()) {
+//        continue;
+//      }
+//      int cellValues = cell.getCurrentValues();
+//      for (Coord coordInner : _group) {
+//        if (!coordInner.equals(coord)) {
+//          Cell cellInner = cellGrid.getCell(coordInner);
+//          cellValues = cellValues & (~cellInner.getCurrentValues());
+//        }
+//      }
+//      if (Cell.isPower2(cellValues)) {
+//        cell.fixValue(cellValues);
+//        hadEffect = true;
+//      }
+//    }
+//    return hadEffect;
+//  }
 
   private boolean applyUniquenessToKnownValue(CellGrid cellGrid) {
     boolean changed = false;
     for (Coord coord : _group) {
-      final Cell cell = cellGrid.getCell(coord);
-      if (cell.isSolved()) {
-        changed |= !eliminateSolvedValue(cell, cellGrid).isEmpty();
+      final int value = cellGrid.getCellValue(coord);
+      if (Integer.bitCount(value) == 1) {
+        changed |= !eliminateSolvedValue(value, cellGrid).isEmpty();
       }
     }
     return changed;
   }
 
   private boolean doABElimination(CellGrid cellGrid) {
-    Map<Integer, Set<Cell>> abEliminationMap = new LinkedHashMap<>();
+    Map<Integer, Set<Coord>> abEliminationMap = new LinkedHashMap<>();
     boolean changed = false;
     for (Coord coord : _group) {
-      final Cell cell = cellGrid.getCell(coord);
-      if (!abEliminationMap.containsKey(cell.getCurrentValues())) {
-        abEliminationMap.put(cell.getCurrentValues(), new LinkedHashSet<Cell>());
+      final int cell = cellGrid.getCellValue(coord);
+      if (!abEliminationMap.containsKey(cell)) {
+        abEliminationMap.put(cell, new LinkedHashSet<Coord>());
       }
-      abEliminationMap.get(cell.getCurrentValues()).add(cell);
+      abEliminationMap.get(cell).add(coord);
     }
-    for (Entry<Integer, Set<Cell>> entry : abEliminationMap.entrySet()) {
-      Set<Cell> abCells = entry.getValue();
+    for (Entry<Integer, Set<Coord>> entry : abEliminationMap.entrySet()) {
+      Set<Coord> abCells = entry.getValue();
       Integer abValue = entry.getKey();
       if (AB_ELIMINATION_SIZES.contains(abCells.size()) && Integer.bitCount(abValue) == abCells.size()) {
         for (Coord coord : _group) {
-          final Cell cell = cellGrid.getCell(coord);
-          if (!abCells.contains(cell) && cell.remove(abValue)) {
-            changed = true;
+          if (!abCells.contains(coord)) {
+            final int cellValue = cellGrid.getCellValue(coord);
+            int newValue = Cell.remove(cellValue, abValue);
+            if (newValue != cellValue) {
+              cellGrid.setCellValue(newValue, coord.getRow(), coord.getCol());
+              changed = true;
+            }
           }
         }
       }
@@ -106,17 +110,20 @@ public class Uniqueness implements Restriction {
     return changed;
   }
 
-  private Set<Coord> eliminateSolvedValue(Cell cell, CellGrid cellGrid) {
+  private Set<Coord> eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
+    assert Cell.isPower2(solvedValue);
     final Set<Coord> forElimination = new LinkedHashSet<>();
+    boolean seenSame = false;
     for (Coord otherCoord : _group) {
-      final Cell otherCell = cellGrid.getCell(otherCoord);
-      if (!otherCell.getCoord().equals(cell.getCoord())) {
-        final int values = cell.getCurrentValues();
-        if (Cell.isPower2(values) && !otherCell.isSolved()) {
-          otherCell.remove(values);
-          if (otherCell.canApplyElimination()) {
-            forElimination.add(otherCoord);
-          }
+      final int otherValue = cellGrid.getCellValue(otherCoord);
+      if (!seenSame && otherValue == solvedValue) {
+        seenSame = true;
+      }
+      else {
+        int newValue = Cell.remove(otherValue, solvedValue);
+        if (newValue != otherValue) {
+          cellGrid.setCellValue(newValue, otherCoord.getRow(), otherCoord.getCol());
+          forElimination.add(otherCoord);
         }
       }
     }

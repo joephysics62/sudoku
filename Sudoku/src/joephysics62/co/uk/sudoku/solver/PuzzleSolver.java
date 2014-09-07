@@ -1,9 +1,7 @@
 package joephysics62.co.uk.sudoku.solver;
 
 import java.util.Collection;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.Restriction;
@@ -42,73 +40,95 @@ public class PuzzleSolver {
       addAsSolution(puzzle, solutions);
       return;
     }
-    final Cell cellToGuess = findCellToGuess(puzzle);
-    char[] charArray = Integer.toBinaryString(cellToGuess.getCurrentValues()).toCharArray();
+    final Coord cellToGuess = findCellToGuess(puzzle);
+    char[] charArray = Integer.toBinaryString(puzzle.getCellValue(cellToGuess)).toCharArray();
     for (int i = 1; i <= charArray.length; i++) {
       if ('1' == charArray[charArray.length - i]) {
         Puzzle copy = puzzle.deepCopy();
-        Cell cell = copy.getCell(cellToGuess.getCoord());
-        cell.fixValue(i);
+        copy.setCellValue(Cell.cellValueAsBitwise(i), cellToGuess.getRow(), cellToGuess.getCol());
         solve(copy, solutions);
       }
     }
   }
 
   private void addAsSolution(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
-    final Map<Coord, Integer> solutionMap = new LinkedHashMap<>();
-    for (Cell cell : puzzle.getAllCells()) {
-      solutionMap.put(cell.getCoord(), PuzzleWriter.convertToNiceValue(cell));
+    final int[][] solutionMap = new int[puzzle.getPuzzleSize()][puzzle.getPuzzleSize()];
+    int[][] allCells = puzzle.getAllCells();
+    int rowIndex = 0;
+    for (int[] row : allCells) {
+      int colIndex = 0;
+      for (int value : row) {
+        solutionMap[rowIndex][colIndex] = PuzzleWriter.convertToNiceValue(value);
+        colIndex++;
+      }
+      rowIndex++;
     }
     solutions.add(new SolvedPuzzle(solutionMap));
   }
 
-  private Cell findCellToGuess(final Puzzle puzzle) {
+  private Coord findCellToGuess(final Puzzle puzzle) {
     int minPossibles = Integer.MAX_VALUE;
-    Cell minCell = null;
-    for (Cell cell : puzzle.getAllCells()) {
-      if (!cell.isSolved()) {
-        int possiblesSize = Integer.bitCount(cell.getCurrentValues());
-        if (possiblesSize == 2) {
-          return cell;
+    Coord minCell = null;
+    int rowNum = 1;
+    for (int[] row : puzzle.getAllCells()) {
+      int colNum = 1;
+      for (int value : row) {
+        if (Integer.bitCount(value) != 1) {
+          int possiblesSize = Integer.bitCount(value);
+          if (possiblesSize == 2) {
+            return new Coord(rowNum, colNum);
+          }
+          else if (possiblesSize < minPossibles) {
+            minPossibles = possiblesSize;
+            minCell = new Coord(rowNum, colNum);
+          }
         }
-        if (possiblesSize < minPossibles) {
-          minPossibles = possiblesSize;
-          minCell = cell;
-        }
+        colNum++;
       }
+      rowNum++;
     }
     return minCell;
   }
 
   private void analyticElimination(final Puzzle puzzle) {
-    while (recursiveCellSolve(puzzle, puzzle.getAllCoords())) {
-      if (puzzle.isSolved()) {
-        return;
-      }
-      solveOnRestrictions(puzzle);
-    }
+    recursiveCellSolve(puzzle, null);
+    solveOnRestrictions(puzzle);
   }
 
-  private boolean recursiveCellSolve(final Puzzle puzzle, final Collection<Coord> cells) {
+  private void recursiveCellSolve(final Puzzle puzzle, final Collection<Coord> cells) {
     if (puzzle.isUnsolveable() || puzzle.isSolved()) {
-      return false;
+      return;
     }
-    boolean cellsWereSolved = false;
-    Set<Coord> forElimination = new LinkedHashSet<>();
-    for (Coord coord : cells) {
-      final Cell cell = puzzle.getCell(coord);
-      if (cell.canApplyElimination()) {
-        cell.setSolved();
-        cellsWereSolved = true;
-        for (Restriction restriction : puzzle.getRestrictions(cell.getCoord())) {
-          forElimination.addAll(restriction.forSolvedCell(puzzle, cell));
+    final Set<Coord> forElimination = new LinkedHashSet<>();
+    if (null == cells) {
+      int rowNum = 1;
+      for (int[] row : puzzle.getAllCells()) {
+        int colNum = 1;
+        for (int value : row) {
+          Coord coord = new Coord(rowNum, colNum);
+          doStuff(puzzle, forElimination, value, coord);
+          colNum++;
         }
+        rowNum++;
+      }
+    }
+    else {
+      for (Coord coord : cells) {
+        final int value = puzzle.getCellValue(coord);
+        doStuff(puzzle, forElimination, value, coord);
       }
     }
     if (!forElimination.isEmpty()) {
       recursiveCellSolve(puzzle, forElimination);
     }
-    return cellsWereSolved;
+  }
+
+  private void doStuff(final Puzzle puzzle, final Set<Coord> forElimination, int value, Coord coord) {
+    if (Integer.bitCount(value) == 1) {
+      for (Restriction restriction : puzzle.getRestrictions(coord)) {
+        forElimination.addAll(restriction.forSolvedCell(puzzle, value));
+      }
+    }
   }
 
   private boolean solveOnRestrictions(final Puzzle puzzle) {

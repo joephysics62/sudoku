@@ -2,6 +2,8 @@ package joephysics62.co.uk.sudoku.model;
 
 public interface CellGrid {
 
-  Cell getCell(Coord coord);
+  int getCellValue(Coord coord);
+
+  void setCellValue(int cellValues, int row, int col);
 
 }

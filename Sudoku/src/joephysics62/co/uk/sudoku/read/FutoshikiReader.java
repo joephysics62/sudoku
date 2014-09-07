@@ -10,7 +10,6 @@ import java.util.List;
 
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.constraints.Uniqueness;
-import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -27,26 +26,25 @@ public class FutoshikiReader implements PuzzleReader {
   public Puzzle read(final File input) throws IOException {
     String[][] stringTable = asTableOfStrings(input);
 
-    final List<Integer> inits = new ArrayList<>();
-    for (int i = 1; i <= _puzzleSize; i++) {
-      inits.add(i);
-    }
     MapBackedPuzzle futoshiki = MapBackedPuzzle.forPossiblesSize(_puzzleSize);
-    List<List<Integer>> givenValues = new ArrayList<>();
+    Integer[][] givenValues = new Integer[_puzzleSize][_puzzleSize];
+    int rowIndex = 0;
     for (String[] row : stringTable) {
-      List<Integer> rowOut = new ArrayList<>();
-      givenValues.add(rowOut);
+      int colIndex = 0;
       for (String cell : row) {
         String intValue = cell.replaceAll("[<>V^]", "").trim();
-        rowOut.add(intValue.isEmpty() ? null : Integer.valueOf(intValue));
+        givenValues[rowIndex][colIndex] = intValue.isEmpty() ? null : Integer.valueOf(intValue);
+        colIndex++;
       }
+      rowIndex++;
     }
     futoshiki.addCells(givenValues);
 
     final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
-    for (Cell cell : futoshiki.getAllCells()) {
-      Coord coord = cell.getCoord();
-      wholePuzzle[coord.getRow() - 1][coord.getCol() - 1] = coord;
+    for (int row = 1; row <= _puzzleSize; row++) {
+      for (int col = 1; col <= _puzzleSize; col++) {
+        wholePuzzle[row - 1][col - 1] = new Coord(row, col);
+      }
     }
     for (Coord[] row : wholePuzzle) {
       futoshiki.addConstraint(Uniqueness.of(Arrays.asList(row)));
