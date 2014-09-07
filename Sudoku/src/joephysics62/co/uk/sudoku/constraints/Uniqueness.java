@@ -1,10 +1,8 @@
 package joephysics62.co.uk.sudoku.constraints;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGrid;
@@ -12,18 +10,18 @@ import joephysics62.co.uk.sudoku.model.Coord;
 
 public class Uniqueness implements Constraint {
 
-  private final Set<Coord> _group;
+  private final List<Coord> _group;
 
-  private Uniqueness(Set<Coord> group) {
-    _group = Collections.unmodifiableSet(group);
+  private Uniqueness(List<Coord> group) {
+    _group = group;
   }
 
   public static Uniqueness of(Collection<Coord> group) {
-    return new Uniqueness(new TreeSet<>(group));
+    return new Uniqueness(new ArrayList<>(group));
   }
 
   @Override
-  public Set<Coord> getCells() {
+  public List<Coord> getCells() {
     return _group;
   }
 
@@ -37,7 +35,7 @@ public class Uniqueness implements Constraint {
   }
 
   @Override
-  public Set<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
+  public List<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
     return eliminateSolvedValue(solvedCell, cellGrid);
   }
 
@@ -106,9 +104,9 @@ public class Uniqueness implements Constraint {
     return false;
   }
 
-  private Set<Coord> eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
+  private List<Coord> eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
     assert Cell.isSolved(solvedValue);
-    final Set<Coord> forElimination = new LinkedHashSet<>();
+    final List<Coord> forElimination = new ArrayList<>();
     boolean seenSame = false;
     for (Coord otherCoord : _group) {
       final int otherValue = cellGrid.getCellValue(otherCoord);

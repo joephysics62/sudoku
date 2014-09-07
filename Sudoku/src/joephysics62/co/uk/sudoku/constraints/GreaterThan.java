@@ -2,8 +2,7 @@ package joephysics62.co.uk.sudoku.constraints;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGrid;
@@ -24,8 +23,8 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public Set<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
-    return Collections.emptySet();
+  public List<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
+    return Collections.emptyList();
   }
 
   @Override
@@ -46,8 +45,8 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public Set<Coord> getCells() {
-    return Collections.unmodifiableSet(new TreeSet<>(Arrays.asList(_left, _right)));
+  public List<Coord> getCells() {
+    return Arrays.asList(_left, _right);
   }
 
 }
