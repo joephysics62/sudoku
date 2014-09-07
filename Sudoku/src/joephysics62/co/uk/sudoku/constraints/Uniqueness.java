@@ -35,7 +35,7 @@ public class Uniqueness implements Constraint {
   }
 
   @Override
-  public List<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
+  public boolean forSolvedCell(CellGrid cellGrid, int solvedCell) {
     return eliminateSolvedValue(solvedCell, cellGrid);
   }
 
@@ -64,7 +64,7 @@ public class Uniqueness implements Constraint {
     for (Coord coord : _group) {
       final int value = cellGrid.getCellValue(coord);
       if (Cell.isSolved(value)) {
-        changed |= !eliminateSolvedValue(value, cellGrid).isEmpty();
+        changed |= !eliminateSolvedValue(value, cellGrid);
       }
     }
     return changed;
@@ -104,9 +104,9 @@ public class Uniqueness implements Constraint {
     return false;
   }
 
-  private List<Coord> eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
+  private boolean eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
     assert Cell.isSolved(solvedValue);
-    final List<Coord> forElimination = new ArrayList<>();
+    boolean hasChanged = false;
     boolean seenSame = false;
     for (Coord otherCoord : _group) {
       final int otherValue = cellGrid.getCellValue(otherCoord);
@@ -117,11 +117,11 @@ public class Uniqueness implements Constraint {
         int newValue = Cell.remove(otherValue, solvedValue);
         if (newValue != otherValue) {
           cellGrid.setCellValue(newValue, otherCoord);
-          forElimination.add(otherCoord);
+          hasChanged = true;
         }
       }
     }
-    return forElimination;
+    return hasChanged;
   }
 
 }

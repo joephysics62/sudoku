@@ -105,9 +105,7 @@ public class PuzzleSolver {
     final int value = puzzle.getCellValue(coord);
     if (Cell.isSolved(value)) {
       for (Constraint restriction : puzzle.getConstraints(coord)) {
-        for (Coord solvedCell : restriction.forSolvedCell(puzzle, value)) {
-          recursiveCellSolve(puzzle, solvedCell);
-        }
+        restriction.forSolvedCell(puzzle, value);
       }
     }
   }

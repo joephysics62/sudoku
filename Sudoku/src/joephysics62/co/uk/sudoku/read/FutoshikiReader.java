@@ -11,7 +11,7 @@ import java.util.List;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
+import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class FutoshikiReader implements PuzzleReader {
@@ -26,7 +26,7 @@ public class FutoshikiReader implements PuzzleReader {
   public Puzzle read(final File input) throws IOException {
     String[][] stringTable = asTableOfStrings(input);
 
-    MapBackedPuzzle futoshiki = MapBackedPuzzle.forPossiblesSize(_puzzleSize);
+    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_puzzleSize);
     Integer[][] givenValues = new Integer[_puzzleSize][_puzzleSize];
     int rowIndex = 0;
     for (String[] row : stringTable) {

@@ -1,7 +1,6 @@
 package joephysics62.co.uk.sudoku.constraints;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import joephysics62.co.uk.sudoku.model.Cell;
@@ -23,8 +22,8 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public List<Coord> forSolvedCell(CellGrid cellGrid, int solvedCell) {
-    return Collections.emptyList();
+  public boolean forSolvedCell(CellGrid cellGrid, int solvedCell) {
+    return false;
   }
 
   @Override

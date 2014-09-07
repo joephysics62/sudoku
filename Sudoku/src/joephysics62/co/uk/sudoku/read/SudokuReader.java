@@ -10,7 +10,7 @@ import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.MapBackedPuzzle;
+import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class SudokuReader implements PuzzleReader {
@@ -38,7 +38,7 @@ public class SudokuReader implements PuzzleReader {
         wholePuzzle[row][col] = new Coord(row + 1, col + 1);
       }
     }
-    MapBackedPuzzle sudoku = MapBackedPuzzle.forPossiblesSize(_outerSize);
+    ArrayPuzzle sudoku = ArrayPuzzle.forPossiblesSize(_outerSize);
     sudoku.addCells(tableInts);
 
     for (Coord[] rowArray : wholePuzzle) {

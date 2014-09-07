@@ -5,7 +5,7 @@ import java.util.List;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 
-public class MapBackedPuzzle implements Puzzle {
+public class ArrayPuzzle implements Puzzle {
   private final ConstraintList[][] _constraintsPerCell;
   private final int[][] _cells;
   private final ConstraintList _allConstraints;
@@ -22,7 +22,7 @@ public class MapBackedPuzzle implements Puzzle {
     // for arrays.
   }
 
-  private MapBackedPuzzle(MapBackedPuzzle old) {
+  private ArrayPuzzle(ArrayPuzzle old) {
     int rows = old._cells.length;
     int cols = old._cells.length;
     _cells = new int[rows][cols];
@@ -45,7 +45,7 @@ public class MapBackedPuzzle implements Puzzle {
     _cells[coord.getRow() - 1][coord.getCol() - 1] = cellValues;
   }
 
-  private MapBackedPuzzle(final int possiblesSize) {
+  private ArrayPuzzle(final int possiblesSize) {
     _possiblesSize = possiblesSize;
     _inits = (1 << possiblesSize) - 1;
     _cells = new int[possiblesSize][possiblesSize];
@@ -53,8 +53,8 @@ public class MapBackedPuzzle implements Puzzle {
     _allConstraints = new ConstraintList();
   }
 
-  public static MapBackedPuzzle forPossiblesSize(final int possiblesSize) {
-    return new MapBackedPuzzle(possiblesSize);
+  public static ArrayPuzzle forPossiblesSize(final int possiblesSize) {
+    return new ArrayPuzzle(possiblesSize);
   }
 
   @Override
@@ -68,7 +68,7 @@ public class MapBackedPuzzle implements Puzzle {
 
   @Override
   public Puzzle deepCopy() {
-    return new MapBackedPuzzle(this);
+    return new ArrayPuzzle(this);
   }
 
   @Override
