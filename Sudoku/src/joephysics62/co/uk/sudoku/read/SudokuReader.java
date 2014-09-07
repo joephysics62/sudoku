@@ -26,7 +26,7 @@ public class SudokuReader implements PuzzleReader {
       throw new IllegalArgumentException("Error: number of rows is " + tableInts.length + " but inits size is " + _outerSize);
     }
     SudokuBuilder builder = new SudokuBuilder(_outerSize, _subTableHeight, _subTableWidth);
-    builder.addCells(tableInts);
+    builder.addGivens(tableInts);
     return builder.build();
   }
 

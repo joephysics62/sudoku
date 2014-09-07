@@ -22,6 +22,32 @@ public class FutoshikiReader implements PuzzleReader {
   @Override
   public Puzzle read(final File input) throws IOException {
     String[][] stringTable = asTableOfStrings(input);
+    Integer[][] givenValues = readGivens(stringTable);
+    FutoshikiBuilder futoshikiBuilder = new FutoshikiBuilder(_puzzleSize);
+    futoshikiBuilder.addGivens(givenValues);
+
+    for (int row = 1; row <= _puzzleSize; row++) {
+      for (int col = 1; col <= _puzzleSize; col++) {
+        String cellString = stringTable[row - 1][col - 1];
+        Coord left = new Coord(row, col);
+        if (cellString.contains(">")) {
+          futoshikiBuilder.addGreaterThan(left, new Coord(row, col + 1));
+        }
+        if (cellString.contains("<")) {
+          futoshikiBuilder.addGreaterThan(left, new Coord(row, col - 1));
+        }
+        if (cellString.contains("V")) {
+          futoshikiBuilder.addGreaterThan(left, new Coord(row + 1, col));
+        }
+        if (cellString.contains("^")) {
+          futoshikiBuilder.addGreaterThan(left, new Coord(row - 1, col));
+        }
+      }
+    }
+    return futoshikiBuilder.build();
+  }
+
+  private Integer[][] readGivens(String[][] stringTable) {
     Integer[][] givenValues = new Integer[_puzzleSize][_puzzleSize];
     int rowIndex = 0;
     for (String[] row : stringTable) {
@@ -33,27 +59,7 @@ public class FutoshikiReader implements PuzzleReader {
       }
       rowIndex++;
     }
-    FutoshikiBuilder futoshikiBuilder = new FutoshikiBuilder(_puzzleSize);
-    futoshikiBuilder.addCells(givenValues);
-
-    for (int row = 0; row < _puzzleSize; row++) {
-      for (int col = 0; col < _puzzleSize; col++) {
-        String cellString = stringTable[row][col];
-        if (cellString.contains(">")) {
-          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row + 1, col + 2));
-        }
-        if (cellString.contains("<")) {
-          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row + 1, col));
-        }
-        if (cellString.contains("V")) {
-          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row + 2, col + 1));
-        }
-        if (cellString.contains("^")) {
-          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row, col + 1));
-        }
-      }
-    }
-    return futoshikiBuilder.build();
+    return givenValues;
   }
 
   private String[][] asTableOfStrings(final File input) throws IOException {

@@ -21,7 +21,7 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
   }
 
   @Override
-  public void addCells(Integer[][] givenCells) {
+  public void addGivens(Integer[][] givenCells) {
     _givenCells = givenCells;
   }
 
