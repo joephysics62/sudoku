@@ -37,8 +37,8 @@ public class Uniqueness implements Restriction {
   @Override
   public boolean eliminateValues(CellGrid cellGrid) {
     boolean eliminationHadEffect = false;
-    //eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
     eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
+    eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
     eliminationHadEffect |= doABElimination(cellGrid);
     return eliminationHadEffect;
   }
@@ -48,27 +48,25 @@ public class Uniqueness implements Restriction {
     return eliminateSolvedValue(solvedCell, cellGrid);
   }
 
-//  private boolean applyOnlyPossibleCellElimination(CellGrid cellGrid) {
-//    boolean hadEffect = false;
-//    for (Coord coord : _group) {
-//      Cell cell = cellGrid.getCell(coord);
-//      if (!cell.isSolved()) {
-//        continue;
-//      }
-//      int cellValues = cell.getCurrentValues();
-//      for (Coord coordInner : _group) {
-//        if (!coordInner.equals(coord)) {
-//          Cell cellInner = cellGrid.getCell(coordInner);
-//          cellValues = cellValues & (~cellInner.getCurrentValues());
-//        }
-//      }
-//      if (Cell.isPower2(cellValues)) {
-//        cell.fixValue(cellValues);
-//        hadEffect = true;
-//      }
-//    }
-//    return hadEffect;
-//  }
+  private boolean applyOnlyPossibleCellElimination(CellGrid cellGrid) {
+    boolean hadEffect = false;
+    for (Coord coord : _group) {
+      int cellValue = cellGrid.getCellValue(coord);
+      if (!Cell.isSolved(cellValue)) {
+        for (Coord coordInner : _group) {
+          int cellValueInner = cellGrid.getCellValue(coordInner);
+          if (!coordInner.equals(coord)) {
+            cellValue = Cell.remove(cellValue, cellValueInner);
+          }
+        }
+      }
+      if (Cell.isSolved(cellValue)) {
+        cellGrid.setCellValue(cellValue, coord);
+        hadEffect = true;
+      }
+    }
+    return hadEffect;
+  }
 
   private boolean applyUniquenessToKnownValue(CellGrid cellGrid) {
     boolean changed = false;
