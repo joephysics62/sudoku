@@ -1,13 +1,8 @@
 package joephysics62.co.uk.sudoku.constraints;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -16,8 +11,6 @@ import joephysics62.co.uk.sudoku.model.CellGrid;
 import joephysics62.co.uk.sudoku.model.Coord;
 
 public class Uniqueness implements Restriction {
-
-  private static final List<Integer> AB_ELIMINATION_SIZES = Arrays.asList(2, 3);
 
   private final Set<Coord> _group;
 
@@ -39,7 +32,7 @@ public class Uniqueness implements Restriction {
     boolean eliminationHadEffect = false;
     eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
     eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
- //   eliminationHadEffect |= doABElimination(cellGrid);
+    eliminationHadEffect |= doABElimination(cellGrid);
     return eliminationHadEffect;
   }
 
@@ -80,32 +73,37 @@ public class Uniqueness implements Restriction {
   }
 
   private boolean doABElimination(CellGrid cellGrid) {
-    Map<Integer, Set<Coord>> abEliminationMap = new LinkedHashMap<>();
     boolean changed = false;
     for (Coord coord : _group) {
-      final int cell = cellGrid.getCellValue(coord);
-      if (!abEliminationMap.containsKey(cell)) {
-        abEliminationMap.put(cell, new LinkedHashSet<Coord>());
-      }
-      abEliminationMap.get(cell).add(coord);
+      changed |= tryABElim(cellGrid, coord);
     }
-    for (Entry<Integer, Set<Coord>> entry : abEliminationMap.entrySet()) {
-      Set<Coord> abCells = entry.getValue();
-      Integer abValue = entry.getKey();
-      if (AB_ELIMINATION_SIZES.contains(abCells.size()) && Integer.bitCount(abValue) == abCells.size()) {
-        for (Coord coord : _group) {
-          if (!abCells.contains(coord)) {
-            final int cellValue = cellGrid.getCellValue(coord);
-            int newValue = Cell.remove(cellValue, abValue);
-            if (newValue != cellValue) {
-              cellGrid.setCellValue(newValue, coord);
-              changed = true;
+    return changed;
+  }
+
+  private boolean tryABElim(CellGrid cellGrid, Coord coord) {
+    final int value = cellGrid.getCellValue(coord);
+    if (Integer.bitCount(value) == 2) {
+      for (Coord innerCoord : _group) {
+        if (!innerCoord.equals(coord)) {
+          int innerValue = cellGrid.getCellValue(innerCoord);
+          if (value == innerValue) {
+            boolean hasEffect = false;
+            for (Coord innerInnerCoord : _group) {
+              if (!innerInnerCoord.equals(innerCoord) && !innerInnerCoord.equals(coord)) {
+                int innerInnerValue = cellGrid.getCellValue(innerInnerCoord);
+                int newValue = Cell.remove(innerInnerValue, value);
+                if (newValue != innerInnerValue) {
+                  cellGrid.setCellValue(newValue, innerInnerCoord);
+                  hasEffect = true;
+                }
+              }
             }
+            return hasEffect;
           }
         }
       }
     }
-    return changed;
+    return false;
   }
 
   private Set<Coord> eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
