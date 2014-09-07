@@ -4,14 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import joephysics62.co.uk.sudoku.constraints.GreaterThan;
-import joephysics62.co.uk.sudoku.constraints.Uniqueness;
+import joephysics62.co.uk.sudoku.builder.FutoshikiBuilder;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class FutoshikiReader implements PuzzleReader {
@@ -25,8 +22,6 @@ public class FutoshikiReader implements PuzzleReader {
   @Override
   public Puzzle read(final File input) throws IOException {
     String[][] stringTable = asTableOfStrings(input);
-
-    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_puzzleSize);
     Integer[][] givenValues = new Integer[_puzzleSize][_puzzleSize];
     int rowIndex = 0;
     for (String[] row : stringTable) {
@@ -38,43 +33,27 @@ public class FutoshikiReader implements PuzzleReader {
       }
       rowIndex++;
     }
-    futoshiki.addCells(givenValues);
+    FutoshikiBuilder futoshikiBuilder = new FutoshikiBuilder(_puzzleSize);
+    futoshikiBuilder.addCells(givenValues);
 
-    final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
-    for (int row = 1; row <= _puzzleSize; row++) {
-      for (int col = 1; col <= _puzzleSize; col++) {
-        wholePuzzle[row - 1][col - 1] = new Coord(row, col);
-      }
-    }
-    for (Coord[] row : wholePuzzle) {
-      futoshiki.addConstraint(Uniqueness.of(Arrays.asList(row)));
-    }
-    for (int col = 0; col < _puzzleSize; col++) {
-      final List<Coord> colCells = new ArrayList<>();
-      for (int row = 0; row < _puzzleSize; row++) {
-        colCells.add(wholePuzzle[row][col]);
-      }
-      futoshiki.addConstraint(Uniqueness.of(colCells));
-    }
     for (int row = 0; row < _puzzleSize; row++) {
       for (int col = 0; col < _puzzleSize; col++) {
         String cellString = stringTable[row][col];
-        final Coord left = wholePuzzle[row][col];
         if (cellString.contains(">")) {
-          futoshiki.addConstraint(GreaterThan.of(left, wholePuzzle[row][col + 1]));
+          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row + 1, col + 2));
         }
         if (cellString.contains("<")) {
-          futoshiki.addConstraint(GreaterThan.of(left, wholePuzzle[row][col - 1]));
+          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row + 1, col));
         }
         if (cellString.contains("V")) {
-          futoshiki.addConstraint(GreaterThan.of(left, wholePuzzle[row + 1][col]));
+          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row + 2, col + 1));
         }
         if (cellString.contains("^")) {
-          futoshiki.addConstraint(GreaterThan.of(left, wholePuzzle[row - 1][col]));
+          futoshikiBuilder.addGreaterThan(new Coord(row + 1, col + 1), new Coord(row, col + 1));
         }
       }
     }
-    return futoshiki;
+    return futoshikiBuilder.build();
   }
 
   private String[][] asTableOfStrings(final File input) throws IOException {
