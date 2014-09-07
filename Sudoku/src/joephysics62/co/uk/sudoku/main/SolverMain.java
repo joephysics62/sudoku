@@ -35,12 +35,18 @@ public class SolverMain {
     puzzleWriter.write(puzzle, System.out);
     PuzzleSolver solver = new PuzzleSolver();
     SolutionResult result = solver.solve(puzzle);
-    if (SolutionType.UNIQUE == result.getType()) {
-      System.out.println("Found a unique solution solution(s)");
-      result.getSolution().write(System.out);
+
+    if (SolutionType.NONE == result.getType()) {
+      System.err.println("No unique solution: " + result.getType());
     }
     else {
-      System.err.println("No unique solution: " + result.getType());
+      if (SolutionType.UNIQUE == result.getType()) {
+        System.out.println("Found a unique solution solution");
+      }
+      else {
+        System.err.println("Found multiple solutions. Example:");
+      }
+      result.getSolution().write(System.out);
     }
     System.out.println(result.getTiming() + " time ms");
   }
