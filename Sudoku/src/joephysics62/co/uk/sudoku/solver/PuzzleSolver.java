@@ -1,6 +1,5 @@
 package joephysics62.co.uk.sudoku.solver;
 
-import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -91,42 +90,24 @@ public class PuzzleSolver {
   }
 
   private void analyticElimination(final Puzzle puzzle) {
-    recursiveCellSolve(puzzle, null);
+    final int[][] allCells = puzzle.getAllCells();
+    for (int rowIndex = 0; rowIndex < allCells.length; rowIndex++) {
+      int[] row = allCells[rowIndex];
+      for (int colIndex = 0; colIndex < row.length; colIndex++) {
+        Coord coord = new Coord(rowIndex + 1, colIndex + 1);
+        recursiveCellSolve(puzzle, coord);
+      }
+    }
     solveOnRestrictions(puzzle);
   }
 
-  private void recursiveCellSolve(final Puzzle puzzle, final Collection<Coord> cells) {
-    if (puzzle.isUnsolveable() || puzzle.isSolved()) {
-      return;
-    }
-    final Set<Coord> forElimination = new LinkedHashSet<>();
-    if (null == cells) {
-      int rowNum = 1;
-      for (int[] row : puzzle.getAllCells()) {
-        int colNum = 1;
-        for (int value : row) {
-          Coord coord = new Coord(rowNum, colNum);
-          doStuff(puzzle, forElimination, value, coord);
-          colNum++;
-        }
-        rowNum++;
-      }
-    }
-    else {
-      for (Coord coord : cells) {
-        final int value = puzzle.getCellValue(coord);
-        doStuff(puzzle, forElimination, value, coord);
-      }
-    }
-    if (!forElimination.isEmpty()) {
-      recursiveCellSolve(puzzle, forElimination);
-    }
-  }
-
-  private void doStuff(final Puzzle puzzle, final Set<Coord> forElimination, int value, Coord coord) {
+  private void recursiveCellSolve(final Puzzle puzzle, final Coord coord) {
+    final int value = puzzle.getCellValue(coord);
     if (Cell.isSolved(value)) {
       for (Restriction restriction : puzzle.getRestrictions(coord)) {
-        forElimination.addAll(restriction.forSolvedCell(puzzle, value));
+        for (Coord solvedCell : restriction.forSolvedCell(puzzle, value)) {
+          recursiveCellSolve(puzzle, solvedCell);
+        }
       }
     }
   }
