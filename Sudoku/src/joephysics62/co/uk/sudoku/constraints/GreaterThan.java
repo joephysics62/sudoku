@@ -9,7 +9,7 @@ import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGrid;
 import joephysics62.co.uk.sudoku.model.Coord;
 
-public class GreaterThan implements Restriction {
+public class GreaterThan implements Constraint {
 
   private final Coord _left;
   private final Coord _right;

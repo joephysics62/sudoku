@@ -10,7 +10,7 @@ import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.CellGrid;
 import joephysics62.co.uk.sudoku.model.Coord;
 
-public class Uniqueness implements Restriction {
+public class Uniqueness implements Constraint {
 
   private final Set<Coord> _group;
 

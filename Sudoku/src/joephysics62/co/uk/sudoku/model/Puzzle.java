@@ -1,14 +1,14 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.util.Set;
+import java.util.List;
 
-import joephysics62.co.uk.sudoku.constraints.Restriction;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public interface Puzzle extends CellGrid {
 
-  Set<Restriction> getAllRestrictions();
+  List<Constraint> getAllConstraints();
 
-  Set<Restriction> getRestrictions(Coord coord);
+  List<Constraint> getConstraints(Coord coord);
 
   boolean isSolved();
 

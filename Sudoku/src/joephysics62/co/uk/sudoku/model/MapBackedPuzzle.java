@@ -1,17 +1,16 @@
 package joephysics62.co.uk.sudoku.model;
 
-import java.util.Collections;
-import java.util.LinkedHashSet;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
-import joephysics62.co.uk.sudoku.constraints.Restriction;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public class MapBackedPuzzle implements Puzzle {
-  private final Map<Coord, Set<Restriction>> _constraints = new TreeMap<>();
+  private final Map<Coord, List<Constraint>> _constraintsPerCell = new HashMap<>();
   private final int[][] _cells;
-  private final Set<Restriction> _restrictions = new LinkedHashSet<>();
+  private final List<Constraint> _allConstraints = new ArrayList<>();
   private final int _inits;
   private final int _possiblesSize;
 
@@ -27,8 +26,8 @@ public class MapBackedPuzzle implements Puzzle {
       _cells[rowIndex] = row.clone();
       rowIndex++;
     }
-    _constraints.putAll(old._constraints);
-    _restrictions.addAll(old._restrictions);
+    _constraintsPerCell.putAll(old._constraintsPerCell);
+    _allConstraints.addAll(old._allConstraints);
     _possiblesSize = old._possiblesSize;
     _inits = old._inits;
   }
@@ -68,13 +67,13 @@ public class MapBackedPuzzle implements Puzzle {
   }
 
   @Override
-  public Set<Restriction> getAllRestrictions() {
-    return _restrictions;
+  public List<Constraint> getAllConstraints() {
+    return _allConstraints;
   }
 
   @Override
-  public Set<Restriction> getRestrictions(final Coord coord) {
-    return Collections.unmodifiableSet(_constraints.get(coord));
+  public List<Constraint> getConstraints(final Coord coord) {
+    return _constraintsPerCell.get(coord);
   }
 
   @Override
@@ -112,13 +111,13 @@ public class MapBackedPuzzle implements Puzzle {
     return completeness;
   }
 
-  public void addConstraint(Restriction restriction) {
-    _restrictions.add(restriction);
-    for (Coord cellCoord : restriction.getCells()) {
-      if (!_constraints.containsKey(cellCoord)) {
-        _constraints.put(cellCoord, new LinkedHashSet<Restriction>());
+  public void addConstraint(Constraint constraint) {
+    _allConstraints.add(constraint);
+    for (Coord cellCoord : constraint.getCells()) {
+      if (!_constraintsPerCell.containsKey(cellCoord)) {
+        _constraintsPerCell.put(cellCoord, new ArrayList<Constraint>());
       }
-      _constraints.get(cellCoord).add(restriction);
+      _constraintsPerCell.get(cellCoord).add(constraint);
     }
   }
 

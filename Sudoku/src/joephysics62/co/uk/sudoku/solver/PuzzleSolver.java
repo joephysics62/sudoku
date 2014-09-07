@@ -3,7 +3,7 @@ package joephysics62.co.uk.sudoku.solver;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import joephysics62.co.uk.sudoku.constraints.Restriction;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -104,7 +104,7 @@ public class PuzzleSolver {
   private void recursiveCellSolve(final Puzzle puzzle, final Coord coord) {
     final int value = puzzle.getCellValue(coord);
     if (Cell.isSolved(value)) {
-      for (Restriction restriction : puzzle.getRestrictions(coord)) {
+      for (Constraint restriction : puzzle.getConstraints(coord)) {
         for (Coord solvedCell : restriction.forSolvedCell(puzzle, value)) {
           recursiveCellSolve(puzzle, solvedCell);
         }
@@ -114,7 +114,7 @@ public class PuzzleSolver {
 
   private boolean solveOnRestrictions(final Puzzle puzzle) {
     boolean changed = false;
-    for (Restriction restriction : puzzle.getAllRestrictions()) {
+    for (Constraint restriction : puzzle.getAllConstraints()) {
       if (restriction.eliminateValues(puzzle)) {
         changed = true;
       }
