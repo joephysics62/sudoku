@@ -13,4 +13,27 @@ public class Cell {
   public static int remove(final int targetValue, final int valueToRemove) {
     return targetValue & (~valueToRemove);
   }
+
+  public static Integer convertToNiceValue(int bitwiseValue) {
+    if (Cell.isSolved(bitwiseValue)) {
+      return Integer.numberOfTrailingZeros(bitwiseValue) + 1;
+    }
+    else {
+      return null;
+    }
+  }
+
+  public static String asString(final int nonBitwiseValue, final int puzzleSize) {
+    if (puzzleSize > 9) {
+      if (nonBitwiseValue > 10) {
+        return Character.toString((char) (nonBitwiseValue + 54));
+      }
+      else {
+        return Integer.toString(nonBitwiseValue - 1);
+      }
+    }
+    else {
+      return Integer.toString(nonBitwiseValue);
+    }
+  }
 }

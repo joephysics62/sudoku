@@ -7,7 +7,6 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class PuzzleSolver {
 
@@ -57,7 +56,7 @@ public class PuzzleSolver {
     for (int[] row : allCells) {
       int colIndex = 0;
       for (int value : row) {
-        solutionMap[rowIndex][colIndex] = PuzzleWriter.convertToNiceValue(value);
+        solutionMap[rowIndex][colIndex] = Cell.convertToNiceValue(value);
         colIndex++;
       }
       rowIndex++;

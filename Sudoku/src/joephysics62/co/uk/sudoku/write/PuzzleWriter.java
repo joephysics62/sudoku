@@ -12,7 +12,7 @@ public class PuzzleWriter {
     for (int[] row: allCells) {
       out.print("|");
       for (int value : row) {
-        out.print(Cell.isSolved(value) ? convertToNiceValue(value) : "-");
+        out.print(Cell.isSolved(value) ? Cell.asString(Cell.convertToNiceValue(value), puzzle.getPuzzleSize()) : "-");
         out.print("|");
       }
       out.println();
@@ -20,12 +20,4 @@ public class PuzzleWriter {
     out.println();
   }
 
-  public static Integer convertToNiceValue(int bitwiseValue) {
-    if (Cell.isSolved(bitwiseValue)) {
-      return Integer.numberOfTrailingZeros(bitwiseValue) + 1;
-    }
-    else {
-      return null;
-    }
-  }
 }

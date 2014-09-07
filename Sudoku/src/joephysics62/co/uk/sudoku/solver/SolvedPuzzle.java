@@ -2,6 +2,7 @@ package joephysics62.co.uk.sudoku.solver;
 
 import java.io.PrintStream;
 
+import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 
 public class SolvedPuzzle {
@@ -19,9 +20,14 @@ public class SolvedPuzzle {
     for (int[] row : _table) {
       out.print("|");
       for (int value : row) {
-        out.print(value + "|");
+        out.print(asString(value) + "|");
       }
-      out.println("");
+      out.println();
     }
+    out.println();
+  }
+
+  private String asString(final int value) {
+    return Cell.asString(value, _table.length);
   }
 }
