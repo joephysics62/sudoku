@@ -13,7 +13,7 @@ public class MapBackedPuzzle implements Puzzle {
   private final int[][] _cells;
   private final Set<Restriction> _restrictions = new LinkedHashSet<>();
   private final int _inits;
-  private int _possiblesSize;
+  private final int _possiblesSize;
 
   @Override
   public int getPuzzleSize() {
@@ -29,6 +29,7 @@ public class MapBackedPuzzle implements Puzzle {
     }
     _constraints.putAll(old._constraints);
     _restrictions.addAll(old._restrictions);
+    _possiblesSize = old._possiblesSize;
     _inits = old._inits;
   }
 
