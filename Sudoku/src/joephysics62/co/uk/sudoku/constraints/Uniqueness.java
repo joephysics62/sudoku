@@ -39,7 +39,7 @@ public class Uniqueness implements Restriction {
     boolean eliminationHadEffect = false;
     eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
     eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
-    eliminationHadEffect |= doABElimination(cellGrid);
+ //   eliminationHadEffect |= doABElimination(cellGrid);
     return eliminationHadEffect;
   }
 
