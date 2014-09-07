@@ -1,16 +1,14 @@
 package joephysics62.co.uk.sudoku.model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public class MapBackedPuzzle implements Puzzle {
-  private final Map<Coord, List<Constraint>> _constraintsPerCell = new HashMap<>();
+  private final ConstraintList[][] _constraintsPerCell;
   private final int[][] _cells;
-  private final List<Constraint> _allConstraints = new ArrayList<>();
+  private final ConstraintList _allConstraints;
   private final int _inits;
   private final int _possiblesSize;
 
@@ -19,15 +17,20 @@ public class MapBackedPuzzle implements Puzzle {
     return _possiblesSize;
   }
 
+  @SuppressWarnings("serial")
+  private static class ConstraintList extends ArrayList<Constraint> {
+    // for arrays.
+  }
+
   private MapBackedPuzzle(MapBackedPuzzle old) {
-    _cells = new int[old._cells.length][old._cells.length];
-    int rowIndex = 0;
-    for (int[] row : old._cells) {
-      _cells[rowIndex] = row.clone();
-      rowIndex++;
+    int rows = old._cells.length;
+    int cols = old._cells.length;
+    _cells = new int[rows][cols];
+    for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
+      _cells[rowIndex] = old._cells[rowIndex].clone();
     }
-    _constraintsPerCell.putAll(old._constraintsPerCell);
-    _allConstraints.addAll(old._allConstraints);
+    _constraintsPerCell = old._constraintsPerCell;
+    _allConstraints = old._allConstraints;
     _possiblesSize = old._possiblesSize;
     _inits = old._inits;
   }
@@ -46,6 +49,8 @@ public class MapBackedPuzzle implements Puzzle {
     _possiblesSize = possiblesSize;
     _inits = (1 << possiblesSize) - 1;
     _cells = new int[possiblesSize][possiblesSize];
+    _constraintsPerCell = new ConstraintList[possiblesSize][possiblesSize];
+    _allConstraints = new ConstraintList();
   }
 
   public static MapBackedPuzzle forPossiblesSize(final int possiblesSize) {
@@ -73,7 +78,7 @@ public class MapBackedPuzzle implements Puzzle {
 
   @Override
   public List<Constraint> getConstraints(final Coord coord) {
-    return _constraintsPerCell.get(coord);
+    return _constraintsPerCell[coord.getRow() - 1][coord.getCol() - 1];
   }
 
   @Override
@@ -114,10 +119,10 @@ public class MapBackedPuzzle implements Puzzle {
   public void addConstraint(Constraint constraint) {
     _allConstraints.add(constraint);
     for (Coord cellCoord : constraint.getCells()) {
-      if (!_constraintsPerCell.containsKey(cellCoord)) {
-        _constraintsPerCell.put(cellCoord, new ArrayList<Constraint>());
+      if (getConstraints(cellCoord) == null) {
+        _constraintsPerCell[cellCoord.getRow() - 1][cellCoord.getCol() - 1] = new ConstraintList();
       }
-      _constraintsPerCell.get(cellCoord).add(constraint);
+      getConstraints(cellCoord).add(constraint);
     }
   }
 
