@@ -100,7 +100,7 @@ public class Uniqueness implements Restriction {
             final int cellValue = cellGrid.getCellValue(coord);
             int newValue = Cell.remove(cellValue, abValue);
             if (newValue != cellValue) {
-              cellGrid.setCellValue(newValue, coord.getRow(), coord.getCol());
+              cellGrid.setCellValue(newValue, coord);
               changed = true;
             }
           }
@@ -122,7 +122,7 @@ public class Uniqueness implements Restriction {
       else {
         int newValue = Cell.remove(otherValue, solvedValue);
         if (newValue != otherValue) {
-          cellGrid.setCellValue(newValue, otherCoord.getRow(), otherCoord.getCol());
+          cellGrid.setCellValue(newValue, otherCoord);
           forElimination.add(otherCoord);
         }
       }

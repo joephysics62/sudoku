@@ -45,7 +45,7 @@ public class PuzzleSolver {
     for (int i = 1; i <= charArray.length; i++) {
       if ('1' == charArray[charArray.length - i]) {
         Puzzle copy = puzzle.deepCopy();
-        copy.setCellValue(Cell.cellValueAsBitwise(i), cellToGuess.getRow(), cellToGuess.getCol());
+        copy.setCellValue(Cell.cellValueAsBitwise(i), cellToGuess);
         solve(copy, solutions);
       }
     }

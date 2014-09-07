@@ -40,8 +40,8 @@ public class GreaterThan implements Restriction {
 
     final int newLeft = Cell.remove(left, 2 * lowestBitRight - 1);
     final int newRight = Cell.remove(right, ~(highestBitLeft - 1));
-    cellGrid.setCellValue(newLeft, _left.getRow(), _left.getCol());
-    cellGrid.setCellValue(newRight, _right.getRow(), _right.getCol());
+    cellGrid.setCellValue(newLeft, _left);
+    cellGrid.setCellValue(newRight, _right);
     return newLeft != left || newRight != right;
   }
 

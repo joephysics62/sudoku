@@ -39,8 +39,8 @@ public class MapBackedPuzzle implements Puzzle {
   }
 
   @Override
-  public void setCellValue(int cellValues, int row, int col) {
-    _cells[row - 1][col - 1] = cellValues;
+  public void setCellValue(int cellValues, Coord coord) {
+    _cells[coord.getRow() - 1][coord.getCol() - 1] = cellValues;
   }
 
   private MapBackedPuzzle(final int possiblesSize) {
