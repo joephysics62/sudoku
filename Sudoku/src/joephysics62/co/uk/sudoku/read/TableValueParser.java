@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 
+import joephysics62.co.uk.sudoku.model.Cell;
+
 
 public class TableValueParser {
 
@@ -24,7 +26,14 @@ public class TableValueParser {
       }
       for (int colNum = 1; colNum < split.length; colNum++) {
         String cellInput = split[colNum].trim();
-        tableInts[rowNum - 1][colNum - 1] = cellInput.isEmpty() ? null : Integer.valueOf(cellInput);
+        Integer intValue;
+        if (cellInput.isEmpty()) {
+          intValue = null;
+        }
+        else {
+          intValue = Cell.fromString(cellInput, _puzzleSize);
+        }
+        tableInts[rowNum - 1][colNum - 1] = intValue;
       }
       rowNum++;
     }

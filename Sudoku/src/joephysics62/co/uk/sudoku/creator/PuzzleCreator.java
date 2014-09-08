@@ -48,7 +48,7 @@ public class PuzzleCreator {
     PuzzleWriter writer = new PuzzleWriter();
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    Puzzle puzzle = creator.create(16, 4, 4);
+    Puzzle puzzle = creator.create(18, 3, 6);
     writer.write(puzzle, System.out);
   }
 

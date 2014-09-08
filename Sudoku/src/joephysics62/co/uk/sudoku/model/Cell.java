@@ -26,6 +26,7 @@ public class Cell {
   public static String asString(final int nonBitwiseValue, final int puzzleSize) {
     if (puzzleSize > 9) {
       if (nonBitwiseValue > 10) {
+        // 65 => A
         return Character.toString((char) (nonBitwiseValue + 54));
       }
       else {
@@ -34,6 +35,24 @@ public class Cell {
     }
     else {
       return Integer.toString(nonBitwiseValue);
+    }
+  }
+
+  public static Integer fromString(final String input, final int puzzleSize) {
+    if (input.isEmpty()) {
+      return null;
+    }
+    if (puzzleSize > 9) {
+      try {
+        return Integer.parseInt(input) + 1;
+      }
+      catch (NumberFormatException e) {
+        int intValue = Character.getNumericValue(input.toCharArray()[0]) + 1;
+        return intValue;
+      }
+    }
+    else {
+      return Integer.parseInt(input);
     }
   }
 }

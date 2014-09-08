@@ -18,20 +18,23 @@ public class SolverMain {
   public static void main(final String[] args) throws IOException {
     final File input = new File(args[1]);
     final String type = args[0];
-    PuzzleReader sudokuBuilder;
+    PuzzleReader puzzleReader;
     if (type.equals("timesMini")) {
-      sudokuBuilder = new SudokuReader(2, 3, 6);
+      puzzleReader = new SudokuReader(2, 3, 6);
     }
     else if (type.equals("classic")) {
-      sudokuBuilder = new SudokuReader(3, 3, 9);
+      puzzleReader = new SudokuReader(3, 3, 9);
     }
     else if (type.equals("futoshiki")) {
-      sudokuBuilder = new FutoshikiReader(5);
+      puzzleReader = new FutoshikiReader(5);
+    }
+    else if (type.equals("super")) {
+      puzzleReader = new SudokuReader(4, 4, 16);
     }
     else {
       throw new IllegalArgumentException();
     }
-    Puzzle puzzle = sudokuBuilder.read(input);
+    Puzzle puzzle = puzzleReader.read(input);
     PuzzleWriter puzzleWriter = new PuzzleWriter();
     puzzleWriter.write(puzzle, System.out);
     PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());
