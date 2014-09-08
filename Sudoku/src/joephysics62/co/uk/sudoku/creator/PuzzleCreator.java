@@ -7,7 +7,6 @@ import java.util.List;
 
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
@@ -20,8 +19,8 @@ public class PuzzleCreator {
     _solver = solver;
   }
 
-  public Puzzle create(final int subTableHeight, final int subTableWidth) {
-    final int puzzleSize = subTableHeight * subTableWidth;
+  public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
+    assert puzzleSize == subTableHeight * subTableWidth || subTableHeight < 0 && subTableWidth < 0;
     SudokuBuilder sudokuBuilder = new SudokuBuilder(puzzleSize, subTableHeight, subTableWidth);
     Integer[][] givens = new Integer[puzzleSize][puzzleSize];
     for (Integer[] row : givens) {
@@ -47,9 +46,9 @@ public class PuzzleCreator {
 
   public static void main(String[] args) {
     PuzzleWriter writer = new PuzzleWriter();
-    PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());
+    PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    Puzzle puzzle = creator.create(4, 4);
+    Puzzle puzzle = creator.create(16, 4, 4);
     writer.write(puzzle, System.out);
   }
 

@@ -7,6 +7,7 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class PuzzleSolver {
 
@@ -17,9 +18,10 @@ public class PuzzleSolver {
   }
 
   public SolutionResult solve(final Puzzle puzzle) {
+    new PuzzleWriter().write(puzzle, System.out);
     final Set<SolvedPuzzle> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
-    solve(puzzle, solutions);
+    solve(puzzle, solutions, 0);
     final long timing = System.currentTimeMillis() - start;
     if (solutions.size() == 1) {
       return new SolutionResult(SolutionType.UNIQUE, solutions.iterator().next(), timing);
@@ -32,7 +34,7 @@ public class PuzzleSolver {
     }
   }
 
-  private void solve(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
+  private void solve(final Puzzle puzzle, final Set<SolvedPuzzle> solutions, int recurseDepth) {
     if (solutions.size() > 1) {
       return;
     }
@@ -50,7 +52,7 @@ public class PuzzleSolver {
       if ('1' == charArray[charArray.length - i]) {
         Puzzle copy = puzzle.deepCopy();
         copy.setCellValue(Cell.cellValueAsBitwise(i), cellToGuess);
-        solve(copy, solutions);
+        solve(copy, solutions, recurseDepth + 1);
       }
     }
   }
