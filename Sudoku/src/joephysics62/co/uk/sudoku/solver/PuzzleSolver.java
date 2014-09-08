@@ -10,6 +10,12 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleSolver {
 
+  private final CellGuessingStrategy _cellGuessingStrategy;
+
+  public PuzzleSolver(CellGuessingStrategy cellGuessingStrategy) {
+    _cellGuessingStrategy = cellGuessingStrategy;
+  }
+
   public SolutionResult solve(final Puzzle puzzle) {
     final Set<SolvedPuzzle> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
@@ -38,7 +44,7 @@ public class PuzzleSolver {
       addAsSolution(puzzle, solutions);
       return;
     }
-    final Coord cellToGuess = findCellToGuess(puzzle);
+    final Coord cellToGuess = _cellGuessingStrategy.cellToGuess(puzzle);
     char[] charArray = Integer.toBinaryString(puzzle.getCellValue(cellToGuess)).toCharArray();
     for (int i = 1; i <= charArray.length; i++) {
       if ('1' == charArray[charArray.length - i]) {
@@ -62,30 +68,6 @@ public class PuzzleSolver {
       rowIndex++;
     }
     solutions.add(new SolvedPuzzle(solutionMap, puzzle.getSubTableHeight(), puzzle.getSubTableWidth()));
-  }
-
-  private Coord findCellToGuess(final Puzzle puzzle) {
-    int minPossibles = Integer.MAX_VALUE;
-    Coord minCell = null;
-    int rowNum = 1;
-    for (int[] row : puzzle.getAllCells()) {
-      int colNum = 1;
-      for (int value : row) {
-        if (!Cell.isSolved(value)) {
-          int possiblesSize = Integer.bitCount(value);
-          if (possiblesSize == 2) {
-            return new Coord(rowNum, colNum);
-          }
-          else if (possiblesSize < minPossibles) {
-            minPossibles = possiblesSize;
-            minCell = new Coord(rowNum, colNum);
-          }
-        }
-        colNum++;
-      }
-      rowNum++;
-    }
-    return minCell;
   }
 
   private void analyticElimination(final Puzzle puzzle) {

@@ -7,6 +7,7 @@ import java.util.List;
 
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
@@ -46,7 +47,7 @@ public class PuzzleCreator {
 
   public static void main(String[] args) {
     PuzzleWriter writer = new PuzzleWriter();
-    PuzzleSolver solver = new PuzzleSolver();
+    PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
     Puzzle puzzle = creator.create(4, 4);
     writer.write(puzzle, System.out);

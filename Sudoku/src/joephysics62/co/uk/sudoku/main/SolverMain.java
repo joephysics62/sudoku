@@ -7,6 +7,7 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.FutoshikiReader;
 import joephysics62.co.uk.sudoku.read.PuzzleReader;
 import joephysics62.co.uk.sudoku.read.SudokuReader;
+import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
@@ -33,7 +34,7 @@ public class SolverMain {
     Puzzle puzzle = sudokuBuilder.read(input);
     PuzzleWriter puzzleWriter = new PuzzleWriter();
     puzzleWriter.write(puzzle, System.out);
-    PuzzleSolver solver = new PuzzleSolver();
+    PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());
     SolutionResult result = solver.solve(puzzle);
 
     if (SolutionType.NONE == result.getType()) {
