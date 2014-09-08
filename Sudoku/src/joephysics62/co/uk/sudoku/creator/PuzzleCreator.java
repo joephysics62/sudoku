@@ -48,7 +48,7 @@ public class PuzzleCreator {
     PuzzleWriter writer = new PuzzleWriter();
     PuzzleSolver solver = new PuzzleSolver();
     PuzzleCreator creator = new PuzzleCreator(solver);
-    Puzzle puzzle = creator.create(4, 3);
+    Puzzle puzzle = creator.create(4, 4);
     writer.write(puzzle, System.out);
   }
 

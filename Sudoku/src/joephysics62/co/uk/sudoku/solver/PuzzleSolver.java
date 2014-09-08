@@ -61,7 +61,7 @@ public class PuzzleSolver {
       }
       rowIndex++;
     }
-    solutions.add(new SolvedPuzzle(solutionMap));
+    solutions.add(new SolvedPuzzle(solutionMap, puzzle.getSubTableHeight(), puzzle.getSubTableWidth()));
   }
 
   private Coord findCellToGuess(final Puzzle puzzle) {

@@ -22,4 +22,8 @@ public interface Puzzle extends CellGrid {
 
   int getPuzzleSize();
 
+  int getSubTableWidth();
+
+  int getSubTableHeight();
+
 }

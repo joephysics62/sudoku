@@ -34,7 +34,7 @@ public class SudokuBuilder implements ArrayPuzzleBuilder {
 
   @Override
   public Puzzle build() {
-    ArrayPuzzle sudoku = ArrayPuzzle.forPossiblesSize(_outerSize);
+    ArrayPuzzle sudoku = ArrayPuzzle.forPossiblesSize(_outerSize, _subTableHeight, _subTableWidth);
     final Coord[][] wholePuzzle = new Coord[_outerSize][_outerSize];
     for (int row = 0; row < _outerSize; row++) {
       for (int col = 0; col < _outerSize; col++) {

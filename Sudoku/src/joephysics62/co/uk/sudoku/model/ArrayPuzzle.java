@@ -11,11 +11,12 @@ public class ArrayPuzzle implements Puzzle {
   private final ConstraintList _allConstraints;
   private final int _inits;
   private final int _possiblesSize;
+  private final int _subTableWidth;
+  private final int _subTableHeight;
 
-  @Override
-  public int getPuzzleSize() {
-    return _possiblesSize;
-  }
+  @Override public int getPuzzleSize() { return _possiblesSize; }
+  @Override public int getSubTableHeight() { return _subTableHeight; }
+  @Override public int getSubTableWidth() { return _subTableWidth; }
 
   @SuppressWarnings("serial")
   private static class ConstraintList extends ArrayList<Constraint> {
@@ -32,6 +33,8 @@ public class ArrayPuzzle implements Puzzle {
     _constraintsPerCell = old._constraintsPerCell;
     _allConstraints = old._allConstraints;
     _possiblesSize = old._possiblesSize;
+    _subTableHeight = old._subTableHeight;
+    _subTableWidth = old._subTableWidth;
     _inits = old._inits;
   }
 
@@ -45,16 +48,18 @@ public class ArrayPuzzle implements Puzzle {
     _cells[coord.getRow() - 1][coord.getCol() - 1] = cellValues;
   }
 
-  private ArrayPuzzle(final int possiblesSize) {
+  private ArrayPuzzle(final int possiblesSize, final int subTableHeight, final int subTableWidth) {
     _possiblesSize = possiblesSize;
+    _subTableHeight = subTableHeight;
+    _subTableWidth = subTableWidth;
     _inits = (1 << possiblesSize) - 1;
     _cells = new int[possiblesSize][possiblesSize];
     _constraintsPerCell = new ConstraintList[possiblesSize][possiblesSize];
     _allConstraints = new ConstraintList();
   }
 
-  public static ArrayPuzzle forPossiblesSize(final int possiblesSize) {
-    return new ArrayPuzzle(possiblesSize);
+  public static ArrayPuzzle forPossiblesSize(final int possiblesSize, final int subTableHeight, final int subTableWidth) {
+    return new ArrayPuzzle(possiblesSize, subTableHeight, subTableWidth);
   }
 
   @Override

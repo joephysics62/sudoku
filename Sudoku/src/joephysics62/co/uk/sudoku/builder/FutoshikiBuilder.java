@@ -27,7 +27,7 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
 
   @Override
   public Puzzle build() {
-    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_puzzleSize);
+    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_puzzleSize, -1, -1);
     final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
     for (int row = 1; row <= _puzzleSize; row++) {
       for (int col = 1; col <= _puzzleSize; col++) {
