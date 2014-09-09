@@ -3,7 +3,9 @@ package joephysics62.co.uk.sudoku.creator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
@@ -17,6 +19,7 @@ import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class PuzzleCreator {
   private final PuzzleSolver _solver;
+  private final Set<Set<Coord>> _seenCoords = new LinkedHashSet<>();
 
   public PuzzleCreator(final PuzzleSolver solver) {
     _solver = solver;
@@ -24,8 +27,9 @@ public class PuzzleCreator {
 
   public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
     Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
-    List<Coord> arrayList = new ArrayList<>();
-    findPuzzle(completedNewPuzzle, arrayList);
+    List<Coord> coordsToRemove = new ArrayList<>();
+    findPuzzle(completedNewPuzzle, coordsToRemove);
+    System.out.println("Num clues = " + (puzzleSize * puzzleSize - coordsToRemove.size() - 1));
     return completedNewPuzzle;
   }
 
@@ -42,12 +46,15 @@ public class PuzzleCreator {
     SolutionResult solve = _solver.solve(puzzleToTry);
     if (solve.getType() == SolutionType.UNIQUE) {
       // OK
-      System.out.println("Num clues = " + (puzzleToTry.getPuzzleSize() * puzzleToTry.getPuzzleSize() - coordsToRemove.size()));
       new PuzzleWriter().write(toPrint, System.out);
       coordsToRemove.add(cellToBeCleaned);
-      findPuzzle(completedPuzzle, coordsToRemove);
+      if (_seenCoords.add(new LinkedHashSet<>(coordsToRemove))) {
+        findPuzzle(completedPuzzle, coordsToRemove);
+      }
     }
     else if (solve.getType() == SolutionType.MULTIPLE) {
+      // backtrack
+      coordsToRemove.remove(coordsToRemove.size() - 1);
       findPuzzle(completedPuzzle, coordsToRemove);
     }
     else {
