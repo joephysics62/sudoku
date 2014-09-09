@@ -20,21 +20,29 @@ import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 public class PuzzleCreator {
   private final PuzzleSolver _solver;
   private final Set<Set<Coord>> _seenCoords = new LinkedHashSet<>();
+  private Puzzle _toPrint;
 
   public PuzzleCreator(final PuzzleSolver solver) {
     _solver = solver;
   }
 
   public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
-    Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
-    List<Coord> coordsToRemove = new ArrayList<>();
-    findPuzzle(completedNewPuzzle, coordsToRemove);
-    System.out.println("Num clues = " + (puzzleSize * puzzleSize - coordsToRemove.size() - 1));
-    return completedNewPuzzle;
+       Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
+      _seenCoords.clear();
+      List<Coord> coordsToRemove = new ArrayList<>();
+      findPuzzle(completedNewPuzzle, coordsToRemove, false);
+      int numClues = puzzleSize * puzzleSize - coordsToRemove.size();
+      new PuzzleWriter().write(_toPrint, System.out);
+      System.out.println("NUM CLUES = " + numClues);
+      return completedNewPuzzle;
   }
 
-  public void findPuzzle(final Puzzle completedPuzzle, final List<Coord> coordsToRemove) {
+  public void findPuzzle(final Puzzle completedPuzzle, final List<Coord> coordsToRemove, final boolean backtracked) {
+    if (backtracked) {
+     System.out.println("Have back-tracked to " + coordsToRemove);
+    }
     Puzzle puzzleToTry = completedPuzzle.deepCopy();
+    System.err.println(puzzleToTry.isSolved());
     CellPickingStrategy cellGuessingStrategy = RandomSolved.create();
     int init = (1 << puzzleToTry.getPuzzleSize()) - 1;
     for (Coord coord : coordsToRemove) {
@@ -42,20 +50,18 @@ public class PuzzleCreator {
     }
     Coord cellToBeCleaned = cellGuessingStrategy.cellToGuess(puzzleToTry);
     puzzleToTry.setCellValue(init, cellToBeCleaned);
-    final Puzzle toPrint = puzzleToTry.deepCopy();
+    _toPrint = puzzleToTry.deepCopy();
     SolutionResult solve = _solver.solve(puzzleToTry);
     if (solve.getType() == SolutionType.UNIQUE) {
       // OK
-      new PuzzleWriter().write(toPrint, System.out);
       coordsToRemove.add(cellToBeCleaned);
       if (_seenCoords.add(new LinkedHashSet<>(coordsToRemove))) {
-        findPuzzle(completedPuzzle, coordsToRemove);
+        findPuzzle(completedPuzzle, coordsToRemove, false);
       }
     }
     else if (solve.getType() == SolutionType.MULTIPLE) {
-      // backtrack
       coordsToRemove.remove(coordsToRemove.size() - 1);
-      findPuzzle(completedPuzzle, coordsToRemove);
+      findPuzzle(completedPuzzle, coordsToRemove, true);
     }
     else {
       // Broken
