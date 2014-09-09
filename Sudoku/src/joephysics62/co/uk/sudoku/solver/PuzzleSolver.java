@@ -11,9 +11,9 @@ import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class PuzzleSolver {
 
-  private final CellGuessingStrategy _cellGuessingStrategy;
+  private final CellPickingStrategy _cellGuessingStrategy;
 
-  public PuzzleSolver(CellGuessingStrategy cellGuessingStrategy) {
+  public PuzzleSolver(CellPickingStrategy cellGuessingStrategy) {
     _cellGuessingStrategy = cellGuessingStrategy;
   }
 

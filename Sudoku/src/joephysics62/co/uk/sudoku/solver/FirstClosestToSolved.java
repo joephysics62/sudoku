@@ -4,13 +4,13 @@ import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class FirstClosestToSolved implements CellGuessingStrategy {
+public class FirstClosestToSolved implements CellPickingStrategy {
 
   private FirstClosestToSolved() {
     // through static method
   }
 
-  public static CellGuessingStrategy create() {
+  public static CellPickingStrategy create() {
     return new FirstClosestToSolved();
   }
 
