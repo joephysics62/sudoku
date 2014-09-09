@@ -38,11 +38,12 @@ public class PuzzleCreator {
     }
     Coord cellToBeCleaned = cellGuessingStrategy.cellToGuess(puzzleToTry);
     puzzleToTry.setCellValue(init, cellToBeCleaned);
+    final Puzzle toPrint = puzzleToTry.deepCopy();
     SolutionResult solve = _solver.solve(puzzleToTry);
-    System.out.println("Num clues = " + (puzzleToTry.getPuzzleSize() * puzzleToTry.getPuzzleSize() - coordsToRemove.size()));
     if (solve.getType() == SolutionType.UNIQUE) {
       // OK
-      //new PuzzleWriter().write(puzzleToTry, System.out);
+      System.out.println("Num clues = " + (puzzleToTry.getPuzzleSize() * puzzleToTry.getPuzzleSize() - coordsToRemove.size()));
+      new PuzzleWriter().write(toPrint, System.out);
       coordsToRemove.add(cellToBeCleaned);
       findPuzzle(completedPuzzle, coordsToRemove);
     }

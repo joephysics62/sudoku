@@ -7,7 +7,6 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class PuzzleSolver {
 
@@ -18,7 +17,6 @@ public class PuzzleSolver {
   }
 
   public SolutionResult solve(final Puzzle puzzle) {
-    new PuzzleWriter().write(puzzle, System.out);
     final Set<SolvedPuzzle> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
     solve(puzzle, solutions, 0);
