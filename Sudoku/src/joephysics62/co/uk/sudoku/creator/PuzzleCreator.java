@@ -47,13 +47,17 @@ public class PuzzleCreator {
     Puzzle toPrint = puzzleToTry.deepCopy();
     SolutionResult solve = _solver.solve(puzzleToTry);
     if (solve.getType() == SolutionType.UNIQUE) {
-      _writer.write(toPrint, System.out);
-      System.out.println(solve.getTiming() + " ms");
+      int numClues = puzzleToTry.getPuzzleSize() * puzzleToTry.getPuzzleSize() - coordsToRemove.size();
+      if (numClues < 27) {
+        _writer.write(toPrint, System.out);
+        System.out.println(solve.getTiming() + " ms with " + numClues + " clues");
+      }
       final List<Coord> solvedCells = solvedCellFilter.apply(toPrint);
-      //Collections.shuffle(solvedCells);
+      Collections.shuffle(solvedCells);
       for (Coord coord : solvedCells) {
         Set<Coord> newRemoves = new LinkedHashSet<>(coordsToRemove);
         newRemoves.add(coord);
+        newRemoves.add(new Coord(puzzleToTry.getPuzzleSize() - (coord.getRow() - 1), puzzleToTry.getPuzzleSize() - (coord.getCol() - 1)));
         findPuzzle(completedPuzzle, newRemoves);
       }
     }
