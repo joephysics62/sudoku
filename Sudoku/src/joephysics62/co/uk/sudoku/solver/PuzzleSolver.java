@@ -10,9 +10,9 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleSolver {
 
-  private final CellPickingStrategy _cellGuessingStrategy;
+  private final CellFilter _cellGuessingStrategy;
 
-  public PuzzleSolver(CellPickingStrategy cellGuessingStrategy) {
+  public PuzzleSolver(CellFilter cellGuessingStrategy) {
     _cellGuessingStrategy = cellGuessingStrategy;
   }
 
@@ -44,7 +44,7 @@ public class PuzzleSolver {
       addAsSolution(puzzle, solutions);
       return;
     }
-    final Coord cellToGuess = _cellGuessingStrategy.cellToGuess(puzzle);
+    final Coord cellToGuess = _cellGuessingStrategy.apply(puzzle).get(0);
     char[] charArray = Integer.toBinaryString(puzzle.getCellValue(cellToGuess)).toCharArray();
     for (int i = 1; i <= charArray.length; i++) {
       if ('1' == charArray[charArray.length - i]) {

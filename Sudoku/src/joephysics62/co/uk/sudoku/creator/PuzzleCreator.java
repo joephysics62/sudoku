@@ -11,7 +11,7 @@ import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.solver.CellPickingStrategy;
+import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
@@ -38,24 +38,22 @@ public class PuzzleCreator {
   }
 
   public void findPuzzle(final Puzzle completedPuzzle, final List<Coord> coordsToRemove, final boolean backtracked) {
-    if (backtracked) {
-     System.out.println("Have back-tracked to " + coordsToRemove);
-    }
     Puzzle puzzleToTry = completedPuzzle.deepCopy();
-    System.err.println(puzzleToTry.isSolved());
-    CellPickingStrategy cellGuessingStrategy = RandomSolved.create();
+    CellFilter cellGuessingStrategy = Solved.create();
     int init = (1 << puzzleToTry.getPuzzleSize()) - 1;
     for (Coord coord : coordsToRemove) {
       puzzleToTry.setCellValue(init, coord);
     }
-    Coord cellToBeCleaned = cellGuessingStrategy.cellToGuess(puzzleToTry);
+    List<Coord> solvedCells = cellGuessingStrategy.apply(puzzleToTry);
+    Collections.shuffle(solvedCells);
+    Coord cellToBeCleaned = solvedCells.get(0);
     puzzleToTry.setCellValue(init, cellToBeCleaned);
     _toPrint = puzzleToTry.deepCopy();
     SolutionResult solve = _solver.solve(puzzleToTry);
     if (solve.getType() == SolutionType.UNIQUE) {
       // OK
       coordsToRemove.add(cellToBeCleaned);
-      if (_seenCoords.add(new LinkedHashSet<>(coordsToRemove))) {
+      if (backtracked || _seenCoords.add(new LinkedHashSet<>(coordsToRemove))) {
         findPuzzle(completedPuzzle, coordsToRemove, false);
       }
     }

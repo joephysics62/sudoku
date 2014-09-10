@@ -1,21 +1,24 @@
 package joephysics62.co.uk.sudoku.solver;
 
+import java.util.Collections;
+import java.util.List;
+
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class FirstClosestToSolved implements CellPickingStrategy {
+public class FirstClosestToSolved implements CellFilter {
 
   private FirstClosestToSolved() {
     // through static method
   }
 
-  public static CellPickingStrategy create() {
+  public static CellFilter create() {
     return new FirstClosestToSolved();
   }
 
   @Override
-  public Coord cellToGuess(final Puzzle puzzle) {
+  public List<Coord> apply(final Puzzle puzzle) {
     int minPossibles = Integer.MAX_VALUE;
     Coord minCell = null;
     int rowNum = 1;
@@ -25,7 +28,7 @@ public class FirstClosestToSolved implements CellPickingStrategy {
         if (!Cell.isSolved(value)) {
           int possiblesSize = Integer.bitCount(value);
           if (possiblesSize == 2) {
-            return new Coord(rowNum, colNum);
+            return Collections.singletonList(new Coord(rowNum, colNum));
           }
           else if (possiblesSize < minPossibles) {
             minPossibles = possiblesSize;
@@ -36,7 +39,12 @@ public class FirstClosestToSolved implements CellPickingStrategy {
       }
       rowNum++;
     }
-    return minCell;
+    if (minCell == null) {
+      return Collections.emptyList();
+    }
+    else {
+      return Collections.singletonList(minCell);
+    }
   }
 
 }
