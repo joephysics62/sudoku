@@ -1,6 +1,6 @@
 package joephysics62.co.uk.sudoku.model;
 
-public class Coord implements Comparable<Coord> {
+public class Coord {
   private final int _row;
   private final int _col;
 
@@ -44,15 +44,6 @@ public class Coord implements Comparable<Coord> {
     if (_row != other._row)
       return false;
     return true;
-  }
-
-  @Override
-  public int compareTo(Coord o) {
-    int rowCompare = Integer.compare(_row, o._row);
-    if (rowCompare != 0) {
-      return rowCompare;
-    }
-    return Integer.compare(_col, o._col);
   }
 
 }
