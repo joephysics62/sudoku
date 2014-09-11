@@ -7,14 +7,27 @@
 <style>
 * {
   font-family: Arial;
-  width: 0px;
-  height: 0px;
 }
 td, th {
-    border: 1px solid black;
-    padding: 2px;
-    width: 10px;
-    height:10px;
+    border-color: black;
+    border-width: thin;
+    border-style: solid;
+    border-spacing: 0px;
+    width: 1em;
+    height:1em;
+    text-align:  center;
+}
+td.top {
+    border-top-width: medium;
+}
+td.left {
+    border-left-width: medium;
+}
+td.subTableBottom {
+    border-bottom-width: medium;
+}
+td.subTableRight {
+    border-right-width: medium;
 }
 table {
     border-collapse: collapse;
@@ -23,104 +36,104 @@ table {
 </head>
 <body>
   <table>
-    <tr>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td>1</td>
-     <td>8</td>
-     <td>5</td>
-     <td></td>
-     <td>4</td>
-     <td></td>
+     <tr> 
+     <td class="top left"></td>
+     <td class="top"></td>
+     <td class="top subTableRight"></td>
+     <td class="top">3</td>
+     <td class="top"></td>
+     <td class="top subTableRight">1</td>
+     <td class="top">8</td>
+     <td class="top"></td>
+     <td class="top subTableRight"></td>
    </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td>4</td>
-     <td>3</td>
-     <td></td>
-     <td></td>
-     <td>5</td>
-     <td></td>
-     <td></td>
+   <tr> 
+     <td class=" left">1</td>
+     <td class="">2</td>
+     <td class=" subTableRight"></td>
+     <td class="">4</td>
+     <td class=""></td>
+     <td class=" subTableRight"></td>
+     <td class=""></td>
+     <td class=""></td>
+     <td class=" subTableRight">9</td>
    </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td>6</td>
+   <tr> 
+     <td class="subTableBottom left">5</td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight">9</td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight"></td>
+     <td class="subTableBottom">1</td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight"></td>
    </tr>
-   <tr>
-     <td>2</td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td>6</td>
-     <td>7</td>
-     <td></td>
-     <td>9</td>
+   <tr> 
+     <td class=" left"></td>
+     <td class="">1</td>
+     <td class=" subTableRight"></td>
+     <td class=""></td>
+     <td class=""></td>
+     <td class=" subTableRight"></td>
+     <td class=""></td>
+     <td class=""></td>
+     <td class=" subTableRight">8</td>
    </tr>
-   <tr>
-     <td></td>
-     <td>5</td>
-     <td></td>
-     <td></td>
-     <td>9</td>
-     <td></td>
-     <td></td>
-     <td>6</td>
-     <td></td>
+   <tr> 
+     <td class=" left"></td>
+     <td class=""></td>
+     <td class=" subTableRight">6</td>
+     <td class=""></td>
+     <td class="">8</td>
+     <td class=" subTableRight"></td>
+     <td class="">2</td>
+     <td class=""></td>
+     <td class=" subTableRight"></td>
    </tr>
-   <tr>
-     <td>6</td>
-     <td></td>
-     <td>8</td>
-     <td>7</td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td>5</td>
+   <tr> 
+     <td class="subTableBottom left">7</td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight"></td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight"></td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom">6</td>
+     <td class="subTableBottom subTableRight"></td>
    </tr>
-   <tr>
-     <td>7</td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
-     <td></td>
+   <tr> 
+     <td class=" left"></td>
+     <td class=""></td>
+     <td class=" subTableRight">1</td>
+     <td class=""></td>
+     <td class=""></td>
+     <td class=" subTableRight"></td>
+     <td class="">9</td>
+     <td class=""></td>
+     <td class=" subTableRight">6</td>
    </tr>
-   <tr>
-     <td></td>
-     <td></td>
-     <td>5</td>
-     <td></td>
-     <td></td>
-     <td>4</td>
-     <td>3</td>
-     <td></td>
-     <td></td>
+   <tr> 
+     <td class=" left">8</td>
+     <td class=""></td>
+     <td class=" subTableRight"></td>
+     <td class=""></td>
+     <td class=""></td>
+     <td class=" subTableRight">3</td>
+     <td class=""></td>
+     <td class="">1</td>
+     <td class=" subTableRight">7</td>
    </tr>
-   <tr>
-     <td></td>
-     <td>4</td>
-     <td></td>
-     <td>6</td>
-     <td>3</td>
-     <td>2</td>
-     <td></td>
-     <td></td>
-     <td></td>
+   <tr> 
+     <td class="subTableBottom left"></td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight">5</td>
+     <td class="subTableBottom">6</td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight">2</td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom"></td>
+     <td class="subTableBottom subTableRight"></td>
    </tr>
 </body>
 

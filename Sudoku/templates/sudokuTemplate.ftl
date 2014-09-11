@@ -17,6 +17,18 @@ td, th {
     height:1em;
     text-align:  center;
 }
+td.top {
+    border-top-width: medium;
+}
+td.left {
+    border-left-width: medium;
+}
+td.subTableBottom {
+    border-bottom-width: medium;
+}
+td.subTableRight {
+    border-right-width: medium;
+}
 table {
     border-collapse: collapse;
 }
@@ -24,12 +36,32 @@ table {
 </head>
 <body>
   <table>
+  <#assign rowNum = 1>
  <#list table as row>
-   <tr>
+   <tr> 
+   <#assign colNum = 1> 
    <#list row as cell>
-     <td>${cell}</td>
+     <#if rowNum = 1>
+       <#assign cellClass = "top">
+     <#else>
+       <#if rowNum % subTableHeight = 0>
+         <#assign cellClass = "subTableBottom">
+       <#else>
+         <#assign cellClass = "">
+       </#if>
+     </#if>
+     <#if colNum = 1>
+       <#assign cellClass = cellClass + " " + "left">
+     <#else>
+       <#if colNum % subTableWidth = 0>
+         <#assign cellClass = cellClass + " " + "subTableRight">
+       </#if>
+     </#if>
+     <td class="${cellClass}">${cell}</td>
+     <#assign colNum = colNum + 1>
    </#list>
    </tr>
+   <#assign rowNum = rowNum + 1>
  </#list>
 </body>
 

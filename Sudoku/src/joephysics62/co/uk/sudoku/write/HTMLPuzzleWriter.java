@@ -30,7 +30,7 @@ public class HTMLPuzzleWriter {
       List<String> rowList = new ArrayList<>();
       for (int value : row) {
         if (Cell.isSolved(value)) {
-          rowList.add(Integer.toString(Cell.convertToNiceValue(value)));
+          rowList.add(Cell.asString(Cell.convertToNiceValue(value), _puzzle.getPuzzleSize()));
         }
         else {
           rowList.add("");
@@ -39,7 +39,8 @@ public class HTMLPuzzleWriter {
       table.add(rowList);
     }
     root.put("table", table);
-
+    root.put("subTableHeight", _puzzle.getSubTableHeight());
+    root.put("subTableWidth", _puzzle.getSubTableWidth());
     Template template = configuration.getTemplate("templates/sudokuTemplate.ftl", "UTF-8");
     template.process(root, new FileWriter(file));
 
