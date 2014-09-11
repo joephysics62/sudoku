@@ -111,7 +111,7 @@ public class PuzzleCreator {
     PuzzleWriter writer = new PuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    final int maxCluesToLeave = 25;
+    final int maxCluesToLeave = 27;
     Puzzle puzzle = creator.create(9, 3, 3, maxCluesToLeave);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);

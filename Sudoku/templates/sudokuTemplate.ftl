@@ -63,6 +63,7 @@ table {
    </tr>
    <#assign rowNum = rowNum + 1>
  </#list>
+ </table>
 </body>
 
 </html>
