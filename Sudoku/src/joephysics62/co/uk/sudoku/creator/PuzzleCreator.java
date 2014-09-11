@@ -30,6 +30,9 @@ public class PuzzleCreator {
   }
 
   public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth, final int maxCluesToLeave) {
+    if (!((subTableHeight < 0 && subTableWidth < 0) || (puzzleSize == subTableHeight * subTableWidth))) {
+      throw new IllegalArgumentException();
+    }
     _seen.clear();
     for (int i = 0; i < 10000; i++) {
       Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
@@ -90,7 +93,6 @@ public class PuzzleCreator {
   }
 
   private Puzzle newPuzzle(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
-    assert puzzleSize == subTableHeight * subTableWidth || subTableHeight < 0 && subTableWidth < 0;
     SudokuBuilder sudokuBuilder = new SudokuBuilder(puzzleSize, subTableHeight, subTableWidth);
     Integer[][] givens = new Integer[puzzleSize][puzzleSize];
     for (Integer[] row : givens) {

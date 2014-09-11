@@ -38,7 +38,7 @@ table {
   <table>
   <#assign rowNum = 1>
  <#list table as row>
-   <tr> 
+   <tr id="row_${rowNum}"> 
    <#assign colNum = 1> 
    <#list row as cell>
      <#if rowNum = 1>
@@ -57,7 +57,7 @@ table {
          <#assign cellClass = cellClass + " " + "subTableRight">
        </#if>
      </#if>
-     <td class="${cellClass}">${cell}</td>
+     <td id="cell_${rowNum}_${colNum}" class="${cellClass}">${cell}</td>
      <#assign colNum = colNum + 1>
    </#list>
    </tr>
