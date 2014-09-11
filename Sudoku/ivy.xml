@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ivy-module version='2.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:d='http://corefiling.com/products/decimate/ivy-extra'>
+  <info module='sudoku' organisation='joephysics62.co.uk' />
+  <configurations>
+    <conf name='compile' description='Libraries to ship with our app.' />
+    <conf name='runtime' description="Libraries provided at runtime that we don't need to ship." />
+    <conf name='sources' description='The sources of the libraries.' />
+    <conf name='dist' description='CFL Antlib made me do it' />
+    <conf name='test' description='CFL Antlib made me do it' />
+  </configurations>
+
+  <dependencies>
+    <dependency name='junit' conf='test->default' org='junit' rev='4.10' />
+    <dependency org="com.google.guava" name="guava" rev="14.0" conf="dist->default" />
+    <dependency org="org.freemarker" name="freemarker" rev="2.3.20"/>
+  </dependencies>
+</ivy-module>

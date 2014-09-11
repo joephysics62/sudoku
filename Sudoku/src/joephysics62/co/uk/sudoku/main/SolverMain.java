@@ -35,8 +35,8 @@ public class SolverMain {
       throw new IllegalArgumentException();
     }
     Puzzle puzzle = puzzleReader.read(input);
-    PuzzleWriter puzzleWriter = new PuzzleWriter();
-    puzzleWriter.write(puzzle, System.out);
+    PuzzleWriter puzzleWriter = new PuzzleWriter(System.out);
+    puzzleWriter.write(puzzle);
     PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());
     SolutionResult result = solver.solve(puzzle);
 

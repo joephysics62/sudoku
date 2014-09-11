@@ -7,17 +7,23 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class PuzzleWriter {
 
-  public void write(Puzzle puzzle, PrintStream out) {
+  private final PrintStream _out;
+
+  public PuzzleWriter(final PrintStream out) {
+    _out = out;
+  }
+
+  public void write(final Puzzle puzzle) {
     int[][] allCells = puzzle.getAllCells();
     for (int[] row: allCells) {
-      out.print("|");
+      _out.print("|");
       for (int value : row) {
-        out.print(Cell.isSolved(value) ? Cell.asString(Cell.convertToNiceValue(value), puzzle.getPuzzleSize()) : "-");
-        out.print("|");
+        _out.print(Cell.isSolved(value) ? Cell.asString(Cell.convertToNiceValue(value), puzzle.getPuzzleSize()) : "-");
+        _out.print("|");
       }
-      out.println();
+      _out.println();
     }
-    out.println();
+    _out.println();
   }
 
 }

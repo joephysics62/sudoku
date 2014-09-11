@@ -25,41 +25,47 @@ public class PuzzleCreator {
     _solver = solver;
   }
 
-  public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
+  public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth, final int maxCluesToLeave) {
     _seen.clear();
-    Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
-    findPuzzle(completedNewPuzzle, new LinkedHashSet<Coord>());
-    return completedNewPuzzle;
+    for (int i = 0; i < 10000; i++) {
+      Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
+      for (int j = 0; j < 100; j++) {
+        Puzzle puzzle = findPuzzle(completedNewPuzzle, maxCluesToLeave);
+        if (null != puzzle) {
+          return puzzle;
+        }
+      }
+    }
+    return null;
   }
 
-  private final PuzzleWriter _writer = new PuzzleWriter();
-
-  public void findPuzzle(final Puzzle completedPuzzle, final Set<Coord> coordsToRemove) {
-    if (!_seen.add(coordsToRemove)) {
-      return;
-    }
+  public Puzzle findPuzzle(final Puzzle completedPuzzle, final int cluesToLeave) {
     Puzzle puzzleToTry = completedPuzzle.deepCopy();
     CellFilter solvedCellFilter = Solved.create();
-    int init = (1 << puzzleToTry.getPuzzleSize()) - 1;
-    for (Coord coord : coordsToRemove) {
+    final List<Coord> solvedCells = solvedCellFilter.apply(puzzleToTry);
+    int puzzleSize = puzzleToTry.getPuzzleSize();
+    int init = (1 << puzzleSize) - 1;
+    Collections.shuffle(solvedCells);
+    int removesSize = puzzleSize * puzzleSize - cluesToLeave;
+
+    Set<Coord> removes = new LinkedHashSet<>();
+    for (Coord coord : solvedCells) {
+      removes.add(coord);
+      removes.add(new Coord(puzzleSize - coord.getRow() + 1, puzzleSize - coord.getCol() + 1));
+      if (removes.size() >= removesSize) {
+        break;
+      }
+    }
+    for (Coord coord : removes) {
       puzzleToTry.setCellValue(init, coord);
     }
     Puzzle toPrint = puzzleToTry.deepCopy();
     SolutionResult solve = _solver.solve(puzzleToTry);
     if (solve.getType() == SolutionType.UNIQUE) {
-      int numClues = puzzleToTry.getPuzzleSize() * puzzleToTry.getPuzzleSize() - coordsToRemove.size();
-      if (numClues < 27) {
-        _writer.write(toPrint, System.out);
-        System.out.println(solve.getTiming() + " ms with " + numClues + " clues");
-      }
-      final List<Coord> solvedCells = solvedCellFilter.apply(toPrint);
-      Collections.shuffle(solvedCells);
-      for (Coord coord : solvedCells) {
-        Set<Coord> newRemoves = new LinkedHashSet<>(coordsToRemove);
-        newRemoves.add(coord);
-        newRemoves.add(new Coord(puzzleToTry.getPuzzleSize() - (coord.getRow() - 1), puzzleToTry.getPuzzleSize() - (coord.getCol() - 1)));
-        findPuzzle(completedPuzzle, newRemoves);
-      }
+        return toPrint;
+    }
+    else {
+      return null;
     }
   }
 
@@ -98,11 +104,12 @@ public class PuzzleCreator {
   }
 
   public static void main(String[] args) {
-    PuzzleWriter writer = new PuzzleWriter();
+    PuzzleWriter writer = new PuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    Puzzle puzzle = creator.create(9, 3, 3);
-    writer.write(puzzle, System.out);
+    final int maxCluesToLeave = 27;
+    Puzzle puzzle = creator.create(9, 3, 3, maxCluesToLeave);
+    writer.write(puzzle);
   }
 
 }
