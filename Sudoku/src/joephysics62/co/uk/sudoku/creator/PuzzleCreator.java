@@ -1,11 +1,15 @@
 package joephysics62.co.uk.sudoku.creator;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+
+import freemarker.template.TemplateException;
 
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
@@ -15,6 +19,7 @@ import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
+import joephysics62.co.uk.sudoku.write.HTMLPuzzleWriter;
 import joephysics62.co.uk.sudoku.write.PuzzleWriter;
 
 public class PuzzleCreator {
@@ -103,13 +108,15 @@ public class PuzzleCreator {
     return puzzle;
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException, TemplateException {
     PuzzleWriter writer = new PuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
     final int maxCluesToLeave = 27;
     Puzzle puzzle = creator.create(9, 3, 3, maxCluesToLeave);
     writer.write(puzzle);
+    HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);
+    htmlPuzzleWriter.write(new File("sudoku.html"));
   }
 
 }
