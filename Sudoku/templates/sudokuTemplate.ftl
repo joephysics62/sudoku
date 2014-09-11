@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<title>Title of document</title>
+<title>Sudoku By Joe</title>
 <style>
 * {
   font-family: Arial;

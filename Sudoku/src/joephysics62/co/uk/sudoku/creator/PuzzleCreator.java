@@ -9,8 +9,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import freemarker.template.TemplateException;
-
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
@@ -21,6 +19,7 @@ import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
 import joephysics62.co.uk.sudoku.write.HTMLPuzzleWriter;
 import joephysics62.co.uk.sudoku.write.PuzzleWriter;
+import freemarker.template.TemplateException;
 
 public class PuzzleCreator {
   private final PuzzleSolver _solver;
@@ -112,7 +111,7 @@ public class PuzzleCreator {
     PuzzleWriter writer = new PuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    final int maxCluesToLeave = 27;
+    final int maxCluesToLeave = 25;
     Puzzle puzzle = creator.create(9, 3, 3, maxCluesToLeave);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);
