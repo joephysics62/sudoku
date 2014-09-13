@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -113,11 +114,11 @@ public class PuzzleCreator {
     PuzzleWriter writer = new PuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    final int maxCluesToLeave = 27;
-    Puzzle puzzle = creator.create(9, 3, 3, maxCluesToLeave);
+    final int maxCluesToLeave = 9;
+    Puzzle puzzle = creator.create(6, 2, 3, maxCluesToLeave);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);
-    htmlPuzzleWriter.write(new File("sudoku.html"));
+    htmlPuzzleWriter.write(new File("sudoku.html"), "By Joe " + Calendar.getInstance().getTime().toLocaleString());
   }
 
 }

@@ -17,13 +17,14 @@ import freemarker.template.TemplateException;
 public class HTMLPuzzleWriter {
   private final Puzzle _puzzle;
 
-  public HTMLPuzzleWriter(Puzzle puzzle) {
+  public HTMLPuzzleWriter(final Puzzle puzzle) {
     _puzzle = puzzle;
   }
 
-  public void write(final File file) throws IOException, TemplateException {
+  public void write(final File file, final String title) throws IOException, TemplateException {
     Configuration configuration = new Configuration();
     Map<String, Object> root = new HashMap<>();
+    root.put("title", title);
     int[][] allCells = _puzzle.getAllCells();
     List<List<String>> table = new ArrayList<>();
     for (int[] row : allCells) {
