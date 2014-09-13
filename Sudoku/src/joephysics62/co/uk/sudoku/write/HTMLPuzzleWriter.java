@@ -33,7 +33,7 @@ public class HTMLPuzzleWriter {
           rowList.add(Cell.asString(Cell.convertToNiceValue(value), _puzzle.getPuzzleSize()));
         }
         else {
-          rowList.add("");
+          rowList.add(null);
         }
       }
       table.add(rowList);

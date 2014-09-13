@@ -17,16 +17,16 @@ td, th {
     height:1em;
     text-align:  center;
 }
-td.top {
+tr:nth-child(1) td {
     border-top-width: medium;
 }
-td.left {
+td:nth-child(1) {
     border-left-width: medium;
 }
-td.subTableBottom {
+tr:nth-child(${subTableHeight}n + 0) td {
     border-bottom-width: medium;
 }
-td.subTableRight {
+td:nth-child(${subTableWidth}n + 0) {
     border-right-width: medium;
 }
 table {
@@ -36,32 +36,10 @@ table {
 </head>
 <body>
   <table>
-  <#assign rowNum = 1>
  <#list table as row>
-   <tr id="row_${rowNum}"> 
-   <#assign colNum = 1> 
-   <#list row as cell>
-     <#if rowNum = 1>
-       <#assign cellClass = "top">
-     <#else>
-       <#if rowNum % subTableHeight = 0>
-         <#assign cellClass = "subTableBottom">
-       <#else>
-         <#assign cellClass = "">
-       </#if>
-     </#if>
-     <#if colNum = 1>
-       <#assign cellClass = cellClass + " " + "left">
-     <#else>
-       <#if colNum % subTableWidth = 0>
-         <#assign cellClass = cellClass + " " + "subTableRight">
-       </#if>
-     </#if>
-     <td id="cell_${rowNum}_${colNum}" class="${cellClass}">${cell}</td>
-     <#assign colNum = colNum + 1>
-   </#list>
+   <tr> 
+   <#list row as cell><#if cell??><td>${cell}</td><#else><td/></#if></#list>
    </tr>
-   <#assign rowNum = rowNum + 1>
  </#list>
  </table>
 </body>
