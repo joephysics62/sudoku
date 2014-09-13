@@ -8,20 +8,19 @@
 * {
   font-family: Arial;
 }
-td, th {
-    border-color: black;
-    border-width: thin;
-    border-style: solid;
-    border-spacing: 0px;
+td {
     width: 1em;
     height:1em;
     text-align:  center;
+    border-style: none;
 }
-td.operator {
-  border-style: none;
+tr:nth-child(odd) td:nth-child(odd) {
+    border-color: black;
+    border-width: thin;
+    border-spacing: 0px;
+    border-style: solid;
 }
-td.v_operator {
-  border-style: none;
+tr:nth-child(even) td {
   transform:rotate(90deg);
 }
 table {
@@ -31,104 +30,32 @@ table {
 </head>
 <body>
   <table>
-   <tr> 
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class="">2</td>
-     <td class="operator">&lt;</td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
+   <tr>
+     <td/><td/><td>2</td><td>&lt;</td><td/><td/><td/><td/><td/>
    </tr>
    <tr> 
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
+     <td/><td/><td/><td/><td/><td/><td/><td/><td/>
    </tr>
-   <tr> 
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator">&lt;</td>
-     <td class=""></td>
+   <tr>
+     <td/><td/><td/><td/><td/><td/><td/><td>&lt;</td><td/>
    </tr>
-   <tr> 
-     <td class="v_operator">&gt;</td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
+   <tr>
+     <td>&gt;</td><td/><td/><td/><td/><td/><td/><td/><td/>
    </tr>
-   <tr> 
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator">&gt;</td>
-     <td class=""></td>
-     <td class="operator">&gt;</td>
-     <td class=""></td>
+   <tr>
+     <td/><td/><td/><td/><td/><td>&gt;</td><td/><td>&gt;</td><td/>
    </tr>
-   <tr> 
-     <td class="v_operator">&gt;</td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator">&lt;</td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
+   <tr>
+     <td>&gt;</td><td/><td/><td/><td>&lt;</td><td/><td/><td/><td/>
    </tr>
-   <tr> 
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
+   <tr>
+     <td/><td/><td/><td/><td/><td/><td/><td/><td/>
    </tr>
-   <tr> 
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator"></td>
-     <td class="v_operator">&gt;</td>
-     <td class="v_operator"></td>
-     <td class="v_operator">&gt;</td>
+   <tr>
+     <td/><td/><td/><td/><td/><td/><td>&gt;</td><td/><td>&gt;</td>
    </tr>
-   <tr> 
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
-     <td class="operator"></td>
-     <td class=""></td>
+   <tr>
+     <td/><td/><td/><td/><td/><td/><td/><td/><td/>
    </tr>
   </table>
 </body>
