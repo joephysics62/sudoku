@@ -2,10 +2,13 @@ package joephysics62.co.uk.sudoku.creator;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -118,7 +121,10 @@ public class PuzzleCreator {
     Puzzle puzzle = creator.create(6, 2, 3, maxCluesToLeave);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);
-    htmlPuzzleWriter.write(new File("sudoku.html"), "By Joe " + Calendar.getInstance().getTime().toLocaleString());
+    Calendar calendar = Calendar.getInstance();
+    Date date = calendar.getTime();
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    htmlPuzzleWriter.write(new File("sudoku.html"), "By Joe " + dateFormat.format(date));
   }
 
 }

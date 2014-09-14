@@ -1,7 +1,9 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-<title>${title}</title>
+<title>jjf-2014-09-13</title>
 <style>
 * {
   font-family: Arial;
@@ -21,10 +23,10 @@ tr:nth-child(1) td {
 td:nth-child(1) {
     border-left-width: medium;
 }
-tr:nth-child(${subTableHeight}n + 0) td {
+tr:nth-child(2n + 0) td {
     border-bottom-width: medium;
 }
-td:nth-child(${subTableWidth}n + 0) {
+td:nth-child(3n + 0) {
     border-right-width: medium;
 }
 table {
@@ -34,11 +36,24 @@ table {
 </head>
 <body>
   <table>
- <#list table as row>
    <tr> 
-   <#list row as cell><#if cell??><td>${cell}</td><#else><td/></#if></#list>
+   <td/><td>2</td><td/><td/><td/><td>1</td>
    </tr>
- </#list>
+   <tr> 
+   <td/><td/><td/><td/><td/><td>6</td>
+   </tr>
+   <tr> 
+   <td/><td>1</td><td/><td/><td/><td/>
+   </tr>
+   <tr> 
+   <td/><td/><td/><td/><td>2</td><td/>
+   </tr>
+   <tr> 
+   <td>3</td><td/><td/><td/><td/><td/>
+   </tr>
+   <tr> 
+   <td>5</td><td/><td/><td/><td>4</td><td/>
+   </tr>
  </table>
 </body>
 
