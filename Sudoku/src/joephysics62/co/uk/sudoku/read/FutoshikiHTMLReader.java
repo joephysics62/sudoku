@@ -37,22 +37,19 @@ public class FutoshikiHTMLReader implements PuzzleReader {
         if (rowIndex % 2 == 0 && colIndex % 2 == 0) {
           givens[rowNum - 1][colNum - 1] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _puzzleSize);
         }
-        else {
-          if (rowIndex % 2 == 0 && colIndex % 2 == 1) {
-            if (">".equals(cellInput)) {
-              futoshikiBuilder.addGreaterThan(Coord.of(rowNum, colNum), Coord.of(rowNum, colNum + 1));
-            }
-            else if ("<".equals(cellInput)) {
-              futoshikiBuilder.addGreaterThan(Coord.of(rowNum, colNum + 1), Coord.of(rowNum, colNum));
-            }
+        else if (rowIndex % 2 == 1 && colIndex % 2 == 1) {
+          if (!cellInput.isEmpty()) {
+            throw new RuntimeException("Bad futoshiki input, did not expect content at cell " + rowIndex + ", " + colIndex);
           }
-          if (rowIndex % 2 == 1 && colIndex % 2 == 0) {
-            if (">".equals(cellInput)) {
-              futoshikiBuilder.addGreaterThan(Coord.of(rowNum, colNum), Coord.of(rowNum + 1, colNum));
-            }
-            else if ("<".equals(cellInput)) {
-              futoshikiBuilder.addGreaterThan(Coord.of(rowNum + 1, colNum), Coord.of(rowNum, colNum));
-            }
+        }
+        else {
+          final Coord thisCell = Coord.of(rowNum, colNum);
+          final Coord otherCell = Coord.of(rowNum + rowIndex % 2, colNum + colIndex % 2);
+          if (">".equals(cellInput)) {
+            futoshikiBuilder.addGreaterThan(thisCell, otherCell);
+          }
+          else if ("<".equals(cellInput)) {
+            futoshikiBuilder.addGreaterThan(otherCell, thisCell);
           }
         }
       }
