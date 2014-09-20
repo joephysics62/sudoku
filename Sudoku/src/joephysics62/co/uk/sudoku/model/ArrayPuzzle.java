@@ -13,6 +13,7 @@ public class ArrayPuzzle implements Puzzle {
   private final int _possiblesSize;
   private final int _subTableWidth;
   private final int _subTableHeight;
+  private final String _title;
 
   @Override public int getPuzzleSize() { return _possiblesSize; }
   @Override public int getSubTableHeight() { return _subTableHeight; }
@@ -36,6 +37,7 @@ public class ArrayPuzzle implements Puzzle {
     _subTableHeight = old._subTableHeight;
     _subTableWidth = old._subTableWidth;
     _inits = old._inits;
+    _title = old._title;
   }
 
   @Override
@@ -48,7 +50,14 @@ public class ArrayPuzzle implements Puzzle {
     _cells[coord.getRow() - 1][coord.getCol() - 1] = cellValues;
   }
 
-  private ArrayPuzzle(final int possiblesSize, final int subTableHeight, final int subTableWidth) {
+  @Override
+  public String getTitle() {
+    return _title;
+  }
+
+
+  private ArrayPuzzle(final String title, final int possiblesSize, final int subTableHeight, final int subTableWidth) {
+    _title = title;
     _possiblesSize = possiblesSize;
     _subTableHeight = subTableHeight;
     _subTableWidth = subTableWidth;
@@ -58,8 +67,8 @@ public class ArrayPuzzle implements Puzzle {
     _allConstraints = new ConstraintList();
   }
 
-  public static ArrayPuzzle forPossiblesSize(final int possiblesSize, final int subTableHeight, final int subTableWidth) {
-    return new ArrayPuzzle(possiblesSize, subTableHeight, subTableWidth);
+  public static ArrayPuzzle forPossiblesSize(final String title, final int possiblesSize, final int subTableHeight, final int subTableWidth) {
+    return new ArrayPuzzle(title, possiblesSize, subTableHeight, subTableWidth);
   }
 
   @Override

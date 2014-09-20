@@ -30,6 +30,12 @@ public class FutoshikiHTMLReader implements PuzzleReader {
   private void readGivens(final File input, final FutoshikiBuilder futoshikiBuilder) throws IOException {
     final Integer[][] givens = new Integer[_puzzleSize][_puzzleSize];
     final TableParserHandler handler = new TableParserHandler() {
+
+      @Override
+      public void title(String title) {
+        futoshikiBuilder.addTitle(title);
+      }
+
       @Override
       public void cell(final String cellInput, int rowIndex, int colIndex) {
         int rowNum = rowIndex / 2 + 1;

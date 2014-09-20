@@ -6,6 +6,8 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public interface Puzzle extends CellGrid {
 
+  String getTitle();
+
   List<Constraint> getAllConstraints();
 
   List<Constraint> getConstraints(Coord coord);

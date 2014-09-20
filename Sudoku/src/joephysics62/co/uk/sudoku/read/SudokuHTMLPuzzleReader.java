@@ -24,19 +24,20 @@ public class SudokuHTMLPuzzleReader implements PuzzleReader {
 
   @Override
   public Puzzle read(final File input) throws IOException {
-    readGivens(input, _sudokuBuilder);
-    return _sudokuBuilder.build();
-  }
-
-  private void readGivens(final File input, ArrayPuzzleBuilder puzzleBuilder) throws IOException {
     final Integer[][] givens = new Integer[_outerSize][_outerSize];
     _tableParser.parseTable(input, new TableParserHandler() {
       @Override
       public void cell(String cellInput, int rowIndex, int colIndex) {
         givens[rowIndex][colIndex] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _outerSize);
       }
+
+      @Override
+      public void title(String title) {
+        _sudokuBuilder.addTitle(title);
+      }
     });
-    puzzleBuilder.addGivens(givens);
+    _sudokuBuilder.addGivens(givens);
+    return _sudokuBuilder.build();
   }
 
 }

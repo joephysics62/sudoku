@@ -42,6 +42,10 @@ public class HTMLTableParser {
     catch (SAXException e) {
       throw new IOException(e);
     }
+    NodeList titles = asDom.getElementsByTagName("title");
+    if (titles.getLength() > 0) {
+      handler.title(((Element) titles.item(0)).getTextContent().trim());
+    }
     NodeList rows = asDom.getElementsByTagName("tr");
     if (rows.getLength() != _expectedTableHeight) {
       throw new IOException("Expected '" + _expectedTableHeight + "' rows but got '" + rows.getLength() + "'");

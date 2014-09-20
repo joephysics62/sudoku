@@ -1,14 +1,8 @@
 package joephysics62.co.uk.sudoku.creator;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,9 +15,6 @@ import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
-import joephysics62.co.uk.sudoku.write.HTMLPuzzleWriter;
-import joephysics62.co.uk.sudoku.write.PuzzleWriter;
-import freemarker.template.TemplateException;
 
 public class PuzzleCreator {
   private final PuzzleSolver _solver;
@@ -109,22 +100,8 @@ public class PuzzleCreator {
     Collections.shuffle(aRow);
     givens[0] = aRow.toArray(new Integer[] {});
     sudokuBuilder.addGivens(givens);
-    Puzzle puzzle = sudokuBuilder.build();
-    return puzzle;
-  }
-
-  public static void main(String[] args) throws IOException, TemplateException {
-    PuzzleWriter writer = new PuzzleWriter(System.out);
-    PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
-    PuzzleCreator creator = new PuzzleCreator(solver);
-    final int maxCluesToLeave = 9;
-    Puzzle puzzle = creator.create(6, 2, 3, maxCluesToLeave);
-    writer.write(puzzle);
-    HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);
-    Calendar calendar = Calendar.getInstance();
-    Date date = calendar.getTime();
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    htmlPuzzleWriter.write(new File("sudoku.html"), "By Joe " + dateFormat.format(date));
+    sudokuBuilder.addTitle("Joe's Sudoku");
+    return sudokuBuilder.build();
   }
 
 }

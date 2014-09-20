@@ -15,6 +15,7 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
   private final int _puzzleSize;
   private Integer[][] _givenCells;
   private final List<GreaterThan> _greaterThanConstraints = new ArrayList<>();
+  private String _title;
 
   public FutoshikiBuilder(final int puzzleSize) {
     _puzzleSize = puzzleSize;
@@ -26,8 +27,13 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
   }
 
   @Override
+  public void addTitle(final String title) {
+    _title = title;
+  }
+
+  @Override
   public Puzzle build() {
-    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_puzzleSize, -1, -1);
+    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_title, _puzzleSize, -1, -1);
     final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
     for (int row = 1; row <= _puzzleSize; row++) {
       for (int col = 1; col <= _puzzleSize; col++) {

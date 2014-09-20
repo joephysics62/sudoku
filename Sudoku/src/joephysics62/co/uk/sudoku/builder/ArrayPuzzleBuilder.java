@@ -6,4 +6,6 @@ public interface ArrayPuzzleBuilder {
   Puzzle build();
 
   void addGivens(Integer[][] givenCells);
+
+  void addTitle(String title);
 }

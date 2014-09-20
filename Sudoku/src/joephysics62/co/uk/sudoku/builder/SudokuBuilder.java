@@ -20,6 +20,7 @@ public class SudokuBuilder implements ArrayPuzzleBuilder {
   private final int _subTableHeight;
   private final int _subTableWidth;
   private Integer[][] _givenCells;
+  private String _title;
 
   public SudokuBuilder(final int outerSize, final int subTableHeight, final int subTableWidth) {
     _outerSize = outerSize;
@@ -33,8 +34,13 @@ public class SudokuBuilder implements ArrayPuzzleBuilder {
   }
 
   @Override
+  public void addTitle(final String title) {
+    _title = title;
+  }
+
+  @Override
   public Puzzle build() {
-    ArrayPuzzle sudoku = ArrayPuzzle.forPossiblesSize(_outerSize, _subTableHeight, _subTableWidth);
+    ArrayPuzzle sudoku = ArrayPuzzle.forPossiblesSize(_title, _outerSize, _subTableHeight, _subTableWidth);
     final Coord[][] wholePuzzle = new Coord[_outerSize][_outerSize];
     for (int row = 0; row < _outerSize; row++) {
       for (int col = 0; col < _outerSize; col++) {

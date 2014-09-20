@@ -4,4 +4,6 @@ public interface TableParserHandler {
 
   void cell(String cellInput, int rowIndex, int colIndex);
 
+  void title(String title);
+
 }
