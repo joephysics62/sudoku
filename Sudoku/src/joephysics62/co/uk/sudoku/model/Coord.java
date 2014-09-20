@@ -9,6 +9,10 @@ public class Coord {
     _col = col;
   }
 
+  public static Coord of(final int row, final int col) {
+    return new Coord(row, col);
+  }
+
   @Override
   public String toString() {
     return String.format("Coord(Row=%s,Col=%s)", _row, _col);

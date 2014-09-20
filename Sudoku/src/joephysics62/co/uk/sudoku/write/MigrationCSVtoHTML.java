@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.read.FutoshikiReader;
+import joephysics62.co.uk.sudoku.read.FutoshikiHTMLReader;
 import freemarker.template.TemplateException;
 
 public class MigrationCSVtoHTML {
@@ -13,7 +13,7 @@ public class MigrationCSVtoHTML {
     String dir = "examples/sudoku/super";
     File readDir = new File(dir);
     for (File csv : readDir.listFiles()) {
-      FutoshikiReader reader = new FutoshikiReader(5);
+      FutoshikiHTMLReader reader = new FutoshikiHTMLReader(5);
       Puzzle puzzle = reader.read(csv);
       HTMLPuzzleWriter writer = new HTMLPuzzleWriter(puzzle);
       String basename = csv.getName().substring(0, csv.getName().lastIndexOf('.'));

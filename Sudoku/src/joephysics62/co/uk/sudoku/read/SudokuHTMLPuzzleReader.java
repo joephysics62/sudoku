@@ -30,6 +30,12 @@ public class SudokuHTMLPuzzleReader implements PuzzleReader {
 
   @Override
   public Puzzle read(final File input) throws IOException {
+    final Integer[][] givens = givens(input);
+    _sudokuBuilder.addGivens(givens);
+    return _sudokuBuilder.build();
+  }
+
+  private Integer[][] givens(final File input) throws IOException {
     try {
       final Integer[][] givens = new Integer[_outerSize][_outerSize];
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -55,8 +61,7 @@ public class SudokuHTMLPuzzleReader implements PuzzleReader {
           givens[rowIndex][colIndex] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _outerSize);
         }
       }
-      _sudokuBuilder.addGivens(givens);
-      return _sudokuBuilder.build();
+      return givens;
     }
     catch (ParserConfigurationException | SAXException e) {
       throw new IOException(e);

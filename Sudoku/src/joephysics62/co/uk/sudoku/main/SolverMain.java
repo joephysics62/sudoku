@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.read.FutoshikiReader;
+import joephysics62.co.uk.sudoku.read.FutoshikiHTMLReader;
 import joephysics62.co.uk.sudoku.read.PuzzleReader;
 import joephysics62.co.uk.sudoku.read.SudokuHTMLPuzzleReader;
 import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
@@ -26,7 +26,7 @@ public class SolverMain {
       puzzleReader = new SudokuHTMLPuzzleReader(3, 3, 9);
     }
     else if (type.equals("futoshiki")) {
-      puzzleReader = new FutoshikiReader(5);
+      puzzleReader = new FutoshikiHTMLReader(5);
     }
     else if (type.equals("super")) {
       puzzleReader = new SudokuHTMLPuzzleReader(4, 4, 16);

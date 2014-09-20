@@ -48,4 +48,9 @@ public class GreaterThan implements Constraint {
     return Arrays.asList(_left, _right);
   }
 
+  @Override
+  public String toString() {
+    return String.format("GreaterThan(%s,%s)", _left, _right);
+  }
+
 }
