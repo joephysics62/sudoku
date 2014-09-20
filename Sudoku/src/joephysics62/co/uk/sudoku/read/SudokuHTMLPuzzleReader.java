@@ -11,6 +11,7 @@ import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.read.html.LocalHTMLEntityResolver;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,6 +34,7 @@ public class SudokuHTMLPuzzleReader implements PuzzleReader {
       final Integer[][] givens = new Integer[_outerSize][_outerSize];
       DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
+      documentBuilder.setEntityResolver(LocalHTMLEntityResolver.newResolver());
       if (!input.exists() || input.isDirectory()) {
         throw new IOException();
       }
