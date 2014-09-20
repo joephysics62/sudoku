@@ -3,69 +3,40 @@ package joephysics62.co.uk.sudoku.read;
 import java.io.File;
 import java.io.IOException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.read.html.LocalHTMLEntityResolver;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
+import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
 public class SudokuHTMLPuzzleReader implements PuzzleReader {
 
   private final int _outerSize;
   private final ArrayPuzzleBuilder _sudokuBuilder;
+  private final HTMLTableParser _tableParser;
 
   public SudokuHTMLPuzzleReader(final int subTableHeight, final int subTableWidth, final int outerSize) {
     _outerSize = outerSize;
     _sudokuBuilder = new SudokuBuilder(outerSize, subTableHeight, subTableWidth);
+    _tableParser = new HTMLTableParser(_outerSize, outerSize);
   }
 
   @Override
   public Puzzle read(final File input) throws IOException {
-    final Integer[][] givens = givens(input);
-    _sudokuBuilder.addGivens(givens);
+    readGivens(input, _sudokuBuilder);
     return _sudokuBuilder.build();
   }
 
-  private Integer[][] givens(final File input) throws IOException {
-    try {
-      final Integer[][] givens = new Integer[_outerSize][_outerSize];
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-      DocumentBuilder documentBuilder = dbf.newDocumentBuilder();
-      documentBuilder.setEntityResolver(LocalHTMLEntityResolver.newResolver());
-      if (!input.exists() || input.isDirectory()) {
-        throw new IOException();
+  private void readGivens(final File input, ArrayPuzzleBuilder puzzleBuilder) throws IOException {
+    final Integer[][] givens = new Integer[_outerSize][_outerSize];
+    _tableParser.parseTable(input, new TableParserHandler() {
+      @Override
+      public void cell(String cellInput, int rowIndex, int colIndex) {
+        givens[rowIndex][colIndex] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _outerSize);
       }
-      Document asDom = documentBuilder.parse(input);
-      NodeList rows = asDom.getElementsByTagName("tr");
-      if (rows.getLength() != _outerSize) {
-        throw new IOException();
-      }
-      for (int rowIndex = 0; rowIndex < rows.getLength(); rowIndex++) {
-        Element row = (Element) rows.item(rowIndex);
-        NodeList cells = row.getElementsByTagName("td");
-        if (cells.getLength() != _outerSize) {
-          throw new IOException();
-        }
-        for (int colIndex = 0; colIndex < cells.getLength(); colIndex++) {
-          Element cell = (Element) cells.item(colIndex);
-          final String cellInput = cell.getTextContent().trim();
-          givens[rowIndex][colIndex] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _outerSize);
-        }
-      }
-      return givens;
-    }
-    catch (ParserConfigurationException | SAXException e) {
-      throw new IOException(e);
-    }
+    });
+    puzzleBuilder.addGivens(givens);
   }
 
 }
