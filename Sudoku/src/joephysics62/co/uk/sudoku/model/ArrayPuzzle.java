@@ -10,18 +10,17 @@ public class ArrayPuzzle implements Puzzle {
   private final int[][] _cells;
   private final ConstraintList _allConstraints;
   private final int _inits;
-  private final int _possiblesSize;
-  private final int _subTableWidth;
-  private final int _subTableHeight;
   private final String _title;
-
-  @Override public int getPuzzleSize() { return _possiblesSize; }
-  @Override public int getSubTableHeight() { return _subTableHeight; }
-  @Override public int getSubTableWidth() { return _subTableWidth; }
+  private final PuzzleLayout _layout;
 
   @SuppressWarnings("serial")
   private static class ConstraintList extends ArrayList<Constraint> {
     // for arrays.
+  }
+
+  @Override
+  public PuzzleLayout getLayout() {
+    return _layout;
   }
 
   private ArrayPuzzle(ArrayPuzzle old) {
@@ -33,9 +32,7 @@ public class ArrayPuzzle implements Puzzle {
     }
     _constraintsPerCell = old._constraintsPerCell;
     _allConstraints = old._allConstraints;
-    _possiblesSize = old._possiblesSize;
-    _subTableHeight = old._subTableHeight;
-    _subTableWidth = old._subTableWidth;
+    _layout = old._layout;
     _inits = old._inits;
     _title = old._title;
   }
@@ -56,19 +53,17 @@ public class ArrayPuzzle implements Puzzle {
   }
 
 
-  private ArrayPuzzle(final String title, final int possiblesSize, final int subTableHeight, final int subTableWidth) {
+  private ArrayPuzzle(final String title, final PuzzleLayout layout) {
     _title = title;
-    _possiblesSize = possiblesSize;
-    _subTableHeight = subTableHeight;
-    _subTableWidth = subTableWidth;
-    _inits = (1 << possiblesSize) - 1;
-    _cells = new int[possiblesSize][possiblesSize];
-    _constraintsPerCell = new ConstraintList[possiblesSize][possiblesSize];
+    _inits = (1 << layout.getInitialsSize()) - 1;
+    _cells = new int[layout.getHeight()][layout.getWidth()];
+    _constraintsPerCell = new ConstraintList[layout.getHeight()][layout.getWidth()];
     _allConstraints = new ConstraintList();
+    _layout = layout;
   }
 
-  public static ArrayPuzzle forPossiblesSize(final String title, final int possiblesSize, final int subTableHeight, final int subTableWidth) {
-    return new ArrayPuzzle(title, possiblesSize, subTableHeight, subTableWidth);
+  public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout) {
+    return new ArrayPuzzle(title, layout);
   }
 
   @Override

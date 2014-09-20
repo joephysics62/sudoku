@@ -11,6 +11,7 @@ import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
@@ -24,13 +25,10 @@ public class PuzzleCreator {
     _solver = solver;
   }
 
-  public Puzzle create(final int puzzleSize, final int subTableHeight, final int subTableWidth, final int maxCluesToLeave) {
-    if (!((subTableHeight < 0 && subTableWidth < 0) || (puzzleSize == subTableHeight * subTableWidth))) {
-      throw new IllegalArgumentException();
-    }
+  public Puzzle create(final PuzzleLayout layout, final int maxCluesToLeave) {
     _seen.clear();
     for (int i = 0; i < 10000; i++) {
-      Puzzle completedNewPuzzle = createCompletedNewPuzzle(puzzleSize, subTableHeight, subTableWidth);
+      Puzzle completedNewPuzzle = createCompletedNewPuzzle(layout);
       for (int j = 0; j < 100; j++) {
         Puzzle puzzle = findPuzzle(completedNewPuzzle, maxCluesToLeave);
         if (null != puzzle) {
@@ -45,15 +43,15 @@ public class PuzzleCreator {
     Puzzle puzzleToTry = completedPuzzle.deepCopy();
     CellFilter solvedCellFilter = Solved.create();
     final List<Coord> solvedCells = solvedCellFilter.apply(puzzleToTry);
-    int puzzleSize = puzzleToTry.getPuzzleSize();
-    int init = (1 << puzzleSize) - 1;
+    PuzzleLayout layout = puzzleToTry.getLayout();
+    int init = (1 << layout.getInitialsSize()) - 1;
     Collections.shuffle(solvedCells);
-    int removesSize = puzzleSize * puzzleSize - cluesToLeave;
+    int removesSize = layout.getWidth() * layout.getHeight() - cluesToLeave;
 
     Set<Coord> removes = new LinkedHashSet<>();
     for (Coord coord : solvedCells) {
       removes.add(coord);
-      removes.add(new Coord(puzzleSize - coord.getRow() + 1, puzzleSize - coord.getCol() + 1));
+      removes.add(new Coord(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
       if (removes.size() >= removesSize) {
         break;
       }
@@ -71,14 +69,14 @@ public class PuzzleCreator {
     }
   }
 
-  private Puzzle createCompletedNewPuzzle(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
-    Puzzle puzzle = newPuzzle(puzzleSize, subTableHeight, subTableWidth);
+  private Puzzle createCompletedNewPuzzle(final PuzzleLayout layout) {
+    Puzzle puzzle = newPuzzle(layout);
     SolutionResult solutionResult = _solver.solve(puzzle);
     if (solutionResult.getType() == SolutionType.NONE) {
       return null;
     }
-    for (int row = 1; row <= puzzleSize; row++) {
-      for (int col = 1; col <= puzzleSize; col++) {
+    for (int row = 1; row <= layout.getHeight(); row++) {
+      for (int col = 1; col <= layout.getWidth(); col++) {
         Coord coord = new Coord(row, col);
         int niceValue = solutionResult.getSolution().getValue(coord);
         puzzle.setCellValue(Cell.cellValueAsBitwise(niceValue), coord);
@@ -87,14 +85,14 @@ public class PuzzleCreator {
     return puzzle;
   }
 
-  private Puzzle newPuzzle(final int puzzleSize, final int subTableHeight, final int subTableWidth) {
-    SudokuBuilder sudokuBuilder = new SudokuBuilder(puzzleSize, subTableHeight, subTableWidth);
-    Integer[][] givens = new Integer[puzzleSize][puzzleSize];
+  private Puzzle newPuzzle(final PuzzleLayout layout) {
+    SudokuBuilder sudokuBuilder = new SudokuBuilder(layout);
+    Integer[][] givens = new Integer[layout.getHeight()][layout.getWidth()];
     for (Integer[] row : givens) {
       Arrays.fill(row, null);
     }
     final List<Integer> aRow = new ArrayList<>();
-    for (int i = 1; i <= puzzleSize; i++) {
+    for (int i = 1; i <= layout.getHeight(); i++) {
       aRow.add(i);
     }
     Collections.shuffle(aRow);

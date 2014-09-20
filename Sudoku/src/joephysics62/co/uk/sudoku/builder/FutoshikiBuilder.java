@@ -9,16 +9,19 @@ import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class FutoshikiBuilder implements ArrayPuzzleBuilder {
-
-  private final int _puzzleSize;
   private Integer[][] _givenCells;
   private final List<GreaterThan> _greaterThanConstraints = new ArrayList<>();
   private String _title;
+  private final PuzzleLayout _layout;
 
-  public FutoshikiBuilder(final int puzzleSize) {
-    _puzzleSize = puzzleSize;
+  public FutoshikiBuilder(final PuzzleLayout layout) {
+    _layout = layout;
+    if (_layout.hasSubtables()) {
+      throw new IllegalArgumentException("Futoshikis do not have subtables");
+    }
   }
 
   @Override
@@ -33,19 +36,21 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
 
   @Override
   public Puzzle build() {
-    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_title, _puzzleSize, -1, -1);
-    final Coord[][] wholePuzzle = new Coord[_puzzleSize][_puzzleSize];
-    for (int row = 1; row <= _puzzleSize; row++) {
-      for (int col = 1; col <= _puzzleSize; col++) {
+    ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_title, _layout);
+    int height = _layout.getHeight();
+    int width = _layout.getWidth();
+    final Coord[][] wholePuzzle = new Coord[height][width];
+    for (int row = 1; row <= height; row++) {
+      for (int col = 1; col <= width; col++) {
         wholePuzzle[row - 1][col - 1] = new Coord(row, col);
       }
     }
     for (Coord[] row : wholePuzzle) {
       futoshiki.addConstraint(Uniqueness.of(Arrays.asList(row)));
     }
-    for (int col = 0; col < _puzzleSize; col++) {
+    for (int col = 0; col < height; col++) {
       final List<Coord> colCells = new ArrayList<>();
-      for (int row = 0; row < _puzzleSize; row++) {
+      for (int row = 0; row < width; row++) {
         colCells.add(wholePuzzle[row][col]);
       }
       futoshiki.addConstraint(Uniqueness.of(colCells));

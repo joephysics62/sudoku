@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.FutoshikiHTMLReader;
 import joephysics62.co.uk.sudoku.read.PuzzleReader;
 import joephysics62.co.uk.sudoku.read.SudokuHTMLPuzzleReader;
@@ -20,16 +21,16 @@ public class SolverMain {
     final String type = args[0];
     PuzzleReader puzzleReader;
     if (type.equals("timesMini")) {
-      puzzleReader = new SudokuHTMLPuzzleReader(2, 3, 6);
+      puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.TIMES_MINI);
     }
     else if (type.equals("classic")) {
-      puzzleReader = new SudokuHTMLPuzzleReader(3, 3, 9);
+      puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.CLASSIC_SUDOKU);
     }
     else if (type.equals("futoshiki")) {
-      puzzleReader = new FutoshikiHTMLReader(5);
+      puzzleReader = new FutoshikiHTMLReader(PuzzleLayout.FUTOSHIKI);
     }
     else if (type.equals("super")) {
-      puzzleReader = new SudokuHTMLPuzzleReader(4, 4, 16);
+      puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.SUPER_SUDOKU);
     }
     else {
       throw new IllegalArgumentException();

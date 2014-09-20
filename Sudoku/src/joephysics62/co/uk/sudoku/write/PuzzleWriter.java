@@ -18,7 +18,7 @@ public class PuzzleWriter {
     for (int[] row: allCells) {
       _out.print("|");
       for (int value : row) {
-        _out.print(Cell.isSolved(value) ? Cell.asString(Cell.convertToNiceValue(value), puzzle.getPuzzleSize()) : "-");
+        _out.print(Cell.isSolved(value) ? Cell.asString(Cell.convertToNiceValue(value), puzzle.getLayout().getInitialsSize()) : "-");
         _out.print("|");
       }
       _out.println();

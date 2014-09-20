@@ -7,28 +7,29 @@ import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
 public class SudokuHTMLPuzzleReader implements PuzzleReader {
 
-  private final int _outerSize;
   private final ArrayPuzzleBuilder _sudokuBuilder;
   private final HTMLTableParser _tableParser;
+  private final PuzzleLayout _layout;
 
-  public SudokuHTMLPuzzleReader(final int subTableHeight, final int subTableWidth, final int outerSize) {
-    _outerSize = outerSize;
-    _sudokuBuilder = new SudokuBuilder(outerSize, subTableHeight, subTableWidth);
-    _tableParser = new HTMLTableParser(_outerSize, outerSize);
+  public SudokuHTMLPuzzleReader(final PuzzleLayout layout) {
+    _layout = layout;
+    _sudokuBuilder = new SudokuBuilder(layout);
+    _tableParser = new HTMLTableParser(layout.getHeight(), layout.getWidth());
   }
 
   @Override
   public Puzzle read(final File input) throws IOException {
-    final Integer[][] givens = new Integer[_outerSize][_outerSize];
+    final Integer[][] givens = new Integer[_layout.getHeight()][_layout.getWidth()];
     _tableParser.parseTable(input, new TableParserHandler() {
       @Override
       public void cell(String cellInput, int rowIndex, int colIndex) {
-        givens[rowIndex][colIndex] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _outerSize);
+        givens[rowIndex][colIndex] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _layout.getInitialsSize());
       }
 
       @Override

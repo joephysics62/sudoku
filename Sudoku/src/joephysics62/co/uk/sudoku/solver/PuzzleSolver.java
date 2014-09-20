@@ -7,6 +7,7 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class PuzzleSolver {
 
@@ -56,7 +57,8 @@ public class PuzzleSolver {
   }
 
   private void addAsSolution(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
-    final int[][] solutionMap = new int[puzzle.getPuzzleSize()][puzzle.getPuzzleSize()];
+    PuzzleLayout layout = puzzle.getLayout();
+    final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
     int[][] allCells = puzzle.getAllCells();
     int rowIndex = 0;
     for (int[] row : allCells) {
@@ -67,7 +69,7 @@ public class PuzzleSolver {
       }
       rowIndex++;
     }
-    solutions.add(new SolvedPuzzle(solutionMap, puzzle.getSubTableHeight(), puzzle.getSubTableWidth()));
+    solutions.add(new SolvedPuzzle(solutionMap, layout));
   }
 
   private void analyticElimination(final Puzzle puzzle) {

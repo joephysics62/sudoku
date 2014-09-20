@@ -21,17 +21,16 @@ public class HTMLPuzzleWriter {
     _puzzle = puzzle;
   }
 
-  public void write(final File file, final String title) throws IOException, TemplateException {
+  public void write(final File file) throws IOException, TemplateException {
     Configuration configuration = new Configuration();
     Map<String, Object> root = new HashMap<>();
-    root.put("title", title);
     int[][] allCells = _puzzle.getAllCells();
     List<List<String>> table = new ArrayList<>();
     for (int[] row : allCells) {
       List<String> rowList = new ArrayList<>();
       for (int value : row) {
         if (Cell.isSolved(value)) {
-          rowList.add(Cell.asString(Cell.convertToNiceValue(value), _puzzle.getPuzzleSize()));
+          rowList.add(Cell.asString(Cell.convertToNiceValue(value), _puzzle.getLayout().getInitialsSize()));
         }
         else {
           rowList.add(null);
@@ -40,8 +39,9 @@ public class HTMLPuzzleWriter {
       table.add(rowList);
     }
     root.put("table", table);
-    root.put("subTableHeight", _puzzle.getSubTableHeight());
-    root.put("subTableWidth", _puzzle.getSubTableWidth());
+    root.put("subTableHeight", _puzzle.getLayout().getSubTableHeight());
+    root.put("subTableWidth", _puzzle.getLayout().getSubTableWidth());
+    root.put("title", _puzzle.getTitle());
     Template template = configuration.getTemplate("templates/sudokuTemplate.ftl", "UTF-8");
     template.process(root, new FileWriter(file));
 
