@@ -15,8 +15,8 @@ public class CreateMain {
     PuzzleWriter writer = new PuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     PuzzleCreator creator = new PuzzleCreator(solver);
-    final int maxCluesToLeave = 9;
-    Puzzle puzzle = creator.create(PuzzleLayout.TIMES_MINI, maxCluesToLeave);
+    final int maxCluesToLeave = 27;
+    Puzzle puzzle = creator.create(PuzzleLayout.CLASSIC_SUDOKU, maxCluesToLeave);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLPuzzleWriter(puzzle);
     htmlPuzzleWriter.write(new File("sudoku.html"));

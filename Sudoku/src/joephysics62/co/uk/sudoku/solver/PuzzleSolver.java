@@ -59,26 +59,18 @@ public class PuzzleSolver {
   private void addAsSolution(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
     PuzzleLayout layout = puzzle.getLayout();
     final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
-    int[][] allCells = puzzle.getAllCells();
-    int rowIndex = 0;
-    for (int[] row : allCells) {
-      int colIndex = 0;
-      for (int value : row) {
-        solutionMap[rowIndex][colIndex] = Cell.convertToNiceValue(value);
-        colIndex++;
+    for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
+      for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
+        solutionMap[rowIndex][colIndex] = Cell.convertToNiceValue(puzzle.getCellValue(Coord.of(rowIndex + 1,  colIndex + 1)));
       }
-      rowIndex++;
     }
     solutions.add(new SolvedPuzzle(solutionMap, layout));
   }
 
   private void analyticElimination(final Puzzle puzzle) {
-    final int[][] allCells = puzzle.getAllCells();
-    for (int rowIndex = 0; rowIndex < allCells.length; rowIndex++) {
-      int[] row = allCells[rowIndex];
-      for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        Coord coord = Coord.of(rowIndex + 1, colIndex + 1);
-        recursiveCellSolve(puzzle, coord);
+    for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
+      for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
+        recursiveCellSolve(puzzle, Coord.of(rowIndex + 1, colIndex + 1));
       }
     }
     solveOnRestrictions(puzzle);

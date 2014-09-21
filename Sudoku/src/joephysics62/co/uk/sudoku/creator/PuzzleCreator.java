@@ -92,7 +92,7 @@ public class PuzzleCreator {
     }
     Collections.shuffle(aRow);
     for (int i = 1; i <= layout.getWidth(); i++) {
-      sudokuBuilder.addGiven(aRow.get(i), Coord.of(1, i));
+      sudokuBuilder.addGiven(aRow.get(i - 1), Coord.of(1, i));
     }
     sudokuBuilder.addTitle("Joe's Sudoku");
     return sudokuBuilder.build();
