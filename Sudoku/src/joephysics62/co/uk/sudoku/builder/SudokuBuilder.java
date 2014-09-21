@@ -6,6 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Coord;
@@ -15,7 +16,7 @@ import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 /**
  * Builds an empty sudoku, with constraints.
  */
-public class SudokuBuilder implements ArrayPuzzleBuilder {
+public class SudokuBuilder implements PuzzleBuilder {
 
   private Integer[][] _givenCells = null;
   private String _title;
@@ -23,6 +24,11 @@ public class SudokuBuilder implements ArrayPuzzleBuilder {
 
   public SudokuBuilder(PuzzleLayout layout) {
     _layout = layout;
+  }
+
+  @Override
+  public void addConstraint(Constraint constraint) {
+    throw new UnsupportedOperationException();
   }
 
   @Override

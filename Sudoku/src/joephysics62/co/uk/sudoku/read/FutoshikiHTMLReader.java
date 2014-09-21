@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.builder.FutoshikiBuilder;
+import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -53,10 +54,10 @@ public class FutoshikiHTMLReader implements PuzzleReader {
           final Coord thisCell = Coord.of(rowNum, colNum);
           final Coord otherCell = Coord.of(rowNum + rowIndex % 2, colNum + colIndex % 2);
           if (">".equals(cellInput)) {
-            futoshikiBuilder.addGreaterThan(thisCell, otherCell);
+            futoshikiBuilder.addConstraint(GreaterThan.of(thisCell, otherCell));
           }
           else if ("<".equals(cellInput)) {
-            futoshikiBuilder.addGreaterThan(otherCell, thisCell);
+            futoshikiBuilder.addConstraint(GreaterThan.of(otherCell, thisCell));
           }
         }
       }

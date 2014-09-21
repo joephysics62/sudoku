@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import joephysics62.co.uk.sudoku.constraints.GreaterThan;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
-public class FutoshikiBuilder implements ArrayPuzzleBuilder {
+public class FutoshikiBuilder implements PuzzleBuilder {
   private Integer[][] _givenCells;
-  private final List<GreaterThan> _greaterThanConstraints = new ArrayList<>();
+  private final List<Constraint> _nonUniquenessConstraints = new ArrayList<>();
   private String _title;
   private final PuzzleLayout _layout;
 
@@ -22,6 +22,11 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
     if (_layout.hasSubtables()) {
       throw new IllegalArgumentException("Futoshikis do not have subtables");
     }
+  }
+
+  @Override
+  public void addConstraint(final Constraint constraint) {
+    _nonUniquenessConstraints.add(constraint);
   }
 
   @Override
@@ -61,14 +66,10 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
     if (_givenCells != null) {
       futoshiki.addCells(_givenCells);
     }
-    for (GreaterThan gtConstraint : _greaterThanConstraints) {
-      futoshiki.addConstraint(gtConstraint);
+    for (Constraint constraint : _nonUniquenessConstraints) {
+      futoshiki.addConstraint(constraint);
     }
     return futoshiki;
-  }
-
-  public void addGreaterThan(Coord left, Coord right) {
-    _greaterThanConstraints.add(GreaterThan.of(left, right));
   }
 
 }

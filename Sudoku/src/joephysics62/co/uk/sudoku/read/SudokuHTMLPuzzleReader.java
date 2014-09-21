@@ -3,7 +3,7 @@ package joephysics62.co.uk.sudoku.read;
 import java.io.File;
 import java.io.IOException;
 
-import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.builder.PuzzleBuilder;
 import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
@@ -14,7 +14,7 @@ import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
 public class SudokuHTMLPuzzleReader implements PuzzleReader {
 
-  private final ArrayPuzzleBuilder _sudokuBuilder;
+  private final PuzzleBuilder _sudokuBuilder;
   private final HTMLTableParser _tableParser;
   private final PuzzleLayout _layout;
 
