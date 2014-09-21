@@ -17,7 +17,7 @@ import joephysics62.co.uk.sudoku.model.PuzzleLayout;
  */
 public class SudokuBuilder implements ArrayPuzzleBuilder {
 
-  private Integer[][] _givenCells;
+  private Integer[][] _givenCells = null;
   private String _title;
   private final PuzzleLayout _layout;
 
@@ -26,8 +26,11 @@ public class SudokuBuilder implements ArrayPuzzleBuilder {
   }
 
   @Override
-  public void addGivens(Integer[][] givenCells) {
-    _givenCells = givenCells;
+  public void addGiven(Integer value, Coord coord) {
+    if (null == _givenCells) {
+      _givenCells = new Integer[_layout.getHeight()][_layout.getWidth()];
+    }
+    _givenCells[coord.getRow() - 1][coord.getCol() -1] = value;
   }
 
   @Override

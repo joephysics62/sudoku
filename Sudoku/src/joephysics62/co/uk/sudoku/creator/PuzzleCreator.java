@@ -1,7 +1,6 @@
 package joephysics62.co.uk.sudoku.creator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -87,17 +86,14 @@ public class PuzzleCreator {
 
   private Puzzle newPuzzle(final PuzzleLayout layout) {
     SudokuBuilder sudokuBuilder = new SudokuBuilder(layout);
-    Integer[][] givens = new Integer[layout.getHeight()][layout.getWidth()];
-    for (Integer[] row : givens) {
-      Arrays.fill(row, null);
-    }
     final List<Integer> aRow = new ArrayList<>();
-    for (int i = 1; i <= layout.getHeight(); i++) {
+    for (int i = 1; i <= layout.getWidth(); i++) {
       aRow.add(i);
     }
     Collections.shuffle(aRow);
-    givens[0] = aRow.toArray(new Integer[] {});
-    sudokuBuilder.addGivens(givens);
+    for (int i = 1; i <= layout.getWidth(); i++) {
+      sudokuBuilder.addGiven(aRow.get(i), Coord.of(1, i));
+    }
     sudokuBuilder.addTitle("Joe's Sudoku");
     return sudokuBuilder.build();
   }

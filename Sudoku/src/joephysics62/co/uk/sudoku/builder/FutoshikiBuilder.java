@@ -25,8 +25,11 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
   }
 
   @Override
-  public void addGivens(Integer[][] givenCells) {
-    _givenCells = givenCells;
+  public void addGiven(Integer value, Coord coord) {
+    if (null == _givenCells) {
+      _givenCells = new Integer[_layout.getHeight()][_layout.getWidth()];
+    }
+    _givenCells[coord.getRow() - 1][coord.getCol() -1] = value;
   }
 
   @Override

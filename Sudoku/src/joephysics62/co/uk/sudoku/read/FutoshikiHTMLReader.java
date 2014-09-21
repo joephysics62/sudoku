@@ -29,9 +29,7 @@ public class FutoshikiHTMLReader implements PuzzleReader {
   }
 
   private void readGivens(final File input, final FutoshikiBuilder futoshikiBuilder) throws IOException {
-    final Integer[][] givens = new Integer[_layout.getHeight()][_layout.getWidth()];
     final TableParserHandler handler = new TableParserHandler() {
-
       @Override
       public void title(String title) {
         futoshikiBuilder.addTitle(title);
@@ -42,7 +40,9 @@ public class FutoshikiHTMLReader implements PuzzleReader {
         int rowNum = rowIndex / 2 + 1;
         int colNum = colIndex / 2 + 1;
         if (rowIndex % 2 == 0 && colIndex % 2 == 0) {
-          givens[rowNum - 1][colNum - 1] = cellInput.isEmpty() ? null : Cell.fromString(cellInput, _layout.getInitialsSize());
+          if (!cellInput.isEmpty()) {
+            futoshikiBuilder.addGiven(Cell.fromString(cellInput, _layout.getInitialsSize()), Coord.of(rowNum, colNum));
+          }
         }
         else if (rowIndex % 2 == 1 && colIndex % 2 == 1) {
           if (!cellInput.isEmpty()) {
@@ -62,7 +62,6 @@ public class FutoshikiHTMLReader implements PuzzleReader {
       }
     };
     _tableParser.parseTable(input, handler);
-    futoshikiBuilder.addGivens(givens);
   }
 
 }
