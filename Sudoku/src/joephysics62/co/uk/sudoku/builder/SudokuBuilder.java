@@ -1,7 +1,6 @@
 package joephysics62.co.uk.sudoku.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,31 +48,31 @@ public class SudokuBuilder implements PuzzleBuilder {
     ArrayPuzzle sudoku = ArrayPuzzle.forPossiblesSize(_title, _layout);
     int height = _layout.getHeight();
     int width = _layout.getWidth();
-    final Coord[][] wholePuzzle = new Coord[height][width];
-    for (int row = 0; row < height; row++) {
-      for (int col = 0; col < width; col++) {
-        wholePuzzle[row][col] = Coord.of(row + 1, col + 1);
+
+    for (int rowNum = 1; rowNum <= height; rowNum++) {
+      final List<Coord> row = new ArrayList<>();
+      for (int colNum = 1; colNum <= width; colNum++) {
+        row.add(Coord.of(rowNum, colNum));
       }
+      sudoku.addConstraint(Uniqueness.of(row));
     }
 
-    for (Coord[] rowArray : wholePuzzle) {
-      sudoku.addConstraint(Uniqueness.of(Arrays.asList(rowArray)));
-    }
-    for (int col = 0; col < height; col++) {
-      List<Coord> colCells = new ArrayList<>();
-      for (int row = 0; row < width; row++) {
-        colCells.add(wholePuzzle[row][col]);
+    for (int colNum = 1; colNum <= width; colNum++) {
+      final List<Coord> column = new ArrayList<>();
+      for (int rowNum = 1; rowNum <= height; rowNum++) {
+        column.add(Coord.of(rowNum, colNum));
       }
-      sudoku.addConstraint(Uniqueness.of(colCells));
+      sudoku.addConstraint(Uniqueness.of(column));
     }
-    for (int i = 0; i < height / _layout.getSubTableHeight(); i++) {
-      for (int j = 0; j < width / _layout.getSubTableWidth(); j++) {
+
+    for (int subTableRowNum = 1; subTableRowNum <= height / _layout.getSubTableHeight(); subTableRowNum++) {
+      for (int subTableColNum = 1; subTableColNum <= width / _layout.getSubTableWidth(); subTableColNum++) {
         final Set<Coord> subTableCells = new LinkedHashSet<>();
-        for (int ii = 0; ii < _layout.getSubTableHeight(); ii++) {
-          for (int jj = 0; jj < _layout.getSubTableWidth(); jj++) {
-            int row = i * _layout.getSubTableHeight() + ii;
-            int col = j * _layout.getSubTableHeight() + jj;
-            subTableCells.add(wholePuzzle[row][col]);
+        for (int rowNumInSubTable = 1; rowNumInSubTable <= _layout.getSubTableHeight(); rowNumInSubTable++) {
+          for (int colNumInSubTable = 1; colNumInSubTable <= _layout.getSubTableWidth(); colNumInSubTable++) {
+            int row = (subTableRowNum - 1) * _layout.getSubTableHeight() + rowNumInSubTable;
+            int col = (subTableColNum - 1) * _layout.getSubTableWidth() + colNumInSubTable;
+            subTableCells.add(Coord.of(row, col));
           }
         }
         sudoku.addConstraint(Uniqueness.of(subTableCells));
