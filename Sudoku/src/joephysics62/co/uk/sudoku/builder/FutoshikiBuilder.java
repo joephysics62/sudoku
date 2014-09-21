@@ -45,7 +45,7 @@ public class FutoshikiBuilder implements ArrayPuzzleBuilder {
     final Coord[][] wholePuzzle = new Coord[height][width];
     for (int row = 1; row <= height; row++) {
       for (int col = 1; col <= width; col++) {
-        wholePuzzle[row - 1][col - 1] = new Coord(row, col);
+        wholePuzzle[row - 1][col - 1] = Coord.of(row, col);
       }
     }
     for (Coord[] row : wholePuzzle) {

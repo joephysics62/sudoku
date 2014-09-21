@@ -4,7 +4,7 @@ public class Coord {
   private final int _row;
   private final int _col;
 
-  public Coord(final int row, final int col) {
+  private Coord(final int row, final int col) {
     _row = row;
     _col = col;
   }

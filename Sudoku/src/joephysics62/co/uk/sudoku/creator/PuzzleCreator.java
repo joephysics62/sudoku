@@ -50,7 +50,7 @@ public class PuzzleCreator {
     Set<Coord> removes = new LinkedHashSet<>();
     for (Coord coord : solvedCells) {
       removes.add(coord);
-      removes.add(new Coord(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
+      removes.add(Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
       if (removes.size() >= removesSize) {
         break;
       }
@@ -76,7 +76,7 @@ public class PuzzleCreator {
     }
     for (int row = 1; row <= layout.getHeight(); row++) {
       for (int col = 1; col <= layout.getWidth(); col++) {
-        Coord coord = new Coord(row, col);
+        Coord coord = Coord.of(row, col);
         int niceValue = solutionResult.getSolution().getValue(coord);
         puzzle.setCellValue(Cell.cellValueAsBitwise(niceValue), coord);
       }

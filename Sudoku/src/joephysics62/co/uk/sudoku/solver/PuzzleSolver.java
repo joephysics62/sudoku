@@ -77,7 +77,7 @@ public class PuzzleSolver {
     for (int rowIndex = 0; rowIndex < allCells.length; rowIndex++) {
       int[] row = allCells[rowIndex];
       for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        Coord coord = new Coord(rowIndex + 1, colIndex + 1);
+        Coord coord = Coord.of(rowIndex + 1, colIndex + 1);
         recursiveCellSolve(puzzle, coord);
       }
     }

@@ -28,11 +28,11 @@ public class FirstClosestToSolved implements CellFilter {
         if (!Cell.isSolved(value)) {
           int possiblesSize = Integer.bitCount(value);
           if (possiblesSize == 2) {
-            return Collections.singletonList(new Coord(rowNum, colNum));
+            return Collections.singletonList(Coord.of(rowNum, colNum));
           }
           else if (possiblesSize < minPossibles) {
             minPossibles = possiblesSize;
-            minCell = new Coord(rowNum, colNum);
+            minCell = Coord.of(rowNum, colNum);
           }
         }
         colNum++;

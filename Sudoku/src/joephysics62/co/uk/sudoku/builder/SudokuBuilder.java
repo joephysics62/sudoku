@@ -46,7 +46,7 @@ public class SudokuBuilder implements ArrayPuzzleBuilder {
     final Coord[][] wholePuzzle = new Coord[height][width];
     for (int row = 0; row < height; row++) {
       for (int col = 0; col < width; col++) {
-        wholePuzzle[row][col] = new Coord(row + 1, col + 1);
+        wholePuzzle[row][col] = Coord.of(row + 1, col + 1);
       }
     }
 

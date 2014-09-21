@@ -28,7 +28,7 @@ public class Solved implements CellFilter {
     for (int rowNum = 1; rowNum <= allCells.length; rowNum++) {
       for (int colNum = 1; colNum <= allCells.length; colNum++) {
         if (Cell.isSolved(allCells[rowNum - 1][colNum -1])) {
-          unsolved.add(new Coord(rowNum, colNum));
+          unsolved.add(Coord.of(rowNum, colNum));
         }
       }
     }
