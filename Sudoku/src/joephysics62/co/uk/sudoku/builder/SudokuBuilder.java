@@ -65,13 +65,15 @@ public class SudokuBuilder implements PuzzleBuilder {
       sudoku.addConstraint(Uniqueness.of(column));
     }
 
-    for (int subTableRowNum = 1; subTableRowNum <= height / _layout.getSubTableHeight(); subTableRowNum++) {
-      for (int subTableColNum = 1; subTableColNum <= width / _layout.getSubTableWidth(); subTableColNum++) {
+    int subTableHeight = _layout.getSubTableHeight();
+    int subTableWidth = _layout.getSubTableWidth();
+    for (int subTableRowNum = 1; subTableRowNum <= height / subTableHeight; subTableRowNum++) {
+      for (int subTableColNum = 1; subTableColNum <= width / subTableWidth; subTableColNum++) {
         final Set<Coord> subTableCells = new LinkedHashSet<>();
-        for (int rowNumInSubTable = 1; rowNumInSubTable <= _layout.getSubTableHeight(); rowNumInSubTable++) {
-          for (int colNumInSubTable = 1; colNumInSubTable <= _layout.getSubTableWidth(); colNumInSubTable++) {
-            int row = (subTableRowNum - 1) * _layout.getSubTableHeight() + rowNumInSubTable;
-            int col = (subTableColNum - 1) * _layout.getSubTableWidth() + colNumInSubTable;
+        for (int rowNumInSubTable = 1; rowNumInSubTable <= subTableHeight; rowNumInSubTable++) {
+          for (int colNumInSubTable = 1; colNumInSubTable <= subTableWidth; colNumInSubTable++) {
+            int row = (subTableRowNum - 1) * subTableHeight + rowNumInSubTable;
+            int col = (subTableColNum - 1) * subTableWidth + colNumInSubTable;
             subTableCells.add(Coord.of(row, col));
           }
         }
