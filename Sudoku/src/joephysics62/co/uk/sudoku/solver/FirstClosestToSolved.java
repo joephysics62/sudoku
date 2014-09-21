@@ -21,10 +21,10 @@ public class FirstClosestToSolved implements CellFilter {
   public List<Coord> apply(final Puzzle puzzle) {
     int minPossibles = Integer.MAX_VALUE;
     Coord minCell = null;
-    int rowNum = 1;
-    for (int[] row : puzzle.getAllCells()) {
-      int colNum = 1;
-      for (int value : row) {
+    int[][] allCells = puzzle.getAllCells();
+    for (int rowNum = 1; rowNum <= puzzle.getLayout().getHeight(); rowNum++) {
+      for (int colNum = 1; colNum <= puzzle.getLayout().getWidth(); colNum++) {
+        int value = allCells[rowNum - 1][colNum - 1];
         if (!Cell.isSolved(value)) {
           int possiblesSize = Integer.bitCount(value);
           if (possiblesSize == 2) {
@@ -35,9 +35,7 @@ public class FirstClosestToSolved implements CellFilter {
             minCell = Coord.of(rowNum, colNum);
           }
         }
-        colNum++;
       }
-      rowNum++;
     }
     if (minCell == null) {
       return Collections.emptyList();
