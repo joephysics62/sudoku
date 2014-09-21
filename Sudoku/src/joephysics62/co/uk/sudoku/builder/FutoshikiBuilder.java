@@ -1,7 +1,6 @@
 package joephysics62.co.uk.sudoku.builder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
@@ -47,22 +46,23 @@ public class FutoshikiBuilder implements PuzzleBuilder {
     ArrayPuzzle futoshiki = ArrayPuzzle.forPossiblesSize(_title, _layout);
     int height = _layout.getHeight();
     int width = _layout.getWidth();
-    final Coord[][] wholePuzzle = new Coord[height][width];
-    for (int row = 1; row <= height; row++) {
-      for (int col = 1; col <= width; col++) {
-        wholePuzzle[row - 1][col - 1] = Coord.of(row, col);
+
+    for (int rowNum = 1; rowNum <= height; rowNum++) {
+      final List<Coord> row = new ArrayList<>();
+      for (int colNum = 1; colNum <= width; colNum++) {
+        row.add(Coord.of(rowNum, colNum));
       }
+      futoshiki.addConstraint(Uniqueness.of(row));
     }
-    for (Coord[] row : wholePuzzle) {
-      futoshiki.addConstraint(Uniqueness.of(Arrays.asList(row)));
-    }
-    for (int col = 0; col < height; col++) {
-      final List<Coord> colCells = new ArrayList<>();
-      for (int row = 0; row < width; row++) {
-        colCells.add(wholePuzzle[row][col]);
+
+    for (int colNum = 1; colNum <= width; colNum++) {
+      final List<Coord> column = new ArrayList<>();
+      for (int rowNum = 1; rowNum <= height; rowNum++) {
+        column.add(Coord.of(rowNum, colNum));
       }
-      futoshiki.addConstraint(Uniqueness.of(colCells));
+      futoshiki.addConstraint(Uniqueness.of(column));
     }
+
     if (_givenCells != null) {
       futoshiki.addCells(_givenCells);
     }
