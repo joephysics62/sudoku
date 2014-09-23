@@ -125,13 +125,16 @@ public class ArrayPuzzle implements Puzzle {
     return completeness;
   }
 
-  public void addConstraint(Constraint constraint) {
-    _allConstraints.add(constraint);
-    for (Coord cellCoord : constraint.getCells()) {
-      if (getConstraints(cellCoord) == null) {
-        _constraintsPerCell[cellCoord.getRow() - 1][cellCoord.getCol() - 1] = new ConstraintList();
+  public void setConstraints(List<Constraint> constraints) {
+    _allConstraints.clear();
+    _allConstraints.addAll(constraints);
+    for (Constraint constraint : constraints) {
+      for (Coord cellCoord : constraint.getCells()) {
+        if (getConstraints(cellCoord) == null) {
+          _constraintsPerCell[cellCoord.getRow() - 1][cellCoord.getCol() - 1] = new ConstraintList();
+        }
+        getConstraints(cellCoord).add(constraint);
       }
-      getConstraints(cellCoord).add(constraint);
     }
   }
 
