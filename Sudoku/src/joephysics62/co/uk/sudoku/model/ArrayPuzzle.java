@@ -53,17 +53,26 @@ public class ArrayPuzzle implements Puzzle {
   }
 
 
-  private ArrayPuzzle(final String title, final PuzzleLayout layout) {
+  private ArrayPuzzle(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
     _title = title;
     _inits = (1 << layout.getInitialsSize()) - 1;
     _cells = new int[layout.getHeight()][layout.getWidth()];
     _constraintsPerCell = new ConstraintList[layout.getHeight()][layout.getWidth()];
     _allConstraints = new ConstraintList();
+    _allConstraints.addAll(constraints);
     _layout = layout;
+    for (Constraint constraint : constraints) {
+      for (Coord cellCoord : constraint.getCells()) {
+        if (getConstraints(cellCoord) == null) {
+          _constraintsPerCell[cellCoord.getRow() - 1][cellCoord.getCol() - 1] = new ConstraintList();
+        }
+        getConstraints(cellCoord).add(constraint);
+      }
+    }
   }
 
-  public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout) {
-    return new ArrayPuzzle(title, layout);
+  public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
+    return new ArrayPuzzle(title, layout, constraints);
   }
 
   @Override
@@ -123,19 +132,6 @@ public class ArrayPuzzle implements Puzzle {
       }
     }
     return completeness;
-  }
-
-  public void setConstraints(List<Constraint> constraints) {
-    _allConstraints.clear();
-    _allConstraints.addAll(constraints);
-    for (Constraint constraint : constraints) {
-      for (Coord cellCoord : constraint.getCells()) {
-        if (getConstraints(cellCoord) == null) {
-          _constraintsPerCell[cellCoord.getRow() - 1][cellCoord.getCol() - 1] = new ConstraintList();
-        }
-        getConstraints(cellCoord).add(constraint);
-      }
-    }
   }
 
   public void addCells(Integer[][] givenValues) {

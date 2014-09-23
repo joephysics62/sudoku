@@ -35,6 +35,9 @@ public abstract class ArrayPuzzleBuilder implements PuzzleBuilder {
   public final void addTitle(final String title) {
     _title = title;
   }
+  public PuzzleLayout getLayout() {
+    return _layout;
+  }
 
   @Override
   public final void addConstraint(Constraint constraint) {
@@ -45,40 +48,45 @@ public abstract class ArrayPuzzleBuilder implements PuzzleBuilder {
     return _constraints;
   }
 
-  protected ArrayPuzzle puzzleNoConstraints() {
-    ArrayPuzzle arrayPuzzle = ArrayPuzzle.forPossiblesSize(_title, _layout);
+  protected ArrayPuzzle newArrayPuzzle(final List<Constraint> constraints) {
+    ArrayPuzzle arrayPuzzle = ArrayPuzzle.forPossiblesSize(_title, _layout, constraints);
     if (_givenCells != null) {
       arrayPuzzle.addCells(_givenCells);
     }
     return arrayPuzzle;
   }
 
-  protected void addRowUniqueness() {
+  protected List<Constraint> createRowUniquenessConstraints(PuzzleLayout layout) {
+    List<Constraint> out = new ArrayList<>();
     for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
       final List<Coord> row = new ArrayList<>();
       for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
         row.add(Coord.of(rowNum, colNum));
       }
-      addConstraint(Uniqueness.of(row));
+      out.add(Uniqueness.of(row));
     }
+    return out;
   }
 
-  protected void addColumnUniqueness() {
-    for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
+  protected List<Constraint> createColumnUniquenessConstraints(PuzzleLayout layout) {
+    List<Constraint> out = new ArrayList<>();
+    for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
       final List<Coord> column = new ArrayList<>();
-      for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
+      for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
         column.add(Coord.of(rowNum, colNum));
       }
-      addConstraint(Uniqueness.of(column));
+      out.add(Uniqueness.of(column));
     }
+    return out;
 
   }
 
-  protected void addSubTableUniqueness() {
-    int subTableHeight = _layout.getSubTableHeight();
-    int subTableWidth = _layout.getSubTableWidth();
-    for (int subTableRowNum = 1; subTableRowNum <= _layout.getHeight() / subTableHeight; subTableRowNum++) {
-      for (int subTableColNum = 1; subTableColNum <= _layout.getWidth() / subTableWidth; subTableColNum++) {
+  protected List<Constraint> createSubTableUniquenessConstraints(PuzzleLayout layout) {
+    final List<Constraint> out = new ArrayList<>();
+    int subTableHeight = layout.getSubTableHeight();
+    int subTableWidth = layout.getSubTableWidth();
+    for (int subTableRowNum = 1; subTableRowNum <= layout.getHeight() / subTableHeight; subTableRowNum++) {
+      for (int subTableColNum = 1; subTableColNum <= layout.getWidth() / subTableWidth; subTableColNum++) {
         final Set<Coord> subTableCells = new LinkedHashSet<>();
         for (int rowNumInSubTable = 1; rowNumInSubTable <= subTableHeight; rowNumInSubTable++) {
           for (int colNumInSubTable = 1; colNumInSubTable <= subTableWidth; colNumInSubTable++) {
@@ -87,8 +95,9 @@ public abstract class ArrayPuzzleBuilder implements PuzzleBuilder {
             subTableCells.add(Coord.of(row, col));
           }
         }
-        addConstraint(Uniqueness.of(subTableCells));
+        out.add(Uniqueness.of(subTableCells));
       }
     }
+    return out;
   }
 }
