@@ -8,7 +8,7 @@ public class PuzzleLayout {
   private final int _subTableWidth;
   private final int _initialsSize;
 
-  private PuzzleLayout(
+  public PuzzleLayout(
       final int height, final int width,
       final int subTableHeight, final int subTableWidth,
       final int initialsSize) {

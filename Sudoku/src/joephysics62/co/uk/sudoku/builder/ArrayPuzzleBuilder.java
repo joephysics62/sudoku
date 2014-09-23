@@ -20,7 +20,6 @@ public class ArrayPuzzleBuilder implements PuzzleBuilder {
 
   public ArrayPuzzleBuilder(final PuzzleLayout layout) {
     _layout = layout;
-
   }
 
   @Override

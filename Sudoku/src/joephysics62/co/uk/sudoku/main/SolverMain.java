@@ -12,7 +12,7 @@ import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
-import joephysics62.co.uk.sudoku.write.PuzzleWriter;
+import joephysics62.co.uk.sudoku.write.TextPuzzleWriter;
 
 public class SolverMain {
 
@@ -36,7 +36,7 @@ public class SolverMain {
       throw new IllegalArgumentException();
     }
     Puzzle puzzle = puzzleReader.read(input);
-    PuzzleWriter puzzleWriter = new PuzzleWriter(System.out);
+    TextPuzzleWriter puzzleWriter = new TextPuzzleWriter(System.out);
     System.out.println("INPUT = ");
     puzzleWriter.write(puzzle);
     PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());

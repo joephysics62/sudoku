@@ -3,47 +3,40 @@ package joephysics62.co.uk.sudoku.write;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class HTMLPuzzleWriter {
-  private final Puzzle _puzzle;
+public abstract class HTMLPuzzleWriter {
 
-  public HTMLPuzzleWriter(final Puzzle puzzle) {
+  private static final String ENCODING = "UTF-8";
+  private final Puzzle _puzzle;
+  private final String _templateLocation;
+
+  public HTMLPuzzleWriter(final Puzzle puzzle, final String templateLocation) {
     _puzzle = puzzle;
+    _templateLocation = templateLocation;
   }
 
-  public void write(final File file) throws IOException, TemplateException {
+  public final void write(final File file) throws IOException, TemplateException {
     Configuration configuration = new Configuration();
     Map<String, Object> root = new HashMap<>();
-    int[][] allCells = _puzzle.getAllCells();
-    List<List<String>> table = new ArrayList<>();
-    for (int[] row : allCells) {
-      List<String> rowList = new ArrayList<>();
-      for (int value : row) {
-        if (Cell.isSolved(value)) {
-          rowList.add(Cell.asString(Cell.convertToNiceValue(value), _puzzle.getLayout().getInitialsSize()));
-        }
-        else {
-          rowList.add(null);
-        }
-      }
-      table.add(rowList);
-    }
+    List<List<String>> table = generateTable(_puzzle.getAllCells(), _puzzle.getLayout());
     root.put("table", table);
-    root.put("subTableHeight", _puzzle.getLayout().getSubTableHeight());
-    root.put("subTableWidth", _puzzle.getLayout().getSubTableWidth());
     root.put("title", _puzzle.getTitle());
-    Template template = configuration.getTemplate("templates/sudokuTemplate.ftl", "UTF-8");
+    addPuzzleSpecificParams(root, _puzzle.getLayout());
+    Template template = configuration.getTemplate(_templateLocation, ENCODING);
     template.process(root, new FileWriter(file));
-
   }
+
+  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout);
+
+  protected abstract List<List<String>> generateTable(int[][] allCells, PuzzleLayout puzzleLayout);
+
  }

@@ -5,11 +5,11 @@ import java.io.PrintStream;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class PuzzleWriter {
+public class TextPuzzleWriter {
 
   private final PrintStream _out;
 
-  public PuzzleWriter(final PrintStream out) {
+  public TextPuzzleWriter(final PrintStream out) {
     _out = out;
   }
 
