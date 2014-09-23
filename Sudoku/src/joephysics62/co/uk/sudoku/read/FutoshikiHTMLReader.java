@@ -3,7 +3,7 @@ package joephysics62.co.uk.sudoku.read;
 import java.io.File;
 import java.io.IOException;
 
-import joephysics62.co.uk.sudoku.builder.FutoshikiBuilder;
+import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
@@ -24,12 +24,7 @@ public class FutoshikiHTMLReader implements PuzzleReader {
 
   @Override
   public Puzzle read(final File input) throws IOException {
-    FutoshikiBuilder futoshikiBuilder = new FutoshikiBuilder(_layout);
-    readGivens(input, futoshikiBuilder);
-    return futoshikiBuilder.build();
-  }
-
-  private void readGivens(final File input, final FutoshikiBuilder futoshikiBuilder) throws IOException {
+    final ArrayPuzzleBuilder futoshikiBuilder = new ArrayPuzzleBuilder(_layout);
     final TableParserHandler handler = new TableParserHandler() {
       @Override
       public void title(String title) {
@@ -63,6 +58,9 @@ public class FutoshikiHTMLReader implements PuzzleReader {
       }
     };
     _tableParser.parseTable(input, handler);
+    futoshikiBuilder.addRowUniquenessConstraints();
+    futoshikiBuilder.addColumnUniquenessConstraints();
+    return futoshikiBuilder.build();
   }
 
 }

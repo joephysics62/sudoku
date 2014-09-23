@@ -6,7 +6,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import joephysics62.co.uk.sudoku.builder.SudokuBuilder;
+import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -85,7 +85,7 @@ public class PuzzleCreator {
   }
 
   private Puzzle newPuzzle(final PuzzleLayout layout) {
-    SudokuBuilder sudokuBuilder = new SudokuBuilder(layout);
+    ArrayPuzzleBuilder sudokuBuilder = new ArrayPuzzleBuilder(layout);
     final List<Integer> aRow = new ArrayList<>();
     for (int i = 1; i <= layout.getWidth(); i++) {
       aRow.add(i);
@@ -95,6 +95,9 @@ public class PuzzleCreator {
       sudokuBuilder.addGiven(aRow.get(i - 1), Coord.of(1, i));
     }
     sudokuBuilder.addTitle("Joe's Sudoku");
+    sudokuBuilder.addColumnUniquenessConstraints();
+    sudokuBuilder.addRowUniquenessConstraints();
+    sudokuBuilder.addSubTableUniquenessConstraints();
     return sudokuBuilder.build();
   }
 
