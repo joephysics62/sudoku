@@ -14,16 +14,15 @@ import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
 public class FutoshikiHTMLReader implements PuzzleReader {
 
-  private final HTMLTableParser _tableParser;
   private final PuzzleLayout _layout;
 
   public FutoshikiHTMLReader(final PuzzleLayout layout) {
     _layout = layout;
-    _tableParser = new HTMLTableParser(2 * layout.getHeight() - 1, 2 * layout.getWidth() - 1);
   }
 
   @Override
   public Puzzle read(final File input) throws IOException {
+    HTMLTableParser tableParser = new HTMLTableParser(2 * _layout.getHeight() - 1, 2 * _layout.getWidth() - 1);
     final ArrayPuzzleBuilder futoshikiBuilder = new ArrayPuzzleBuilder(_layout);
     final TableParserHandler handler = new TableParserHandler() {
       @Override
@@ -57,7 +56,7 @@ public class FutoshikiHTMLReader implements PuzzleReader {
         }
       }
     };
-    _tableParser.parseTable(input, handler);
+    tableParser.parseTable(input, handler);
     futoshikiBuilder.addRowUniquenessConstraints();
     futoshikiBuilder.addColumnUniquenessConstraints();
     return futoshikiBuilder.build();
