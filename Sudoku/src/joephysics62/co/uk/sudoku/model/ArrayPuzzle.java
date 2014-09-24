@@ -6,17 +6,11 @@ import java.util.List;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public class ArrayPuzzle implements Puzzle {
-  private final ConstraintList[][] _constraintsPerCell;
   private final int[][] _cells;
-  private final ConstraintList _allConstraints;
+  private final List<Constraint> _constraints;
   private final int _inits;
   private final String _title;
   private final PuzzleLayout _layout;
-
-  @SuppressWarnings("serial")
-  private static class ConstraintList extends ArrayList<Constraint> {
-    // for arrays.
-  }
 
   @Override
   public PuzzleLayout getLayout() {
@@ -30,8 +24,7 @@ public class ArrayPuzzle implements Puzzle {
     for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
       _cells[rowIndex] = old._cells[rowIndex].clone();
     }
-    _constraintsPerCell = old._constraintsPerCell;
-    _allConstraints = old._allConstraints;
+    _constraints = old._constraints;
     _layout = old._layout;
     _inits = old._inits;
     _title = old._title;
@@ -57,18 +50,8 @@ public class ArrayPuzzle implements Puzzle {
     _title = title;
     _inits = (1 << layout.getInitialsSize()) - 1;
     _cells = new int[layout.getHeight()][layout.getWidth()];
-    _constraintsPerCell = new ConstraintList[layout.getHeight()][layout.getWidth()];
-    _allConstraints = new ConstraintList();
-    _allConstraints.addAll(constraints);
+    _constraints = constraints;
     _layout = layout;
-    for (Constraint constraint : constraints) {
-      for (Coord cellCoord : constraint.getCells()) {
-        if (getConstraints(cellCoord) == null) {
-          _constraintsPerCell[cellCoord.getRow() - 1][cellCoord.getCol() - 1] = new ConstraintList();
-        }
-        getConstraints(cellCoord).add(constraint);
-      }
-    }
   }
 
   public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
@@ -91,12 +74,18 @@ public class ArrayPuzzle implements Puzzle {
 
   @Override
   public List<Constraint> getAllConstraints() {
-    return _allConstraints;
+    return _constraints;
   }
 
   @Override
   public List<Constraint> getConstraints(final Coord coord) {
-    return _constraintsPerCell[coord.getRow() - 1][coord.getCol() - 1];
+    List<Constraint> out = new ArrayList<>();
+    for (Constraint constraint : _constraints) {
+      if (constraint.getCells().contains(coord)) {
+        out.add(constraint);
+      }
+    }
+    return out;
   }
 
   @Override
