@@ -1,6 +1,7 @@
 package joephysics62.co.uk.sudoku.creator;
 
 import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 
 public class SudokuCreator extends ArrayPuzzleCreator {
@@ -14,6 +15,11 @@ public class SudokuCreator extends ArrayPuzzleCreator {
     puzzleBuilder.addColumnUniquenessConstraints();
     puzzleBuilder.addRowUniquenessConstraints();
     puzzleBuilder.addSubTableUniquenessConstraints();
+  }
+
+  @Override
+  protected void addVariableConstraints(Puzzle puzzle) {
+    // None to add.
   }
 
 }

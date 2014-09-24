@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.creator.util.Solved;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -82,8 +83,11 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         puzzle.setCellValue(Cell.cellValueAsBitwise(niceValue), coord);
       }
     }
+    addVariableConstraints(puzzle);
     return puzzle;
   }
+
+  protected abstract void addVariableConstraints(Puzzle puzzle);
 
   private Puzzle newPuzzle(final PuzzleLayout layout) {
     ArrayPuzzleBuilder puzzleBuilder = new ArrayPuzzleBuilder(layout);

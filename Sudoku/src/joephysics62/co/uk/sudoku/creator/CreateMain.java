@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.creator;
 import java.io.File;
 import java.io.IOException;
 
+import joephysics62.co.uk.sudoku.creator.util.RandomUnsolved;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
@@ -16,7 +17,7 @@ public class CreateMain {
     TextPuzzleWriter writer = new TextPuzzleWriter(System.out);
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     SudokuCreator creator = new SudokuCreator(solver);
-    final int maxCluesToLeave = 25;
+    final int maxCluesToLeave = 20;
     PuzzleLayout layout = new PuzzleLayout(8, 8, 2, 4, 8);
     Puzzle puzzle = creator.create(layout, maxCluesToLeave);
     writer.write(puzzle);

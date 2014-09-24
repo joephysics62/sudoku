@@ -10,6 +10,8 @@ public interface Puzzle extends CellGrid {
 
   List<Constraint> getAllConstraints();
 
+  List<Constraint> getVariableConstraints();
+
   List<Constraint> getConstraints(Coord coord);
 
   boolean isSolved();
@@ -23,5 +25,6 @@ public interface Puzzle extends CellGrid {
   int[][] getAllCells();
 
   PuzzleLayout getLayout();
+
 
 }

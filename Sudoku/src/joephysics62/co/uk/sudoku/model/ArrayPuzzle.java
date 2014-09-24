@@ -1,13 +1,15 @@
 package joephysics62.co.uk.sudoku.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public class ArrayPuzzle implements Puzzle {
   private final int[][] _cells;
-  private final List<Constraint> _constraints;
+  private final List<Constraint> _fixedConstraints;
+  private final List<Constraint> _variableConstraints;
   private final int _inits;
   private final String _title;
   private final PuzzleLayout _layout;
@@ -24,7 +26,8 @@ public class ArrayPuzzle implements Puzzle {
     for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
       _cells[rowIndex] = old._cells[rowIndex].clone();
     }
-    _constraints = old._constraints;
+    _fixedConstraints = old._fixedConstraints;
+    _variableConstraints = new ArrayList<>(old._variableConstraints);
     _layout = old._layout;
     _inits = old._inits;
     _title = old._title;
@@ -45,12 +48,12 @@ public class ArrayPuzzle implements Puzzle {
     return _title;
   }
 
-
-  private ArrayPuzzle(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
+  private ArrayPuzzle(final String title, final PuzzleLayout layout, final List<Constraint> fixedConstraints) {
     _title = title;
     _inits = (1 << layout.getInitialsSize()) - 1;
     _cells = new int[layout.getHeight()][layout.getWidth()];
-    _constraints = constraints;
+    _fixedConstraints = Collections.unmodifiableList(fixedConstraints);
+    _variableConstraints = new ArrayList<>();
     _layout = layout;
   }
 
@@ -74,13 +77,20 @@ public class ArrayPuzzle implements Puzzle {
 
   @Override
   public List<Constraint> getAllConstraints() {
-    return _constraints;
+    ArrayList<Constraint> allConstraints = new ArrayList<>(_fixedConstraints);
+    allConstraints.addAll(_variableConstraints);
+    return allConstraints;
+  }
+
+  @Override
+  public List<Constraint> getVariableConstraints() {
+    return _variableConstraints;
   }
 
   @Override
   public List<Constraint> getConstraints(final Coord coord) {
     List<Constraint> out = new ArrayList<>();
-    for (Constraint constraint : _constraints) {
+    for (Constraint constraint : getAllConstraints()) {
       if (constraint.getCells().contains(coord)) {
         out.add(constraint);
       }
@@ -132,6 +142,4 @@ public class ArrayPuzzle implements Puzzle {
       }
     }
   }
-
-
 }
