@@ -46,46 +46,28 @@ public class HTMLFutoshikiWriter extends HTMLPuzzleWriter {
         Coord cellToRight = Coord.of(rowNum, colNum + 1);
         Coord cellBelow = Coord.of(rowNum + 1, colNum);
 
-        boolean isBiggerRight = false;
-        boolean isSmallerRight = false;
-        boolean isBiggerBelow = false;
-        boolean isSmallerBelow = false;
+        String colCompareValue = null;
+        String rowCompareValue = null;
         for (Constraint constraint : getPuzzle().getConstraints(thisCell)) {
           if (constraint instanceof GreaterThan) {
             Coord bigger = constraint.getCells().get(0);
             Coord smaller = constraint.getCells().get(1);
             if (thisCell.equals(bigger) && cellToRight.equals(smaller)) {
-              isBiggerRight = true;
+              colCompareValue = "&gt;";
             }
             else if (cellToRight.equals(bigger) && thisCell.equals(smaller)) {
-              isSmallerRight = true;
+              colCompareValue = "&lt;";
             }
             if (thisCell.equals(bigger) && cellBelow.equals(smaller)) {
-              isBiggerBelow = true;
+              rowCompareValue = "&gt;";
             }
             else if (cellBelow.equals(bigger) && thisCell.equals(smaller)) {
-              isSmallerBelow = true;
+              rowCompareValue = "&lt;";
             }
           }
         }
-        if (isBiggerRight) {
-          rowList.add("&gt;");
-        }
-        else if (isSmallerRight) {
-          rowList.add("&lt;");
-        }
-        else {
-          rowList.add(null);
-        }
-        if (isBiggerBelow) {
-          betweensList.add("&gt;");
-        }
-        else if (isSmallerBelow) {
-          betweensList.add("&lt;");
-        }
-        else {
-          betweensList.add(null);
-        }
+        rowList.add(colCompareValue);
+        betweensList.add(rowCompareValue);
         betweensList.add(null);
       }
       table.add(rowList);
