@@ -35,6 +35,10 @@ public abstract class HTMLPuzzleWriter {
     template.process(root, new FileWriter(file));
   }
 
+  protected Puzzle getPuzzle() {
+    return _puzzle;
+  }
+
   protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout);
 
   protected abstract List<List<String>> generateTable(int[][] allCells, PuzzleLayout puzzleLayout);

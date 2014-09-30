@@ -16,57 +16,52 @@ import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
+import joephysics62.co.uk.sudoku.write.TextPuzzleWriter;
 
 
 public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   private final PuzzleSolver _solver;
+  private final TextPuzzleWriter _textPuzzleWriter = new TextPuzzleWriter(System.out);
 
   public ArrayPuzzleCreator(PuzzleSolver solver) {
     _solver = solver;
   }
 
+  private final Set<Set<Coord>> _tried = new LinkedHashSet<>();
+  private int _minimumClues = Integer.MAX_VALUE;
+
   @Override
   public Puzzle create(final PuzzleLayout layout, final int maxCluesToLeave) {
-    for (int i = 0; i < 10000; i++) {
-      Puzzle completedNewPuzzle = createCompletedNewPuzzle(layout);
-      for (int j = 0; j < 100; j++) {
-        Puzzle puzzle = findPuzzle(completedNewPuzzle, maxCluesToLeave);
-        if (null != puzzle) {
-          return puzzle;
-        }
-      }
-    }
+    Puzzle completedNewPuzzle = createCompletedNewPuzzle(layout);
+    findPuzzle(completedNewPuzzle);
     return null;
   }
 
-  public Puzzle findPuzzle(final Puzzle completedPuzzle, final int cluesToLeave) {
-    Puzzle puzzleToTry = completedPuzzle.deepCopy();
+  public void findPuzzle(final Puzzle currentPuzzle) {
     CellFilter solvedCellFilter = Solved.create();
-    final List<Coord> solvedCells = solvedCellFilter.apply(puzzleToTry);
-    PuzzleLayout layout = puzzleToTry.getLayout();
-    int init = (1 << layout.getInitialsSize()) - 1;
+    final List<Coord> solvedCells = solvedCellFilter.apply(currentPuzzle);
+    if (!_tried.add(new LinkedHashSet<>(solvedCells))) {
+      return;
+    }
     Collections.shuffle(solvedCells);
-    int removesSize = layout.getWidth() * layout.getHeight() - cluesToLeave;
-
-    Set<Coord> removes = new LinkedHashSet<>();
     for (Coord coord : solvedCells) {
-      removes.add(coord);
-      removes.add(Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
-      if (removes.size() >= removesSize) {
-        break;
-      }
-    }
-    for (Coord coord : removes) {
+      Puzzle puzzleToTry = currentPuzzle.deepCopy();
+      PuzzleLayout layout = puzzleToTry.getLayout();
+      int init = (1 << layout.getInitialsSize()) - 1;
       puzzleToTry.setCellValue(init, coord);
-    }
-    Puzzle toPrint = puzzleToTry.deepCopy();
-    SolutionResult solve = _solver.solve(puzzleToTry);
-    if (solve.getType() == SolutionType.UNIQUE) {
-        return toPrint;
-    }
-    else {
-      return null;
+      puzzleToTry.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
+      Puzzle toKeep = puzzleToTry.deepCopy();
+      SolutionResult solve = _solver.solve(puzzleToTry);
+      if (solve.getType() == SolutionType.UNIQUE) {
+        int numGivens = solvedCells.size() - 2;
+        if (numGivens < _minimumClues) {
+          _minimumClues = numGivens;
+          _textPuzzleWriter.write(toKeep);
+          System.out.println("Has num givens = " + numGivens);
+        }
+        findPuzzle(toKeep);
+      }
     }
   }
 

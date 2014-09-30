@@ -20,10 +20,8 @@ public class ArrayPuzzle implements Puzzle {
   }
 
   private ArrayPuzzle(ArrayPuzzle old) {
-    int rows = old._cells.length;
-    int cols = old._cells.length;
-    _cells = new int[rows][cols];
-    for (int rowIndex = 0; rowIndex < rows; rowIndex++) {
+    _cells = new int[old.getLayout().getHeight()][old.getLayout().getWidth()];
+    for (int rowIndex = 0; rowIndex < old.getLayout().getHeight(); rowIndex++) {
       _cells[rowIndex] = old._cells[rowIndex].clone();
     }
     _fixedConstraints = old._fixedConstraints;

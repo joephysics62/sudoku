@@ -32,31 +32,8 @@ table {
   <table>
  <#list table as row>
    <tr> 
-   <#list row as cell>
-    <#if cell??><td>${cell}</td>
-    <#else><td/>
-    </#if>
-    <#if cell.gtRight><td>&gt;</td>
-    <#else>
-      <#if cell.ltRight><td>&lt;</td>
-      <#else><td/>
-      </#if>
-    </#if>
-    </#list>
+   <#list row as cell><#if cell??><td>${cell}</td><#else><td/></#if></#list>
    </tr>
-   <#if row.notLast>
-   <tr> 
-   <#list row as cell>
-     <#if cell.gtDown><td>&gt;</td>
-     <#else>
-       <#if cell.ltDown><td>&lt;</td>
-       <#else><td/>
-      </#if>
-    </#if>
-    <td/>
-    </#list>
-   </tr>
-   </#if>
  </#list>
  </table>
 </body>
