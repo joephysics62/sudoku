@@ -7,8 +7,8 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
+import joephysics62.co.uk.sudoku.write.HTMLFutoshikiWriter;
 import joephysics62.co.uk.sudoku.write.HTMLPuzzleWriter;
-import joephysics62.co.uk.sudoku.write.HTMLSudokuWriter;
 import joephysics62.co.uk.sudoku.write.TextPuzzleWriter;
 import freemarker.template.TemplateException;
 
@@ -18,10 +18,11 @@ public class CreateMain {
     PuzzleSolver solver = new PuzzleSolver(FirstClosestToSolved.create());
     //SudokuCreator creator = new SudokuCreator(solver);
     PuzzleCreator creator = new FutoshikiCreator(solver);
-    final int maxCluesToLeave = 20;
-    Puzzle puzzle = creator.create(PuzzleLayout.FUTOSHIKI, maxCluesToLeave);
+    final int maxCluesToLeave = 2;
+    final int maxVariableConstraints = 9;
+    Puzzle puzzle = creator.create(PuzzleLayout.FUTOSHIKI, maxCluesToLeave, maxVariableConstraints);
     writer.write(puzzle);
-    HTMLPuzzleWriter htmlPuzzleWriter = new HTMLSudokuWriter(puzzle);
+    HTMLPuzzleWriter htmlPuzzleWriter = new HTMLFutoshikiWriter(puzzle);
     htmlPuzzleWriter.write(new File("sudoku.html"));
   }
 

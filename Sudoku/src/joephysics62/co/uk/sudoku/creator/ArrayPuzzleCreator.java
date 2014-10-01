@@ -16,29 +16,30 @@ import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
-import joephysics62.co.uk.sudoku.write.TextPuzzleWriter;
 
 
 public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   private final PuzzleSolver _solver;
-  private final TextPuzzleWriter _textPuzzleWriter = new TextPuzzleWriter(System.out);
+  private Puzzle _createdPuzzle = null;
 
   public ArrayPuzzleCreator(PuzzleSolver solver) {
     _solver = solver;
   }
 
   private final Set<Set<Coord>> _tried = new LinkedHashSet<>();
-  private int _minimumClues = Integer.MAX_VALUE;
 
   @Override
-  public Puzzle create(final PuzzleLayout layout, final int maxCluesToLeave) {
+  public Puzzle create(final PuzzleLayout layout, final int maxCluesToLeave, final int maxOptionalConstraints) {
     Puzzle completedNewPuzzle = createCompletedNewPuzzle(layout);
-    findPuzzle(completedNewPuzzle);
-    return null;
+    findPuzzle(completedNewPuzzle, maxCluesToLeave, maxOptionalConstraints);
+    return _createdPuzzle ;
   }
 
-  public void findPuzzle(final Puzzle currentPuzzle) {
+  public void findPuzzle(final Puzzle currentPuzzle, int maxCluesToLeave, int maxOptionalConstraints) {
+    if (_createdPuzzle != null) {
+      return;
+    }
     CellFilter solvedCellFilter = Solved.create();
     final List<Coord> solvedCells = solvedCellFilter.apply(currentPuzzle);
     if (!_tried.add(new LinkedHashSet<>(solvedCells))) {
@@ -55,12 +56,12 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
       SolutionResult solve = _solver.solve(puzzleToTry);
       if (solve.getType() == SolutionType.UNIQUE) {
         int numGivens = solvedCells.size() - 2;
-        if (numGivens < _minimumClues) {
-          _minimumClues = numGivens;
-          _textPuzzleWriter.write(toKeep);
-          System.out.println("Has num givens = " + numGivens);
+        if (numGivens <= maxCluesToLeave) {
+          _createdPuzzle = toKeep;
         }
-        findPuzzle(toKeep);
+        else {
+          findPuzzle(toKeep, maxCluesToLeave, maxOptionalConstraints);
+        }
       }
     }
   }
