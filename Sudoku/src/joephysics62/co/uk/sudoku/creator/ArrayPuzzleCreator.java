@@ -29,6 +29,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   }
 
   private final Set<Set<Coord>> _tried = new LinkedHashSet<>();
+  private final Set<Set<Constraint>> _triedConstraints = new LinkedHashSet<>();
 
   @Override
   public Puzzle create(final PuzzleLayout layout, final int maxCluesToLeave, final int maxOptionalConstraints) {
@@ -43,7 +44,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     }
     CellFilter solvedCellFilter = Solved.create();
     final List<Coord> solvedCells = solvedCellFilter.apply(currentPuzzle);
-    if (!_tried.add(new LinkedHashSet<>(solvedCells))) {
+    if (!_tried.add(new LinkedHashSet<>(solvedCells)) && !_triedConstraints.add(new LinkedHashSet<>(currentPuzzle.getVariableConstraints()))) {
       return;
     }
     final List<Integer> cnums = new ArrayList<>();
