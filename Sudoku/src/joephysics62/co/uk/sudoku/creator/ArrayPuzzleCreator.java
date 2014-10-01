@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.creator.util.Solved;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
@@ -45,22 +46,35 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     if (!_tried.add(new LinkedHashSet<>(solvedCells))) {
       return;
     }
+    final List<Integer> cnums = new ArrayList<>();
+    int varConsSize = currentPuzzle.getVariableConstraints().size();
+    for (int i = 0; i< varConsSize; i++) {
+      cnums.add(i);
+    }
+    Collections.shuffle(cnums);
     Collections.shuffle(solvedCells);
     for (Coord coord : solvedCells) {
-      Puzzle puzzleToTry = currentPuzzle.deepCopy();
-      PuzzleLayout layout = puzzleToTry.getLayout();
-      int init = (1 << layout.getInitialsSize()) - 1;
-      puzzleToTry.setCellValue(init, coord);
-      puzzleToTry.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
-      Puzzle toKeep = puzzleToTry.deepCopy();
-      SolutionResult solve = _solver.solve(puzzleToTry);
-      if (solve.getType() == SolutionType.UNIQUE) {
-        int numGivens = solvedCells.size() - 2;
-        if (numGivens <= maxCluesToLeave) {
-          _createdPuzzle = toKeep;
+      int numIters = varConsSize <= maxOptionalConstraints ? 1 : varConsSize;
+      for (int i = 0; i < numIters; i++) {
+        Puzzle candidateToSolve = currentPuzzle.deepCopy();
+        PuzzleLayout layout = candidateToSolve.getLayout();
+        int init = (1 << layout.getInitialsSize()) - 1;
+        candidateToSolve.setCellValue(init, coord);
+        candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
+        List<Constraint> variableConstraints = candidateToSolve.getVariableConstraints();
+        if (variableConstraints.size() > maxOptionalConstraints) {
+          variableConstraints.remove((int) cnums.get(i));
         }
-        else {
-          findPuzzle(toKeep, maxCluesToLeave, maxOptionalConstraints);
+        Puzzle candidateToKeep = candidateToSolve.deepCopy();
+        SolutionResult solution = _solver.solve(candidateToSolve);
+        if (solution.getType() == SolutionType.UNIQUE) {
+          int numGivens = solvedCells.size() - 2;
+          if (numGivens <= maxCluesToLeave && variableConstraints.size() <= maxOptionalConstraints) {
+            _createdPuzzle = candidateToKeep;
+          }
+          else {
+            findPuzzle(candidateToKeep, maxCluesToLeave, maxOptionalConstraints);
+          }
         }
       }
     }

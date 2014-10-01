@@ -8,26 +8,20 @@
 * {
   font-family: Arial;
 }
-td, th {
-    border-color: black;
-    border-width: thin;
-    border-style: solid;
-    border-spacing: 0px;
+td {
     width: 1em;
     height:1em;
     text-align:  center;
+    border-style: none;
 }
-tr:nth-child(1) td {
-    border-top-width: medium;
+tr:nth-child(odd) td:nth-child(odd) {
+    border-color: black;
+    border-width: thin;
+    border-spacing: 0px;
+    border-style: solid;
 }
-td:nth-child(1) {
-    border-left-width: medium;
-}
-tr:nth-child(2n + 0) td {
-    border-bottom-width: medium;
-}
-td:nth-child(4n + 0) {
-    border-right-width: medium;
+tr:nth-child(even) td {
+  transform:rotate(90deg);
 }
 table {
     border-collapse: collapse;
@@ -37,28 +31,34 @@ table {
 <body>
   <table>
    <tr> 
-   <td/><td/><td>2</td><td/><td/><td/><td>3</td><td/>
+   <td/><td>&gt;</td><td>2</td><td>&gt;</td><td/><td>&lt;</td><td/><td>&lt;</td><td/><td/>
    </tr>
    <tr> 
-   <td/><td>3</td><td/><td/><td/><td/><td/><td>7</td>
+   <td>&gt;</td><td/><td>&lt;</td><td/><td>&lt;</td><td/><td>&lt;</td><td/><td/><td/>
    </tr>
    <tr> 
-   <td>2</td><td/><td/><td>5</td><td/><td/><td>8</td><td/>
+   <td/><td>&lt;</td><td/><td/><td/><td>&lt;</td><td/><td>&gt;</td><td>2</td><td/>
    </tr>
    <tr> 
-   <td/><td/><td/><td>7</td><td/><td>1</td><td>2</td><td/>
+   <td/><td/><td>&lt;</td><td/><td>&gt;</td><td/><td>&gt;</td><td/><td>&lt;</td><td/>
    </tr>
    <tr> 
-   <td/><td>2</td><td>4</td><td/><td>5</td><td/><td/><td/>
+   <td/><td>&lt;</td><td/><td/><td>3</td><td>&gt;</td><td/><td>&lt;</td><td/><td/>
    </tr>
    <tr> 
-   <td/><td>8</td><td/><td/><td>6</td><td/><td/><td>3</td>
+   <td>&lt;</td><td/><td>&gt;</td><td/><td>&lt;</td><td/><td/><td/><td>&gt;</td><td/>
    </tr>
    <tr> 
-   <td>6</td><td/><td/><td/><td/><td/><td>1</td><td/>
+   <td>3</td><td>&lt;</td><td/><td/><td/><td/><td/><td>&gt;</td><td/><td/>
    </tr>
    <tr> 
-   <td/><td>5</td><td/><td/><td/><td>3</td><td/><td/>
+   <td>&lt;</td><td/><td/><td/><td/><td/><td>&lt;</td><td/><td>&lt;</td><td/>
+   </tr>
+   <tr> 
+   <td/><td>&gt;</td><td/><td/><td/><td>&lt;</td><td>4</td><td>&gt;</td><td/><td/>
+   </tr>
+   <tr> 
+   <td/><td/><td/><td/><td/><td/><td/><td/><td/><td/>
    </tr>
  </table>
 </body>

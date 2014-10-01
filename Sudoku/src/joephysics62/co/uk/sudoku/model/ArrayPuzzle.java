@@ -25,7 +25,8 @@ public class ArrayPuzzle implements Puzzle {
       _cells[rowIndex] = old._cells[rowIndex].clone();
     }
     _fixedConstraints = old._fixedConstraints;
-    _variableConstraints = new ArrayList<>(old._variableConstraints);
+    _variableConstraints = new ArrayList<>();
+    _variableConstraints.addAll(old._variableConstraints);
     _layout = old._layout;
     _inits = old._inits;
     _title = old._title;
