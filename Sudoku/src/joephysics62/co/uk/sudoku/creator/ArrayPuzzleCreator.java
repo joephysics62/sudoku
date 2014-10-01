@@ -54,6 +54,9 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     Collections.shuffle(cnums);
     Collections.shuffle(solvedCells);
     for (Coord coord : solvedCells) {
+      if (_createdPuzzle != null) {
+        return;
+      }
       int numIters = varConsSize <= maxOptionalConstraints ? 1 : varConsSize;
       for (int i = 0; i < numIters; i++) {
         Puzzle candidateToSolve = currentPuzzle.deepCopy();

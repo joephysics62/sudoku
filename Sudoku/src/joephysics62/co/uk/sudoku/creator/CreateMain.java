@@ -19,7 +19,7 @@ public class CreateMain {
     //SudokuCreator creator = new SudokuCreator(solver);
     PuzzleCreator creator = new FutoshikiCreator(solver);
     final int maxCluesToLeave = 25;
-    final int maxVariableConstraints = 30;
+    final int maxVariableConstraints = 25;
     Puzzle puzzle = creator.create(PuzzleLayout.FUTOSHIKI, maxCluesToLeave, maxVariableConstraints);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLFutoshikiWriter(puzzle);
