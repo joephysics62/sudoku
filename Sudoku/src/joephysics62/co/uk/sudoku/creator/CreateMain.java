@@ -21,7 +21,8 @@ public class CreateMain {
     final int maxCluesToLeave = 2;
     final int maxVariableConstraints = 7;
     PuzzleLayout layout = PuzzleLayout.FUTOSHIKI;
-    Puzzle puzzle = creator.create(layout, maxCluesToLeave, maxVariableConstraints);
+    CreationSpec creationSpec = new CreationSpec(maxCluesToLeave, maxVariableConstraints, false);
+    Puzzle puzzle = creator.create(layout, creationSpec);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLFutoshikiWriter(puzzle);
     htmlPuzzleWriter.write(new File("sudoku.html"));

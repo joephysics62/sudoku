@@ -5,6 +5,6 @@ import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public interface PuzzleCreator {
 
-  Puzzle create(PuzzleLayout layout, int maxGivens, int maxOptionalConstraints);
+  Puzzle create(PuzzleLayout layout, CreationSpec creationSpec);
 
 }
