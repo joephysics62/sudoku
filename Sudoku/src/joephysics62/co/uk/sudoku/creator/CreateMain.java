@@ -18,8 +18,8 @@ public class CreateMain {
     PuzzleSolver solver = new PuzzleSolver(RandomUnsolved.create());
     //SudokuCreator creator = new SudokuCreator(solver);
     PuzzleCreator creator = new FutoshikiCreator(solver);
-    final int maxCluesToLeave = 4;
-    final int maxVariableConstraints = 15;
+    final int maxCluesToLeave = 2;
+    final int maxVariableConstraints = 7;
     PuzzleLayout layout = PuzzleLayout.FUTOSHIKI;
     Puzzle puzzle = creator.create(layout, maxCluesToLeave, maxVariableConstraints);
     writer.write(puzzle);

@@ -42,7 +42,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   }
 
   public void findPuzzle(final Puzzle currentPuzzle, int maxCluesToLeave, int maxOptionalConstraints) {
-    LOG.debug("New call to findPuzzle");
+    LOG.debug("New call to findPuzzle " + currentPuzzle.getVariableConstraints().size());
     if (_createdPuzzle != null) {
       return;
     }
@@ -99,12 +99,14 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         SolutionResult solution = _solver.solve(candidateToSolve);
         LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
         if (solution.getType() == SolutionType.UNIQUE) {
-          int numGivens = solvedCells.size() - 2;
+          int numGivens = solvedCells.size();
           if (numGivens <= maxCluesToLeave && varConstraintsInCandidate.size() <= maxOptionalConstraints) {
             _createdPuzzle = candidateToKeep;
+            LOG.debug("Have found a puzzle with " + numGivens + " clues and " + varConstraintsInCandidate.size() + " var constraints.");
             return;
           }
           else {
+            LOG.debug("Not reached " + maxCluesToLeave + " givens and " + maxOptionalConstraints + " constraints... continue...");
             findPuzzle(candidateToKeep, maxCluesToLeave, maxOptionalConstraints);
           }
         }
