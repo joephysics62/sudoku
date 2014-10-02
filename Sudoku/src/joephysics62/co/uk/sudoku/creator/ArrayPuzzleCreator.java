@@ -42,12 +42,13 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   }
 
   public void findPuzzle(final Puzzle currentPuzzle, CreationSpec creationSpec) {
-    LOG.debug("New call to findPuzzle " + currentPuzzle.getVariableConstraints().size());
+    LOG.debug("New call to findPuzzle. Var constraints: " + currentPuzzle.getVariableConstraints().size());
     if (_createdPuzzle != null) {
       return;
     }
     CellFilter solvedCellFilter = Solved.create();
     final List<Coord> solvedCells = solvedCellFilter.apply(currentPuzzle);
+    LOG.debug("Currently puzzle has " + solvedCells.size() + " givens cells.");
     final List<Constraint> variableConstraints = currentPuzzle.getVariableConstraints();
     boolean seenSolvedCellSet = !_tried.add(new LinkedHashSet<>(solvedCells));
     boolean seenVarConsSet = !_triedConstraints.add(new LinkedHashSet<>(variableConstraints));
@@ -67,14 +68,18 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         if (creationSpec.isRemoveInSymmetricPairs()) {
           candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
         }
+        LOG.debug("Puzzle now has " + solvedCellFilter.apply(candidateToSolve).size() + " givens cells after removal");
         Puzzle candidateToKeep = candidateToSolve.deepCopy();
         SolutionResult solution = _solver.solve(candidateToSolve);
+        LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
         if (solution.getType() == SolutionType.UNIQUE) {
-          int numGivens = creationSpec.isRemoveInSymmetricPairs() ? solvedCells.size() - 2 : solvedCells.size() - 1;
+          int numGivens = solvedCellFilter.apply(candidateToKeep).size();
           if (numGivens <= creationSpec.getMaxGivens() && variableConstraints.size() <= creationSpec.getMaxVarConstraints()) {
+            LOG.debug("Have found a puzzle with " + numGivens + " clues and " + variableConstraints.size() + " var constraints.");
             _createdPuzzle = candidateToKeep;
           }
           else {
+            LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
             findPuzzle(candidateToKeep, creationSpec);
           }
         }
