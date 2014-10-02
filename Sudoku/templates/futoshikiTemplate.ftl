@@ -7,10 +7,11 @@
 <style>
 * {
   font-family: Arial;
+  font-size: medium;
 }
 td {
-    width: 1em;
-    height:1em;
+    width: 1.5em;
+    height:1.5em;
     text-align:  center;
     border-style: none;
 }
