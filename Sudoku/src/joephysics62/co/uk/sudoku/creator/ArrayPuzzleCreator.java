@@ -18,11 +18,14 @@ import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
 
+import org.apache.log4j.Logger;
+
 
 public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   private final PuzzleSolver _solver;
   private Puzzle _createdPuzzle = null;
+  private static final Logger LOG = Logger.getLogger(ArrayPuzzleCreator.class);
 
   public ArrayPuzzleCreator(PuzzleSolver solver) {
     _solver = solver;
@@ -39,7 +42,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   }
 
   public void findPuzzle(final Puzzle currentPuzzle, int maxCluesToLeave, int maxOptionalConstraints) {
-    System.out.println("New call to findPuzzle");
+    LOG.debug("New call to findPuzzle");
     if (_createdPuzzle != null) {
       return;
     }
@@ -78,12 +81,12 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     else if (variableConstraints.size() > maxOptionalConstraints) {
       final List<Integer> cnums = new ArrayList<>();
       int varConsSize = currentPuzzle.getVariableConstraints().size();
-      System.out.println(varConsSize);
+      LOG.debug("Current number of variable constraints: " + varConsSize);
       for (int i = 0; i < varConsSize; i++) {
         cnums.add(i);
       }
       Collections.shuffle(cnums);
-      System.out.println("trying to remove one of the " + varConsSize);
+      LOG.debug("Trying to remove one of these...");
       for (int i = 0; i < varConsSize; i++) {
         if (_createdPuzzle != null) {
           return;
@@ -91,10 +94,10 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
         final List<Constraint> varConstraintsInCandidate = candidateToSolve.getVariableConstraints();
         Constraint removed = varConstraintsInCandidate.remove((int) cnums.get(i));
-        System.out.println("Trying " + removed);
+        LOG.debug("Removing variable constraint " + removed);
         Puzzle candidateToKeep = candidateToSolve.deepCopy();
         SolutionResult solution = _solver.solve(candidateToSolve);
-        System.out.println(solution.getType() + " " + solution.getTiming());
+        LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
         if (solution.getType() == SolutionType.UNIQUE) {
           int numGivens = solvedCells.size() - 2;
           if (numGivens <= maxCluesToLeave && varConstraintsInCandidate.size() <= maxOptionalConstraints) {
@@ -106,7 +109,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           }
         }
       }
-      System.out.println("Tried every one of these " + varConsSize + " " + _createdPuzzle);
+      LOG.debug("Tried removing each one of these " + varConsSize + " variable constraints.");
     }
   }
 
