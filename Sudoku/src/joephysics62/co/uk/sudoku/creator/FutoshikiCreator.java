@@ -1,7 +1,5 @@
 package joephysics62.co.uk.sudoku.creator;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
@@ -10,8 +8,6 @@ import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
-import joephysics62.co.uk.sudoku.write.HTMLFutoshikiWriter;
-import freemarker.template.TemplateException;
 
 public class FutoshikiCreator extends ArrayPuzzleCreator {
 
@@ -44,17 +40,6 @@ public class FutoshikiCreator extends ArrayPuzzleCreator {
           variableConstraints.add(thisValue > valueBelow ? GreaterThan.of(thisCoord, below) : GreaterThan.of(below, thisCoord));
         }
       }
-    }
-    try {
-      new HTMLFutoshikiWriter(puzzle).write(new File("tmp.html"));
-    }
-    catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    catch (TemplateException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
     }
   }
 

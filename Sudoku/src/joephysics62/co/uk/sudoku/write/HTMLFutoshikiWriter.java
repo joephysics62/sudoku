@@ -66,12 +66,16 @@ public class HTMLFutoshikiWriter extends HTMLPuzzleWriter {
             }
           }
         }
-        rowList.add(colCompareValue);
+        if (colNum < layout.getWidth()) {
+          rowList.add(colCompareValue);
+        }
         betweensList.add(rowCompareValue);
         betweensList.add(null);
       }
       table.add(rowList);
-      table.add(betweensList);
+      if (rowNum < layout.getHeight()) {
+        table.add(betweensList);
+      }
     }
     return table;
   }

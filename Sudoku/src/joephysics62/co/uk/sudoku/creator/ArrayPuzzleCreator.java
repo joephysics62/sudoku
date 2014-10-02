@@ -39,36 +39,29 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   }
 
   public void findPuzzle(final Puzzle currentPuzzle, int maxCluesToLeave, int maxOptionalConstraints) {
+    System.out.println("New call to findPuzzle");
     if (_createdPuzzle != null) {
       return;
     }
     CellFilter solvedCellFilter = Solved.create();
     final List<Coord> solvedCells = solvedCellFilter.apply(currentPuzzle);
-    if (!_tried.add(new LinkedHashSet<>(solvedCells)) && !_triedConstraints.add(new LinkedHashSet<>(currentPuzzle.getVariableConstraints()))) {
+    final List<Constraint> variableConstraints = currentPuzzle.getVariableConstraints();
+    boolean seenSolvedCellSet = !_tried.add(new LinkedHashSet<>(solvedCells));
+    boolean seenVarConsSet = !_triedConstraints.add(new LinkedHashSet<>(variableConstraints));
+    if (seenSolvedCellSet && seenVarConsSet) {
       return;
     }
-    final List<Integer> cnums = new ArrayList<>();
-    int varConsSize = currentPuzzle.getVariableConstraints().size();
-    for (int i = 0; i< varConsSize; i++) {
-      cnums.add(i);
-    }
-    Collections.shuffle(cnums);
-    Collections.shuffle(solvedCells);
-    for (Coord coord : solvedCells) {
-      if (_createdPuzzle != null) {
-        return;
-      }
-      int numIters = varConsSize <= maxOptionalConstraints ? 1 : varConsSize;
-      for (int i = 0; i < numIters; i++) {
+    if (solvedCells.size() > maxCluesToLeave) {
+      Collections.shuffle(solvedCells);
+      for (Coord coord : solvedCells) {
+        if (_createdPuzzle != null) {
+          return;
+        }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
         PuzzleLayout layout = candidateToSolve.getLayout();
         int init = (1 << layout.getInitialsSize()) - 1;
         candidateToSolve.setCellValue(init, coord);
         candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
-        List<Constraint> variableConstraints = candidateToSolve.getVariableConstraints();
-        if (variableConstraints.size() > maxOptionalConstraints) {
-          variableConstraints.remove((int) cnums.get(i));
-        }
         Puzzle candidateToKeep = candidateToSolve.deepCopy();
         SolutionResult solution = _solver.solve(candidateToSolve);
         if (solution.getType() == SolutionType.UNIQUE) {
@@ -81,6 +74,39 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           }
         }
       }
+    }
+    else if (variableConstraints.size() > maxOptionalConstraints) {
+      final List<Integer> cnums = new ArrayList<>();
+      int varConsSize = currentPuzzle.getVariableConstraints().size();
+      System.out.println(varConsSize);
+      for (int i = 0; i < varConsSize; i++) {
+        cnums.add(i);
+      }
+      Collections.shuffle(cnums);
+      System.out.println("trying to remove one of the " + varConsSize);
+      for (int i = 0; i < varConsSize; i++) {
+        if (_createdPuzzle != null) {
+          return;
+        }
+        Puzzle candidateToSolve = currentPuzzle.deepCopy();
+        final List<Constraint> varConstraintsInCandidate = candidateToSolve.getVariableConstraints();
+        Constraint removed = varConstraintsInCandidate.remove((int) cnums.get(i));
+        System.out.println("Trying " + removed);
+        Puzzle candidateToKeep = candidateToSolve.deepCopy();
+        SolutionResult solution = _solver.solve(candidateToSolve);
+        System.out.println(solution.getType() + " " + solution.getTiming());
+        if (solution.getType() == SolutionType.UNIQUE) {
+          int numGivens = solvedCells.size() - 2;
+          if (numGivens <= maxCluesToLeave && varConstraintsInCandidate.size() <= maxOptionalConstraints) {
+            _createdPuzzle = candidateToKeep;
+            return;
+          }
+          else {
+            findPuzzle(candidateToKeep, maxCluesToLeave, maxOptionalConstraints);
+          }
+        }
+      }
+      System.out.println("Tried every one of these " + varConsSize + " " + _createdPuzzle);
     }
   }
 
