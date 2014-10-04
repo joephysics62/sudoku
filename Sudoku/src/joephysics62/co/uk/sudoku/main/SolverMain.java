@@ -16,26 +16,28 @@ import joephysics62.co.uk.sudoku.write.TextPuzzleWriter;
 
 public class SolverMain {
 
-  public static void main(final String[] args) throws IOException {
-    final String type = args[0];
-    final File input = new File(args[1]);
-    PuzzleReader puzzleReader;
+  private static PuzzleReader readerForType(final String type) {
     if (type.equals("timesMini")) {
-      puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.TIMES_MINI);
+      return new SudokuHTMLPuzzleReader(PuzzleLayout.TIMES_MINI);
     }
     else if (type.equals("classic")) {
-      puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.CLASSIC_SUDOKU);
+      return new SudokuHTMLPuzzleReader(PuzzleLayout.CLASSIC_SUDOKU);
     }
     else if (type.equals("futoshiki")) {
-      puzzleReader = new FutoshikiHTMLReader(PuzzleLayout.FUTOSHIKI);
+      return new FutoshikiHTMLReader(PuzzleLayout.FUTOSHIKI);
     }
     else if (type.equals("super")) {
-      puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.SUPER_SUDOKU);
+      return new SudokuHTMLPuzzleReader(PuzzleLayout.SUPER_SUDOKU);
     }
     else {
       throw new IllegalArgumentException();
     }
-    Puzzle puzzle = puzzleReader.read(input);
+  }
+
+  public static void main(final String[] args) throws IOException {
+    final String type = args[0];
+    final File input = new File(args[1]);
+    Puzzle puzzle = readerForType(type).read(input);
     TextPuzzleWriter puzzleWriter = new TextPuzzleWriter(System.out);
     System.out.println("INPUT = ");
     puzzleWriter.write(puzzle);

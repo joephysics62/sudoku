@@ -29,18 +29,22 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   private Puzzle _currentBestPuzzle = null;
   private int _callCount = 0;
   private static final Logger LOG = Logger.getLogger(ArrayPuzzleCreator.class);
+  private final PuzzleLayout _layout;
+  private final CreationSpec _creationSpec;
 
-  public ArrayPuzzleCreator(PuzzleSolver solver) {
+  public ArrayPuzzleCreator(final PuzzleSolver solver, final PuzzleLayout layout, final CreationSpec creationSpec) {
     _solver = solver;
+    _layout = layout;
+    _creationSpec = creationSpec;
   }
 
   private final Set<Set<Coord>> _tried = new LinkedHashSet<>();
   private final Set<Set<Constraint>> _triedConstraints = new LinkedHashSet<>();
 
   @Override
-  public Puzzle create(final PuzzleLayout layout, final CreationSpec creationSpec) {
-    Puzzle completedNewPuzzle = createCompletedNewPuzzle(layout);
-    findPuzzle(completedNewPuzzle, creationSpec);
+  public Puzzle create() {
+    Puzzle completedNewPuzzle = createCompletedNewPuzzle();
+    findPuzzle(completedNewPuzzle);
     return _createdPuzzle ;
   }
 
@@ -48,7 +52,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     return _createdPuzzle != null;
   }
 
-  public void findPuzzle(final Puzzle currentPuzzle, CreationSpec creationSpec) {
+  public void findPuzzle(final Puzzle currentPuzzle) {
     _callCount++;
     LOG.debug("Call " + _callCount + " to findPuzzle. Var constraints: " + currentPuzzle.getVariableConstraints().size());
     if (foundPuzzle()) {
@@ -62,7 +66,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     if (seenSolvedCellSet && seenVarConsSet) {
       return;
     }
-    if (solvedCells.size() > creationSpec.getMaxGivens()) {
+    if (solvedCells.size() > _creationSpec.getMaxGivens()) {
       Collections.shuffle(solvedCells);
       for (Coord coord : solvedCells) {
         if (foundPuzzle()) {
@@ -72,15 +76,15 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         PuzzleLayout layout = candidateToSolve.getLayout();
         int init = (1 << layout.getInitialsSize()) - 1;
         candidateToSolve.setCellValue(init, coord);
-        if (creationSpec.isRemoveInSymmetricPairs()) {
+        if (_creationSpec.isRemoveInSymmetricPairs()) {
           candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
         }
         LOG.debug("Puzzle now has " + _solvedCellFilter.apply(candidateToSolve).size() + " givens cells after removal");
-        solveModifiedPuzzle(candidateToSolve, creationSpec);
+        solveModifiedPuzzle(candidateToSolve);
       }
       LOG.debug("Tried removing each one of the solved cells");
     }
-    else if (variableConstraints.size() > creationSpec.getMaxVarConstraints()) {
+    else if (variableConstraints.size() > _creationSpec.getMaxVarConstraints()) {
       final List<Integer> cnums = new ArrayList<>();
       int varConsSize = currentPuzzle.getVariableConstraints().size();
       LOG.debug("Current number of variable constraints: " + varConsSize);
@@ -97,54 +101,54 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         final List<Constraint> varConstraintsInCandidate = candidateToSolve.getVariableConstraints();
         Constraint removed = varConstraintsInCandidate.remove((int) cnums.get(i));
         LOG.debug("Removing variable constraint " + removed);
-        solveModifiedPuzzle(candidateToSolve, creationSpec);
+        solveModifiedPuzzle(candidateToSolve);
       }
       LOG.debug("Tried removing each one of these " + varConsSize + " variable constraints.");
     }
   }
 
-  private void solveModifiedPuzzle(final Puzzle candidateToSolve, final CreationSpec creationSpec) {
+  private void solveModifiedPuzzle(final Puzzle candidateToSolve) {
     Puzzle candidateToKeep = candidateToSolve.deepCopy();
     SolutionResult solution = _solver.solve(candidateToSolve);
     LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
     if (solution.getType() == SolutionType.UNIQUE) {
-      checkPuzzleOrContinue(candidateToKeep, creationSpec);
+      checkPuzzleOrContinue(candidateToKeep);
     }
   }
 
-  private void checkPuzzleOrContinue(final Puzzle candidateToKeep, final CreationSpec creationSpec) {
+  private void checkPuzzleOrContinue(final Puzzle candidateToKeep) {
     int numGivens = _solvedCellFilter.apply(candidateToKeep).size();
     List<Constraint> variableConstraints = candidateToKeep.getVariableConstraints();
-    if (numGivens <= creationSpec.getMaxGivens() && variableConstraints.size() <= creationSpec.getMaxVarConstraints()) {
+    if (numGivens <= _creationSpec.getMaxGivens() && variableConstraints.size() <= _creationSpec.getMaxVarConstraints()) {
       LOG.debug("Have found a puzzle with " + numGivens + " clues and " + variableConstraints.size() + " var constraints.");
       _createdPuzzle = candidateToKeep;
     }
     else {
-      LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
+      LOG.debug("Not reached " + _creationSpec.getMaxGivens() + " givens and " + _creationSpec.getMaxVarConstraints() + " constraints... continue...");
       if (null == _currentBestPuzzle ||
           numGivens <= _solvedCellFilter.apply(_currentBestPuzzle).size() && variableConstraints.size() <= _currentBestPuzzle.getVariableConstraints().size()) {
         _currentBestPuzzle = candidateToKeep;
       }
-      if (_callCount > creationSpec.getMaxDepth()) {
-        LOG.debug("Have reached max recursive call count of " + creationSpec.getMaxDepth()
+      if (_callCount >= _creationSpec.getMaxDepth()) {
+        LOG.debug("Have reached max recursive call count of " + _creationSpec.getMaxDepth()
             + ", returning current best puzzle which has " + _solvedCellFilter.apply(_currentBestPuzzle).size()
             + " givens and " + _currentBestPuzzle.getVariableConstraints().size() + " var constriants");
         _createdPuzzle = _currentBestPuzzle;
       }
       else {
-        findPuzzle(candidateToKeep, creationSpec);
+        findPuzzle(candidateToKeep);
       }
     }
   }
 
-  private Puzzle createCompletedNewPuzzle(final PuzzleLayout layout) {
-    Puzzle puzzle = newPuzzle(layout);
+  private Puzzle createCompletedNewPuzzle() {
+    Puzzle puzzle = newPuzzle();
     SolutionResult solutionResult = _solver.solve(puzzle);
     if (solutionResult.getType() == SolutionType.NONE) {
       return null;
     }
-    for (int row = 1; row <= layout.getHeight(); row++) {
-      for (int col = 1; col <= layout.getWidth(); col++) {
+    for (int row = 1; row <= _layout.getHeight(); row++) {
+      for (int col = 1; col <= _layout.getWidth(); col++) {
         Coord coord = Coord.of(row, col);
         int niceValue = solutionResult.getSolution().getValue(coord);
         puzzle.setCellValue(Cell.cellValueAsBitwise(niceValue), coord);
@@ -156,14 +160,14 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   protected abstract void addVariableConstraints(Puzzle puzzle);
 
-  private Puzzle newPuzzle(final PuzzleLayout layout) {
-    ArrayPuzzleBuilder puzzleBuilder = new ArrayPuzzleBuilder(layout);
+  private Puzzle newPuzzle() {
+    ArrayPuzzleBuilder puzzleBuilder = new ArrayPuzzleBuilder(_layout);
     final List<Integer> aRow = new ArrayList<>();
-    for (int i = 1; i <= layout.getWidth(); i++) {
+    for (int i = 1; i <= _layout.getWidth(); i++) {
       aRow.add(i);
     }
     Collections.shuffle(aRow);
-    for (int i = 1; i <= layout.getWidth(); i++) {
+    for (int i = 1; i <= _layout.getWidth(); i++) {
       puzzleBuilder.addGiven(aRow.get(i - 1), Coord.of(1, i));
     }
     puzzleBuilder.addTitle("Joe's Sudoku");
