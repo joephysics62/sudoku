@@ -25,6 +25,8 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   private final PuzzleSolver _solver;
   private Puzzle _createdPuzzle = null;
+  private Puzzle _currentBestPuzzle = null;
+  private int _callCount = 0;
   private static final Logger LOG = Logger.getLogger(ArrayPuzzleCreator.class);
 
   public ArrayPuzzleCreator(PuzzleSolver solver) {
@@ -41,9 +43,14 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     return _createdPuzzle ;
   }
 
+  private boolean foundPuzzle() {
+    return _createdPuzzle != null;
+  }
+
   public void findPuzzle(final Puzzle currentPuzzle, CreationSpec creationSpec) {
-    LOG.debug("New call to findPuzzle. Var constraints: " + currentPuzzle.getVariableConstraints().size());
-    if (_createdPuzzle != null) {
+    _callCount++;
+    LOG.debug("Call " + _callCount + " to findPuzzle. Var constraints: " + currentPuzzle.getVariableConstraints().size());
+    if (foundPuzzle()) {
       return;
     }
     CellFilter solvedCellFilter = Solved.create();
@@ -58,7 +65,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     if (solvedCells.size() > creationSpec.getMaxGivens()) {
       Collections.shuffle(solvedCells);
       for (Coord coord : solvedCells) {
-        if (_createdPuzzle != null) {
+        if (foundPuzzle()) {
           return;
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
@@ -80,10 +87,22 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           }
           else {
             LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
-            findPuzzle(candidateToKeep, creationSpec);
+            if (null == _currentBestPuzzle || numGivens < solvedCellFilter.apply(_currentBestPuzzle).size()) {
+              _currentBestPuzzle = candidateToKeep;
+            }
+            if (_callCount > creationSpec.getMaxDepth()) {
+              LOG.debug("Have reached max recursive call count of " + creationSpec.getMaxDepth()
+                  + ", returning current best puzzle which has " + solvedCellFilter.apply(_currentBestPuzzle).size()
+                  + " givens and " + _currentBestPuzzle.getVariableConstraints().size() + " var constriants");
+              _createdPuzzle = _currentBestPuzzle;
+            }
+            else {
+              findPuzzle(candidateToKeep, creationSpec);
+            }
           }
         }
       }
+      LOG.debug("Tried removing each one of the solved cells");
     }
     else if (variableConstraints.size() > creationSpec.getMaxVarConstraints()) {
       final List<Integer> cnums = new ArrayList<>();
@@ -95,7 +114,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
       Collections.shuffle(cnums);
       LOG.debug("Trying to remove one of these...");
       for (int i = 0; i < varConsSize; i++) {
-        if (_createdPuzzle != null) {
+        if (foundPuzzle()) {
           return;
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
@@ -114,7 +133,18 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           }
           else {
             LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
-            findPuzzle(candidateToKeep, creationSpec);
+            if (null == _currentBestPuzzle || varConstraintsInCandidate.size() < _currentBestPuzzle.getVariableConstraints().size()) {
+              _currentBestPuzzle = candidateToKeep;
+            }
+            if (_callCount > creationSpec.getMaxDepth()) {
+              LOG.debug("Have reached max recursive call count of " + creationSpec.getMaxDepth()
+                  + ", returning current best puzzle which has " + solvedCellFilter.apply(_currentBestPuzzle).size()
+                  + " givens and " + _currentBestPuzzle.getVariableConstraints().size() + " var constriants");
+              _createdPuzzle = _currentBestPuzzle;
+            }
+            else {
+              findPuzzle(candidateToKeep, creationSpec);
+            }
           }
         }
       }

@@ -20,8 +20,9 @@ public class CreateMain {
     //PuzzleCreator creator = new FutoshikiCreator(solver);
     final int maxCluesToLeave = 25;
     final int maxVariableConstraints = 0;
+    final int maxDepth = 500;
     PuzzleLayout layout = PuzzleLayout.CLASSIC_SUDOKU;
-    CreationSpec creationSpec = new CreationSpec(maxCluesToLeave, maxVariableConstraints, true);
+    CreationSpec creationSpec = new CreationSpec(maxCluesToLeave, maxVariableConstraints, maxDepth, true);
     Puzzle puzzle = creator.create(layout, creationSpec);
     writer.write(puzzle);
     HTMLPuzzleWriter htmlPuzzleWriter = new HTMLSudokuWriter(puzzle);
