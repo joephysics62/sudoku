@@ -17,8 +17,8 @@ import joephysics62.co.uk.sudoku.write.TextPuzzleWriter;
 public class SolverMain {
 
   public static void main(final String[] args) throws IOException {
-    final File input = new File(args[1]);
     final String type = args[0];
+    final File input = new File(args[1]);
     PuzzleReader puzzleReader;
     if (type.equals("timesMini")) {
       puzzleReader = new SudokuHTMLPuzzleReader(PuzzleLayout.TIMES_MINI);
