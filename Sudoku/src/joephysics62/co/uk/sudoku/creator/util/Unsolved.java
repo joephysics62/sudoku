@@ -4,22 +4,20 @@ import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
 
 /**
- * Pick randomly a cell to guess the value of. Primary for creating puzzles rather than solving them.
  */
-public class Solved extends CellFilterForArrayPuzzle {
+public class Unsolved extends CellFilterForArrayPuzzle {
 
-  private Solved() {
+  private Unsolved() {
     // no.
   }
 
   @Override
   protected boolean accept(int cellValue) {
-    return Cell.isSolved(cellValue);
+    return !Cell.isSolved(cellValue);
   }
 
-
   public static CellFilter create() {
-    return new Solved();
+    return new Unsolved();
   }
 
 }

@@ -7,7 +7,7 @@ import joephysics62.co.uk.sudoku.creator.CreationSpec;
 import joephysics62.co.uk.sudoku.creator.FutoshikiCreator;
 import joephysics62.co.uk.sudoku.creator.Creator;
 import joephysics62.co.uk.sudoku.creator.SudokuCreator;
-import joephysics62.co.uk.sudoku.creator.util.RandomUnsolved;
+import joephysics62.co.uk.sudoku.creator.util.Unsolved;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.solver.Solver;
@@ -28,7 +28,7 @@ public class CreatorMain {
   }
 
   private static Creator buildPuzzleCreator(final String type) {
-    Solver solver = new Solver(RandomUnsolved.create());
+    Solver solver = new Solver(Unsolved.create());
     if (type.equals("timesMini")) {
       return new SudokuCreator(solver, Layout.TIMES_MINI, new CreationSpec(10, 0, MAX_DEPTH, true));
     }

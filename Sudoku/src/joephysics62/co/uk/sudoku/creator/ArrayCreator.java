@@ -1,6 +1,8 @@
 package joephysics62.co.uk.sudoku.creator;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -11,12 +13,12 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.creator.util.Solved;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
-import joephysics62.co.uk.sudoku.solver.Solver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
+import joephysics62.co.uk.sudoku.solver.Solver;
 
 import org.apache.log4j.Logger;
 
@@ -170,7 +172,8 @@ public abstract class ArrayCreator implements Creator {
     for (int i = 1; i <= _layout.getWidth(); i++) {
       puzzleBuilder.addGiven(aRow.get(i - 1), Coord.of(1, i));
     }
-    puzzleBuilder.addTitle("Joe's Sudoku");
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    puzzleBuilder.addTitle("Joe's Puzzle " + dateFormat.format(Calendar.getInstance().getTime()));
     addGeometricConstraints(puzzleBuilder);
     return puzzleBuilder.build();
   }
