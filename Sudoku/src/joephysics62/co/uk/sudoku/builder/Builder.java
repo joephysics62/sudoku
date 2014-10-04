@@ -4,7 +4,7 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public interface PuzzleBuilder {
+public interface Builder {
   Puzzle build();
 
   void addGiven(Integer value, Coord coord);

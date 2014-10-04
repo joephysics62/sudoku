@@ -6,7 +6,7 @@ import java.util.List;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
 
 /**
@@ -26,7 +26,7 @@ public class RandomUnsolved implements CellFilter {
   public List<Coord> apply(Puzzle puzzle) {
     List<Coord> unsolved = new ArrayList<>();
     int[][] allCells = puzzle.getAllCells();
-    PuzzleLayout layout = puzzle.getLayout();
+    Layout layout = puzzle.getLayout();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
         if (!Cell.isSolved(allCells[rowNum - 1][colNum -1])) {

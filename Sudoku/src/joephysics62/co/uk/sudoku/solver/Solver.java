@@ -7,18 +7,18 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 
-public class PuzzleSolver {
+public class Solver {
 
   private final CellFilter _cellGuessingStrategy;
 
-  public PuzzleSolver(CellFilter cellGuessingStrategy) {
+  public Solver(CellFilter cellGuessingStrategy) {
     _cellGuessingStrategy = cellGuessingStrategy;
   }
 
   public SolutionResult solve(final Puzzle puzzle) {
-    final Set<SolvedPuzzle> solutions = new LinkedHashSet<>();
+    final Set<Solution> solutions = new LinkedHashSet<>();
     final long start = System.currentTimeMillis();
     solve(puzzle, solutions, 0);
     final long timing = System.currentTimeMillis() - start;
@@ -33,7 +33,7 @@ public class PuzzleSolver {
     }
   }
 
-  private void solve(final Puzzle puzzle, final Set<SolvedPuzzle> solutions, int recurseDepth) {
+  private void solve(final Puzzle puzzle, final Set<Solution> solutions, int recurseDepth) {
     if (solutions.size() > 1) {
       return;
     }
@@ -56,15 +56,15 @@ public class PuzzleSolver {
     }
   }
 
-  private void addAsSolution(final Puzzle puzzle, final Set<SolvedPuzzle> solutions) {
-    PuzzleLayout layout = puzzle.getLayout();
+  private void addAsSolution(final Puzzle puzzle, final Set<Solution> solutions) {
+    Layout layout = puzzle.getLayout();
     final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
     for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
       for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
         solutionMap[rowIndex][colIndex] = Cell.convertToNiceValue(puzzle.getCellValue(Coord.of(rowIndex + 1,  colIndex + 1)));
       }
     }
-    solutions.add(new SolvedPuzzle(solutionMap, layout));
+    solutions.add(new Solution(solutionMap, layout));
   }
 
   private void analyticElimination(final Puzzle puzzle) {

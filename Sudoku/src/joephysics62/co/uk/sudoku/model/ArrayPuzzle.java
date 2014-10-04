@@ -12,10 +12,10 @@ public class ArrayPuzzle implements Puzzle {
   private final List<Constraint> _variableConstraints;
   private final int _inits;
   private final String _title;
-  private final PuzzleLayout _layout;
+  private final Layout _layout;
 
   @Override
-  public PuzzleLayout getLayout() {
+  public Layout getLayout() {
     return _layout;
   }
 
@@ -47,7 +47,7 @@ public class ArrayPuzzle implements Puzzle {
     return _title;
   }
 
-  private ArrayPuzzle(final String title, final PuzzleLayout layout, final List<Constraint> fixedConstraints) {
+  private ArrayPuzzle(final String title, final Layout layout, final List<Constraint> fixedConstraints) {
     _title = title;
     _inits = (1 << layout.getInitialsSize()) - 1;
     _cells = new int[layout.getHeight()][layout.getWidth()];
@@ -56,7 +56,7 @@ public class ArrayPuzzle implements Puzzle {
     _layout = layout;
   }
 
-  public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
+  public static ArrayPuzzle forPossiblesSize(final String title, final Layout layout, final List<Constraint> constraints) {
     return new ArrayPuzzle(title, layout, constraints);
   }
 

@@ -4,13 +4,13 @@ import java.io.PrintStream;
 
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 
-public class SolvedPuzzle {
+public class Solution {
   private final int[][] _table;
-  private final PuzzleLayout _layout;
+  private final Layout _layout;
 
-  public SolvedPuzzle(final int[][] table, final PuzzleLayout layout) {
+  public Solution(final int[][] table, final Layout layout) {
     _table = table;
     _layout = layout;
   }

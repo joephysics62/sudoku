@@ -9,9 +9,9 @@ import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 
-public class HTMLFutoshikiWriter extends HTMLPuzzleWriter {
+public class HTMLFutoshikiWriter extends HTMLWriter {
 
   private static final String TEMPLATE_FTL = "templates/futoshikiTemplate.ftl";
 
@@ -20,7 +20,7 @@ public class HTMLFutoshikiWriter extends HTMLPuzzleWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout) {
     // None.
   }
 
@@ -29,7 +29,7 @@ public class HTMLFutoshikiWriter extends HTMLPuzzleWriter {
   }
 
   @Override
-  protected List<List<String>> generateTable(final int[][] allCells, final PuzzleLayout layout) {
+  protected List<List<String>> generateTable(final int[][] allCells, final Layout layout) {
     List<List<String>> table = new ArrayList<>();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       List<String> rowList = new ArrayList<>();

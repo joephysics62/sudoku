@@ -6,33 +6,33 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.creator.util.Solved;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
-import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
+import joephysics62.co.uk.sudoku.solver.Solver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
 
 import org.apache.log4j.Logger;
 
 
-public abstract class ArrayPuzzleCreator implements PuzzleCreator {
+public abstract class ArrayCreator implements Creator {
 
-  private final PuzzleSolver _solver;
+  private final Solver _solver;
   private final CellFilter _solvedCellFilter = Solved.create();
   private Puzzle _createdPuzzle = null;
   private Puzzle _currentBestPuzzle = null;
   private int _callCount = 0;
-  private static final Logger LOG = Logger.getLogger(ArrayPuzzleCreator.class);
-  private final PuzzleLayout _layout;
+  private static final Logger LOG = Logger.getLogger(ArrayCreator.class);
+  private final Layout _layout;
   private final CreationSpec _creationSpec;
 
-  public ArrayPuzzleCreator(final PuzzleSolver solver, final PuzzleLayout layout, final CreationSpec creationSpec) {
+  public ArrayCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
     _solver = solver;
     _layout = layout;
     _creationSpec = creationSpec;
@@ -73,7 +73,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           return;
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
-        PuzzleLayout layout = candidateToSolve.getLayout();
+        Layout layout = candidateToSolve.getLayout();
         int init = (1 << layout.getInitialsSize()) - 1;
         candidateToSolve.setCellValue(init, coord);
         if (_creationSpec.isRemoveInSymmetricPairs()) {
@@ -161,7 +161,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   protected abstract void addVariableConstraints(Puzzle puzzle);
 
   private Puzzle newPuzzle() {
-    ArrayPuzzleBuilder puzzleBuilder = new ArrayPuzzleBuilder(_layout);
+    ArrayBuilder puzzleBuilder = new ArrayBuilder(_layout);
     final List<Integer> aRow = new ArrayList<>();
     for (int i = 1; i <= _layout.getWidth(); i++) {
       aRow.add(i);
@@ -175,6 +175,6 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     return puzzleBuilder.build();
   }
 
-  protected abstract void addGeometricConstraints(ArrayPuzzleBuilder puzzleBuilder);
+  protected abstract void addGeometricConstraints(ArrayBuilder puzzleBuilder);
 
 }

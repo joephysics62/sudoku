@@ -3,27 +3,27 @@ package joephysics62.co.uk.sudoku.read;
 import java.io.File;
 import java.io.IOException;
 
-import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
-public class FutoshikiHTMLReader implements PuzzleReader {
+public class FutoshikiHTMLReader implements Reader {
 
-  private final PuzzleLayout _layout;
+  private final Layout _layout;
 
-  public FutoshikiHTMLReader(final PuzzleLayout layout) {
+  public FutoshikiHTMLReader(final Layout layout) {
     _layout = layout;
   }
 
   @Override
   public Puzzle read(final File input) throws IOException {
     HTMLTableParser tableParser = new HTMLTableParser(2 * _layout.getHeight() - 1, 2 * _layout.getWidth() - 1);
-    final ArrayPuzzleBuilder futoshikiBuilder = new ArrayPuzzleBuilder(_layout);
+    final ArrayBuilder futoshikiBuilder = new ArrayBuilder(_layout);
     final TableParserHandler handler = new TableParserHandler() {
       @Override
       public void title(String title) {

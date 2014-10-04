@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public abstract class HTMLPuzzleWriter {
+public abstract class HTMLWriter {
 
   private static final String ENCODING = "UTF-8";
   private final Puzzle _puzzle;
   private final String _templateLocation;
 
-  public HTMLPuzzleWriter(final Puzzle puzzle, final String templateLocation) {
+  public HTMLWriter(final Puzzle puzzle, final String templateLocation) {
     _puzzle = puzzle;
     _templateLocation = templateLocation;
   }
@@ -39,8 +39,8 @@ public abstract class HTMLPuzzleWriter {
     return _puzzle;
   }
 
-  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout);
+  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout);
 
-  protected abstract List<List<String>> generateTable(int[][] allCells, PuzzleLayout puzzleLayout);
+  protected abstract List<List<String>> generateTable(int[][] allCells, Layout puzzleLayout);
 
  }

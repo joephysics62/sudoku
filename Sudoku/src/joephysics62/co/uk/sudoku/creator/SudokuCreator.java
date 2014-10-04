@@ -1,18 +1,18 @@
 package joephysics62.co.uk.sudoku.creator;
 
-import joephysics62.co.uk.sudoku.builder.ArrayPuzzleBuilder;
+import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
-import joephysics62.co.uk.sudoku.solver.PuzzleSolver;
+import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.solver.Solver;
 
-public class SudokuCreator extends ArrayPuzzleCreator {
+public class SudokuCreator extends ArrayCreator {
 
-  public SudokuCreator(final PuzzleSolver solver, final PuzzleLayout layout, final CreationSpec creationSpec) {
+  public SudokuCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
     super(solver, layout, creationSpec);
   }
 
   @Override
-  protected void addGeometricConstraints(ArrayPuzzleBuilder puzzleBuilder) {
+  protected void addGeometricConstraints(ArrayBuilder puzzleBuilder) {
     puzzleBuilder.addColumnUniquenessConstraints();
     puzzleBuilder.addRowUniquenessConstraints();
     puzzleBuilder.addSubTableUniquenessConstraints();

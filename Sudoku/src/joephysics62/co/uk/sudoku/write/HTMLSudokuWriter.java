@@ -6,9 +6,9 @@ import java.util.Map;
 
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 
-public class HTMLSudokuWriter extends HTMLPuzzleWriter {
+public class HTMLSudokuWriter extends HTMLWriter {
 
   private static final String TEMPLATE_FTL = "templates/sudokuTemplate.ftl";
 
@@ -17,7 +17,7 @@ public class HTMLSudokuWriter extends HTMLPuzzleWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout) {
     root.put("subTableHeight", layout.getSubTableHeight());
     root.put("subTableWidth", layout.getSubTableWidth());
   }
@@ -27,7 +27,7 @@ public class HTMLSudokuWriter extends HTMLPuzzleWriter {
   }
 
   @Override
-  protected List<List<String>> generateTable(final int[][] allCells, final PuzzleLayout layout) {
+  protected List<List<String>> generateTable(final int[][] allCells, final Layout layout) {
     List<List<String>> table = new ArrayList<>();
     for (int[] row : allCells) {
       List<String> rowList = new ArrayList<>();

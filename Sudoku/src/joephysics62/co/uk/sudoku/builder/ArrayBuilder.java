@@ -9,16 +9,16 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.Uniqueness;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.Layout;
 
-public class ArrayPuzzleBuilder implements PuzzleBuilder {
+public class ArrayBuilder implements Builder {
 
-  private final PuzzleLayout _layout;
+  private final Layout _layout;
   private Integer[][] _givenCells = null;
   private String _title;
   private final List<Constraint> _constraints = new ArrayList<>();
 
-  public ArrayPuzzleBuilder(final PuzzleLayout layout) {
+  public ArrayBuilder(final Layout layout) {
     _layout = layout;
   }
 
@@ -34,7 +34,7 @@ public class ArrayPuzzleBuilder implements PuzzleBuilder {
   public final void addTitle(final String title) {
     _title = title;
   }
-  public PuzzleLayout getLayout() {
+  public Layout getLayout() {
     return _layout;
   }
 
