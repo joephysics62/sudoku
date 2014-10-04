@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   private final PuzzleSolver _solver;
+  private final CellFilter _solvedCellFilter = Solved.create();
   private Puzzle _createdPuzzle = null;
   private Puzzle _currentBestPuzzle = null;
   private int _callCount = 0;
@@ -53,8 +54,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     if (foundPuzzle()) {
       return;
     }
-    CellFilter solvedCellFilter = Solved.create();
-    final List<Coord> solvedCells = solvedCellFilter.apply(currentPuzzle);
+    final List<Coord> solvedCells = _solvedCellFilter.apply(currentPuzzle);
     LOG.debug("Currently puzzle has " + solvedCells.size() + " givens cells.");
     final List<Constraint> variableConstraints = currentPuzzle.getVariableConstraints();
     boolean seenSolvedCellSet = !_tried.add(new LinkedHashSet<>(solvedCells));
@@ -75,32 +75,8 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         if (creationSpec.isRemoveInSymmetricPairs()) {
           candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
         }
-        LOG.debug("Puzzle now has " + solvedCellFilter.apply(candidateToSolve).size() + " givens cells after removal");
-        Puzzle candidateToKeep = candidateToSolve.deepCopy();
-        SolutionResult solution = _solver.solve(candidateToSolve);
-        LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
-        if (solution.getType() == SolutionType.UNIQUE) {
-          int numGivens = solvedCellFilter.apply(candidateToKeep).size();
-          if (numGivens <= creationSpec.getMaxGivens() && variableConstraints.size() <= creationSpec.getMaxVarConstraints()) {
-            LOG.debug("Have found a puzzle with " + numGivens + " clues and " + variableConstraints.size() + " var constraints.");
-            _createdPuzzle = candidateToKeep;
-          }
-          else {
-            LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
-            if (null == _currentBestPuzzle || numGivens < solvedCellFilter.apply(_currentBestPuzzle).size()) {
-              _currentBestPuzzle = candidateToKeep;
-            }
-            if (_callCount > creationSpec.getMaxDepth()) {
-              LOG.debug("Have reached max recursive call count of " + creationSpec.getMaxDepth()
-                  + ", returning current best puzzle which has " + solvedCellFilter.apply(_currentBestPuzzle).size()
-                  + " givens and " + _currentBestPuzzle.getVariableConstraints().size() + " var constriants");
-              _createdPuzzle = _currentBestPuzzle;
-            }
-            else {
-              findPuzzle(candidateToKeep, creationSpec);
-            }
-          }
-        }
+        LOG.debug("Puzzle now has " + _solvedCellFilter.apply(candidateToSolve).size() + " givens cells after removal");
+        solveModifiedPuzzle(candidateToSolve, creationSpec);
       }
       LOG.debug("Tried removing each one of the solved cells");
     }
@@ -121,34 +97,43 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
         final List<Constraint> varConstraintsInCandidate = candidateToSolve.getVariableConstraints();
         Constraint removed = varConstraintsInCandidate.remove((int) cnums.get(i));
         LOG.debug("Removing variable constraint " + removed);
-        Puzzle candidateToKeep = candidateToSolve.deepCopy();
-        SolutionResult solution = _solver.solve(candidateToSolve);
-        LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
-        if (solution.getType() == SolutionType.UNIQUE) {
-          int numGivens = solvedCells.size();
-          if (numGivens <= creationSpec.getMaxGivens() && varConstraintsInCandidate.size() <= creationSpec.getMaxVarConstraints()) {
-            _createdPuzzle = candidateToKeep;
-            LOG.debug("Have found a puzzle with " + numGivens + " clues and " + varConstraintsInCandidate.size() + " var constraints.");
-            return;
-          }
-          else {
-            LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
-            if (null == _currentBestPuzzle || varConstraintsInCandidate.size() < _currentBestPuzzle.getVariableConstraints().size()) {
-              _currentBestPuzzle = candidateToKeep;
-            }
-            if (_callCount > creationSpec.getMaxDepth()) {
-              LOG.debug("Have reached max recursive call count of " + creationSpec.getMaxDepth()
-                  + ", returning current best puzzle which has " + solvedCellFilter.apply(_currentBestPuzzle).size()
-                  + " givens and " + _currentBestPuzzle.getVariableConstraints().size() + " var constriants");
-              _createdPuzzle = _currentBestPuzzle;
-            }
-            else {
-              findPuzzle(candidateToKeep, creationSpec);
-            }
-          }
-        }
+        solveModifiedPuzzle(candidateToSolve, creationSpec);
       }
       LOG.debug("Tried removing each one of these " + varConsSize + " variable constraints.");
+    }
+  }
+
+  private void solveModifiedPuzzle(final Puzzle candidateToSolve, final CreationSpec creationSpec) {
+    Puzzle candidateToKeep = candidateToSolve.deepCopy();
+    SolutionResult solution = _solver.solve(candidateToSolve);
+    LOG.debug("Removal leads to solution of type = " + solution.getType() + ", solved in " + solution.getTiming() + "ms");
+    if (solution.getType() == SolutionType.UNIQUE) {
+      checkPuzzleOrContinue(candidateToKeep, creationSpec);
+    }
+  }
+
+  private void checkPuzzleOrContinue(final Puzzle candidateToKeep, final CreationSpec creationSpec) {
+    int numGivens = _solvedCellFilter.apply(candidateToKeep).size();
+    List<Constraint> variableConstraints = candidateToKeep.getVariableConstraints();
+    if (numGivens <= creationSpec.getMaxGivens() && variableConstraints.size() <= creationSpec.getMaxVarConstraints()) {
+      LOG.debug("Have found a puzzle with " + numGivens + " clues and " + variableConstraints.size() + " var constraints.");
+      _createdPuzzle = candidateToKeep;
+    }
+    else {
+      LOG.debug("Not reached " + creationSpec.getMaxGivens() + " givens and " + creationSpec.getMaxVarConstraints() + " constraints... continue...");
+      if (null == _currentBestPuzzle ||
+          numGivens <= _solvedCellFilter.apply(_currentBestPuzzle).size() && variableConstraints.size() <= _currentBestPuzzle.getVariableConstraints().size()) {
+        _currentBestPuzzle = candidateToKeep;
+      }
+      if (_callCount > creationSpec.getMaxDepth()) {
+        LOG.debug("Have reached max recursive call count of " + creationSpec.getMaxDepth()
+            + ", returning current best puzzle which has " + _solvedCellFilter.apply(_currentBestPuzzle).size()
+            + " givens and " + _currentBestPuzzle.getVariableConstraints().size() + " var constriants");
+        _createdPuzzle = _currentBestPuzzle;
+      }
+      else {
+        findPuzzle(candidateToKeep, creationSpec);
+      }
     }
   }
 
