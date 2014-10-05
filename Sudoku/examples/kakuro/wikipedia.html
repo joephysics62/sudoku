@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Kakuro Mock-up</title>
+<style>
+* {
+  font-family: Arial;
+}
+td, th {
+    border-color: black;
+    border-width: thin;
+    border-style: solid;
+    border-spacing: 0px;
+    width: 1.5em;
+    height: 1.5em;
+    text-align:  right;
+}
+td.noValue {
+  background-color: rgb(190,190,190);
+  position: relative;
+  z-index: -1
+}
+td.noValue div.down {
+  font-size: x-small;
+  position: absolute;
+  
+}
+td.noValue div.across {
+  font-size: x-small;
+  position: absolute;
+  left: 1.4em;
+  bottom: 1.2em;
+}
+table {
+    border-collapse: collapse;
+}
+</style>
+</head>
+<body>
+  <table>
+   <tr> 
+     <td class="noValue"/>
+     <td class="noValue"><div class="down">23</div></td>
+     <td class="noValue"><div class="down">30</div></td>
+     <td class="noValue"/>
+     <td class="noValue"/>
+     <td class="noValue"><div class="down">27</div></td>
+     <td class="noValue"><div class="down">12</div></td>
+     <td class="noValue"><div class="down">16</div></td>
+   </tr>
+   <tr>
+     <td class="noValue"><div class="across">16</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"/>
+     <td class="noValue"><div class="across">24</div><div class="down">17</div></td>
+     <td/>
+     <td/>
+     <td/>
+   </tr>
+   <tr>
+     <td class="noValue"><div class="across">17</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">29</div><div class="down">15</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+   </tr>
+   <tr>
+     <td class="noValue"><div class="across">35</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="down">12</div></td>
+     <td class="noValue"/>
+   </tr>
+   <tr>
+     <td class="noValue"/>
+     <td class="noValue"><div class="across">7</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">8</div><div class="down">7</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="down">7</div></td>
+   </tr>
+   <tr>
+     <td class="noValue"/>
+     <td class="noValue"><div class="down">11</div></td>
+     <td class="noValue"><div class="across">16</div><div class="down">10</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+   </tr>
+   <tr>
+     <td class="noValue"><div class="across">21</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">5</div></td>
+     <td/>
+     <td/>
+   </tr>
+   <tr>
+     <td class="noValue"><div class="across">6</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td class="noValue"/>
+     <td class="noValue"><div class="across">3</div></td>
+     <td/>
+     <td/>
+   </tr>
+ </table>
+</body>
+
+</html>
