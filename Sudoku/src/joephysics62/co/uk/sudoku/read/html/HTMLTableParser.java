@@ -2,6 +2,8 @@ package joephysics62.co.uk.sudoku.read.html;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -58,8 +60,24 @@ public class HTMLTableParser {
       }
       for (int colIndex = 0; colIndex < cells.getLength(); colIndex++) {
         Element cell = (Element) cells.item(colIndex);
-        final String cellInput = cell.getTextContent().trim();
-        handler.cell(cellInput, rowIndex, colIndex);
+        final String cellClass = cell.getAttribute("class").trim();
+        NodeList childDivs = cell.getElementsByTagName("div");
+        if (childDivs.getLength() == 0) {
+          final String cellInput = cell.getTextContent().trim();
+          handler.cell(cellInput, rowIndex, colIndex);
+        }
+        else {
+          Map<String, String> complexCellInput = new LinkedHashMap<>();
+          for (int i = 0; i < childDivs.getLength(); i++) {
+            final Element divElem = (Element) childDivs.item(i);
+            String classAttr = divElem.getAttribute("class");
+            if (classAttr.isEmpty()) {
+              throw new IOException();
+            }
+            complexCellInput.put(classAttr, divElem.getTextContent().trim());
+          }
+          handler.cell(complexCellInput, rowIndex, colIndex);
+        }
       }
     }
   }

@@ -2,13 +2,14 @@ package joephysics62.co.uk.sudoku.read;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
@@ -28,6 +29,11 @@ public class FutoshikiHTMLReader implements Reader {
       @Override
       public void title(String title) {
         futoshikiBuilder.addTitle(title);
+      }
+
+      @Override
+      public void cell(Map<String, String> complexCellInput, int rowIndex, int colIndex) {
+        throw new UnsupportedOperationException();
       }
 
       @Override
