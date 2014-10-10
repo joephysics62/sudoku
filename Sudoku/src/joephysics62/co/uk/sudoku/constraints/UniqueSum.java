@@ -15,14 +15,9 @@ public class UniqueSum implements Constraint {
     _sum = sum;
     _cells = Collections.unmodifiableList(cells);
     // if s < n(n+1)/2 impossible to solve
-    // can eliminate large values when
-    // n(n+1)/2 <= S < n(n+1)/2 + i - n
-
-    //    s > n(i+(1-n)/2) impossible to solve
-
-    // n(i+(1-n)/2) - (i - n) < S <= n(i+(1-n)/2)
-
-    // i.e. only when i < n can do elimination
+    // max value of nth is s - n(n-1)/2
+    // max value = s - n(n-1)/2   not solveable if max value < n
+    // min value = s -(n-1)(i - (n-2)/2) not solveable if min value > i - (n-1)
   }
 
   public static UniqueSum of(final int originalSum, List<Coord> cells) {
