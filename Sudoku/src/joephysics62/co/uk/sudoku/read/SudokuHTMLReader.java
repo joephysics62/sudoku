@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.read;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
@@ -27,14 +28,14 @@ public class SudokuHTMLReader implements Reader {
     final ArrayBuilder puzzleBuilder = new ArrayBuilder(_layout);
     _tableParser.parseTable(input, new TableParserHandler() {
       @Override
-      public void cell(String cellInput, int rowIndex, int colIndex) {
+      public void cell(String cellInput, Set<String> classValues, int rowIndex, int colIndex) {
         if (!cellInput.isEmpty()) {
           puzzleBuilder.addGiven(Cell.fromString(cellInput, _layout.getInitialsSize()), Coord.of(rowIndex + 1, colIndex + 1));
         }
       }
 
       @Override
-      public void cell(final Map<String, String> complexCellInput, int rowIndex, int colIndex) {
+      public void cell(final Map<String, String> complexCellInput, Set<String> classValues, int rowIndex, int colIndex) {
         throw new UnsupportedOperationException();
       }
 

@@ -12,4 +12,6 @@ public interface Builder {
   void addTitle(String title);
 
   void addConstraint(Constraint constraint);
+
+  void addNonValueCell(Coord coord);
 }

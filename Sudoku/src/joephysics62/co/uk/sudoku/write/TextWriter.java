@@ -18,12 +18,24 @@ public class TextWriter {
     for (int[] row: allCells) {
       _out.print("|");
       for (int value : row) {
-        _out.print(Cell.isSolved(value) ? Cell.asString(Cell.convertToNiceValue(value), puzzle.getLayout().getInitialsSize()) : "-");
+        _out.print(outString(value, puzzle));
         _out.print("|");
       }
       _out.println();
     }
     _out.println();
+  }
+
+  private static String outString(final int value, Puzzle puzzle) {
+    if (value < 0) {
+      return "X";
+    }
+    if (Cell.isSolved(value)) {
+      return Cell.asString(Cell.convertToNiceValue(value), puzzle.getLayout().getInitialsSize());
+    }
+    else {
+      return "-";
+    }
   }
 
 }

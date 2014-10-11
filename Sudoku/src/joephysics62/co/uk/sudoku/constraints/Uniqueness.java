@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.constraints;
 
+import java.util.Collections;
 import java.util.List;
 
 import joephysics62.co.uk.sudoku.model.Cell;
@@ -11,7 +12,7 @@ public abstract class Uniqueness implements Constraint {
   private final List<Coord> _group;
 
   protected Uniqueness(List<Coord> group) {
-    _group = group;
+    _group = Collections.unmodifiableList(group);
   }
 
   @Override

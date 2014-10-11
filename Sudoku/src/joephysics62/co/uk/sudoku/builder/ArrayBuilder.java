@@ -5,8 +5,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.AllValuesUniqueness;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
@@ -17,9 +17,15 @@ public class ArrayBuilder implements Builder {
   private Integer[][] _givenCells = null;
   private String _title;
   private final List<Constraint> _constraints = new ArrayList<>();
+  private final Set<Coord> _nonValueCells = new LinkedHashSet<>();
 
   public ArrayBuilder(final Layout layout) {
     _layout = layout;
+  }
+
+  @Override
+  public void addNonValueCell(Coord coord) {
+    _nonValueCells.add(coord);
   }
 
   @Override
@@ -48,6 +54,9 @@ public class ArrayBuilder implements Builder {
     ArrayPuzzle arrayPuzzle = ArrayPuzzle.forPossiblesSize(_title, _layout, _constraints);
     if (_givenCells != null) {
       arrayPuzzle.addCells(_givenCells);
+    }
+    for (Coord coord : _nonValueCells) {
+      arrayPuzzle.setCellValue(-1, coord);
     }
     return arrayPuzzle;
   }

@@ -2,8 +2,12 @@ package joephysics62.co.uk.sudoku.read.html;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -60,24 +64,38 @@ public class HTMLTableParser {
       }
       for (int colIndex = 0; colIndex < cells.getLength(); colIndex++) {
         Element cell = (Element) cells.item(colIndex);
+        Set<String> classValues = readClassValues(cell);
         NodeList childDivs = cell.getElementsByTagName("div");
         if (childDivs.getLength() == 0) {
           final String cellInput = cell.getTextContent().trim();
-          handler.cell(cellInput, rowIndex, colIndex);
+          handler.cell(cellInput, classValues, rowIndex, colIndex);
         }
         else {
-          Map<String, String> complexCellInput = new LinkedHashMap<>();
-          for (int i = 0; i < childDivs.getLength(); i++) {
-            final Element divElem = (Element) childDivs.item(i);
-            String classAttr = divElem.getAttribute("class");
-            if (classAttr.isEmpty()) {
-              throw new IOException();
-            }
-            complexCellInput.put(classAttr, divElem.getTextContent().trim());
-          }
-          handler.cell(complexCellInput, rowIndex, colIndex);
+          Map<String, String> complexCellInput = readDivs(childDivs);
+          handler.cell(complexCellInput, classValues, rowIndex, colIndex);
         }
       }
     }
+  }
+
+  private Map<String, String> readDivs(NodeList childDivs) throws IOException {
+    Map<String, String> complexCellInput = new LinkedHashMap<>();
+    for (int i = 0; i < childDivs.getLength(); i++) {
+      final Element divElem = (Element) childDivs.item(i);
+      String classAttr = divElem.getAttribute("class");
+      if (classAttr.isEmpty()) {
+        throw new IOException();
+      }
+      complexCellInput.put(classAttr, divElem.getTextContent().trim());
+    }
+    return complexCellInput;
+  }
+
+  private Set<String> readClassValues(Element cell) {
+    final String classAttr = cell.getAttribute("class").trim();
+    if (classAttr.isEmpty()) {
+      return Collections.emptySet();
+    }
+    return Collections.unmodifiableSet(new LinkedHashSet<>(Arrays.asList(classAttr.split("\\s+"))));
   }
 }

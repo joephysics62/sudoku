@@ -3,15 +3,16 @@ package joephysics62.co.uk.sudoku.main;
 import java.io.File;
 import java.io.IOException;
 
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.FutoshikiHTMLReader;
+import joephysics62.co.uk.sudoku.read.KakuroHTMLReader;
 import joephysics62.co.uk.sudoku.read.Reader;
 import joephysics62.co.uk.sudoku.read.SudokuHTMLReader;
 import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
-import joephysics62.co.uk.sudoku.solver.Solver;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
+import joephysics62.co.uk.sudoku.solver.Solver;
 import joephysics62.co.uk.sudoku.write.TextWriter;
 
 public class SolverMain {
@@ -28,6 +29,9 @@ public class SolverMain {
     }
     else if (type.equals("super")) {
       return new SudokuHTMLReader(Layout.SUPER_SUDOKU);
+    }
+    else if (type.equals("kakuro")) {
+      return new KakuroHTMLReader(new Layout(7, 7, 0, 0, 9)); // TODO this obviously isn't generic enough.
     }
     else {
       throw new IllegalArgumentException();

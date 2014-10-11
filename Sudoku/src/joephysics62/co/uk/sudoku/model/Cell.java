@@ -3,6 +3,9 @@ package joephysics62.co.uk.sudoku.model;
 public class Cell {
 
   public static boolean isSolved(final int value) {
+    if (value < 0) {
+      return true; // non-value cells excluded.
+    }
     return value != 0 && (value & (value - 1)) == 0;
   }
 
@@ -11,10 +14,16 @@ public class Cell {
   }
 
   public static int remove(final int targetValue, final int valueToRemove) {
+    if (targetValue < 0) {
+      throw new UnsupportedOperationException();
+    }
     return targetValue & (~valueToRemove);
   }
 
   public static Integer convertToNiceValue(int bitwiseValue) {
+    if (bitwiseValue < 0) {
+      throw new UnsupportedOperationException();
+    }
     if (Cell.isSolved(bitwiseValue)) {
       return Integer.numberOfTrailingZeros(bitwiseValue) + 1;
     }

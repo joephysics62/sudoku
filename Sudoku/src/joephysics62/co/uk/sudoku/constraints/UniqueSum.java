@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.constraints;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import joephysics62.co.uk.sudoku.model.Cell;
@@ -17,6 +18,7 @@ public class UniqueSum extends Uniqueness {
 
   private UniqueSum(final int sum, List<Coord> cells) {
     super(cells);
+    LOG.debug("Creating unique sum constraint for sum " + sum + " on cells " + cells);
     _sum = sum;
     // if s < n(n+1)/2 impossible to solve
     // max value of nth is s - n(n-1)/2
@@ -36,7 +38,7 @@ public class UniqueSum extends Uniqueness {
   }
 
   public static UniqueSum of(final int originalSum, List<Coord> cells) {
-    return new UniqueSum(originalSum, cells);
+    return new UniqueSum(originalSum, new ArrayList<Coord>(cells));
   }
 
   @Override

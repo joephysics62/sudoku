@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.read;
 import java.io.File;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
@@ -32,12 +33,12 @@ public class FutoshikiHTMLReader implements Reader {
       }
 
       @Override
-      public void cell(Map<String, String> complexCellInput, int rowIndex, int colIndex) {
+      public void cell(Map<String, String> complexCellInput, Set<String> classValues, int rowIndex, int colIndex) {
         throw new UnsupportedOperationException();
       }
 
       @Override
-      public void cell(final String cellInput, int rowIndex, int colIndex) {
+      public void cell(final String cellInput, Set<String> classValues, int rowIndex, int colIndex) {
         int rowNum = rowIndex / 2 + 1;
         int colNum = colIndex / 2 + 1;
         if (rowIndex % 2 == 0 && colIndex % 2 == 0) {

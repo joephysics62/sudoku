@@ -1,6 +1,6 @@
 package joephysics62.co.uk.sudoku.constraints;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class TestUniqueSum {
-
 
   @Test
   public void testClassicSudokuThreeSizeElimination() {
@@ -39,10 +38,12 @@ public class TestUniqueSum {
 
   private void runTests(int sumValue, int expected) {
     Layout layout = Layout.CLASSIC_SUDOKU;
-    Coord cellA = Coord.of(1, 1);
-    Coord cellB = Coord.of(1, 2);
-    Coord cellC = Coord.of(1, 3);
-    List<Coord> cells = Arrays.asList(cellA, cellB, cellC);
+    final int groupSize = 3;
+
+    List<Coord> cells = new ArrayList<>();
+    for (int i = 1; i <= groupSize; i++) {
+      cells.add(Coord.of(1, i));
+    }
     Map<Coord, Integer> map = new LinkedHashMap<>();
     for (Coord coord : cells) {
       map.put(coord, layout.getInitialValue());
