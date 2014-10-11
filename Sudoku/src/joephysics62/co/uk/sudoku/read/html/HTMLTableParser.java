@@ -60,7 +60,6 @@ public class HTMLTableParser {
       }
       for (int colIndex = 0; colIndex < cells.getLength(); colIndex++) {
         Element cell = (Element) cells.item(colIndex);
-        final String cellClass = cell.getAttribute("class").trim();
         NodeList childDivs = cell.getElementsByTagName("div");
         if (childDivs.getLength() == 0) {
           final String cellInput = cell.getTextContent().trim();

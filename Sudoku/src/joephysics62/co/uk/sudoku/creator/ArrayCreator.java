@@ -76,7 +76,7 @@ public abstract class ArrayCreator implements Creator {
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
         Layout layout = candidateToSolve.getLayout();
-        int init = (1 << layout.getInitialsSize()) - 1;
+        int init = layout.getInitialValue();
         candidateToSolve.setCellValue(init, coord);
         if (_creationSpec.isRemoveInSymmetricPairs()) {
           candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));

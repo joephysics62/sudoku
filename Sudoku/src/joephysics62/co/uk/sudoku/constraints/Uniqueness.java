@@ -10,7 +10,7 @@ public abstract class Uniqueness implements Constraint {
 
   private final List<Coord> _group;
 
-  public Uniqueness(List<Coord> group) {
+  protected Uniqueness(List<Coord> group) {
     _group = group;
   }
 

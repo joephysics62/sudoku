@@ -66,8 +66,10 @@ public class UniqueSum extends Uniqueness {
         // eliminate
         for (Coord coord : getCells()) {
           final int oldValue = cellGrid.getCellValue(coord);
-          final int newValue = Cell.remove(oldValue, possible);
+          final int newValue = Cell.remove(oldValue, Cell.cellValueAsBitwise(possible));
           if (oldValue != newValue) {
+            LOG.debug("Eliminating possible " + possible + " from cell " + coord);
+            cellGrid.setCellValue(newValue, coord);
             changed = true;
           }
         }

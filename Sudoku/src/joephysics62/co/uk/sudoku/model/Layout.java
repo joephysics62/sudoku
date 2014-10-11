@@ -43,4 +43,8 @@ public class Layout {
   public static Layout TIMES_MINI = new Layout(6, 6, 2, 3, 6);
   public static Layout FUTOSHIKI = new Layout(5, 5, 0, 0, 5);
 
+  public int getInitialValue() {
+    return (1 << getInitialsSize()) - 1;
+  }
+
 }

@@ -49,7 +49,7 @@ public class ArrayPuzzle implements Puzzle {
 
   private ArrayPuzzle(final String title, final Layout layout, final List<Constraint> fixedConstraints) {
     _title = title;
-    _inits = (1 << layout.getInitialsSize()) - 1;
+    _inits = layout.getInitialValue();
     _cells = new int[layout.getHeight()][layout.getWidth()];
     _fixedConstraints = Collections.unmodifiableList(fixedConstraints);
     _variableConstraints = new ArrayList<>();
