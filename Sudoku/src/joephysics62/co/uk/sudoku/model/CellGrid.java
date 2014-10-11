@@ -6,4 +6,6 @@ public interface CellGrid {
 
   void setCellValue(int cellValues, Coord coord);
 
+  Layout getLayout();
+
 }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
-import joephysics62.co.uk.sudoku.constraints.Uniqueness;
+import joephysics62.co.uk.sudoku.constraints.AllValuesUniqueness;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
@@ -58,7 +58,7 @@ public class ArrayBuilder implements Builder {
       for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
         row.add(Coord.of(rowNum, colNum));
       }
-      addConstraint(Uniqueness.of(row));
+      addConstraint(AllValuesUniqueness.of(row));
     }
   }
 
@@ -68,7 +68,7 @@ public class ArrayBuilder implements Builder {
       for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
         column.add(Coord.of(rowNum, colNum));
       }
-      addConstraint(Uniqueness.of(column));
+      addConstraint(AllValuesUniqueness.of(column));
     }
   }
 
@@ -85,7 +85,7 @@ public class ArrayBuilder implements Builder {
             subTableCells.add(Coord.of(row, col));
           }
         }
-        addConstraint(Uniqueness.of(subTableCells));
+        addConstraint(AllValuesUniqueness.of(subTableCells));
       }
     }
   }

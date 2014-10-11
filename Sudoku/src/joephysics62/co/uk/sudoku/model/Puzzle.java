@@ -24,7 +24,4 @@ public interface Puzzle extends CellGrid {
 
   int[][] getAllCells();
 
-  Layout getLayout();
-
-
 }
