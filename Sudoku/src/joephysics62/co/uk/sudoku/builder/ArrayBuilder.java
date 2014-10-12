@@ -1,6 +1,7 @@
 package joephysics62.co.uk.sudoku.builder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -61,27 +62,38 @@ public class ArrayBuilder implements Builder {
     return arrayPuzzle;
   }
 
-  public void addRowUniquenessConstraints() {
+  public List<Constraint> addRowUniquenessConstraints() {
+    final List<Constraint> addedConstraints = new ArrayList<>();
     for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
       final List<Coord> row = new ArrayList<>();
       for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
         row.add(Coord.of(rowNum, colNum));
       }
-      addConstraint(AllValuesUniqueness.of(row));
+      addedConstraints.add(AllValuesUniqueness.of(row));
     }
+    for (Constraint constraint : addedConstraints) {
+      addConstraint(constraint);
+    }
+    return Collections.unmodifiableList(addedConstraints);
   }
 
-  public void addColumnUniquenessConstraints() {
+  public List<Constraint> addColumnUniquenessConstraints() {
+    final List<Constraint> addedConstraints = new ArrayList<>();
     for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
       final List<Coord> column = new ArrayList<>();
       for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
         column.add(Coord.of(rowNum, colNum));
       }
-      addConstraint(AllValuesUniqueness.of(column));
+      addedConstraints.add(AllValuesUniqueness.of(column));
     }
+    for (Constraint constraint : addedConstraints) {
+      addConstraint(constraint);
+    }
+    return Collections.unmodifiableList(addedConstraints);
   }
 
-  public void addSubTableUniquenessConstraints() {
+  public List<Constraint> addSubTableUniquenessConstraints() {
+    final List<Constraint> addedConstraints = new ArrayList<>();
     int subTableHeight = _layout.getSubTableHeight();
     int subTableWidth = _layout.getSubTableWidth();
     for (int subTableRowNum = 1; subTableRowNum <= _layout.getHeight() / subTableHeight; subTableRowNum++) {
@@ -94,8 +106,12 @@ public class ArrayBuilder implements Builder {
             subTableCells.add(Coord.of(row, col));
           }
         }
-        addConstraint(AllValuesUniqueness.of(subTableCells));
+        addedConstraints.add(AllValuesUniqueness.of(subTableCells));
       }
     }
+    for (Constraint constraint : addedConstraints) {
+      addConstraint(constraint);
+    }
+    return Collections.unmodifiableList(addedConstraints);
   }
 }

@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
+import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
 import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
@@ -78,16 +79,57 @@ public class KillerSudokuReader implements Reader {
     if (!sumByGroup.keySet().equals(cellsByGroup.keySet())) {
       throw new RuntimeException("Sum keyset = " + sumByGroup.keySet() + " but group keyset = " + cellsByGroup.keySet());
     }
+    final List<UniqueSum> uniqueSumConstraints = buildUniqueSumConstraints(sumByGroup, cellsByGroup);
+    for (Constraint constraint : uniqueSumConstraints) {
+      killerBuilder.addConstraint(constraint);
+    }
+    final List<Constraint> geometricConstraints = new ArrayList<>();
+    geometricConstraints.addAll(killerBuilder.addColumnUniquenessConstraints());
+    geometricConstraints.addAll(killerBuilder.addRowUniquenessConstraints());
+    geometricConstraints.addAll(killerBuilder.addSubTableUniquenessConstraints());
+
+    final List<Constraint> implicitConstraints = createImplicitConstraints(uniqueSumConstraints, geometricConstraints);
+    for (Constraint constraint : implicitConstraints) {
+      killerBuilder.addConstraint(constraint);
+    }
+    return killerBuilder.build();
+  }
+
+  private List<Constraint> createImplicitConstraints(final List<UniqueSum> uniqueSumConstraints, final List<Constraint> geometricConstraints) {
+    final List<Constraint> out = new ArrayList<>();
+    final int i = _layout.getInitialsSize();
+    final int geometricConstraintSum = (i * (i + 1)) / 2;
+
+    for (Constraint geometricConstraint : geometricConstraints) {
+      int derivedSum = geometricConstraintSum;
+      List<Coord> cells = new ArrayList<>(geometricConstraint.getCells());
+
+      boolean addDerived = false;
+      for (UniqueSum uniqueSum : uniqueSumConstraints) {
+        if (cells.containsAll(uniqueSum.getCells())) {
+          derivedSum -= uniqueSum.getSum();
+          cells.removeAll(uniqueSum.getCells());
+          addDerived = true;
+        }
+      }
+      if (addDerived) {
+        UniqueSum derivedConstraint = UniqueSum.of(derivedSum, cells);
+        LOG.debug("Adding derived constraint " + derivedConstraint);
+        out.add(derivedConstraint);
+      }
+    }
+    return out;
+  }
+
+  private List<UniqueSum> buildUniqueSumConstraints(final Map<String, Integer> sumByGroup, final Map<String, List<Coord>> cellsByGroup) {
+    final List<UniqueSum> uniqueSumConstraints = new ArrayList<>();
     for (Entry<String, Integer> entry : sumByGroup.entrySet()) {
       String groupId = entry.getKey();
       UniqueSum uniqueSum = UniqueSum.of(entry.getValue(), cellsByGroup.get(groupId));
       LOG.debug("Add unique sum constraint " + uniqueSum);
-      killerBuilder.addConstraint(uniqueSum);
+      uniqueSumConstraints.add(uniqueSum);
     }
-    killerBuilder.addColumnUniquenessConstraints();
-    killerBuilder.addRowUniquenessConstraints();
-    killerBuilder.addSubTableUniquenessConstraints();
-    return killerBuilder.build();
+    return uniqueSumConstraints;
   }
 
 }

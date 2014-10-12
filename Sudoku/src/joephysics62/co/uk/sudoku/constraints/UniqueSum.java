@@ -31,6 +31,10 @@ public class UniqueSum extends Uniqueness {
     return _sum == sum;
   }
 
+  public int getSum() {
+    return _sum;
+  }
+
   @Override
   public String toString() {
     return String.format("UniqueSum(sum=%s, coords=%s)", _sum, getCells());
