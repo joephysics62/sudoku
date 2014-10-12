@@ -31,6 +31,11 @@ public class UniqueSum extends Uniqueness {
     return _sum == sum;
   }
 
+  @Override
+  public String toString() {
+    return String.format("UniqueSum(sum=%s, coords=%s)", _sum, getCells());
+  }
+
   private UniqueSum(final int sum, List<Coord> cells) {
     super(cells);
     LOG.debug("Creating unique sum constraint for sum " + sum + " on cells " + cells);

@@ -84,9 +84,11 @@ public class HTMLTableParser {
       final Element divElem = (Element) childDivs.item(i);
       String classAttr = divElem.getAttribute("class");
       if (classAttr.isEmpty()) {
-        throw new IOException();
+        complexCellInput.put("", divElem.getTextContent().trim());
       }
-      complexCellInput.put(classAttr, divElem.getTextContent().trim());
+      else {
+        complexCellInput.put(classAttr, divElem.getTextContent().trim());
+      }
     }
     return complexCellInput;
   }
