@@ -72,10 +72,18 @@ public class UniqueSum extends Uniqueness {
     if (null == numericValue) {
       return hasChanged;
     }
-    final List<Coord> coords = new ArrayList<>(getCells());
-    coords.remove(coord);
-    final int newSum = _sum - numericValue;
-    eliminateValues(cellGrid, coords, newSum);
+    int newSum = _sum;
+    final List<Coord> subgroupCoords = new ArrayList<>();
+    for (Coord cell : getCells()) {
+      int bitwiseValue = cellGrid.getCellValue(cell);
+      if (Cell.isSolved(bitwiseValue)) {
+        newSum -= Cell.toNumericValue(bitwiseValue);
+      }
+      else {
+        subgroupCoords.add(cell);
+      }
+    }
+    hasChanged |= eliminateValues(cellGrid, subgroupCoords, newSum);
     return hasChanged;
   }
 
