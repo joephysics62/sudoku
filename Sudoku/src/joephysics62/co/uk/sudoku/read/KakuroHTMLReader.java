@@ -42,18 +42,13 @@ public class KakuroHTMLReader implements Reader {
       public void cell(final Map<String, String> complexCellInput, Set<String> classValues, final int rowIndex, final int colIndex) {
         LOG.debug(String.format("At html table (%s, %s) found cell with classes %s and complex content %s", rowIndex, colIndex, classValues, complexCellInput));
         boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, rowIndex, colIndex);
-        if (complexCellInput.containsKey("across")) {
-          acrosses[rowIndex][colIndex] = Integer.valueOf(complexCellInput.get("across"));
+        if (!isNonValue) {
+          throw new RuntimeException();
         }
-        else if (isNonValue) {
-          acrosses[rowIndex][colIndex] = -1;
-        }
-        if (complexCellInput.containsKey("down")) {
-          downs[colIndex][rowIndex] = Integer.valueOf(complexCellInput.get("down"));
-        }
-        else if (isNonValue) {
-          downs[colIndex][rowIndex] = -1;
-        }
+        String acrossValue = complexCellInput.get("across");
+        acrosses[rowIndex][colIndex] = null == acrossValue ? - 1 : Integer.valueOf(acrossValue);
+        String downValue = complexCellInput.get("down");
+        downs[colIndex][rowIndex] = null == downValue ? -1 : Integer.valueOf(downValue);
       }
 
       private boolean checkForNonValue(final ArrayBuilder kakuroBuilder, Set<String> classValues, final int rowIndex, final int colIndex) {
@@ -79,6 +74,10 @@ public class KakuroHTMLReader implements Reader {
         if (isNonValue) {
           acrosses[rowIndex][colIndex] = -1;
           downs[colIndex][rowIndex] = -1;
+        }
+        else {
+          // TODO: this is just to initialise the givens. Shouldn't need to do this!
+          kakuroBuilder.addGiven(null, Coord.of(rowIndex, colIndex));
         }
       }
     });

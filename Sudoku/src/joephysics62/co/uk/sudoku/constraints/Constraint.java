@@ -9,4 +9,5 @@ public interface Constraint {
   boolean eliminateValues(CellGrid cellGrid);
   boolean forSolvedCell(CellGrid cellGrid, int solvedCell);
   List<Coord> getCells();
+  boolean isSatisfied(CellGrid cellGrid);
 }

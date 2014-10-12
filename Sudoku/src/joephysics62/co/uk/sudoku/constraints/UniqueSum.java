@@ -16,6 +16,21 @@ public class UniqueSum extends Uniqueness {
 
   private final int _sum;
 
+  @Override
+  public boolean isSatisfied(CellGrid cellGrid) {
+    int sum = 0;
+    for (Coord coord : getCells()) {
+      int bitValue = cellGrid.getCellValue(coord);
+      if (Cell.isSolved(bitValue)) {
+        sum += Cell.convertToNiceValue(bitValue);
+      }
+      else {
+        return true;
+      }
+    }
+    return _sum == sum;
+  }
+
   private UniqueSum(final int sum, List<Coord> cells) {
     super(cells);
     LOG.debug("Creating unique sum constraint for sum " + sum + " on cells " + cells);
@@ -60,8 +75,6 @@ public class UniqueSum extends Uniqueness {
     final int maxValue = _sum - (n * (n - 1)) / 2;
     int i = cellGrid.getLayout().getInitialsSize();
     final int minValue = _sum - ((n - 1) * (2 * i - (n - 2))) / 2;
-    LOG.debug("For unique sum, sum = " + _sum + " num cells = " + n + ", min = " + minValue + ", max = " + maxValue);
-
     boolean changed = false;
     for (int possible = 1; possible <= i; possible++) {
       if (possible > maxValue || possible < minValue) {

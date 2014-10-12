@@ -14,6 +14,11 @@ public class AllValuesUniqueness extends Uniqueness {
     super(group);
   }
 
+  @Override
+  public boolean isSatisfied(CellGrid grid) {
+    return true;
+  }
+
   public static AllValuesUniqueness of(Collection<Coord> group) {
     return new AllValuesUniqueness(new ArrayList<>(group));
   }

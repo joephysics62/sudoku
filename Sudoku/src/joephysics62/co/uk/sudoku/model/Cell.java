@@ -22,7 +22,7 @@ public class Cell {
 
   public static Integer convertToNiceValue(int bitwiseValue) {
     if (bitwiseValue < 0) {
-      throw new UnsupportedOperationException();
+      return -1;
     }
     if (Cell.isSolved(bitwiseValue)) {
       return Integer.numberOfTrailingZeros(bitwiseValue) + 1;
@@ -33,6 +33,9 @@ public class Cell {
   }
 
   public static String asString(final int nonBitwiseValue, final int puzzleSize) {
+    if (nonBitwiseValue < 0) {
+      return " ";
+    }
     if (puzzleSize > 9) {
       if (nonBitwiseValue > 10) {
         // 65 => A

@@ -1,17 +1,21 @@
 package joephysics62.co.uk.sudoku.solver;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
+
+import org.apache.log4j.Logger;
 
 public class Solver {
 
   private final CellFilter _cellGuessingStrategy;
+  private static final Logger LOG = Logger.getLogger(Solver.class);
 
   public Solver(CellFilter cellGuessingStrategy) {
     _cellGuessingStrategy = cellGuessingStrategy;
@@ -35,17 +39,25 @@ public class Solver {
 
   private void solve(final Puzzle puzzle, final Set<Solution> solutions, int recurseDepth) {
     if (solutions.size() > 1) {
+      LOG.info("More than one solution found... return from solving");
       return;
     }
     analyticElimination(puzzle);
     if (puzzle.isUnsolveable()) {
+      LOG.info("Puzzle is unsolveable.. return from solving");
       return;
     }
     if (puzzle.isSolved()) {
       addAsSolution(puzzle, solutions);
+      LOG.info("Found a solution.. return from solving");
       return;
     }
-    final Coord cellToGuess = _cellGuessingStrategy.apply(puzzle).get(0);
+    final List<Coord> cellsToGuess = _cellGuessingStrategy.apply(puzzle);
+    if (cellsToGuess.isEmpty()) {
+      return;
+    }
+    final Coord cellToGuess = cellsToGuess.get(0);
+    LOG.debug("Guessing on cell " + cellsToGuess);
     char[] charArray = Integer.toBinaryString(puzzle.getCellValue(cellToGuess)).toCharArray();
     for (int i = 1; i <= charArray.length; i++) {
       if ('1' == charArray[charArray.length - i]) {

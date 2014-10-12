@@ -27,6 +27,11 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
+  public boolean isSatisfied(CellGrid grid) {
+    return true;
+  }
+
+  @Override
   public boolean eliminateValues(CellGrid cellGrid) {
     int left = cellGrid.getCellValue(_left);
     int right = cellGrid.getCellValue(_right);

@@ -6,6 +6,8 @@ import java.util.List;
 
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 
+import org.apache.log4j.Logger;
+
 public class ArrayPuzzle implements Puzzle {
   private final int[][] _cells;
   private final List<Constraint> _fixedConstraints;
@@ -13,6 +15,8 @@ public class ArrayPuzzle implements Puzzle {
   private final int _inits;
   private final String _title;
   private final Layout _layout;
+
+  private static final Logger LOG = Logger.getLogger(ArrayPuzzle.class);
 
   @Override
   public Layout getLayout() {
@@ -99,11 +103,18 @@ public class ArrayPuzzle implements Puzzle {
 
   @Override
   public boolean isSolved() {
-    for (int[] cell : _cells) {
-      for (int value : cell) {
-        if (!Cell.isSolved(value)) {
+    for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
+      for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
+        if (!Cell.isSolved(_cells[rowNum - 1][colNum - 1])) {
+          LOG.debug("Puzzle not solved as cell at (" + rowNum + ", " + colNum + ") is not solved");
           return false;
         }
+      }
+    }
+    for (Constraint constraint : getAllConstraints()) {
+      if (!constraint.isSatisfied(this)) {
+        LOG.debug("Puzzle not solved as constraint " + constraint.toString() + " not satisfied.");
+        return false;
       }
     }
     return true;
@@ -111,11 +122,18 @@ public class ArrayPuzzle implements Puzzle {
 
   @Override
   public boolean isUnsolveable() {
-    for (int[] cell : _cells) {
-      for (int value : cell) {
-        if (value == 0) {
+    for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
+      for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
+        if (_cells[rowNum - 1][colNum - 1] == 0) {
+          LOG.debug("Puzzle not solveable as cell at (" + rowNum + ", " + colNum + ") has no possible values.");
           return true;
         }
+      }
+    }
+    for (Constraint constraint : getAllConstraints()) {
+      if (!constraint.isSatisfied(this)) {
+        LOG.debug("Puzzle not solveable as constraint " + constraint + " is not satisfied.");
+        return true;
       }
     }
     return false;
