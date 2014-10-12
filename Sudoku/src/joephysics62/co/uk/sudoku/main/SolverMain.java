@@ -31,7 +31,7 @@ public class SolverMain {
       return new SudokuHTMLReader(Layout.SUPER_SUDOKU);
     }
     else if (type.equals("kakuro")) {
-      return new KakuroHTMLReader(new Layout(7, 7, 0, 0, 9)); // TODO this obviously isn't generic enough.
+      return new KakuroHTMLReader(new Layout(10, 10, 0, 0, 9)); // TODO this obviously isn't generic enough.
     }
     else {
       throw new IllegalArgumentException();

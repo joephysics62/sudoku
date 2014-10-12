@@ -32,11 +32,11 @@ public class Cell {
     }
   }
 
-  public static String asString(final int nonBitwiseValue, final int puzzleSize) {
+  public static String asString(final int nonBitwiseValue, final int possiblesSize) {
     if (nonBitwiseValue < 0) {
       return " ";
     }
-    if (puzzleSize > 9) {
+    if (possiblesSize > 9) {
       if (nonBitwiseValue > 10) {
         // 65 => A
         return Character.toString((char) (nonBitwiseValue + 54));

@@ -25,7 +25,7 @@ public class Solution {
       int colNum = 1;
       out.print("|");
       for (int value : row) {
-        out.print(asString(value) + "|");
+        out.print(asString(value, _layout.getInitialsSize()) + "|");
         if (_layout.getSubTableWidth() > 0 && colNum < _table.length && colNum % _layout.getSubTableWidth() == 0) {
           out.print("|");
         }
@@ -43,7 +43,7 @@ public class Solution {
     out.println();
   }
 
-  private String asString(final int value) {
-    return Cell.asString(value, _table.length);
+  private String asString(final int value, final int possiblesSize) {
+    return Cell.asString(value, possiblesSize);
   }
 }
