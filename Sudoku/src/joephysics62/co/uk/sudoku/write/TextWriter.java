@@ -31,7 +31,7 @@ public class TextWriter {
       return "X";
     }
     if (Cell.isSolved(value)) {
-      return Cell.asString(Cell.convertToNiceValue(value), puzzle.getLayout().getInitialsSize());
+      return Cell.asString(Cell.toNumericValue(value), puzzle.getLayout().getInitialsSize());
     }
     else {
       return "-";

@@ -20,7 +20,7 @@ public class Cell {
     return targetValue & (~valueToRemove);
   }
 
-  public static Integer convertToNiceValue(int bitwiseValue) {
+  public static Integer toNumericValue(int bitwiseValue) {
     if (bitwiseValue < 0) {
       return -1;
     }

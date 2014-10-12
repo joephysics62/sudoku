@@ -22,7 +22,7 @@ public class UniqueSum extends Uniqueness {
     for (Coord coord : getCells()) {
       int bitValue = cellGrid.getCellValue(coord);
       if (Cell.isSolved(bitValue)) {
-        sum += Cell.convertToNiceValue(bitValue);
+        sum += Cell.toNumericValue(bitValue);
       }
       else {
         return true;
@@ -41,14 +41,14 @@ public class UniqueSum extends Uniqueness {
     // min value = s -(n-1)(i - (n-2)/2) not solveable if min value > i - (n-1)
   }
 
-  private final int minimumSum() {
-    final int n = getCells().size();
+  private static final int minimumSum(List<Coord> coords) {
+    final int n = coords.size();
     return (n * (n + 1)) / 2;
   }
 
-  private final int maximumSum(final Layout layout) {
+  private static final int maximumSum(final Layout layout, List<Coord> coords) {
     int i = layout.getInitialsSize();
-    final int n = getCells().size();
+    final int n = coords.size();
     return i * n - (n * (n - 1)) / 2;
   }
 
@@ -57,44 +57,74 @@ public class UniqueSum extends Uniqueness {
   }
 
   @Override
-  public boolean eliminateValues(CellGrid cellGrid) {
-    int minimumSum = minimumSum();
-    if (_sum < minimumSum) {
-      LOG.debug("The sum " + _sum + " is less than the minimum " + minimumSum);
-      setAllUnsolveable(cellGrid);
+  public boolean forSolvedCell(CellGrid cellGrid, Coord coord) {
+    boolean hasChanged = super.forSolvedCell(cellGrid, coord);
+    Integer numericValue = Cell.toNumericValue(cellGrid.getCellValue(coord));
+    if (null == numericValue) {
+      return hasChanged;
+    }
+    final List<Coord> coords = new ArrayList<>(getCells());
+    coords.remove(coord);
+    final int newSum = _sum - numericValue;
+    eliminateValues(cellGrid, coords, newSum);
+    return hasChanged;
+  }
+
+  private static boolean eliminateValues(CellGrid cellGrid, List<Coord> coords, final int sum) {
+    int minimumSum = minimumSum(coords);
+    if (sum < minimumSum) {
+      LOG.debug("The sum " + sum + " is less than the minimum " + minimumSum);
+      setAllUnsolveable(cellGrid, coords);
       return true;
     }
-    int maximumSum = maximumSum(cellGrid.getLayout());
-    if (_sum > maximumSum) {
-      LOG.debug("The sum " + _sum + " is greater than the maximum " + maximumSum);
-      setAllUnsolveable(cellGrid);
+    int maximumSum = maximumSum(cellGrid.getLayout(), coords);
+    if (sum > maximumSum) {
+      LOG.debug("The sum " + sum + " is greater than the maximum " + maximumSum);
+      setAllUnsolveable(cellGrid, coords);
       return true;
     }
 
-    int n = getCells().size();
-    final int maxValue = _sum - (n * (n - 1)) / 2;
+    int n = coords.size();
+
+    // i + i-1 + i-2 == n*i - (n*(n-1))/2
+    final int maxValue = sum - (n * (n - 1)) / 2;
     int i = cellGrid.getLayout().getInitialsSize();
-    final int minValue = _sum - ((n - 1) * (2 * i - (n - 2))) / 2;
+    final int minValue = sum - ((n - 1) * (2 * i - (n - 2))) / 2;
     boolean changed = false;
-    for (int possible = 1; possible <= i; possible++) {
-      if (possible > maxValue || possible < minValue) {
-        // eliminate
-        for (Coord coord : getCells()) {
-          final int oldValue = cellGrid.getCellValue(coord);
-          final int newValue = Cell.remove(oldValue, Cell.cellValueAsBitwise(possible));
-          if (oldValue != newValue) {
-            LOG.debug("Eliminating possible " + possible + " from cell " + coord);
-            cellGrid.setCellValue(newValue, coord);
-            changed = true;
-          }
+    for (Coord coord : coords) {
+      for (int possible = 1; possible <= i; possible++) {
+        if (possible > maxValue || possible < minValue) {
+          changed |= removePossible(possible, coord, cellGrid);
         }
+      }
+      if (sum == 1 + minimumSum) {
+        changed |= removePossible(n, coord, cellGrid);
+      }
+      if (sum == maximumSum - 1) {
+        changed |= removePossible(i - n + 1, coord, cellGrid);
       }
     }
     return changed;
   }
 
-  private void setAllUnsolveable(CellGrid cellGrid) {
-    for (Coord cell : getCells()) {
+  @Override
+  public boolean eliminateValues(CellGrid cellGrid) {
+    return eliminateValues(cellGrid, getCells(), _sum);
+  }
+
+  private static boolean removePossible(int possible, Coord coord, CellGrid cellGrid) {
+    final int oldValue = cellGrid.getCellValue(coord);
+    final int newValue = Cell.remove(oldValue, Cell.cellValueAsBitwise(possible));
+    if (oldValue != newValue) {
+      LOG.debug("Eliminating possible " + possible + " from cell " + coord);
+      cellGrid.setCellValue(newValue, coord);
+      return true;
+    }
+    return false;
+  }
+
+  private static void setAllUnsolveable(CellGrid cellGrid, List<Coord> coords) {
+    for (Coord cell : coords) {
       cellGrid.setCellValue(0, cell);
     }
   }

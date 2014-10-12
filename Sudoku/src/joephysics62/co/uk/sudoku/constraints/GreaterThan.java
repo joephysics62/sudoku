@@ -22,7 +22,7 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public boolean forSolvedCell(CellGrid cellGrid, int solvedCell) {
+  public boolean forSolvedCell(CellGrid cellGrid, Coord solvedCell) {
     return false;
   }
 

@@ -33,7 +33,7 @@ public class HTMLSudokuWriter extends HTMLWriter {
       List<String> rowList = new ArrayList<>();
       for (int value : row) {
         if (Cell.isSolved(value)) {
-          rowList.add(Cell.asString(Cell.convertToNiceValue(value), layout.getInitialsSize()));
+          rowList.add(Cell.asString(Cell.toNumericValue(value), layout.getInitialsSize()));
         }
         else {
           rowList.add(null);

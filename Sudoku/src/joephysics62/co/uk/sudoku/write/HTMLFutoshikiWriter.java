@@ -37,7 +37,7 @@ public class HTMLFutoshikiWriter extends HTMLWriter {
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
         final int value = allCells[rowNum - 1][colNum - 1];
         if (Cell.isSolved(value)) {
-          rowList.add(Cell.asString(Cell.convertToNiceValue(value), layout.getInitialsSize()));
+          rowList.add(Cell.asString(Cell.toNumericValue(value), layout.getInitialsSize()));
         }
         else {
           rowList.add(null);

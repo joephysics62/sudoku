@@ -57,7 +57,7 @@ public class AllValuesUniqueness extends Uniqueness {
     for (Coord coord : getCells()) {
       final int value = cellGrid.getCellValue(coord);
       if (Cell.isSolved(value)) {
-        changed |= !forSolvedCell(cellGrid, value);
+        changed |= !forSolvedCell(cellGrid, coord);
       }
     }
     return changed;

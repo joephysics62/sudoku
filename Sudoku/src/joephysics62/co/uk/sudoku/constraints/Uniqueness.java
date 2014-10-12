@@ -21,12 +21,15 @@ public abstract class Uniqueness implements Constraint {
   }
 
   @Override
-  public final boolean forSolvedCell(CellGrid cellGrid, int solvedCell) {
-    return eliminateSolvedValue(solvedCell, cellGrid);
+  public boolean forSolvedCell(CellGrid cellGrid, Coord coord) {
+    return eliminateSolvedValue(coord, cellGrid);
   }
 
-  private boolean eliminateSolvedValue(int solvedValue, CellGrid cellGrid) {
-    assert Cell.isSolved(solvedValue);
+  private boolean eliminateSolvedValue(Coord coord, CellGrid cellGrid) {
+    int solvedValue = cellGrid.getCellValue(coord);
+    if (!Cell.isSolved(solvedValue)) {
+      return false;
+    }
     boolean hasChanged = false;
     boolean seenSame = false;
     for (Coord otherCoord : _group) {

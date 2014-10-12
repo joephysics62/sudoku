@@ -73,7 +73,7 @@ public class Solver {
     final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
     for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
       for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
-        solutionMap[rowIndex][colIndex] = Cell.convertToNiceValue(puzzle.getCellValue(Coord.of(rowIndex + 1,  colIndex + 1)));
+        solutionMap[rowIndex][colIndex] = Cell.toNumericValue(puzzle.getCellValue(Coord.of(rowIndex + 1,  colIndex + 1)));
       }
     }
     solutions.add(new Solution(solutionMap, layout));
@@ -92,7 +92,7 @@ public class Solver {
     final int value = puzzle.getCellValue(coord);
     if (Cell.isSolved(value)) {
       for (Constraint restriction : puzzle.getConstraints(coord)) {
-        restriction.forSolvedCell(puzzle, value);
+        restriction.forSolvedCell(puzzle, coord);
       }
     }
   }

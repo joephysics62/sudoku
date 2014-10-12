@@ -7,7 +7,7 @@ import joephysics62.co.uk.sudoku.model.Coord;
 
 public interface Constraint {
   boolean eliminateValues(CellGrid cellGrid);
-  boolean forSolvedCell(CellGrid cellGrid, int solvedCell);
+  boolean forSolvedCell(CellGrid cellGrid, Coord coord);
   List<Coord> getCells();
   boolean isSatisfied(CellGrid cellGrid);
 }
