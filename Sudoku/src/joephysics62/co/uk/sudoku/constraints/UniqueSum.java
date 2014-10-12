@@ -108,6 +108,9 @@ public class UniqueSum extends Uniqueness {
       if (sum == maximumSum - 1) {
         changed |= removePossible(i - n + 1, coord, cellGrid);
       }
+      if (n == 2 && sum % 2 == 0) {
+        changed |= removePossible(sum / 2, coord, cellGrid);
+      }
     }
     return changed;
   }

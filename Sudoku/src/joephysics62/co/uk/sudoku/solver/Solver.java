@@ -63,6 +63,7 @@ public class Solver {
       if ('1' == charArray[charArray.length - i]) {
         Puzzle copy = puzzle.deepCopy();
         copy.setCellValue(Cell.cellValueAsBitwise(i), cellToGuess);
+        LOG.debug("Guessing value " + i + " on cell " + cellsToGuess);
         solve(copy, solutions, recurseDepth + 1);
       }
     }
