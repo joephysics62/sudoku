@@ -81,19 +81,19 @@ public class KakuroHTMLReader implements Reader {
         }
       }
     });
-    addAcrossConstraints(kakuroBuilder, acrosses);
-    addDownConstraints(kakuroBuilder, downs);
+    addConstraints(kakuroBuilder, acrosses, true);
+    addConstraints(kakuroBuilder, downs, false);
     return kakuroBuilder.build();
   }
 
-  private void addDownConstraints(final ArrayBuilder kakuroBuilder, final int[][] downs) {
-    int colNum = 0;
-    for (int[] col : downs) {
-      int rowNum = 0;
+  private void addConstraints(final ArrayBuilder kakuroBuilder, final int[][] directionSumGrid, boolean isAcross) {
+    int lineNum = 0;
+    for (int[] line : directionSumGrid) {
+      int cellNum = 0;
       List<Coord> group = new ArrayList<>();
       int currentSum = 0;
-      for (int downSum : col) {
-        final Coord coord = Coord.of(rowNum, colNum);
+      for (int downSum : line) {
+        final Coord coord = isAcross ? Coord.of(lineNum, cellNum) : Coord.of(cellNum, lineNum);
         if (downSum != 0) {
           if (!group.isEmpty()) {
             kakuroBuilder.addConstraint(UniqueSum.of(currentSum, group));
@@ -104,41 +104,13 @@ public class KakuroHTMLReader implements Reader {
         else {
           group.add(coord);
         }
-        rowNum++;
+        cellNum++;
       }
       if (!group.isEmpty()) {
         kakuroBuilder.addConstraint(UniqueSum.of(currentSum, group));
         group.clear();
       }
-      colNum++;
-    }
-  }
-
-  private void addAcrossConstraints(final ArrayBuilder kakuroBuilder, final int[][] acrosses) {
-    int rowNum = 0;
-    for (int[] row : acrosses) {
-      int colNum = 0;
-      List<Coord> group = new ArrayList<>();
-      int currentSum = 0;
-      for (int acrossSum : row) {
-        final Coord coord = Coord.of(rowNum, colNum);
-        if (acrossSum != 0) {
-          if (!group.isEmpty()) {
-            kakuroBuilder.addConstraint(UniqueSum.of(currentSum, group));
-          }
-          currentSum = acrossSum;
-          group.clear();
-        }
-        else {
-          group.add(coord);
-        }
-        colNum++;
-      }
-      if (!group.isEmpty()) {
-        kakuroBuilder.addConstraint(UniqueSum.of(currentSum, group));
-        group.clear();
-      }
-      rowNum++;
+      lineNum++;
     }
   }
 
