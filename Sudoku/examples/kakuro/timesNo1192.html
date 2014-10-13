@@ -4,6 +4,27 @@
 
 <head>
 <title>Kakuro Times 1192</title>
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.11.1.min.js"></script>
+<script>
+$(function(){
+    var arrJCrossOut = $('.noValue');
+    arrJCrossOut.each(function(i){
+        var jTemp      = $(this),
+            nWidth   = jTemp.innerWidth(),
+            nHeight  = jTemp.innerHeight(),
+            nHyp      = Math.sqrt(nWidth*nWidth + nHeight*nHeight),
+            nAnglRad = Math.atan2(nHeight,nWidth),
+            nAnglSex = nAnglRad*360/(2*Math.PI), nCatOp, nCatAd, nHyp2
+            nHyp2     = (nHyp/2);
+            nCatOp      = Math.sin(nAnglRad)*nHyp2;
+            nCatAd      = Math.sqrt((nHyp2*nHyp2) - (nCatOp*nCatOp));
+            d=document.createElement('div');
+            d.setAttribute('class', 'child');
+            d.setAttribute('style', 'width:'+nHyp+'px; transform: rotate(+'+nAnglSex+'deg); margin-left: -'+(nHyp2-nCatAd)+'px;');
+        jTemp.append(d);
+    });
+});
+</script>
 <style>
 * {
   font-family: Arial;
@@ -22,6 +43,12 @@ td.noValue {
   position: relative;
   z-index: -1
 }
+td.noValue .child {
+    position:absolute; 
+    display:block;
+    height:1px; 
+    background:black;
+}
 td.noValue div.down {
   font-size: x-small;
   position: absolute;
@@ -33,15 +60,6 @@ td.noValue div.across {
   left: 1.4em;
   bottom: 1.2em;
 }
-div.line  {
-  position: absolute;
-  z-index: 1;
-  left: -0.33em; /*this is something I don't understand but apparently is required*/
-  width: 2.3em; /*since container is a square this equals to its diagonal: 300*1.41*/
-  height: 1px;
-  background-color: #000;
-  transform: rotate(45deg); /*again, this is easy since its a square. In rectangle you'll have to find a tangent*/
-}
 table {
     border-collapse: collapse;
 }
@@ -52,142 +70,142 @@ table {
    <tr> 
      <td class="noValue"/>
      <td class="noValue"/>
-     <td class="noValue"><div class="down">31</div><div class="line"/></td>
-     <td class="noValue"><div class="down">17</div><div class="line"/></td>
+     <td class="noValue"><div class="down">31</div></td>
+     <td class="noValue"><div class="down">17</div></td>
      <td class="noValue"/>
      <td class="noValue"/>
      <td class="noValue"/>
      <td class="noValue"/>
-     <td class="noValue"><div class="down">9</div><div class="line"/></td>
-     <td class="noValue"><div class="down">3</div><div class="line"/></td>
-     <td class="noValue"><div class="down">4</div><div class="line"/></td>
+     <td class="noValue"><div class="down">9</div></td>
+     <td class="noValue"><div class="down">3</div></td>
+     <td class="noValue"><div class="down">4</div></td>
    </tr>
    <tr> 
      <td class="noValue"/>
-     <td class="noValue"><div class="across">16</div><div class="down">13</div><div class="line"/></td>
+     <td class="noValue"><div class="across">16</div><div class="down">13</div></td>
      <td/>
      <td/>
-     <td class="noValue"><div class="down">4</div><div class="line"/></td>
-     <td class="noValue"><div class="down">19</div><div class="line"/></td>
-     <td class="noValue"><div class="down">14</div><div class="line"/></td>
-     <td class="noValue"><div class="across">7</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td/>
-   </tr>
-   <tr> 
-     <td class="noValue"><div class="across">37</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td/>
-     <td/>
-     <td/>
-     <td/>
-     <td class="noValue"><div class="across">6</div><div class="down">24</div><div class="line"/></td>
+     <td class="noValue"><div class="down">4</div></td>
+     <td class="noValue"><div class="down">19</div></td>
+     <td class="noValue"><div class="down">14</div></td>
+     <td class="noValue"><div class="across">7</div></td>
      <td/>
      <td/>
      <td/>
    </tr>
    <tr> 
-     <td class="noValue"><div class="across">17</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td class="noValue"><div class="across">25</div><div class="down">4</div><div class="line"/></td>
+     <td class="noValue"><div class="across">37</div></td>
      <td/>
      <td/>
      <td/>
      <td/>
      <td/>
-     <td class="noValue"><div class="down">31</div><div class="line"/></td>
-     <td class="noValue"><div class="down">7</div><div class="line"/></td>
+     <td/>
+     <td class="noValue"><div class="across">6</div><div class="down">24</div></td>
+     <td/>
+     <td/>
+     <td/>
+   </tr>
+   <tr> 
+     <td class="noValue"><div class="across">17</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">25</div><div class="down">4</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="down">31</div></td>
+     <td class="noValue"><div class="down">7</div></td>
    </tr>
    <tr> 
      <td class="noValue"/>
-     <td class="noValue"><div class="across">7</div><div class="down">7</div><div class="line"/></td>
+     <td class="noValue"><div class="across">7</div><div class="down">7</div></td>
      <td/>
      <td/>
-     <td class="noValue"><div class="across">6</div><div class="down">24</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td/>
-     <td class="noValue"><div class="across">3</div><div class="line"/></td>
-     <td/>
-     <td/>
-   </tr>
-   <tr> 
-     <td class="noValue"><div class="across">12</div><div class="line"/></td>
+     <td class="noValue"><div class="across">6</div><div class="down">24</div></td>
      <td/>
      <td/>
      <td/>
-     <td/>
-     <td class="noValue"><div class="across">9</div><div class="down">14</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td class="noValue"><div class="across">4</div><div class="down">4</div><div class="line"/></td>
+     <td class="noValue"><div class="across">3</div></td>
      <td/>
      <td/>
    </tr>
    <tr> 
-     <td class="noValue"><div class="across">3</div><div class="line"/></td>
+     <td class="noValue"><div class="across">12</div></td>
      <td/>
      <td/>
-     <td class="noValue"><div class="across">9</div><div class="line"/></td>
      <td/>
      <td/>
-     <td class="noValue"><div class="across">12</div><div class="down">19</div><div class="line"/></td>
+     <td class="noValue"><div class="across">9</div><div class="down">14</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">4</div><div class="down">4</div></td>
+     <td/>
+     <td/>
+   </tr>
+   <tr> 
+     <td class="noValue"><div class="across">3</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">9</div></td>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">12</div><div class="down">19</div></td>
      <td/>
      <td/>
      <td/>
      <td/>
    </tr>
    <tr> 
-     <td class="noValue"><div class="across">4</div><div class="line"/></td>
+     <td class="noValue"><div class="across">4</div></td>
      <td/>
      <td/>
-     <td class="noValue"><div class="across">6</div><div class="down">9</div><div class="line"/></td>
+     <td class="noValue"><div class="across">6</div><div class="down">9</div></td>
      <td/>
      <td/>
      <td/>
-     <td class="noValue"><div class="across">7</div><div class="down">4</div><div class="line"/></td>
+     <td class="noValue"><div class="across">7</div><div class="down">4</div></td>
      <td/>
      <td/>
-     <td class="noValue"><div class="down">13</div><div class="line"/></td>
+     <td class="noValue"><div class="down">13</div></td>
    </tr>
    <tr>
      <td class="noValue"/>
-     <td class="noValue"><div class="down">3</div><div class="line"/></td>
-     <td class="noValue"><div class="across">25</div><div class="down">4</div><div class="line"/></td>
+     <td class="noValue"><div class="down">3</div></td>
+     <td class="noValue"><div class="across">25</div><div class="down">4</div></td>
      <td/>
      <td/>
      <td/>
      <td/>
      <td/>
-     <td class="noValue"><div class="across">17</div><div class="down">17</div><div class="line"/></td>
-     <td/>
-     <td/>
-   </tr>
-   <tr>
-     <td class="noValue"><div class="across">7</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td/>
-     <td class="noValue"><div class="across">37</div><div class="line"/></td>
-     <td/>
-     <td/>
-     <td/>
-     <td/>
+     <td class="noValue"><div class="across">17</div><div class="down">17</div></td>
      <td/>
      <td/>
    </tr>
    <tr>
-     <td class="noValue"><div class="across">6</div><div class="line"/></td>
+     <td class="noValue"><div class="across">7</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td class="noValue"><div class="across">37</div></td>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+     <td/>
+   </tr>
+   <tr>
+     <td class="noValue"><div class="across">6</div></td>
      <td/>
      <td/>
      <td/>
      <td class="noValue"/>
      <td class="noValue"/>
      <td class="noValue"/>
-     <td class="noValue"><div class="across">16</div><div class="line"/></td>
+     <td class="noValue"><div class="across">16</div></td>
      <td/>
      <td/>
      <td class="noValue"/>
