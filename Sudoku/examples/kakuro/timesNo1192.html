@@ -10,17 +10,15 @@ $(function(){
     var arrJCrossOut = $('.noValue');
     arrJCrossOut.each(function(i){
         var jTemp      = $(this),
-            nWidth   = jTemp.innerWidth(),
-            nHeight  = jTemp.innerHeight(),
-            nHyp      = Math.sqrt(nWidth*nWidth + nHeight*nHeight),
-            nAnglRad = Math.atan2(nHeight,nWidth),
-            nAnglSex = nAnglRad*360/(2*Math.PI), nCatOp, nCatAd, nHyp2
-            nHyp2     = (nHyp/2);
-            nCatOp      = Math.sin(nAnglRad)*nHyp2;
-            nCatAd      = Math.sqrt((nHyp2*nHyp2) - (nCatOp*nCatOp));
-            d=document.createElement('div');
+            w = jTemp.innerWidth(),
+            h = jTemp.innerHeight(),
+            hyp = Math.sqrt(w * w + h * h),
+            angle = Math.atan2(h, w),
+            nCatOp = Math.sin(angle) * hyp / 2;
+            nCatAd = Math.sqrt((hyp * hyp / 4) - (nCatOp * nCatOp));
+            d = document.createElement('div');
             d.setAttribute('class', 'child');
-            d.setAttribute('style', 'width:'+nHyp+'px; transform: rotate(+'+nAnglSex+'deg); margin-left: -'+(nHyp2-nCatAd)+'px;');
+            d.setAttribute('style', 'width:' + hyp + 'px; transform: rotate(' + angle + 'rad); margin-left: -' + (hyp / 2 - nCatAd) + 'px;');
         jTemp.append(d);
     });
 });
