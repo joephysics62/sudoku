@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class HTMLSudokuWriter extends HTMLWriter {
 
@@ -27,10 +27,10 @@ public class HTMLSudokuWriter extends HTMLWriter {
   }
 
   @Override
-  protected List<List<String>> generateTable(final int[][] allCells, final Layout layout) {
-    List<List<String>> table = new ArrayList<>();
+  protected List<List<Object>> generateTable(final int[][] allCells, final Layout layout) {
+    List<List<Object>> table = new ArrayList<>();
     for (int[] row : allCells) {
-      List<String> rowList = new ArrayList<>();
+      List<Object> rowList = new ArrayList<>();
       for (int value : row) {
         if (Cell.isSolved(value)) {
           rowList.add(Cell.asString(Cell.toNumericValue(value), layout.getInitialsSize()));

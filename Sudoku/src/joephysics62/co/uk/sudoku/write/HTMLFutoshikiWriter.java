@@ -8,8 +8,8 @@ import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class HTMLFutoshikiWriter extends HTMLWriter {
 
@@ -29,11 +29,11 @@ public class HTMLFutoshikiWriter extends HTMLWriter {
   }
 
   @Override
-  protected List<List<String>> generateTable(final int[][] allCells, final Layout layout) {
-    List<List<String>> table = new ArrayList<>();
+  protected List<List<Object>> generateTable(final int[][] allCells, final Layout layout) {
+    List<List<Object>> table = new ArrayList<>();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
-      List<String> rowList = new ArrayList<>();
-      List<String> betweensList = new ArrayList<>();
+      List<Object> rowList = new ArrayList<>();
+      List<Object> betweensList = new ArrayList<>();
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
         final int value = allCells[rowNum - 1][colNum - 1];
         if (Cell.isSolved(value)) {

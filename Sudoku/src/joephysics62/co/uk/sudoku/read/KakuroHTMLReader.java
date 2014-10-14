@@ -83,6 +83,7 @@ public class KakuroHTMLReader implements Reader {
     });
     addConstraints(kakuroBuilder, acrosses, true);
     addConstraints(kakuroBuilder, downs, false);
+    kakuroBuilder.addTitle("Kakuro");
     return kakuroBuilder.build();
   }
 

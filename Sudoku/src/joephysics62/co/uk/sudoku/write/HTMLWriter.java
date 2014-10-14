@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.Puzzle;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -27,7 +27,7 @@ public abstract class HTMLWriter {
   public final void write(final File file) throws IOException, TemplateException {
     Configuration configuration = new Configuration();
     Map<String, Object> root = new HashMap<>();
-    List<List<String>> table = generateTable(_puzzle.getAllCells(), _puzzle.getLayout());
+    List<List<Object>> table = generateTable(_puzzle.getAllCells(), _puzzle.getLayout());
     root.put("table", table);
     root.put("title", _puzzle.getTitle());
     addPuzzleSpecificParams(root, _puzzle.getLayout());
@@ -41,6 +41,6 @@ public abstract class HTMLWriter {
 
   protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout);
 
-  protected abstract List<List<String>> generateTable(int[][] allCells, Layout puzzleLayout);
+  protected abstract List<List<Object>> generateTable(int[][] allCells, Layout puzzleLayout);
 
  }
