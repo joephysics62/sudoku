@@ -52,7 +52,7 @@ public class HTMLKakuroWriter extends HTMLWriter {
   }
 
   @Override
-  protected List<List<Object>> generateTable(int[][] allCells, Layout puzzleLayout) {
+  protected List<List<Object>> generateTable() {
     final List<List<Object>> table = new ArrayList<>();
     Map<Coord, Integer> acrosses = new LinkedHashMap<>();
     Map<Coord, Integer> downs = new LinkedHashMap<>();
@@ -85,9 +85,9 @@ public class HTMLKakuroWriter extends HTMLWriter {
         throw new UnsupportedOperationException(constraint.getClass().toString());
       }
     }
-    for (int rowNum = 0; rowNum <= puzzleLayout.getHeight(); rowNum++) {
+    for (int rowNum = 0; rowNum <= getPuzzle().getLayout().getHeight(); rowNum++) {
       List<Object> rowOut = new ArrayList<>();
-      for (int colNum = 0; colNum <= puzzleLayout.getWidth(); colNum++) {
+      for (int colNum = 0; colNum <= getPuzzle().getLayout().getWidth(); colNum++) {
         final boolean hasValue;
         final Coord coord = Coord.of(rowNum, colNum);
         if (colNum > 0 && rowNum > 0) {

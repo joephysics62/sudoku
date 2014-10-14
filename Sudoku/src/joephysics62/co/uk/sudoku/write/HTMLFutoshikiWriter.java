@@ -29,13 +29,15 @@ public class HTMLFutoshikiWriter extends HTMLWriter {
   }
 
   @Override
-  protected List<List<Object>> generateTable(final int[][] allCells, final Layout layout) {
-    List<List<Object>> table = new ArrayList<>();
+  protected List<List<Object>> generateTable() {
+    final Puzzle puzzle = getPuzzle();
+    final Layout layout = puzzle.getLayout();
+    final List<List<Object>> table = new ArrayList<>();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       List<Object> rowList = new ArrayList<>();
       List<Object> betweensList = new ArrayList<>();
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
-        final int value = allCells[rowNum - 1][colNum - 1];
+        final int value = puzzle.getCellValue(Coord.of(rowNum, colNum));
         if (Cell.isSolved(value)) {
           rowList.add(Cell.asString(Cell.toNumericValue(value), layout.getInitialsSize()));
         }
