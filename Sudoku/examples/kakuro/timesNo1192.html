@@ -8,18 +8,17 @@
 <script>
 $(function(){
     var arrJCrossOut = $('.noValue');
-    arrJCrossOut.each(function(i){
-        var jTemp      = $(this),
-            w = jTemp.innerWidth(),
-            h = jTemp.innerHeight(),
-            hyp = Math.sqrt(w * w + h * h),
-            angle = Math.atan2(h, w),
-            nCatOp = Math.sin(angle) * hyp / 2;
-            nCatAd = Math.sqrt((hyp * hyp / 4) - (nCatOp * nCatOp));
-            d = document.createElement('div');
-            d.setAttribute('class', 'child');
-            d.setAttribute('style', 'width:' + hyp + 'px; transform: rotate(' + angle + 'rad); margin-left: -' + (hyp / 2 - nCatAd) + 'px;');
-        jTemp.append(d);
+    arrJCrossOut.each(function(i) {
+        var curr = $(this),
+        w = curr.innerWidth(),
+        h = curr.innerHeight(),
+        hyp = Math.sqrt(w * w + h * h),
+        angle = Math.atan2(h, w),
+        marginShift = (hyp - w) / 2;
+        d = document.createElement('div');
+        d.setAttribute('class', 'child');
+        d.setAttribute('style', 'width:' + hyp + 'px; transform: rotate(' + angle + 'rad); margin-left: -' + marginShift + 'px;');
+        curr.append(d);
     });
 });
 </script>
