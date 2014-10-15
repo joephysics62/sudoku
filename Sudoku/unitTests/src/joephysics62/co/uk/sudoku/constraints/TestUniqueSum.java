@@ -19,11 +19,11 @@ public class TestUniqueSum {
   public void testClassicSudokuThreeSizeElimination() {
     runTests(5, 0);
     runTests(6, expectedBitwise(1, 2, 3));
-    runTests(7, expectedBitwise(1, 2, 3, 4));
+    runTests(7, expectedBitwise(1, 2, 4));
     runTests(9, expectedBitwise(1, 2, 3, 4, 5, 6));
 
     runTests(21, expectedBitwise(4, 5, 6, 7, 8, 9));
-    runTests(23, expectedBitwise(6, 7, 8, 9));
+    runTests(23, expectedBitwise(6, 8, 9));
     runTests(24, expectedBitwise(7, 8, 9));
     runTests(25, 0);
   }
