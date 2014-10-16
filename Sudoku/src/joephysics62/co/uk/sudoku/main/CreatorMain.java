@@ -2,6 +2,7 @@ package joephysics62.co.uk.sudoku.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 import joephysics62.co.uk.sudoku.creator.CreationSpec;
 import joephysics62.co.uk.sudoku.creator.Creator;
@@ -19,7 +20,7 @@ import freemarker.template.TemplateException;
 public class CreatorMain {
   private static final int MAX_DEPTH = 500;
 
-  public static void main(String[] args) throws IOException, TemplateException {
+  public static void main(String[] args) throws IOException, TemplateException, URISyntaxException {
     final String type = args[0];
     final File output = new File(args[1]);
     final Puzzle puzzle = buildPuzzleCreator(type).create();

@@ -38,7 +38,7 @@ td div {
 table {
     border-collapse: collapse;
 }
-<#list AGroup as AGroups>
+<#list AGroups as AGroup>
 td.group_${AGroup},
 </#list>
 <#if AGroups??>
@@ -46,7 +46,7 @@ td.group_${AGroup},
   background-color: rgb(250,190,190);
 }
 </#if>
-<#list BGroup as BGroups>
+<#list BGroups as BGroup>
 td.group_${BGroup},
 </#list>
 <#if BGroups??>
@@ -54,7 +54,7 @@ td.group_${BGroup},
   background-color: rgb(190,250,190);
 }
 </#if>
-<#list CGroup as CGroups>
+<#list CGroups as CGroup>
 td.group_${CGroup},
 </#list>
 <#if CGroups??>
@@ -62,7 +62,7 @@ td.group_${CGroup},
   background-color: rgb(190,190,250);
 }
 </#if>
-<#list DGroup as DGroups>
+<#list DGroups as DGroup>
 td.group_${DGroup},
 </#list>
 <#if DGroups??>

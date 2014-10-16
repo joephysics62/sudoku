@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.write;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -39,9 +40,9 @@ public class HTMLKakuroWriter extends HTMLWriter {
 
   }
 
-  private static final String TEMPLATE_FTL = "templates/kakuroTemplate.ftl";
+  private static final String TEMPLATE_FTL = "kakuroTemplate.ftl";
 
-  public HTMLKakuroWriter(Puzzle puzzle) {
+  public HTMLKakuroWriter(Puzzle puzzle) throws URISyntaxException {
     super(puzzle, TEMPLATE_FTL);
   }
 

@@ -1,5 +1,6 @@
 package joephysics62.co.uk.sudoku.write;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +12,9 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class HTMLSudokuWriter extends HTMLWriter {
 
-  private static final String TEMPLATE_FTL = "templates/sudokuTemplate.ftl";
+  private static final String TEMPLATE_FTL = "sudokuTemplate.ftl";
 
-  public HTMLSudokuWriter(Puzzle puzzle) {
+  public HTMLSudokuWriter(Puzzle puzzle) throws URISyntaxException {
     super(puzzle, TEMPLATE_FTL);
   }
 

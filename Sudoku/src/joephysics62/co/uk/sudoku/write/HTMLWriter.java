@@ -17,21 +17,22 @@ public abstract class HTMLWriter {
 
   private static final String ENCODING = "UTF-8";
   private final Puzzle _puzzle;
-  private final String _templateLocation;
+  private final String _templateName;
 
-  public HTMLWriter(final Puzzle puzzle, final String templateLocation) {
+  public HTMLWriter(final Puzzle puzzle, final String templateName) {
     _puzzle = puzzle;
-    _templateLocation = templateLocation;
+    _templateName = templateName;
   }
 
   public final void write(final File file) throws IOException, TemplateException {
     Configuration configuration = new Configuration();
+    configuration.setClassForTemplateLoading(getClass(), "templates");
     Map<String, Object> root = new HashMap<>();
     List<List<Object>> table = generateTable();
     root.put("table", table);
     root.put("title", _puzzle.getTitle());
     addPuzzleSpecificParams(root, _puzzle.getLayout());
-    Template template = configuration.getTemplate(_templateLocation, ENCODING);
+    Template template = configuration.getTemplate(_templateName, ENCODING);
     template.process(root, new FileWriter(file));
   }
 
