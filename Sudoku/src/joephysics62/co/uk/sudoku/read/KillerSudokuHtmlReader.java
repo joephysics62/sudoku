@@ -20,13 +20,13 @@ import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
 import org.apache.log4j.Logger;
 
-public class KillerSudokuReader implements Reader {
+public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
 
   private final Layout _layout;
 
-  private static final Logger LOG = Logger.getLogger(KillerSudokuReader.class);
+  private static final Logger LOG = Logger.getLogger(KillerSudokuHtmlReader.class);
 
-  public KillerSudokuReader(final Layout layout) {
+  public KillerSudokuHtmlReader(final Layout layout) {
     _layout = layout;
   }
 

@@ -10,7 +10,7 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.solver.Solver;
 
-public class FutoshikiCreator extends ArrayCreator {
+public class FutoshikiCreator extends ArrayPuzzleCreator {
 
   public FutoshikiCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
     super(solver, layout, creationSpec);

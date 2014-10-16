@@ -23,18 +23,18 @@ import joephysics62.co.uk.sudoku.solver.Solver;
 import org.apache.log4j.Logger;
 
 
-public abstract class ArrayCreator implements Creator {
+public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   private final Solver _solver;
   private final CellFilter _solvedCellFilter = Solved.create();
   private Puzzle _createdPuzzle = null;
   private Puzzle _currentBestPuzzle = null;
   private int _callCount = 0;
-  private static final Logger LOG = Logger.getLogger(ArrayCreator.class);
+  private static final Logger LOG = Logger.getLogger(ArrayPuzzleCreator.class);
   private final Layout _layout;
   private final CreationSpec _creationSpec;
 
-  public ArrayCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
+  public ArrayPuzzleCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
     _solver = solver;
     _layout = layout;
     _creationSpec = creationSpec;

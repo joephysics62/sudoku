@@ -17,13 +17,13 @@ import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
 import org.apache.log4j.Logger;
 
-public class KakuroHTMLReader implements Reader {
+public class KakuroHtmlReader implements PuzzleHtmlReader {
 
-  private static final Logger LOG = Logger.getLogger(KakuroHTMLReader.class);
+  private static final Logger LOG = Logger.getLogger(KakuroHtmlReader.class);
 
   private final Layout _layout;
 
-  public KakuroHTMLReader(final Layout layout) {
+  public KakuroHtmlReader(final Layout layout) {
     _layout = layout;
   }
 

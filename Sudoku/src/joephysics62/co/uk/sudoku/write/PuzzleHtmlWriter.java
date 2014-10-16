@@ -13,13 +13,13 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public abstract class HTMLWriter {
+public abstract class PuzzleHtmlWriter {
 
   private static final String ENCODING = "UTF-8";
   private final Puzzle _puzzle;
   private final String _templateName;
 
-  public HTMLWriter(final Puzzle puzzle, final String templateName) {
+  public PuzzleHtmlWriter(final Puzzle puzzle, final String templateName) {
     _puzzle = puzzle;
     _templateName = templateName;
   }

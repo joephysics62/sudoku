@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public interface Reader {
+public interface PuzzleHtmlReader {
 
   Puzzle read(File input) throws IOException;
 

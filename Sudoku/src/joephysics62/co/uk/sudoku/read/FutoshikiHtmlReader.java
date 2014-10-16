@@ -14,11 +14,11 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
-public class FutoshikiHTMLReader implements Reader {
+public class FutoshikiHtmlReader implements PuzzleHtmlReader {
 
   private final Layout _layout;
 
-  public FutoshikiHTMLReader(final Layout layout) {
+  public FutoshikiHtmlReader(final Layout layout) {
     _layout = layout;
   }
 

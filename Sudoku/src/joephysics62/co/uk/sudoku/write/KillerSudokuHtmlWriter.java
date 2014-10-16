@@ -16,12 +16,12 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class HTMLKillerSudokuWriter extends HTMLWriter {
+public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
 
   private static final String TEMPLATE_FTL = "killerSudokuTemplate.ftl";
   private final FourColourSolver _fcs;
 
-  public HTMLKillerSudokuWriter(Puzzle puzzle, FourColourSolver fcs) throws URISyntaxException {
+  public KillerSudokuHtmlWriter(Puzzle puzzle, FourColourSolver fcs) throws URISyntaxException {
     super(puzzle, TEMPLATE_FTL);
     _fcs = fcs;
   }

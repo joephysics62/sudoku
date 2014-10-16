@@ -12,11 +12,11 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class HTMLFutoshikiWriter extends HTMLWriter {
+public class FutoshikiHtmlWriter extends PuzzleHtmlWriter {
 
   private static final String TEMPLATE_FTL = "futoshikiTemplate.ftl";
 
-  public HTMLFutoshikiWriter(Puzzle puzzle) throws URISyntaxException {
+  public FutoshikiHtmlWriter(Puzzle puzzle) throws URISyntaxException {
     super(puzzle, TEMPLATE_FTL);
   }
 

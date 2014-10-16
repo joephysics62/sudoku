@@ -15,7 +15,7 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class HTMLKakuroWriter extends HTMLWriter {
+public class KakuroHtmlWriter extends PuzzleHtmlWriter {
 
   public static class KakuroCell {
     private final Integer _across;
@@ -42,7 +42,7 @@ public class HTMLKakuroWriter extends HTMLWriter {
 
   private static final String TEMPLATE_FTL = "kakuroTemplate.ftl";
 
-  public HTMLKakuroWriter(Puzzle puzzle) throws URISyntaxException {
+  public KakuroHtmlWriter(Puzzle puzzle) throws URISyntaxException {
     super(puzzle, TEMPLATE_FTL);
   }
 

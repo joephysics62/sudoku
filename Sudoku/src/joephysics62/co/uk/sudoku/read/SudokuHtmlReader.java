@@ -13,12 +13,12 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
-public class SudokuHTMLReader implements Reader {
+public class SudokuHtmlReader implements PuzzleHtmlReader {
 
   private final HTMLTableParser _tableParser;
   private final Layout _layout;
 
-  public SudokuHTMLReader(final Layout layout) {
+  public SudokuHtmlReader(final Layout layout) {
     _layout = layout;
     _tableParser = new HTMLTableParser(layout.getHeight(), layout.getWidth());
   }

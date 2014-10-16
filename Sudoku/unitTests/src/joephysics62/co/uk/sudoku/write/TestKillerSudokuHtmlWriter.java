@@ -10,7 +10,7 @@ import java.nio.file.Paths;
 import joephysics62.co.uk.sudoku.gridmaths.FourColourSolver;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.read.KillerSudokuReader;
+import joephysics62.co.uk.sudoku.read.KillerSudokuHtmlReader;
 import junit.framework.Assert;
 
 import org.junit.Rule;
@@ -19,7 +19,7 @@ import org.junit.rules.TemporaryFolder;
 
 import freemarker.template.TemplateException;
 
-public class TestHTMLKillerSudokuWriter {
+public class TestKillerSudokuHtmlWriter {
 
   @Rule
   public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -30,9 +30,9 @@ public class TestHTMLKillerSudokuWriter {
   }
 
   private void runRoundTrip(final String input, final String control) throws IOException, URISyntaxException, TemplateException {
-    KillerSudokuReader reader = new KillerSudokuReader(Layout.CLASSIC_SUDOKU);
+    KillerSudokuHtmlReader reader = new KillerSudokuHtmlReader(Layout.CLASSIC_SUDOKU);
     Puzzle puzzle = reader.read(new File(input));
-    HTMLWriter htmlKillerSudokuWriter = new HTMLKillerSudokuWriter(puzzle, new FourColourSolver());
+    PuzzleHtmlWriter htmlKillerSudokuWriter = new KillerSudokuHtmlWriter(puzzle, new FourColourSolver());
     File actual = tempFolder.newFile();
     htmlKillerSudokuWriter.write(actual);
     Assert.assertEquals(

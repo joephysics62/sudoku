@@ -5,37 +5,37 @@ import java.io.IOException;
 
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.read.FutoshikiHTMLReader;
-import joephysics62.co.uk.sudoku.read.KakuroHTMLReader;
-import joephysics62.co.uk.sudoku.read.KillerSudokuReader;
-import joephysics62.co.uk.sudoku.read.Reader;
-import joephysics62.co.uk.sudoku.read.SudokuHTMLReader;
+import joephysics62.co.uk.sudoku.read.FutoshikiHtmlReader;
+import joephysics62.co.uk.sudoku.read.KakuroHtmlReader;
+import joephysics62.co.uk.sudoku.read.KillerSudokuHtmlReader;
+import joephysics62.co.uk.sudoku.read.PuzzleHtmlReader;
+import joephysics62.co.uk.sudoku.read.SudokuHtmlReader;
 import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
 import joephysics62.co.uk.sudoku.solver.Solver;
-import joephysics62.co.uk.sudoku.write.TextWriter;
+import joephysics62.co.uk.sudoku.write.PuzzleTextWriter;
 
 public class SolverMain {
 
-  private static Reader readerForType(final String type) {
+  private static PuzzleHtmlReader readerForType(final String type) {
     if (type.equals("timesMini")) {
-      return new SudokuHTMLReader(Layout.TIMES_MINI);
+      return new SudokuHtmlReader(Layout.TIMES_MINI);
     }
     else if (type.equals("classic")) {
-      return new SudokuHTMLReader(Layout.CLASSIC_SUDOKU);
+      return new SudokuHtmlReader(Layout.CLASSIC_SUDOKU);
     }
     else if (type.equals("futoshiki")) {
-      return new FutoshikiHTMLReader(Layout.FUTOSHIKI);
+      return new FutoshikiHtmlReader(Layout.FUTOSHIKI);
     }
     else if (type.equals("super")) {
-      return new SudokuHTMLReader(Layout.SUPER_SUDOKU);
+      return new SudokuHtmlReader(Layout.SUPER_SUDOKU);
     }
     else if (type.equals("kakuro")) {
-      return new KakuroHTMLReader(new Layout(10, 10, 0, 0, 9)); // TODO this obviously isn't generic enough.
+      return new KakuroHtmlReader(new Layout(10, 10, 0, 0, 9)); // TODO this obviously isn't generic enough.
     }
     else if (type.equals("killer")) {
-      return new KillerSudokuReader(Layout.CLASSIC_SUDOKU);
+      return new KillerSudokuHtmlReader(Layout.CLASSIC_SUDOKU);
     }
     else {
       throw new IllegalArgumentException();
@@ -46,7 +46,7 @@ public class SolverMain {
     final String type = args[0];
     final File input = new File(args[1]);
     Puzzle puzzle = readerForType(type).read(input);
-    TextWriter puzzleWriter = new TextWriter(System.out);
+    PuzzleTextWriter puzzleWriter = new PuzzleTextWriter(System.out);
     System.out.println("INPUT = ");
     puzzleWriter.write(puzzle);
     Solver solver = new Solver(FirstClosestToSolved.create());

@@ -10,11 +10,11 @@ import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
-public class HTMLSudokuWriter extends HTMLWriter {
+public class SudokuHtmlWriter extends PuzzleHtmlWriter {
 
   private static final String TEMPLATE_FTL = "sudokuTemplate.ftl";
 
-  public HTMLSudokuWriter(Puzzle puzzle) throws URISyntaxException {
+  public SudokuHtmlWriter(Puzzle puzzle) throws URISyntaxException {
     super(puzzle, TEMPLATE_FTL);
   }
 
