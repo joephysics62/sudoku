@@ -13,8 +13,8 @@ td, th {
     border-width: thin;
     border-style: solid;
     border-spacing: 0px;
-    width: 1em;
-    height:1em;
+    width: 1.5em;
+    height:1.5em;
     text-align:  center;
 }
 tr:nth-child(1) td {
@@ -39,7 +39,7 @@ table {
     border-collapse: collapse;
 }
 <#list AGroups as AGroup>
-td.group_${AGroup},
+td.group_${AGroup}<#if (AGroup_index+1) <  AGroups?size>,</#if>
 </#list>
 <#if AGroups??>
 {
@@ -47,7 +47,7 @@ td.group_${AGroup},
 }
 </#if>
 <#list BGroups as BGroup>
-td.group_${BGroup},
+td.group_${BGroup}<#if (BGroup_index+1) <  BGroups?size>,</#if>
 </#list>
 <#if BGroups??>
 {
@@ -55,7 +55,7 @@ td.group_${BGroup},
 }
 </#if>
 <#list CGroups as CGroup>
-td.group_${CGroup},
+td.group_${CGroup}<#if (CGroup_index+1) <  CGroups?size>,</#if>
 </#list>
 <#if CGroups??>
 {
@@ -63,7 +63,7 @@ td.group_${CGroup},
 }
 </#if>
 <#list DGroups as DGroup>
-td.group_${DGroup},
+td.group_${DGroup}<#if (DGroup_index+1) <  DGroups?size>,</#if>
 </#list>
 <#if DGroups??>
 {
