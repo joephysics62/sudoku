@@ -149,12 +149,9 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     if (solutionResult.getType() == SolutionType.NONE) {
       return null;
     }
-    for (int row = 1; row <= _layout.getHeight(); row++) {
-      for (int col = 1; col <= _layout.getWidth(); col++) {
-        Coord coord = Coord.of(row, col);
-        int niceValue = solutionResult.getSolution().getValue(coord);
-        puzzle.set(Cell.cellValueAsBitwise(niceValue), coord);
-      }
+    for (Coord coord : puzzle) {
+      int niceValue = solutionResult.getSolution().getValue(coord);
+      puzzle.set(Cell.cellValueAsBitwise(niceValue), coord);
     }
     addVariableConstraints(puzzle);
     return puzzle;

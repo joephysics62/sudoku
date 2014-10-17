@@ -73,19 +73,15 @@ public class Solver {
   private void addAsSolution(final Puzzle puzzle, final Set<Solution> solutions) {
     PuzzleLayout layout = puzzle.getLayout();
     final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
-    for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
-      for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
-        solutionMap[rowIndex][colIndex] = Cell.toNumericValue(puzzle.get(Coord.of(rowIndex + 1,  colIndex + 1)));
-      }
+    for (Coord coord : puzzle) {
+      solutionMap[coord.getRow() - 1][coord.getCol() - 1] = Cell.toNumericValue(puzzle.get(coord));
     }
     solutions.add(new Solution(solutionMap, layout));
   }
 
   private void analyticElimination(final Puzzle puzzle) {
-    for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
-      for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
-        recursiveCellSolve(puzzle, Coord.of(rowIndex + 1, colIndex + 1));
-      }
+    for (Coord coord : puzzle) {
+      recursiveCellSolve(puzzle, coord);
     }
     solveOnRestrictions(puzzle);
   }

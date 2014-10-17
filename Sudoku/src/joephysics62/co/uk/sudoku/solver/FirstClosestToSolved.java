@@ -21,19 +21,16 @@ public class FirstClosestToSolved implements CellFilter {
   public List<Coord> apply(final Puzzle puzzle) {
     int minPossibles = Integer.MAX_VALUE;
     Coord minCell = null;
-    int[][] allCells = puzzle.getAllCells();
-    for (int rowNum = 1; rowNum <= puzzle.getLayout().getHeight(); rowNum++) {
-      for (int colNum = 1; colNum <= puzzle.getLayout().getWidth(); colNum++) {
-        int value = allCells[rowNum - 1][colNum - 1];
-        if (!Cell.isSolved(value)) {
-          int possiblesSize = Integer.bitCount(value);
-          if (possiblesSize == 2) {
-            return Collections.singletonList(Coord.of(rowNum, colNum));
-          }
-          else if (possiblesSize < minPossibles) {
-            minPossibles = possiblesSize;
-            minCell = Coord.of(rowNum, colNum);
-          }
+    for (Coord coord : puzzle) {
+      int value = puzzle.get(coord);
+      if (!Cell.isSolved(value)) {
+        int possiblesSize = Integer.bitCount(value);
+        if (possiblesSize == 2) {
+          return Collections.singletonList(coord);
+        }
+        else if (possiblesSize < minPossibles) {
+          minPossibles = possiblesSize;
+          minCell = coord;
         }
       }
     }
