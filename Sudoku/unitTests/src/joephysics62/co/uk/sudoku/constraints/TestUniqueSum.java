@@ -49,7 +49,7 @@ public class TestUniqueSum {
       map.put(coord, layout.getInitialValue());
     }
 
-    UniqueSum uniqueSum = UniqueSum.of(sumValue, cells);
+    UniqueSum uniqueSum = UniqueSum.of(sumValue, 9, cells);
     final PuzzleGrid cellGrid = new MockCellGrid(layout, map);
     uniqueSum.eliminateValues(cellGrid);
     for (Coord coord : cells) {

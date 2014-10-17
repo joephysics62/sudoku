@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.Grid;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.PuzzleGrid;
 
 public class GreaterThan implements Constraint {
 
@@ -22,17 +22,17 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public boolean forSolvedCell(PuzzleGrid cellGrid, Coord solvedCell) {
+  public boolean forSolvedCell(Grid<Integer> cellGrid, Coord solvedCell) {
     return false;
   }
 
   @Override
-  public boolean isSatisfied(PuzzleGrid grid) {
+  public boolean isSatisfied(Grid<Integer> grid) {
     return true;
   }
 
   @Override
-  public boolean eliminateValues(PuzzleGrid cellGrid) {
+  public boolean eliminateValues(Grid<Integer> cellGrid) {
     int left = cellGrid.get(_left);
     int right = cellGrid.get(_right);
     if (left == 0|| right == 0) {

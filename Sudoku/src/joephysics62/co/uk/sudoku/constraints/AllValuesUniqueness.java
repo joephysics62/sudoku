@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.List;
 
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.Grid;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.PuzzleGrid;
 
 public class AllValuesUniqueness extends Uniqueness {
 
@@ -15,7 +15,7 @@ public class AllValuesUniqueness extends Uniqueness {
   }
 
   @Override
-  public boolean isSatisfied(PuzzleGrid grid) {
+  public boolean isSatisfied(Grid<Integer> grid) {
     return true;
   }
 
@@ -24,7 +24,7 @@ public class AllValuesUniqueness extends Uniqueness {
   }
 
   @Override
-  public boolean eliminateValues(PuzzleGrid cellGrid) {
+  public boolean eliminateValues(Grid<Integer> cellGrid) {
     boolean eliminationHadEffect = false;
     eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
     eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
@@ -32,7 +32,7 @@ public class AllValuesUniqueness extends Uniqueness {
     return eliminationHadEffect;
   }
 
-  private boolean applyOnlyPossibleCellElimination(PuzzleGrid cellGrid) {
+  private boolean applyOnlyPossibleCellElimination(Grid<Integer> cellGrid) {
     boolean hadEffect = false;
     for (Coord coord : getCells()) {
       int cellValue = cellGrid.get(coord);
@@ -52,7 +52,7 @@ public class AllValuesUniqueness extends Uniqueness {
     return hadEffect;
   }
 
-  private boolean applyUniquenessToKnownValue(PuzzleGrid cellGrid) {
+  private boolean applyUniquenessToKnownValue(Grid<Integer> cellGrid) {
     boolean changed = false;
     for (Coord coord : getCells()) {
       final int value = cellGrid.get(coord);
@@ -63,7 +63,7 @@ public class AllValuesUniqueness extends Uniqueness {
     return changed;
   }
 
-  private boolean doABElimination(PuzzleGrid cellGrid) {
+  private boolean doABElimination(Grid<Integer> cellGrid) {
     boolean changed = false;
     for (Coord coord : getCells()) {
       changed |= tryABElim(cellGrid, coord);
@@ -71,7 +71,7 @@ public class AllValuesUniqueness extends Uniqueness {
     return changed;
   }
 
-  private boolean tryABElim(PuzzleGrid cellGrid, Coord coord) {
+  private boolean tryABElim(Grid<Integer> cellGrid, Coord coord) {
     final int value = cellGrid.get(coord);
     if (Integer.bitCount(value) == 2) {
       for (Coord innerCoord : getCells()) {

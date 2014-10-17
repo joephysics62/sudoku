@@ -9,12 +9,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.GridLayout;
 import joephysics62.co.uk.grid.maths.Colour;
 import joephysics62.co.uk.grid.maths.FourColourSolver;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
 
@@ -79,7 +80,7 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
   @Override
   protected List<List<Object>> generateTable() {
     Puzzle puzzle = getPuzzle();
-    PuzzleLayout layout = puzzle.getLayout();
+    GridLayout layout = puzzle.getLayout();
     List<List<Object>> table = new ArrayList<>();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       final List<Object> rowList = new ArrayList<>();

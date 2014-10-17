@@ -12,6 +12,7 @@ import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 import org.apache.log4j.Logger;
 
+
 public class Solver {
 
   private final CellFilter _cellGuessingStrategy;

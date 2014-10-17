@@ -13,8 +13,8 @@ import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
@@ -113,7 +113,7 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
         }
       }
       if (addDerived) {
-        UniqueSum derivedConstraint = UniqueSum.of(derivedSum, cells);
+        UniqueSum derivedConstraint = UniqueSum.of(derivedSum, _layout.getInitialsSize(), cells);
         LOG.debug("Adding derived constraint " + derivedConstraint);
         out.add(derivedConstraint);
       }
@@ -125,7 +125,7 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
     final List<UniqueSum> uniqueSumConstraints = new ArrayList<>();
     for (Entry<String, Integer> entry : sumByGroup.entrySet()) {
       String groupId = entry.getKey();
-      UniqueSum uniqueSum = UniqueSum.of(entry.getValue(), cellsByGroup.get(groupId));
+      UniqueSum uniqueSum = UniqueSum.of(entry.getValue(), _layout.getInitialsSize(), cellsByGroup.get(groupId));
       LOG.debug("Add unique sum constraint " + uniqueSum);
       uniqueSumConstraints.add(uniqueSum);
     }

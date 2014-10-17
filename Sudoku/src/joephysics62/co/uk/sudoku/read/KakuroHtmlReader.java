@@ -10,8 +10,8 @@ import java.util.Set;
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
@@ -97,7 +97,7 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
         final Coord coord = isAcross ? Coord.of(lineNum, cellNum) : Coord.of(cellNum, lineNum);
         if (downSum != 0) {
           if (!group.isEmpty()) {
-            kakuroBuilder.addConstraint(UniqueSum.of(currentSum, group));
+            kakuroBuilder.addConstraint(UniqueSum.of(currentSum, _layout.getInitialsSize(), group));
           }
           currentSum = downSum;
           group.clear();
@@ -108,7 +108,7 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
         cellNum++;
       }
       if (!group.isEmpty()) {
-        kakuroBuilder.addConstraint(UniqueSum.of(currentSum, group));
+        kakuroBuilder.addConstraint(UniqueSum.of(currentSum, _layout.getInitialsSize(), group));
         group.clear();
       }
       lineNum++;

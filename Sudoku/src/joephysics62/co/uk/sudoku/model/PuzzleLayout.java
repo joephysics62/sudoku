@@ -1,6 +1,8 @@
 package joephysics62.co.uk.sudoku.model;
 
-public class PuzzleLayout {
+import joephysics62.co.uk.grid.GridLayout;
+
+public class PuzzleLayout implements GridLayout {
 
   private final int _height;
   private final int _width;
@@ -19,9 +21,11 @@ public class PuzzleLayout {
         _initialsSize = initialsSize;
   }
 
+  @Override
   public int getHeight() {
     return _height;
   }
+  @Override
   public int getWidth() {
     return _width;
   }

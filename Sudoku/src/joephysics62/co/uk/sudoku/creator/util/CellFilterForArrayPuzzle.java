@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.grid.GridLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
 
@@ -14,7 +14,7 @@ public abstract class CellFilterForArrayPuzzle implements CellFilter {
   public final List<Coord> apply(Puzzle puzzle) {
     List<Coord> unsolved = new ArrayList<>();
     int[][] allCells = puzzle.getAllCells();
-    PuzzleLayout layout = puzzle.getLayout();
+    GridLayout layout = puzzle.getLayout();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
         if (accept(allCells[rowNum - 1][colNum -1])) {

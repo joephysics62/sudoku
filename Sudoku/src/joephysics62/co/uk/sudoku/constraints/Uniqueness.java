@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.Grid;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.PuzzleGrid;
 
 public abstract class Uniqueness implements Constraint {
 
@@ -21,11 +21,11 @@ public abstract class Uniqueness implements Constraint {
   }
 
   @Override
-  public boolean forSolvedCell(PuzzleGrid cellGrid, Coord coord) {
-    return eliminateSolvedValue(coord, cellGrid);
+  public boolean forSolvedCell(Grid<Integer> cellGrid, Coord coord) {
+    return eliminateSolvedValue(cellGrid, coord);
   }
 
-  private boolean eliminateSolvedValue(Coord coord, PuzzleGrid cellGrid) {
+  private boolean eliminateSolvedValue(Grid<Integer> cellGrid, Coord coord) {
     int solvedValue = cellGrid.get(coord);
     if (!Cell.isSolved(solvedValue)) {
       return false;
