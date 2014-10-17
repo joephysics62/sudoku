@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 import org.apache.log4j.Logger;
@@ -14,12 +15,12 @@ public class ArrayPuzzle implements Puzzle {
   private final List<Constraint> _variableConstraints;
   private final int _inits;
   private final String _title;
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
 
   private static final Logger LOG = Logger.getLogger(ArrayPuzzle.class);
 
   @Override
-  public Layout getLayout() {
+  public PuzzleLayout getLayout() {
     return _layout;
   }
 
@@ -37,12 +38,12 @@ public class ArrayPuzzle implements Puzzle {
   }
 
   @Override
-  public int getCellValue(Coord coord) {
+  public Integer get(Coord coord) {
     return _cells[coord.getRow() - 1][coord.getCol() - 1];
   }
 
   @Override
-  public void setCellValue(int cellValues, Coord coord) {
+  public void set(Integer cellValues, Coord coord) {
     _cells[coord.getRow() - 1][coord.getCol() - 1] = cellValues;
   }
 
@@ -51,7 +52,7 @@ public class ArrayPuzzle implements Puzzle {
     return _title;
   }
 
-  private ArrayPuzzle(final String title, final Layout layout, final List<Constraint> fixedConstraints) {
+  private ArrayPuzzle(final String title, final PuzzleLayout layout, final List<Constraint> fixedConstraints) {
     _title = title;
     _inits = layout.getInitialValue();
     _cells = new int[layout.getHeight()][layout.getWidth()];
@@ -60,7 +61,7 @@ public class ArrayPuzzle implements Puzzle {
     _layout = layout;
   }
 
-  public static ArrayPuzzle forPossiblesSize(final String title, final Layout layout, final List<Constraint> constraints) {
+  public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
     return new ArrayPuzzle(title, layout, constraints);
   }
 

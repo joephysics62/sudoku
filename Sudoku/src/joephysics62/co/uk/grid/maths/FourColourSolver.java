@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.gridmaths;
+package joephysics62.co.uk.grid.maths;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import joephysics62.co.uk.sudoku.model.Coord;
+import joephysics62.co.uk.grid.Coord;
+
 
 public class FourColourSolver {
   private Map<Integer, Colour> _solution;

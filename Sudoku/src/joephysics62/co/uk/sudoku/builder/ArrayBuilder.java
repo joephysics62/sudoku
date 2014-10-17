@@ -6,21 +6,21 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.constraints.AllValuesUniqueness;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class ArrayBuilder implements Builder {
 
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
   private Integer[][] _givenCells = null;
   private String _title;
   private final List<Constraint> _constraints = new ArrayList<>();
   private final Set<Coord> _nonValueCells = new LinkedHashSet<>();
 
-  public ArrayBuilder(final Layout layout) {
+  public ArrayBuilder(final PuzzleLayout layout) {
     _layout = layout;
   }
 
@@ -41,7 +41,7 @@ public class ArrayBuilder implements Builder {
   public final void addTitle(final String title) {
     _title = title;
   }
-  public Layout getLayout() {
+  public PuzzleLayout getLayout() {
     return _layout;
   }
 
@@ -57,7 +57,7 @@ public class ArrayBuilder implements Builder {
       arrayPuzzle.addCells(_givenCells);
     }
     for (Coord coord : _nonValueCells) {
-      arrayPuzzle.setCellValue(-1, coord);
+      arrayPuzzle.set(-1, coord);
     }
     return arrayPuzzle;
   }

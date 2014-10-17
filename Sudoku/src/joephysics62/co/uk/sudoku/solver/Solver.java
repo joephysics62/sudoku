@@ -4,11 +4,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 import org.apache.log4j.Logger;
 
@@ -58,11 +58,11 @@ public class Solver {
     }
     final Coord cellToGuess = cellsToGuess.get(0);
     LOG.debug("Guessing on cell " + cellsToGuess);
-    char[] charArray = Integer.toBinaryString(puzzle.getCellValue(cellToGuess)).toCharArray();
+    char[] charArray = Integer.toBinaryString(puzzle.get(cellToGuess)).toCharArray();
     for (int i = 1; i <= charArray.length; i++) {
       if ('1' == charArray[charArray.length - i]) {
         Puzzle copy = puzzle.deepCopy();
-        copy.setCellValue(Cell.cellValueAsBitwise(i), cellToGuess);
+        copy.set(Cell.cellValueAsBitwise(i), cellToGuess);
         LOG.debug("Guessing value " + i + " on cell " + cellsToGuess);
         solve(copy, solutions, recurseDepth + 1);
       }
@@ -70,11 +70,11 @@ public class Solver {
   }
 
   private void addAsSolution(final Puzzle puzzle, final Set<Solution> solutions) {
-    Layout layout = puzzle.getLayout();
+    PuzzleLayout layout = puzzle.getLayout();
     final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
     for (int rowIndex = 0; rowIndex < puzzle.getLayout().getHeight(); rowIndex++) {
       for (int colIndex = 0; colIndex < puzzle.getLayout().getWidth(); colIndex++) {
-        solutionMap[rowIndex][colIndex] = Cell.toNumericValue(puzzle.getCellValue(Coord.of(rowIndex + 1,  colIndex + 1)));
+        solutionMap[rowIndex][colIndex] = Cell.toNumericValue(puzzle.get(Coord.of(rowIndex + 1,  colIndex + 1)));
       }
     }
     solutions.add(new Solution(solutionMap, layout));
@@ -90,7 +90,7 @@ public class Solver {
   }
 
   private void recursiveCellSolve(final Puzzle puzzle, final Coord coord) {
-    final int value = puzzle.getCellValue(coord);
+    final int value = puzzle.get(coord);
     if (Cell.isSolved(value)) {
       for (Constraint restriction : puzzle.getConstraints(coord)) {
         restriction.forSolvedCell(puzzle, coord);

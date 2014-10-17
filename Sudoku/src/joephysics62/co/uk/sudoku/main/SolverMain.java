@@ -3,7 +3,7 @@ package joephysics62.co.uk.sudoku.main;
 import java.io.File;
 import java.io.IOException;
 
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.FutoshikiHtmlReader;
 import joephysics62.co.uk.sudoku.read.KakuroHtmlReader;
@@ -20,22 +20,22 @@ public class SolverMain {
 
   private static PuzzleHtmlReader readerForType(final String type) {
     if (type.equals("timesMini")) {
-      return new SudokuHtmlReader(Layout.TIMES_MINI);
+      return new SudokuHtmlReader(PuzzleLayout.TIMES_MINI);
     }
     else if (type.equals("classic")) {
-      return new SudokuHtmlReader(Layout.CLASSIC_SUDOKU);
+      return new SudokuHtmlReader(PuzzleLayout.CLASSIC_SUDOKU);
     }
     else if (type.equals("futoshiki")) {
-      return new FutoshikiHtmlReader(Layout.FUTOSHIKI);
+      return new FutoshikiHtmlReader(PuzzleLayout.FUTOSHIKI);
     }
     else if (type.equals("super")) {
-      return new SudokuHtmlReader(Layout.SUPER_SUDOKU);
+      return new SudokuHtmlReader(PuzzleLayout.SUPER_SUDOKU);
     }
     else if (type.equals("kakuro")) {
-      return new KakuroHtmlReader(new Layout(10, 10, 0, 0, 9)); // TODO this obviously isn't generic enough.
+      return new KakuroHtmlReader(new PuzzleLayout(10, 10, 0, 0, 9)); // TODO this obviously isn't generic enough.
     }
     else if (type.equals("killer")) {
-      return new KillerSudokuHtmlReader(Layout.CLASSIC_SUDOKU);
+      return new KillerSudokuHtmlReader(PuzzleLayout.CLASSIC_SUDOKU);
     }
     else {
       throw new IllegalArgumentException();

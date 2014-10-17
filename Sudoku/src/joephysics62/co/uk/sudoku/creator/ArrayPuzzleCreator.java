@@ -8,13 +8,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.creator.util.Solved;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.CellFilter;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
 import joephysics62.co.uk.sudoku.solver.SolutionType;
@@ -31,10 +31,10 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
   private Puzzle _currentBestPuzzle = null;
   private int _callCount = 0;
   private static final Logger LOG = Logger.getLogger(ArrayPuzzleCreator.class);
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
   private final CreationSpec _creationSpec;
 
-  public ArrayPuzzleCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
+  public ArrayPuzzleCreator(final Solver solver, final PuzzleLayout layout, final CreationSpec creationSpec) {
     _solver = solver;
     _layout = layout;
     _creationSpec = creationSpec;
@@ -75,11 +75,11 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           return;
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
-        Layout layout = candidateToSolve.getLayout();
+        PuzzleLayout layout = candidateToSolve.getLayout();
         int init = layout.getInitialValue();
-        candidateToSolve.setCellValue(init, coord);
+        candidateToSolve.set(init, coord);
         if (_creationSpec.isRemoveInSymmetricPairs()) {
-          candidateToSolve.setCellValue(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
+          candidateToSolve.set(init, Coord.of(layout.getHeight() - coord.getRow() + 1, layout.getWidth() - coord.getCol() + 1));
         }
         LOG.debug("Puzzle now has " + _solvedCellFilter.apply(candidateToSolve).size() + " givens cells after removal");
         solveModifiedPuzzle(candidateToSolve);
@@ -153,7 +153,7 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
       for (int col = 1; col <= _layout.getWidth(); col++) {
         Coord coord = Coord.of(row, col);
         int niceValue = solutionResult.getSolution().getValue(coord);
-        puzzle.setCellValue(Cell.cellValueAsBitwise(niceValue), coord);
+        puzzle.set(Cell.cellValueAsBitwise(niceValue), coord);
       }
     }
     addVariableConstraints(puzzle);

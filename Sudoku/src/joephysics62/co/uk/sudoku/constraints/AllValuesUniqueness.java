@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.CellGrid;
-import joephysics62.co.uk.sudoku.model.Coord;
+import joephysics62.co.uk.sudoku.model.PuzzleGrid;
 
 public class AllValuesUniqueness extends Uniqueness {
 
@@ -15,7 +15,7 @@ public class AllValuesUniqueness extends Uniqueness {
   }
 
   @Override
-  public boolean isSatisfied(CellGrid grid) {
+  public boolean isSatisfied(PuzzleGrid grid) {
     return true;
   }
 
@@ -24,7 +24,7 @@ public class AllValuesUniqueness extends Uniqueness {
   }
 
   @Override
-  public boolean eliminateValues(CellGrid cellGrid) {
+  public boolean eliminateValues(PuzzleGrid cellGrid) {
     boolean eliminationHadEffect = false;
     eliminationHadEffect |= applyUniquenessToKnownValue(cellGrid);
     eliminationHadEffect |= applyOnlyPossibleCellElimination(cellGrid);
@@ -32,30 +32,30 @@ public class AllValuesUniqueness extends Uniqueness {
     return eliminationHadEffect;
   }
 
-  private boolean applyOnlyPossibleCellElimination(CellGrid cellGrid) {
+  private boolean applyOnlyPossibleCellElimination(PuzzleGrid cellGrid) {
     boolean hadEffect = false;
     for (Coord coord : getCells()) {
-      int cellValue = cellGrid.getCellValue(coord);
+      int cellValue = cellGrid.get(coord);
       if (!Cell.isSolved(cellValue)) {
         for (Coord coordInner : getCells()) {
-          int cellValueInner = cellGrid.getCellValue(coordInner);
+          int cellValueInner = cellGrid.get(coordInner);
           if (!coordInner.equals(coord)) {
             cellValue = Cell.remove(cellValue, cellValueInner);
           }
         }
       }
       if (Cell.isSolved(cellValue)) {
-        cellGrid.setCellValue(cellValue, coord);
+        cellGrid.set(cellValue, coord);
         hadEffect = true;
       }
     }
     return hadEffect;
   }
 
-  private boolean applyUniquenessToKnownValue(CellGrid cellGrid) {
+  private boolean applyUniquenessToKnownValue(PuzzleGrid cellGrid) {
     boolean changed = false;
     for (Coord coord : getCells()) {
-      final int value = cellGrid.getCellValue(coord);
+      final int value = cellGrid.get(coord);
       if (Cell.isSolved(value)) {
         changed |= !forSolvedCell(cellGrid, coord);
       }
@@ -63,7 +63,7 @@ public class AllValuesUniqueness extends Uniqueness {
     return changed;
   }
 
-  private boolean doABElimination(CellGrid cellGrid) {
+  private boolean doABElimination(PuzzleGrid cellGrid) {
     boolean changed = false;
     for (Coord coord : getCells()) {
       changed |= tryABElim(cellGrid, coord);
@@ -71,20 +71,20 @@ public class AllValuesUniqueness extends Uniqueness {
     return changed;
   }
 
-  private boolean tryABElim(CellGrid cellGrid, Coord coord) {
-    final int value = cellGrid.getCellValue(coord);
+  private boolean tryABElim(PuzzleGrid cellGrid, Coord coord) {
+    final int value = cellGrid.get(coord);
     if (Integer.bitCount(value) == 2) {
       for (Coord innerCoord : getCells()) {
         if (!innerCoord.equals(coord)) {
-          int innerValue = cellGrid.getCellValue(innerCoord);
+          int innerValue = cellGrid.get(innerCoord);
           if (value == innerValue) {
             boolean hasEffect = false;
             for (Coord innerInnerCoord : getCells()) {
               if (!innerInnerCoord.equals(innerCoord) && !innerInnerCoord.equals(coord)) {
-                int innerInnerValue = cellGrid.getCellValue(innerInnerCoord);
+                int innerInnerValue = cellGrid.get(innerInnerCoord);
                 int newValue = Cell.remove(innerInnerValue, value);
                 if (newValue != innerInnerValue) {
-                  cellGrid.setCellValue(newValue, innerInnerCoord);
+                  cellGrid.set(newValue, innerInnerCoord);
                   hasEffect = true;
                 }
               }

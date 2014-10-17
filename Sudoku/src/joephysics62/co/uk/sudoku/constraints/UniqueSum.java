@@ -3,10 +3,10 @@ package joephysics62.co.uk.sudoku.constraints;
 import java.util.ArrayList;
 import java.util.List;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.CellGrid;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleGrid;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 import org.apache.log4j.Logger;
 
@@ -17,10 +17,10 @@ public class UniqueSum extends Uniqueness {
   private final int _sum;
 
   @Override
-  public boolean isSatisfied(CellGrid cellGrid) {
+  public boolean isSatisfied(PuzzleGrid cellGrid) {
     int sum = 0;
     for (Coord coord : getCells()) {
-      int bitValue = cellGrid.getCellValue(coord);
+      int bitValue = cellGrid.get(coord);
       if (Cell.isSolved(bitValue)) {
         sum += Cell.toNumericValue(bitValue);
       }
@@ -55,7 +55,7 @@ public class UniqueSum extends Uniqueness {
     return (n * (n + 1)) / 2;
   }
 
-  private static final int maximumSum(final Layout layout, List<Coord> coords) {
+  private static final int maximumSum(final PuzzleLayout layout, List<Coord> coords) {
     int i = layout.getInitialsSize();
     final int n = coords.size();
     return i * n - (n * (n - 1)) / 2;
@@ -66,16 +66,16 @@ public class UniqueSum extends Uniqueness {
   }
 
   @Override
-  public boolean forSolvedCell(CellGrid cellGrid, Coord coord) {
+  public boolean forSolvedCell(PuzzleGrid cellGrid, Coord coord) {
     boolean hasChanged = super.forSolvedCell(cellGrid, coord);
-    Integer numericValue = Cell.toNumericValue(cellGrid.getCellValue(coord));
+    Integer numericValue = Cell.toNumericValue(cellGrid.get(coord));
     if (null == numericValue) {
       return hasChanged;
     }
     int newSum = _sum;
     final List<Coord> subgroupCoords = new ArrayList<>();
     for (Coord cell : getCells()) {
-      int bitwiseValue = cellGrid.getCellValue(cell);
+      int bitwiseValue = cellGrid.get(cell);
       if (Cell.isSolved(bitwiseValue)) {
         newSum -= Cell.toNumericValue(bitwiseValue);
       }
@@ -87,7 +87,7 @@ public class UniqueSum extends Uniqueness {
     return hasChanged;
   }
 
-  private static boolean eliminateValues(CellGrid cellGrid, List<Coord> coords, final int sum) {
+  private static boolean eliminateValues(PuzzleGrid cellGrid, List<Coord> coords, final int sum) {
     int minimumSum = minimumSum(coords);
     if (sum < minimumSum) {
       LOG.debug("The sum " + sum + " is less than the minimum " + minimumSum);
@@ -128,24 +128,24 @@ public class UniqueSum extends Uniqueness {
   }
 
   @Override
-  public boolean eliminateValues(CellGrid cellGrid) {
+  public boolean eliminateValues(PuzzleGrid cellGrid) {
     return eliminateValues(cellGrid, getCells(), _sum);
   }
 
-  private static boolean removePossible(int possible, Coord coord, CellGrid cellGrid) {
-    final int oldValue = cellGrid.getCellValue(coord);
+  private static boolean removePossible(int possible, Coord coord, PuzzleGrid cellGrid) {
+    final int oldValue = cellGrid.get(coord);
     final int newValue = Cell.remove(oldValue, Cell.cellValueAsBitwise(possible));
     if (oldValue != newValue) {
       LOG.debug("Eliminating possible " + possible + " from cell " + coord);
-      cellGrid.setCellValue(newValue, coord);
+      cellGrid.set(newValue, coord);
       return true;
     }
     return false;
   }
 
-  private static void setAllUnsolveable(CellGrid cellGrid, List<Coord> coords) {
+  private static void setAllUnsolveable(PuzzleGrid cellGrid, List<Coord> coords) {
     for (Coord cell : coords) {
-      cellGrid.setCellValue(0, cell);
+      cellGrid.set(0, cell);
     }
   }
 

@@ -2,15 +2,15 @@ package joephysics62.co.uk.sudoku.solver;
 
 import java.io.PrintStream;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class Solution {
   private final int[][] _table;
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
 
-  public Solution(final int[][] table, final Layout layout) {
+  public Solution(final int[][] table, final PuzzleLayout layout) {
     _table = table;
     _layout = layout;
   }

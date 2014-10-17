@@ -1,6 +1,6 @@
 package joephysics62.co.uk.sudoku.model;
 
-public class Layout {
+public class PuzzleLayout {
 
   private final int _height;
   private final int _width;
@@ -8,7 +8,7 @@ public class Layout {
   private final int _subTableWidth;
   private final int _initialsSize;
 
-  public Layout(
+  public PuzzleLayout(
       final int height, final int width,
       final int subTableHeight, final int subTableWidth,
       final int initialsSize) {
@@ -38,10 +38,10 @@ public class Layout {
     return _subTableHeight > 1 && _subTableWidth > 1;
   }
 
-  public static Layout CLASSIC_SUDOKU = new Layout(9, 9, 3, 3, 9);
-  public static Layout SUPER_SUDOKU = new Layout(16, 16, 4, 4, 16);
-  public static Layout TIMES_MINI = new Layout(6, 6, 2, 3, 6);
-  public static Layout FUTOSHIKI = new Layout(5, 5, 0, 0, 5);
+  public static PuzzleLayout CLASSIC_SUDOKU = new PuzzleLayout(9, 9, 3, 3, 9);
+  public static PuzzleLayout SUPER_SUDOKU = new PuzzleLayout(16, 16, 4, 4, 16);
+  public static PuzzleLayout TIMES_MINI = new PuzzleLayout(6, 6, 2, 3, 6);
+  public static PuzzleLayout FUTOSHIKI = new PuzzleLayout(5, 5, 0, 0, 5);
 
   public int getInitialValue() {
     return (1 << getInitialsSize()) - 1;

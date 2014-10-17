@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -40,7 +40,7 @@ public abstract class PuzzleHtmlWriter {
     return _puzzle;
   }
 
-  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout);
+  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout);
 
   protected abstract List<List<Object>> generateTable();
 

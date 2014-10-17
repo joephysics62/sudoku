@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
@@ -16,9 +16,9 @@ import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 public class SudokuHtmlReader implements PuzzleHtmlReader {
 
   private final HTMLTableParser _tableParser;
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
 
-  public SudokuHtmlReader(final Layout layout) {
+  public SudokuHtmlReader(final PuzzleLayout layout) {
     _layout = layout;
     _tableParser = new HTMLTableParser(layout.getHeight(), layout.getWidth());
   }

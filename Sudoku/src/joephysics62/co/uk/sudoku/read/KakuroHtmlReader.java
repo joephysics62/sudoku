@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
@@ -21,9 +21,9 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
 
   private static final Logger LOG = Logger.getLogger(KakuroHtmlReader.class);
 
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
 
-  public KakuroHtmlReader(final Layout layout) {
+  public KakuroHtmlReader(final PuzzleLayout layout) {
     _layout = layout;
   }
 

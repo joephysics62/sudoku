@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.model;
+package joephysics62.co.uk.grid;
 
 public class Coord {
   private final int _row;

@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.maths.Colour;
+import joephysics62.co.uk.grid.maths.FourColourSolver;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.gridmaths.Colour;
-import joephysics62.co.uk.sudoku.gridmaths.FourColourSolver;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
 public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
@@ -27,7 +27,7 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
     int[][] groupIds = calculateGroupsIdsGrid(layout);
     for (Entry<Colour, List<Integer>> entry : calculateColourToGroups(groupIds).entrySet()) {
       root.put(entry.getKey() + "Groups", entry.getValue());
@@ -49,7 +49,7 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
     return reverseMap;
   }
 
-  private int[][] calculateGroupsIdsGrid(final Layout layout) {
+  private int[][] calculateGroupsIdsGrid(final PuzzleLayout layout) {
     int[][] groupIds = new int[layout.getHeight()][layout.getWidth()];
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
@@ -79,7 +79,7 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
   @Override
   protected List<List<Object>> generateTable() {
     Puzzle puzzle = getPuzzle();
-    Layout layout = puzzle.getLayout();
+    PuzzleLayout layout = puzzle.getLayout();
     List<List<Object>> table = new ArrayList<>();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       final List<Object> rowList = new ArrayList<>();

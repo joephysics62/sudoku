@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class SudokuHtmlWriter extends PuzzleHtmlWriter {
 
@@ -19,7 +19,7 @@ public class SudokuHtmlWriter extends PuzzleHtmlWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final Layout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
     root.put("subTableHeight", layout.getSubTableHeight());
     root.put("subTableWidth", layout.getSubTableWidth());
   }
@@ -31,12 +31,12 @@ public class SudokuHtmlWriter extends PuzzleHtmlWriter {
   @Override
   protected List<List<Object>> generateTable() {
     Puzzle puzzle = getPuzzle();
-    Layout layout = puzzle.getLayout();
+    PuzzleLayout layout = puzzle.getLayout();
     List<List<Object>> table = new ArrayList<>();
     for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
       final List<Object> rowList = new ArrayList<>();
       for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
-        final int value = puzzle.getCellValue(Coord.of(rowNum, colNum));
+        final int value = puzzle.get(Coord.of(rowNum, colNum));
         if (Cell.isSolved(value)) {
           rowList.add(Cell.asString(Cell.toNumericValue(value), layout.getInitialsSize()));
         }

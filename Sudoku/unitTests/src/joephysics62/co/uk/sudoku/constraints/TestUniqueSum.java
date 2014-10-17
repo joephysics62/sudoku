@@ -5,10 +5,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.CellGrid;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleGrid;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -36,8 +36,8 @@ public class TestUniqueSum {
     return out;
   }
 
-  private void runTests(int sumValue, int expected) {
-    Layout layout = Layout.CLASSIC_SUDOKU;
+  private void runTests(int sumValue, Integer expected) {
+    PuzzleLayout layout = PuzzleLayout.CLASSIC_SUDOKU;
     final int groupSize = 3;
 
     List<Coord> cells = new ArrayList<>();
@@ -50,34 +50,34 @@ public class TestUniqueSum {
     }
 
     UniqueSum uniqueSum = UniqueSum.of(sumValue, cells);
-    final CellGrid cellGrid = new MockCellGrid(layout, map);
+    final PuzzleGrid cellGrid = new MockCellGrid(layout, map);
     uniqueSum.eliminateValues(cellGrid);
     for (Coord coord : cells) {
-      Assert.assertEquals(expected, cellGrid.getCellValue(coord));
+      Assert.assertEquals(expected, cellGrid.get(coord));
     }
   }
 
-  private static class MockCellGrid implements CellGrid {
+  private static class MockCellGrid implements PuzzleGrid {
 
-    private final Layout _layout;
+    private final PuzzleLayout _layout;
     private final Map<Coord, Integer> _values;
-    private MockCellGrid(final Layout layout, final Map<Coord, Integer> values) {
+    private MockCellGrid(final PuzzleLayout layout, final Map<Coord, Integer> values) {
       _layout = layout;
       _values = values;
     }
 
     @Override
-    public int getCellValue(Coord coord) {
+    public Integer get(Coord coord) {
       return _values.get(coord);
     }
 
     @Override
-    public void setCellValue(int cellValues, Coord coord) {
+    public void set(Integer cellValues, Coord coord) {
       _values.put(coord, cellValues);
     }
 
     @Override
-    public Layout getLayout() {
+    public PuzzleLayout getLayout() {
       return _layout;
     }
 

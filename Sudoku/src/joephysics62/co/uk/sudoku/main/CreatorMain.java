@@ -9,7 +9,7 @@ import joephysics62.co.uk.sudoku.creator.PuzzleCreator;
 import joephysics62.co.uk.sudoku.creator.FutoshikiCreator;
 import joephysics62.co.uk.sudoku.creator.SudokuCreator;
 import joephysics62.co.uk.sudoku.creator.util.Unsolved;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.solver.Solver;
 import joephysics62.co.uk.sudoku.write.FutoshikiHtmlWriter;
@@ -31,16 +31,16 @@ public class CreatorMain {
   private static PuzzleCreator buildPuzzleCreator(final String type) {
     Solver solver = new Solver(Unsolved.create());
     if (type.equals("timesMini")) {
-      return new SudokuCreator(solver, Layout.TIMES_MINI, new CreationSpec(10, 0, MAX_DEPTH, true));
+      return new SudokuCreator(solver, PuzzleLayout.TIMES_MINI, new CreationSpec(10, 0, MAX_DEPTH, true));
     }
     else if (type.equals("classic")) {
-      return new SudokuCreator(solver, Layout.CLASSIC_SUDOKU, new CreationSpec(25, 0, MAX_DEPTH, true));
+      return new SudokuCreator(solver, PuzzleLayout.CLASSIC_SUDOKU, new CreationSpec(25, 0, MAX_DEPTH, true));
     }
     else if (type.equals("futoshiki")) {
-      return new FutoshikiCreator(solver, Layout.FUTOSHIKI, new CreationSpec(2, 6, MAX_DEPTH, false));
+      return new FutoshikiCreator(solver, PuzzleLayout.FUTOSHIKI, new CreationSpec(2, 6, MAX_DEPTH, false));
     }
     else if (type.equals("super")) {
-      return new SudokuCreator(solver, Layout.SUPER_SUDOKU, new CreationSpec(50, 0, 70, true));
+      return new SudokuCreator(solver, PuzzleLayout.SUPER_SUDOKU, new CreationSpec(50, 0, 70, true));
     }
     else {
       throw new IllegalArgumentException();

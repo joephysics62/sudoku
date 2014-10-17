@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
@@ -22,11 +22,11 @@ import org.apache.log4j.Logger;
 
 public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
 
-  private final Layout _layout;
+  private final PuzzleLayout _layout;
 
   private static final Logger LOG = Logger.getLogger(KillerSudokuHtmlReader.class);
 
-  public KillerSudokuHtmlReader(final Layout layout) {
+  public KillerSudokuHtmlReader(final PuzzleLayout layout) {
     _layout = layout;
   }
 

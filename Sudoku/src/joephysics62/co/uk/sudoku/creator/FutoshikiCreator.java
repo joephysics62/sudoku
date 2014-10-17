@@ -2,17 +2,17 @@ package joephysics62.co.uk.sudoku.creator;
 
 import java.util.List;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.GreaterThan;
-import joephysics62.co.uk.sudoku.model.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.Solver;
 
 public class FutoshikiCreator extends ArrayPuzzleCreator {
 
-  public FutoshikiCreator(final Solver solver, final Layout layout, final CreationSpec creationSpec) {
+  public FutoshikiCreator(final Solver solver, final PuzzleLayout layout, final CreationSpec creationSpec) {
     super(solver, layout, creationSpec);
   }
 

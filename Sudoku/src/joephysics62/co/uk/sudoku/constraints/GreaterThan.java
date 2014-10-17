@@ -3,9 +3,9 @@ package joephysics62.co.uk.sudoku.constraints;
 import java.util.Arrays;
 import java.util.List;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.CellGrid;
-import joephysics62.co.uk.sudoku.model.Coord;
+import joephysics62.co.uk.sudoku.model.PuzzleGrid;
 
 public class GreaterThan implements Constraint {
 
@@ -22,19 +22,19 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public boolean forSolvedCell(CellGrid cellGrid, Coord solvedCell) {
+  public boolean forSolvedCell(PuzzleGrid cellGrid, Coord solvedCell) {
     return false;
   }
 
   @Override
-  public boolean isSatisfied(CellGrid grid) {
+  public boolean isSatisfied(PuzzleGrid grid) {
     return true;
   }
 
   @Override
-  public boolean eliminateValues(CellGrid cellGrid) {
-    int left = cellGrid.getCellValue(_left);
-    int right = cellGrid.getCellValue(_right);
+  public boolean eliminateValues(PuzzleGrid cellGrid) {
+    int left = cellGrid.get(_left);
+    int right = cellGrid.get(_right);
     if (left == 0|| right == 0) {
       return false;
     }
@@ -43,8 +43,8 @@ public class GreaterThan implements Constraint {
 
     final int newLeft = Cell.remove(left, 2 * lowestBitRight - 1);
     final int newRight = Cell.remove(right, ~(highestBitLeft - 1));
-    cellGrid.setCellValue(newLeft, _left);
-    cellGrid.setCellValue(newRight, _right);
+    cellGrid.set(newLeft, _left);
+    cellGrid.set(newRight, _right);
     return newLeft != left || newRight != right;
   }
 

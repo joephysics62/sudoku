@@ -7,8 +7,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import joephysics62.co.uk.sudoku.gridmaths.FourColourSolver;
-import joephysics62.co.uk.sudoku.model.Layout;
+import joephysics62.co.uk.grid.maths.FourColourSolver;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.KillerSudokuHtmlReader;
 import junit.framework.Assert;
@@ -30,7 +30,7 @@ public class TestKillerSudokuHtmlWriter {
   }
 
   private void runRoundTrip(final String input, final String control) throws IOException, URISyntaxException, TemplateException {
-    KillerSudokuHtmlReader reader = new KillerSudokuHtmlReader(Layout.CLASSIC_SUDOKU);
+    KillerSudokuHtmlReader reader = new KillerSudokuHtmlReader(PuzzleLayout.CLASSIC_SUDOKU);
     Puzzle puzzle = reader.read(new File(input));
     PuzzleHtmlWriter htmlKillerSudokuWriter = new KillerSudokuHtmlWriter(puzzle, new FourColourSolver());
     File actual = tempFolder.newFile();

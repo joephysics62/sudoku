@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.constraints.UniqueSum;
-import joephysics62.co.uk.sudoku.model.Coord;
-import joephysics62.co.uk.sudoku.model.Layout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class KakuroHtmlWriter extends PuzzleHtmlWriter {
 
@@ -48,7 +48,7 @@ public class KakuroHtmlWriter extends PuzzleHtmlWriter {
 
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, Layout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, PuzzleLayout layout) {
    // nothing here.
   }
 
@@ -92,7 +92,7 @@ public class KakuroHtmlWriter extends PuzzleHtmlWriter {
         final boolean hasValue;
         final Coord coord = Coord.of(rowNum, colNum);
         if (colNum > 0 && rowNum > 0) {
-          hasValue = getPuzzle().getCellValue(coord) > 0;
+          hasValue = getPuzzle().get(coord) > 0;
         }
         else {
           hasValue = false;
