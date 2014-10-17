@@ -4,8 +4,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
@@ -94,7 +94,7 @@ public class Solver {
     final int value = puzzle.get(coord);
     if (Cell.isSolved(value)) {
       for (Constraint restriction : puzzle.getConstraints(coord)) {
-        restriction.forSolvedCell(puzzle, coord);
+        restriction.forKnownValue(puzzle, coord);
       }
     }
   }

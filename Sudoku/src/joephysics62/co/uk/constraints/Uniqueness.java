@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.constraints;
+package joephysics62.co.uk.constraints;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ public abstract class Uniqueness implements Constraint {
   }
 
   @Override
-  public boolean forSolvedCell(Grid<Integer> cellGrid, Coord coord) {
+  public boolean forKnownValue(Grid<Integer> cellGrid, Coord coord) {
     return eliminateSolvedValue(cellGrid, coord);
   }
 

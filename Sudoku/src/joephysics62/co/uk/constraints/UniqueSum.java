@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.constraints;
+package joephysics62.co.uk.constraints;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,8 +67,8 @@ public class UniqueSum extends Uniqueness {
   }
 
   @Override
-  public boolean forSolvedCell(Grid<Integer> cellGrid, Coord coord) {
-    boolean hasChanged = super.forSolvedCell(cellGrid, coord);
+  public boolean forKnownValue(Grid<Integer> cellGrid, Coord coord) {
+    boolean hasChanged = super.forKnownValue(cellGrid, coord);
     Integer numericValue = Cell.toNumericValue(cellGrid.get(coord));
     if (null == numericValue) {
       return hasChanged;

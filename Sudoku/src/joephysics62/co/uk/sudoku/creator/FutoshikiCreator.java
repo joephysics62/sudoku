@@ -2,10 +2,10 @@ package joephysics62.co.uk.sudoku.creator;
 
 import java.util.List;
 
+import joephysics62.co.uk.constraints.Constraint;
+import joephysics62.co.uk.constraints.GreaterThan;
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
-import joephysics62.co.uk.sudoku.constraints.Constraint;
-import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.Solver;

@@ -6,9 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.constraints.AllValuesUniqueness;
+import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.constraints.AllValuesUniqueness;
-import joephysics62.co.uk.sudoku.constraints.Constraint;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 

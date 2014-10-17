@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.constraints;
+package joephysics62.co.uk.constraints;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +57,7 @@ public class AllValuesUniqueness extends Uniqueness {
     for (Coord coord : getCells()) {
       final int value = cellGrid.get(coord);
       if (Cell.isSolved(value)) {
-        changed |= !forSolvedCell(cellGrid, coord);
+        changed |= !forKnownValue(cellGrid, coord);
       }
     }
     return changed;

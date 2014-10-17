@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 import org.apache.log4j.Logger;
 

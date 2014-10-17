@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import joephysics62.co.uk.constraints.Constraint;
+import joephysics62.co.uk.constraints.GreaterThan;
 import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.constraints.Constraint;
-import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;

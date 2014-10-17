@@ -2,8 +2,8 @@ package joephysics62.co.uk.sudoku.model;
 
 import java.util.List;
 
+import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.constraints.Constraint;
 
 public interface Puzzle extends PuzzleGrid {
 

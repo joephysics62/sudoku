@@ -1,4 +1,4 @@
-package joephysics62.co.uk.sudoku.constraints;
+package joephysics62.co.uk.constraints;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,7 +22,7 @@ public class GreaterThan implements Constraint {
   }
 
   @Override
-  public boolean forSolvedCell(Grid<Integer> cellGrid, Coord solvedCell) {
+  public boolean forKnownValue(Grid<Integer> cellGrid, Coord solvedCell) {
     return false;
   }
 

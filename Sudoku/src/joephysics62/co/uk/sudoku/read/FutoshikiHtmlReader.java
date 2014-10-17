@@ -5,9 +5,9 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
+import joephysics62.co.uk.constraints.GreaterThan;
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
-import joephysics62.co.uk.sudoku.constraints.GreaterThan;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
