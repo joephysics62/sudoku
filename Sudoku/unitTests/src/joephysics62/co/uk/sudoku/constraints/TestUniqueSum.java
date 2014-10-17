@@ -1,6 +1,7 @@
 package joephysics62.co.uk.sudoku.constraints;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,11 @@ public class TestUniqueSum {
     @Override
     public PuzzleLayout getLayout() {
       return _layout;
+    }
+
+    @Override
+    public Iterator<Coord> iterator() {
+      return _values.keySet().iterator();
     }
 
   }

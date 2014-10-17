@@ -2,6 +2,7 @@ package joephysics62.co.uk.sudoku.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import joephysics62.co.uk.constraints.Constraint;
@@ -104,12 +105,10 @@ public class ArrayPuzzle implements Puzzle {
 
   @Override
   public boolean isSolved() {
-    for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
-      for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
-        if (!Cell.isSolved(_cells[rowNum - 1][colNum - 1])) {
-          LOG.debug("Puzzle not solved as cell at (" + rowNum + ", " + colNum + ") is not solved");
-          return false;
-        }
+    for (Coord coord : this) {
+      if (!Cell.isSolved(get(coord))) {
+        LOG.debug("Puzzle not solved as cell at " + coord + " is not solved");
+        return false;
       }
     }
     for (Constraint constraint : getAllConstraints()) {
@@ -123,12 +122,10 @@ public class ArrayPuzzle implements Puzzle {
 
   @Override
   public boolean isUnsolveable() {
-    for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
-      for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
-        if (_cells[rowNum - 1][colNum - 1] == 0) {
-          LOG.debug("Puzzle not solveable as cell at (" + rowNum + ", " + colNum + ") has no possible values.");
-          return true;
-        }
+    for (Coord coord : this) {
+      if (get(coord) == 0) {
+        LOG.debug("Puzzle not solveable as cell at " + coord + " has no possible values.");
+        return true;
       }
     }
     for (Constraint constraint : getAllConstraints()) {
@@ -141,12 +138,43 @@ public class ArrayPuzzle implements Puzzle {
   }
 
   @Override
+  public Iterator<Coord> iterator() {
+    return new Iterator<Coord>() {
+      private int _rowNum = 1;
+      private int _colNum = 1;
+      @Override
+      public boolean hasNext() {
+        return _rowNum <= _layout.getHeight() && _colNum <= _layout.getWidth();
+      }
+
+      @Override
+      public Coord next() {
+        if (!hasNext()) {
+          throw new ArrayIndexOutOfBoundsException();
+        }
+        Coord coord = Coord.of(_rowNum, _colNum);
+        if (_colNum == _layout.getWidth()) {
+          _colNum = 1;
+          _rowNum++;
+        }
+        else {
+          _colNum++;
+        }
+        return coord;
+      }
+
+      @Override
+      public void remove() {
+        throw new UnsupportedOperationException();
+      }
+    };
+  }
+
+  @Override
   public int completeness() {
     int completeness = 0;
-    for (int[] cell : _cells) {
-      for (int value : cell) {
-        completeness += Integer.bitCount(value);
-      }
+    for(Coord coord : this) {
+      completeness += Integer.bitCount(get(coord));
     }
     return completeness;
   }
@@ -156,7 +184,7 @@ public class ArrayPuzzle implements Puzzle {
       Integer[] row = givenValues[rowIndex];
       for (int colIndex = 0; colIndex < row.length; colIndex++) {
         final Integer value = givenValues[rowIndex][colIndex];
-        _cells[rowIndex][colIndex] = value == null ? _inits : Cell.cellValueAsBitwise(value);
+        set(value == null ? _inits : Cell.cellValueAsBitwise(value), Coord.of(rowIndex + 1, colIndex + 1));
       }
     }
   }
