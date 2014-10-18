@@ -6,6 +6,7 @@ import java.util.Set;
 
 import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
@@ -72,9 +73,9 @@ public class Solver {
 
   private void addAsSolution(final Puzzle puzzle, final Set<Solution> solutions) {
     PuzzleLayout layout = puzzle.getLayout();
-    final int[][] solutionMap = new int[layout.getHeight()][layout.getWidth()];
+    final IntegerArrayGrid solutionMap = new IntegerArrayGrid(layout);
     for (Coord coord : puzzle) {
-      solutionMap[coord.getRow() - 1][coord.getCol() - 1] = Cell.toNumericValue(puzzle.get(coord));
+      solutionMap.set(Cell.toNumericValue(puzzle.get(coord)), coord);
     }
     solutions.add(new Solution(solutionMap, layout));
   }
