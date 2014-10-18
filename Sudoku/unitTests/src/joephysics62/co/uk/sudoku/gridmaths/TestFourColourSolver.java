@@ -3,6 +3,9 @@ package joephysics62.co.uk.sudoku.gridmaths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.GridLayout;
+import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 import joephysics62.co.uk.grid.maths.Colour;
 import joephysics62.co.uk.grid.maths.FourColourSolver;
 
@@ -18,11 +21,22 @@ public class TestFourColourSolver {
                          {1, 2},
                          {1, 2}
                         };
-    Map<Integer, Colour> colourMap = fcs.calculateColourMap(arr);
+    Map<Integer, Colour> colourMap = fcs.calculateColourMap(convert(arr));
     LinkedHashMap<Integer, Colour> expected = new LinkedHashMap<>();
     expected.put(1, Colour.A);
     expected.put(2, Colour.B);
     Assert.assertEquals(expected, colourMap);
+  }
+
+  private IntegerArrayGrid convert(final int[][] arr) {
+    final IntegerArrayGrid iag = new IntegerArrayGrid(new GridLayout() {
+      @Override public int getWidth() { return arr[0].length; }
+      @Override public int getHeight() { return arr.length; }
+    });
+    for (Coord coord : iag) {
+      iag.set(arr[coord.getRow() - 1][coord.getCol() - 1], coord);
+    }
+    return iag;
   }
 
   @Test
@@ -33,7 +47,7 @@ public class TestFourColourSolver {
                          {1, 2, 3},
                          {2, 2, 3}
                         };
-    Map<Integer, Colour> colourMap = fcs.calculateColourMap(arr);
+    Map<Integer, Colour> colourMap = fcs.calculateColourMap(convert(arr));
     LinkedHashMap<Integer, Colour> expected = new LinkedHashMap<>();
     expected.put(1, Colour.A);
     expected.put(2, Colour.B);
@@ -58,7 +72,7 @@ public class TestFourColourSolver {
 //    {D, D, A, D, D, D},
 //    {B, B, B, B, D, A},
 //    {A, A, C, C, C, C},
-    Map<Integer, Colour> colourMap = fcs.calculateColourMap(arr);
+    Map<Integer, Colour> colourMap = fcs.calculateColourMap(convert(arr));
     LinkedHashMap<Integer, Colour> expected = new LinkedHashMap<>();
      expected.put(1, Colour.A);
      expected.put(2, Colour.B);

@@ -13,7 +13,6 @@ import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.constraints.UniqueSum;
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class KakuroHtmlWriter extends PuzzleHtmlWriter {
 
@@ -48,7 +47,7 @@ public class KakuroHtmlWriter extends PuzzleHtmlWriter {
 
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, PuzzleLayout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, Puzzle puzzle) {
    // nothing here.
   }
 

@@ -13,6 +13,7 @@ import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.constraints.UniqueSum;
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.grid.GridLayout;
+import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 import joephysics62.co.uk.grid.maths.Colour;
 import joephysics62.co.uk.grid.maths.FourColourSolver;
 import joephysics62.co.uk.sudoku.model.Puzzle;
@@ -29,17 +30,17 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
-    int[][] groupIds = calculateGroupsIdsGrid(layout);
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final Puzzle puzzle) {
+    IntegerArrayGrid groupIds = calculateGroupsIdsGrid(puzzle);
     Map<Colour, List<Integer>> colourToGroups = calculateColourToGroups(groupIds);
     for (Colour colour : Colour.values()) {
       root.put(colour + "Groups", colourToGroups.containsKey(colour) ? colourToGroups.get(colour) : Collections.emptyList());
     }
-    root.put("subTableHeight", layout.getSubTableHeight());
-    root.put("subTableWidth", layout.getSubTableWidth());
+    root.put("subTableHeight", puzzle.getLayout().getSubTableHeight());
+    root.put("subTableWidth", puzzle.getLayout().getSubTableWidth());
   }
 
-  private Map<Colour, List<Integer>> calculateColourToGroups(int[][] groupIds) {
+  private Map<Colour, List<Integer>> calculateColourToGroups(IntegerArrayGrid groupIds) {
     Map<Colour, List<Integer>> reverseMap = new LinkedHashMap<>();
     for (Entry<Integer, Colour> entry : _fcs.calculateColourMap(groupIds).entrySet()) {
       Integer groupId = entry.getKey();
@@ -52,12 +53,11 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
     return reverseMap;
   }
 
-  private int[][] calculateGroupsIdsGrid(final PuzzleLayout layout) {
-    int[][] groupIds = new int[layout.getHeight()][layout.getWidth()];
-    for (int rowNum = 1; rowNum <= layout.getHeight(); rowNum++) {
-      for (int colNum = 1; colNum <= layout.getWidth(); colNum++) {
-        groupIds[rowNum - 1][colNum - 1] = getGroupId(Coord.of(rowNum, colNum));
-      }
+  private IntegerArrayGrid calculateGroupsIdsGrid(final Puzzle puzzle) {
+    PuzzleLayout layout = puzzle.getLayout();
+    IntegerArrayGrid groupIds = new IntegerArrayGrid(layout);
+    for (final Coord coord : puzzle) {
+      groupIds.set(getGroupId(coord), coord);
     }
     return groupIds;
   }

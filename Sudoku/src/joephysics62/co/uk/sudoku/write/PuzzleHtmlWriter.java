@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -31,7 +30,7 @@ public abstract class PuzzleHtmlWriter {
     List<List<Object>> table = generateTable();
     root.put("table", table);
     root.put("title", _puzzle.getTitle());
-    addPuzzleSpecificParams(root, _puzzle.getLayout());
+    addPuzzleSpecificParams(root, _puzzle);
     Template template = configuration.getTemplate(_templateName, ENCODING);
     template.process(root, new FileWriter(file));
   }
@@ -40,7 +39,7 @@ public abstract class PuzzleHtmlWriter {
     return _puzzle;
   }
 
-  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout);
+  protected abstract void addPuzzleSpecificParams(Map<String, Object> root, final Puzzle puzzle);
 
   protected abstract List<List<Object>> generateTable();
 

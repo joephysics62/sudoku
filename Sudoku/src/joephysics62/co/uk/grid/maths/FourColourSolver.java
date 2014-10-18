@@ -8,25 +8,22 @@ import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 
 
 public class FourColourSolver {
   private Map<Integer, Colour> _solution;
 
-  public final Map<Integer, Colour> calculateColourMap(final int[][] groupIds) {
+  public final Map<Integer, Colour> calculateColourMap(final IntegerArrayGrid groupIds) {
     final Map<Integer, Set<Coord>> cellsByGroup = new LinkedHashMap<>();
     final Map<Coord, Integer> groupByCoord = new LinkedHashMap<>();
-    for (int rowIndex = 0; rowIndex < groupIds.length; rowIndex++) {
-      final int[] row = groupIds[rowIndex];
-      for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        final int id = row[colIndex];
-        if (!cellsByGroup.containsKey(id)) {
-          cellsByGroup.put(id, new LinkedHashSet<Coord>());
-        }
-        Coord coord = Coord.of(rowIndex + 1, colIndex + 1);
-        cellsByGroup.get(id).add(coord);
-        groupByCoord.put(coord, id);
+    for (final Coord coord : groupIds) {
+      final int id = groupIds.get(coord);
+      if (!cellsByGroup.containsKey(id)) {
+        cellsByGroup.put(id, new LinkedHashSet<Coord>());
       }
+      cellsByGroup.get(id).add(coord);
+      groupByCoord.put(coord, id);
     }
     recurse(new LinkedHashMap<Integer, Colour>(), cellsByGroup, groupByCoord);
     return _solution;

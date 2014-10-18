@@ -21,7 +21,7 @@ public class FutoshikiHtmlWriter extends PuzzleHtmlWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final Puzzle puzzle) {
     // None.
   }
 

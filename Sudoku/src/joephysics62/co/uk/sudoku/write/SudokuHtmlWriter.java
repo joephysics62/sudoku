@@ -19,9 +19,9 @@ public class SudokuHtmlWriter extends PuzzleHtmlWriter {
   }
 
   @Override
-  protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
-    root.put("subTableHeight", layout.getSubTableHeight());
-    root.put("subTableWidth", layout.getSubTableWidth());
+  protected void addPuzzleSpecificParams(Map<String, Object> root, final Puzzle puzzle) {
+    root.put("subTableHeight", puzzle.getLayout().getSubTableHeight());
+    root.put("subTableWidth", puzzle.getLayout().getSubTableWidth());
   }
 
   protected String getTemplateLocation() {
