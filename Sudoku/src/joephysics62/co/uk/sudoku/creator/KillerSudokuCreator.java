@@ -1,6 +1,9 @@
 package joephysics62.co.uk.sudoku.creator;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import joephysics62.co.uk.constraints.Constraint;
@@ -25,18 +28,57 @@ public class KillerSudokuCreator extends SudokuCreator {
     }
   }
 
+  private enum Direction {
+    L {
+      @Override
+      protected boolean isTouching(Coord coord, Coord otherCoord) {
+        return otherCoord.getRow() == coord.getRow() && -1 == otherCoord.getCol() - coord.getCol();
+      }
+    },
+    R {
+
+      @Override
+      protected boolean isTouching(Coord coord, Coord otherCoord) {
+        return otherCoord.getRow() == coord.getRow() && 1 == otherCoord.getCol() - coord.getCol();
+      }
+
+    },
+    U {
+
+      @Override
+      protected boolean isTouching(Coord coord, Coord otherCoord) {
+        return otherCoord.getCol() == coord.getCol() && -1 == otherCoord.getRow() - coord.getRow();
+      }
+
+    },
+    D {
+
+      @Override
+      protected boolean isTouching(Coord coord, Coord otherCoord) {
+        return otherCoord.getCol() == coord.getCol() && 1 == otherCoord.getRow() - coord.getRow();
+      }
+
+    };
+
+    protected abstract boolean isTouching(final Coord coord, final Coord otherCoord);
+  }
+
   private final Constraint findTouching(final Puzzle puzzle, final Constraint constraint) {
-    for (Constraint other : puzzle.getVariableConstraints()) {
+    List<Constraint> otherConstraints = new ArrayList<>(puzzle.getVariableConstraints());
+    Collections.shuffle(otherConstraints);
+    for (Constraint other : otherConstraints) {
       if (other != constraint) {
         for (Coord coord : constraint.getCells()) {
           for (Coord otherCoord : other.getCells()) {
             if (otherCoord.equals(coord)) {
               throw new RuntimeException("Did not expect overlapping variable constraints. At " + coord);
             }
-            boolean isTouchingHoriz = otherCoord.getRow() == coord.getRow() && 1 == Math.abs(otherCoord.getCol() - coord.getCol());
-            boolean isTouchingVert = otherCoord.getCol() == coord.getCol() && 1 == Math.abs(otherCoord.getRow() - coord.getRow());
-            if (isTouchingHoriz || isTouchingVert) {
-              return other;
+            final List<Direction> directions = Arrays.asList(Direction.values());
+            Collections.shuffle(directions);
+            for (Direction direction : directions) {
+              if (direction.isTouching(coord, otherCoord)) {
+                return other;
+              }
             }
           }
         }
@@ -46,8 +88,7 @@ public class KillerSudokuCreator extends SudokuCreator {
   }
 
   @Override
-  protected boolean removeVariable(int index, final Puzzle puzzle) {
-    final Constraint constraint = puzzle.getVariableConstraints().get(index);
+  protected boolean removeVariable(final Constraint constraint, final Puzzle puzzle) {
     final Constraint other = findTouching(puzzle, constraint);
     if (other == null) {
       throw new UnsupportedOperationException();
@@ -56,10 +97,30 @@ public class KillerSudokuCreator extends SudokuCreator {
     if (merged == null) {
       return false;
     }
+    int index = puzzle.getVariableConstraints().indexOf(constraint);
     puzzle.getVariableConstraints().add(index, merged);
     puzzle.getVariableConstraints().remove(constraint);
     puzzle.getVariableConstraints().remove(other);
     return true;
+  }
+
+  @Override
+  protected void postShuffleReorder(List<Constraint> varConstraints) {
+    Collections.sort(varConstraints, new Comparator<Constraint>() {
+
+      @Override
+      public int compare(Constraint left, Constraint right) {
+        int lSize = left.getCells().size();
+        int rSize = right.getCells().size();
+        if (lSize > rSize) {
+          return 1;
+        }
+        else if (lSize < rSize) {
+          return -1;
+        }
+        return 0;
+      }
+    });
   }
 
 }

@@ -45,10 +45,14 @@ public class FutoshikiCreator extends ArrayPuzzleCreator {
   }
 
   @Override
-  protected boolean removeVariable(int index, final Puzzle puzzle) {
-    Constraint removed = puzzle.getVariableConstraints().remove(index);
-    LOG.debug("Removing variable constraint " + removed);
-    return true;
+  protected boolean removeVariable(final Constraint toRemove, final Puzzle puzzle) {
+    LOG.debug("Removing variable constraint " + toRemove);
+    return puzzle.getVariableConstraints().remove(toRemove);
+  }
+
+  @Override
+  protected void postShuffleReorder(List<Constraint> varConstraints) {
+    // no need.
   }
 
 

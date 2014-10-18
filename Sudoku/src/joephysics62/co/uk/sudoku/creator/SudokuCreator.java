@@ -1,5 +1,8 @@
 package joephysics62.co.uk.sudoku.creator;
 
+import java.util.List;
+
+import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
@@ -23,7 +26,12 @@ public class SudokuCreator extends ArrayPuzzleCreator {
   }
 
   @Override
-  protected boolean removeVariable(int index, final Puzzle puzzle) {
+  protected boolean removeVariable(final Constraint constraint, final Puzzle puzzle) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  protected void postShuffleReorder(List<Constraint> varConstraints) {
     throw new UnsupportedOperationException();
   }
 

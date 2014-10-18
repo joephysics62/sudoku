@@ -55,7 +55,7 @@ public class CreatorMain {
       return new SudokuCreator(solver, PuzzleLayout.SUPER_SUDOKU, new CreationSpec(50, 0, 70, true));
     }
     else if (type.equals("killer")) {
-      return new KillerSudokuCreator(solver, PuzzleLayout.CLASSIC_SUDOKU, 30, MAX_DEPTH);
+      return new KillerSudokuCreator(solver, PuzzleLayout.CLASSIC_SUDOKU, 33, MAX_DEPTH);
     }
     else {
       throw new IllegalArgumentException();

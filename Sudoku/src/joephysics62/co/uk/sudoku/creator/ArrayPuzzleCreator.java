@@ -87,29 +87,27 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
       LOG.debug("Tried removing each one of the solved cells");
     }
     else if (variableConstraints.size() > _creationSpec.getMaxVarConstraints()) {
-      final List<Integer> cnums = new ArrayList<>();
-      int varConsSize = currentPuzzle.getVariableConstraints().size();
-      LOG.debug("Current number of variable constraints: " + varConsSize);
-      for (int i = 0; i < varConsSize; i++) {
-        cnums.add(i);
-      }
-      Collections.shuffle(cnums);
+      final List<Constraint> copyConstraints = new ArrayList<>(currentPuzzle.getVariableConstraints());
+      Collections.shuffle(copyConstraints);
+      postShuffleReorder(copyConstraints);
       LOG.debug("Trying to remove one of these...");
-      for (int i = 0; i < varConsSize; i++) {
+      for (final Constraint toRemove : copyConstraints) {
         if (foundPuzzle()) {
           return;
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
-        boolean removeSuccessful = removeVariable(cnums.get(i), candidateToSolve);
+        boolean removeSuccessful = removeVariable(toRemove, candidateToSolve);
         if (removeSuccessful) {
           solveModifiedPuzzle(candidateToSolve);
         }
       }
-      LOG.debug("Tried removing each one of these " + varConsSize + " variable constraints.");
+      LOG.debug("Tried removing each one of these " + copyConstraints.size() + " variable constraints.");
     }
   }
 
-  protected abstract boolean removeVariable(int index, Puzzle candidateToSolve);
+  protected abstract boolean removeVariable(final Constraint constraint, Puzzle candidateToSolve);
+
+  protected abstract void postShuffleReorder(final List<Constraint> varConstraints);
 
   private void solveModifiedPuzzle(final Puzzle candidateToSolve) {
     Puzzle candidateToKeep = candidateToSolve.deepCopy();
