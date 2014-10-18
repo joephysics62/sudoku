@@ -3,6 +3,7 @@ package joephysics62.co.uk.sudoku.write;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,15 +104,8 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
       if (!cellsInUniqueSum.contains(coord)) {
         throw new RuntimeException();
       }
-      List<Integer> rows = new ArrayList<>();
-      List<Integer> cols = new ArrayList<>();
-      for (Coord coord2 : cellsInUniqueSum) {
-        rows.add(coord2.getRow());
-        cols.add(coord2.getCol());
-      }
-      Collections.sort(rows);
-      Collections.sort(cols);
-      if (coord.equals(Coord.of(rows.get(0), cols.get(0)))) {
+      Coord cellToIndicateSum = topLeftCell(cellsInUniqueSum);
+      if (coord.equals(cellToIndicateSum)) {
         return uniqueSum.getSum();
       }
       else {
@@ -121,6 +115,28 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
     else {
       throw new RuntimeException();
     }
+  }
+
+  private Coord topLeftCell(List<Coord> coords) {
+    if (coords.isEmpty()) {
+      return null;
+    }
+    if (coords.size() == 1) {
+      return coords.get(0);
+    }
+    final List<Coord> sorted = new ArrayList<>(coords);
+    Collections.sort(sorted, new Comparator<Coord>() {
+
+      @Override
+      public int compare(Coord c1, Coord c2) {
+        int rowCompare = Integer.compare(c1.getRow(), c2.getRow());
+        if (rowCompare != 0) {
+          return rowCompare;
+        }
+        return Integer.compare(c1.getCol(), c2.getCol());
+      }
+    });
+    return sorted.get(0);
   }
 
   private int getGroupId(Coord coord) {
