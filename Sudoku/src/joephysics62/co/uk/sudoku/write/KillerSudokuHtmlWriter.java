@@ -31,8 +31,9 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
   @Override
   protected void addPuzzleSpecificParams(Map<String, Object> root, final PuzzleLayout layout) {
     int[][] groupIds = calculateGroupsIdsGrid(layout);
-    for (Entry<Colour, List<Integer>> entry : calculateColourToGroups(groupIds).entrySet()) {
-      root.put(entry.getKey() + "Groups", entry.getValue());
+    Map<Colour, List<Integer>> colourToGroups = calculateColourToGroups(groupIds);
+    for (Colour colour : Colour.values()) {
+      root.put(colour + "Groups", colourToGroups.containsKey(colour) ? colourToGroups.get(colour) : Collections.emptyList());
     }
     root.put("subTableHeight", layout.getSubTableHeight());
     root.put("subTableWidth", layout.getSubTableWidth());
