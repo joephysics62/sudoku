@@ -9,13 +9,15 @@ import java.util.Set;
 import joephysics62.co.uk.constraints.AllValuesUniqueness;
 import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.Grid;
+import joephysics62.co.uk.grid.map.MapGrid;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
 public class ArrayBuilder implements Builder {
 
   private final PuzzleLayout _layout;
-  private Integer[][] _givenCells = null;
+  private Grid<Integer> _givenCells = null;
   private String _title;
   private final List<Constraint> _constraints = new ArrayList<>();
   private final Set<Coord> _nonValueCells = new LinkedHashSet<>();
@@ -32,9 +34,9 @@ public class ArrayBuilder implements Builder {
   @Override
   public final void addGiven(Integer value, Coord coord) {
     if (null == _givenCells) {
-      _givenCells = new Integer[_layout.getHeight()][_layout.getWidth()];
+      _givenCells = new MapGrid<>(_layout);
     }
-    _givenCells[coord.getRow() - 1][coord.getCol() -1] = value;
+    _givenCells.set(value, coord);
   }
 
   @Override

@@ -6,6 +6,7 @@ import java.util.List;
 
 import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.Grid;
 import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 
 import org.apache.log4j.Logger;
@@ -127,13 +128,10 @@ public class ArrayPuzzle extends IntegerArrayGrid implements Puzzle {
     return completeness;
   }
 
-  public void addCells(Integer[][] givenValues) {
-    for (int rowIndex = 0; rowIndex < givenValues.length; rowIndex++) {
-      Integer[] row = givenValues[rowIndex];
-      for (int colIndex = 0; colIndex < row.length; colIndex++) {
-        final Integer value = givenValues[rowIndex][colIndex];
-        set(value == null ? _inits : Cell.cellValueAsBitwise(value), Coord.of(rowIndex + 1, colIndex + 1));
-      }
+  public void addCells(Grid<Integer> givenValues) {
+    for (final Coord coord : givenValues) {
+      final Integer value = givenValues.get(coord);
+      set(value == null ? _inits : Cell.cellValueAsBitwise(value), coord);
     }
   }
 }
