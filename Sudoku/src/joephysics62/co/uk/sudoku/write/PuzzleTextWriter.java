@@ -2,6 +2,7 @@ package joephysics62.co.uk.sudoku.write;
 
 import java.io.PrintStream;
 
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.sudoku.model.Cell;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 
@@ -14,14 +15,15 @@ public class PuzzleTextWriter {
   }
 
   public void write(final Puzzle puzzle) {
-    int[][] allCells = puzzle.getAllCells();
-    for (int[] row: allCells) {
-      _out.print("|");
-      for (int value : row) {
-        _out.print(outString(value, puzzle));
+    for (Coord coord : puzzle) {
+      if (coord.getCol() == 1) {
         _out.print("|");
       }
-      _out.println();
+      _out.print(outString(puzzle.get(coord), puzzle));
+      _out.print("|");
+      if (coord.getCol() == puzzle.getLayout().getWidth()) {
+        _out.println();
+      }
     }
     _out.println();
   }

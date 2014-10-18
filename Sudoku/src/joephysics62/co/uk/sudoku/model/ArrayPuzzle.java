@@ -2,16 +2,15 @@ package joephysics62.co.uk.sudoku.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 
 import org.apache.log4j.Logger;
 
-public class ArrayPuzzle implements Puzzle {
-  private final int[][] _cells;
+public class ArrayPuzzle extends IntegerArrayGrid implements Puzzle {
   private final List<Constraint> _fixedConstraints;
   private final List<Constraint> _variableConstraints;
   private final int _inits;
@@ -26,10 +25,7 @@ public class ArrayPuzzle implements Puzzle {
   }
 
   private ArrayPuzzle(ArrayPuzzle old) {
-    _cells = new int[old.getLayout().getHeight()][old.getLayout().getWidth()];
-    for (int rowIndex = 0; rowIndex < old.getLayout().getHeight(); rowIndex++) {
-      _cells[rowIndex] = old._cells[rowIndex].clone();
-    }
+    super(old);
     _fixedConstraints = old._fixedConstraints;
     _variableConstraints = new ArrayList<>();
     _variableConstraints.addAll(old._variableConstraints);
@@ -39,24 +35,14 @@ public class ArrayPuzzle implements Puzzle {
   }
 
   @Override
-  public Integer get(Coord coord) {
-    return _cells[coord.getRow() - 1][coord.getCol() - 1];
-  }
-
-  @Override
-  public void set(Integer cellValues, Coord coord) {
-    _cells[coord.getRow() - 1][coord.getCol() - 1] = cellValues;
-  }
-
-  @Override
   public String getTitle() {
     return _title;
   }
 
   private ArrayPuzzle(final String title, final PuzzleLayout layout, final List<Constraint> fixedConstraints) {
+    super(layout);
     _title = title;
     _inits = layout.getInitialValue();
-    _cells = new int[layout.getHeight()][layout.getWidth()];
     _fixedConstraints = Collections.unmodifiableList(fixedConstraints);
     _variableConstraints = new ArrayList<>();
     _layout = layout;
@@ -64,11 +50,6 @@ public class ArrayPuzzle implements Puzzle {
 
   public static ArrayPuzzle forPossiblesSize(final String title, final PuzzleLayout layout, final List<Constraint> constraints) {
     return new ArrayPuzzle(title, layout, constraints);
-  }
-
-  @Override
-  public final int[][] getAllCells() {
-    return _cells;
   }
 
   public int getInits() {
@@ -135,39 +116,6 @@ public class ArrayPuzzle implements Puzzle {
       }
     }
     return false;
-  }
-
-  @Override
-  public Iterator<Coord> iterator() {
-    return new Iterator<Coord>() {
-      private int _rowNum = 1;
-      private int _colNum = 1;
-      @Override
-      public boolean hasNext() {
-        return _rowNum <= _layout.getHeight() && _colNum <= _layout.getWidth();
-      }
-
-      @Override
-      public Coord next() {
-        if (!hasNext()) {
-          throw new ArrayIndexOutOfBoundsException();
-        }
-        Coord coord = Coord.of(_rowNum, _colNum);
-        if (_colNum == _layout.getWidth()) {
-          _colNum = 1;
-          _rowNum++;
-        }
-        else {
-          _colNum++;
-        }
-        return coord;
-      }
-
-      @Override
-      public void remove() {
-        throw new UnsupportedOperationException();
-      }
-    };
   }
 
   @Override

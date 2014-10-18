@@ -23,6 +23,4 @@ public interface Puzzle extends PuzzleGrid {
 
   Puzzle deepCopy();
 
-  int[][] getAllCells();
-
 }

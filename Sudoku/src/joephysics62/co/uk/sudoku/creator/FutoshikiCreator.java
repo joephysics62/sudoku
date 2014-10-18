@@ -24,21 +24,18 @@ public class FutoshikiCreator extends ArrayPuzzleCreator {
 
   @Override
   protected void addVariableConstraints(Puzzle puzzle) {
-    int[][] allCells = puzzle.getAllCells();
     List<Constraint> variableConstraints = puzzle.getVariableConstraints();
     for (Coord coord : puzzle) {
       int rowNum = coord.getRow();
       int colNum = coord.getCol();
       Coord toRight = Coord.of(rowNum, colNum + 1);
       Coord below = Coord.of(rowNum + 1, colNum);
-      int thisValue = allCells[rowNum - 1][colNum - 1];
+      int thisValue = puzzle.get(coord);
       if (colNum < puzzle.getLayout().getWidth()) {
-        int valueToRight = allCells[rowNum - 1][colNum];
-        variableConstraints.add(thisValue > valueToRight ? GreaterThan.of(coord, toRight) : GreaterThan.of(toRight, coord));
+        variableConstraints.add(thisValue > puzzle.get(toRight) ? GreaterThan.of(coord, toRight) : GreaterThan.of(toRight, coord));
       }
       if (rowNum < puzzle.getLayout().getHeight()) {
-        int valueBelow = allCells[rowNum][colNum - 1];
-        variableConstraints.add(thisValue > valueBelow ? GreaterThan.of(coord, below) : GreaterThan.of(below, coord));
+        variableConstraints.add(thisValue > puzzle.get(below) ? GreaterThan.of(coord, below) : GreaterThan.of(below, coord));
       }
     }
   }
