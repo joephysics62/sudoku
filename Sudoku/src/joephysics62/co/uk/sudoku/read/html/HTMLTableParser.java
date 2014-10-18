@@ -13,6 +13,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import joephysics62.co.uk.grid.GridLayout;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -20,12 +22,10 @@ import org.xml.sax.SAXException;
 
 public class HTMLTableParser {
 
-  private final int _expectedTableHeight;
-  private final int _expectedTableWidth;
+  private final GridLayout _layout;
 
-  public HTMLTableParser(final int expectedTableHeight, final int expectedTableWidth) {
-    _expectedTableHeight = expectedTableHeight;
-    _expectedTableWidth = expectedTableWidth;
+  public HTMLTableParser(final GridLayout layout) {
+    _layout = layout;
   }
 
   public void parseTable(final File input, final TableParserHandler handler) throws IOException {
@@ -53,13 +53,13 @@ public class HTMLTableParser {
       handler.title(((Element) titles.item(0)).getTextContent().trim());
     }
     NodeList rows = asDom.getElementsByTagName("tr");
-    if (rows.getLength() != _expectedTableHeight) {
-      throw new IOException("Expected '" + _expectedTableHeight + "' rows but got '" + rows.getLength() + "'");
+    if (rows.getLength() != _layout.getHeight()) {
+      throw new IOException("Expected '" + _layout.getHeight() + "' rows but got '" + rows.getLength() + "'");
     }
     for (int rowIndex = 0; rowIndex < rows.getLength(); rowIndex++) {
       Element row = (Element) rows.item(rowIndex);
       NodeList cells = row.getElementsByTagName("td");
-      if (cells.getLength() != _expectedTableWidth) {
+      if (cells.getLength() != _layout.getWidth()) {
         throw new IOException();
       }
       for (int colIndex = 0; colIndex < cells.getLength(); colIndex++) {

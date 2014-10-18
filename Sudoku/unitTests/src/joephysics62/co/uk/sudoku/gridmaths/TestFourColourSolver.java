@@ -29,10 +29,7 @@ public class TestFourColourSolver {
   }
 
   private IntegerArrayGrid convert(final int[][] arr) {
-    final IntegerArrayGrid iag = new IntegerArrayGrid(new GridLayout() {
-      @Override public int getWidth() { return arr[0].length; }
-      @Override public int getHeight() { return arr.length; }
-    });
+    final IntegerArrayGrid iag = new IntegerArrayGrid(new GridLayout(arr.length, arr[0].length));
     for (Coord coord : iag) {
       iag.set(arr[coord.getRow() - 1][coord.getCol() - 1], coord);
     }

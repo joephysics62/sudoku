@@ -2,10 +2,8 @@ package joephysics62.co.uk.sudoku.model;
 
 import joephysics62.co.uk.grid.GridLayout;
 
-public class PuzzleLayout implements GridLayout {
+public class PuzzleLayout extends GridLayout {
 
-  private final int _height;
-  private final int _width;
   private final int _subTableHeight;
   private final int _subTableWidth;
   private final int _initialsSize;
@@ -14,21 +12,12 @@ public class PuzzleLayout implements GridLayout {
       final int height, final int width,
       final int subTableHeight, final int subTableWidth,
       final int initialsSize) {
-        _height = height;
-        _width = width;
+    super(height, width);
         _subTableHeight = subTableHeight;
         _subTableWidth = subTableWidth;
         _initialsSize = initialsSize;
   }
 
-  @Override
-  public int getHeight() {
-    return _height;
-  }
-  @Override
-  public int getWidth() {
-    return _width;
-  }
   public int getSubTableHeight() {
     return _subTableHeight;
   }

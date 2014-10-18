@@ -7,10 +7,11 @@ import java.util.Set;
 
 import joephysics62.co.uk.constraints.GreaterThan;
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.GridLayout;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
 import joephysics62.co.uk.sudoku.read.html.TableParserHandler;
 
@@ -24,7 +25,7 @@ public class FutoshikiHtmlReader implements PuzzleHtmlReader {
 
   @Override
   public Puzzle read(final File input) throws IOException {
-    HTMLTableParser tableParser = new HTMLTableParser(2 * _layout.getHeight() - 1, 2 * _layout.getWidth() - 1);
+    HTMLTableParser tableParser = new HTMLTableParser(new GridLayout(2 * _layout.getHeight() - 1, 2 * _layout.getWidth() - 1));
     final ArrayBuilder futoshikiBuilder = new ArrayBuilder(_layout);
     final TableParserHandler handler = new TableParserHandler() {
       @Override

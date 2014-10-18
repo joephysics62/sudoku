@@ -32,7 +32,7 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
 
   @Override
   public Puzzle read(File input) throws IOException {
-    HTMLTableParser tableParser = new HTMLTableParser(_layout.getHeight(), _layout.getWidth());
+    HTMLTableParser tableParser = new HTMLTableParser(_layout);
     final ArrayBuilder killerBuilder = new ArrayBuilder(_layout);
 
     final Map<String, Integer> sumByGroup = new LinkedHashMap<>();

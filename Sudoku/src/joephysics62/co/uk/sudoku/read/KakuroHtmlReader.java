@@ -9,6 +9,7 @@ import java.util.Set;
 
 import joephysics62.co.uk.constraints.UniqueSum;
 import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.GridLayout;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
@@ -29,7 +30,8 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
 
   @Override
   public Puzzle read(File input) throws IOException {
-    HTMLTableParser tableParser = new HTMLTableParser(_layout.getHeight() + 1, _layout.getWidth() + 1);
+    final GridLayout extended = new GridLayout(_layout.getHeight() + 1, _layout.getWidth() + 1);
+    HTMLTableParser tableParser = new HTMLTableParser(extended);
     final ArrayBuilder kakuroBuilder = new ArrayBuilder(_layout);
     final int[][] acrosses = new int[_layout.getHeight() + 1][_layout.getWidth() + 1];
     final int[][] downs = new int[_layout.getWidth() + 1][_layout.getHeight() + 1];
