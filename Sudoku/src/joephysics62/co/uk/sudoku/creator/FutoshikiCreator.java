@@ -10,7 +10,11 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.solver.Solver;
 
+import org.apache.log4j.Logger;
+
 public class FutoshikiCreator extends ArrayPuzzleCreator {
+
+  private static final Logger LOG = Logger.getLogger(FutoshikiCreator.class);
 
   public FutoshikiCreator(final Solver solver, final PuzzleLayout layout, final CreationSpec creationSpec) {
     super(solver, layout, creationSpec);
@@ -39,5 +43,13 @@ public class FutoshikiCreator extends ArrayPuzzleCreator {
       }
     }
   }
+
+  @Override
+  protected boolean removeVariable(int index, final Puzzle puzzle) {
+    Constraint removed = puzzle.getVariableConstraints().remove(index);
+    LOG.debug("Removing variable constraint " + removed);
+    return true;
+  }
+
 
 }

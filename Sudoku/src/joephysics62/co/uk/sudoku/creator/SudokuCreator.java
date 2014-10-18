@@ -12,7 +12,7 @@ public class SudokuCreator extends ArrayPuzzleCreator {
   }
 
   @Override
-  protected void addGeometricConstraints(ArrayBuilder puzzleBuilder) {
+  protected final void addGeometricConstraints(ArrayBuilder puzzleBuilder) {
     puzzleBuilder.addColumnUniquenessConstraints();
     puzzleBuilder.addRowUniquenessConstraints();
     puzzleBuilder.addSubTableUniquenessConstraints();
@@ -20,7 +20,11 @@ public class SudokuCreator extends ArrayPuzzleCreator {
 
   @Override
   protected void addVariableConstraints(Puzzle puzzle) {
-    // None to add.
+  }
+
+  @Override
+  protected boolean removeVariable(int index, final Puzzle puzzle) {
+    throw new UnsupportedOperationException();
   }
 
 }

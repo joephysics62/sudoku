@@ -100,14 +100,16 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
           return;
         }
         Puzzle candidateToSolve = currentPuzzle.deepCopy();
-        final List<Constraint> varConstraintsInCandidate = candidateToSolve.getVariableConstraints();
-        Constraint removed = varConstraintsInCandidate.remove((int) cnums.get(i));
-        LOG.debug("Removing variable constraint " + removed);
-        solveModifiedPuzzle(candidateToSolve);
+        boolean removeSuccessful = removeVariable(cnums.get(i), candidateToSolve);
+        if (removeSuccessful) {
+          solveModifiedPuzzle(candidateToSolve);
+        }
       }
       LOG.debug("Tried removing each one of these " + varConsSize + " variable constraints.");
     }
   }
+
+  protected abstract boolean removeVariable(int index, Puzzle candidateToSolve);
 
   private void solveModifiedPuzzle(final Puzzle candidateToSolve) {
     Puzzle candidateToKeep = candidateToSolve.deepCopy();
@@ -159,6 +161,8 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
 
   protected abstract void addVariableConstraints(Puzzle puzzle);
 
+  protected abstract void addGeometricConstraints(ArrayBuilder puzzleBuilder);
+
   private Puzzle newPuzzle() {
     ArrayBuilder puzzleBuilder = new ArrayBuilder(_layout);
     final List<Integer> aRow = new ArrayList<>();
@@ -175,6 +179,5 @@ public abstract class ArrayPuzzleCreator implements PuzzleCreator {
     return puzzleBuilder.build();
   }
 
-  protected abstract void addGeometricConstraints(ArrayBuilder puzzleBuilder);
 
 }

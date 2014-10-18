@@ -17,6 +17,27 @@ public class UniqueSum extends Uniqueness {
 
   private final int _maxValue;
 
+  public static UniqueSum merge(final UniqueSum first, final UniqueSum second) {
+    if (first._maxValue != second._maxValue) {
+      LOG.debug("Merge of " + first + " and " + second + " not possible because they have incompatible max values");
+      return null;
+    }
+    for (Coord coord : first.getCells()) {
+      if (second.getCells().contains(coord)) {
+        LOG.debug("Merge of " + first + " and " + second + " not possible because they contain overlapping cells, e.g., " + coord);
+        return null;
+      }
+    }
+    if (first.getCells().size() + second.getCells().size() > first._maxValue) {
+      LOG.debug("Merge of " + first + " and " + second + " not possible because the merged group size exceeds " + first._maxValue);
+      return null;
+    }
+    List<Coord> cells = new ArrayList<>();
+    cells.addAll(first.getCells());
+    cells.addAll(second.getCells());
+    return new UniqueSum(first._sum + second._sum, first._maxValue, cells);
+  }
+
   @Override
   public boolean isSatisfied(Grid<Integer> cellGrid) {
     int sum = 0;
