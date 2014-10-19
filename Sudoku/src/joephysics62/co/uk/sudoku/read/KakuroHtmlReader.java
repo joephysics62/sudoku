@@ -38,35 +38,35 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
     final int[][] downs = new int[_layout.getWidth() + 1][_layout.getHeight() + 1];
 
     final Grid<InputCell> table = tableParser.parseTable(input);
-    for (Coord coord : table) {
-      final InputCell inputCell = table.get(coord);
+    for (Coord inputCoord : table) {
+      final InputCell inputCell = table.get(inputCoord);
       final Set<String> classValues = inputCell.getClasses();
       final Map<String, String> complexCellInput = inputCell.getComplexValue();
       final String textValue = inputCell.getTextValue();
       if (!complexCellInput.isEmpty()) {
-        LOG.debug(String.format("At html table (%s) found cell with classes %s and complex content %s", coord, classValues, complexCellInput));
-        boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, coord);
+        LOG.debug(String.format("At html table (%s) found cell with classes %s and complex content %s", inputCoord, classValues, complexCellInput));
+        boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, inputCoord);
         if (!isNonValue) {
           throw new RuntimeException();
         }
         String acrossValue = complexCellInput.get("across");
-        acrosses[coord.getRow() - 1][coord.getCol() - 1] = null == acrossValue ? - 1 : Integer.valueOf(acrossValue);
+        acrosses[inputCoord.getRow() - 1][inputCoord.getCol() - 1] = null == acrossValue ? - 1 : Integer.valueOf(acrossValue);
         String downValue = complexCellInput.get("down");
-        downs[coord.getCol() - 1][coord.getRow() - 1] = null == downValue ? -1 : Integer.valueOf(downValue);
+        downs[inputCoord.getCol() - 1][inputCoord.getRow() - 1] = null == downValue ? -1 : Integer.valueOf(downValue);
       }
       else {
         if (!textValue.isEmpty()) {
           throw new UnsupportedOperationException();
         }
-        LOG.debug(String.format("At html table (%s) found cell with classes %s and simple cell content '%s'", coord, classValues, textValue));
-        boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, coord);
+        LOG.debug(String.format("At html table (%s) found cell with classes %s and simple cell content '%s'", inputCoord, classValues, textValue));
+        boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, inputCoord);
         if (isNonValue) {
-          acrosses[coord.getRow() - 1][coord.getCol() - 1] = -1;
-          downs[coord.getCol() - 1][coord.getRow() - 1] = -1;
+          acrosses[inputCoord.getRow() - 1][inputCoord.getCol() - 1] = -1;
+          downs[inputCoord.getCol() - 1][inputCoord.getRow() - 1] = -1;
         }
         else {
           // TODO: this is just to initialise the givens. Shouldn't need to do this!
-          kakuroBuilder.addGiven(null, coord);
+          kakuroBuilder.addGiven(null, inputCoord);
         }
       }
     }
@@ -76,10 +76,10 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
     return kakuroBuilder.build();
   }
 
-  private boolean checkForNonValue(final ArrayBuilder kakuroBuilder, Set<String> classValues, final Coord coord) {
-    if (coord.getRow() > 0 && coord.getCol() > 0) {
+  private boolean checkForNonValue(final ArrayBuilder kakuroBuilder, Set<String> classValues, final Coord inputCoord) {
+    if (inputCoord.getRow() > 1 && inputCoord.getCol() > 1) {
       if (classValues.contains("noValue")) {
-        kakuroBuilder.addNonValueCell(coord);
+        kakuroBuilder.addNonValueCell(Coord.of(inputCoord.getRow() - 1, inputCoord.getCol() - 1));
         return true;
       }
       else {
