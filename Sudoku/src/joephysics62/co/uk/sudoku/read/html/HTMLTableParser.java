@@ -13,7 +13,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import joephysics62.co.uk.grid.Coord;
+import joephysics62.co.uk.grid.Grid;
 import joephysics62.co.uk.grid.GridLayout;
+import joephysics62.co.uk.grid.map.MapGrid;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -28,7 +31,56 @@ public class HTMLTableParser {
     _layout = layout;
   }
 
-  public void parseTable(final File input, final TableParserHandler handler) throws IOException {
+  public static class InputCell {
+    private final Set<String> _classes;
+    private final String _textValue;
+    private final Map<String, String> _complexValue;
+
+    public InputCell(final String textValue, final Map<String, String> complexValue, Set<String> classes) {
+      _textValue = textValue;
+      _complexValue = complexValue;
+      _classes = classes;
+    }
+
+    public Set<String> getClasses() {
+      return _classes;
+    }
+    public String getTextValue() {
+      return _textValue;
+    }
+    public Map<String, String> getComplexValue() {
+      return _complexValue;
+    }
+  }
+
+  public Grid<InputCell> parseTable(final File input) throws IOException {
+    Document asDom = getDomDoc(input);
+    NodeList rows = asDom.getElementsByTagName("tr");
+    if (rows.getLength() != _layout.getHeight()) {
+      throw new IOException("Expected '" + _layout.getHeight() + "' rows but got '" + rows.getLength() + "'");
+    }
+    Grid<InputCell> mapGrid = new MapGrid<>(_layout);
+    for (Coord coord : mapGrid) {
+      Element row = (Element) rows.item(coord.getRow() - 1);
+      NodeList cells = row.getElementsByTagName("td");
+      Element domCell = (Element) cells.item(coord.getCol() - 1);
+      NodeList childDivs = domCell.getElementsByTagName("div");
+      final String textValue;
+      Map<String, String> complexValue;
+      if (childDivs.getLength() == 0) {
+        textValue = domCell.getTextContent().trim();
+        complexValue = Collections.emptyMap();
+      }
+      else {
+        complexValue = readDivs(childDivs);
+        textValue = "";
+      }
+      mapGrid.set(new InputCell(textValue, complexValue, readClassValues(domCell)), coord);
+    }
+    return mapGrid;
+  }
+
+  private Document getDomDoc(final File input) throws IOException {
     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
     DocumentBuilder documentBuilder;
     try {
@@ -48,34 +100,7 @@ public class HTMLTableParser {
     catch (SAXException e) {
       throw new IOException(e);
     }
-    NodeList titles = asDom.getElementsByTagName("title");
-    if (titles.getLength() > 0) {
-      handler.title(((Element) titles.item(0)).getTextContent().trim());
-    }
-    NodeList rows = asDom.getElementsByTagName("tr");
-    if (rows.getLength() != _layout.getHeight()) {
-      throw new IOException("Expected '" + _layout.getHeight() + "' rows but got '" + rows.getLength() + "'");
-    }
-    for (int rowIndex = 0; rowIndex < rows.getLength(); rowIndex++) {
-      Element row = (Element) rows.item(rowIndex);
-      NodeList cells = row.getElementsByTagName("td");
-      if (cells.getLength() != _layout.getWidth()) {
-        throw new IOException();
-      }
-      for (int colIndex = 0; colIndex < cells.getLength(); colIndex++) {
-        Element cell = (Element) cells.item(colIndex);
-        Set<String> classValues = readClassValues(cell);
-        NodeList childDivs = cell.getElementsByTagName("div");
-        if (childDivs.getLength() == 0) {
-          final String cellInput = cell.getTextContent().trim();
-          handler.cell(cellInput, classValues, rowIndex, colIndex);
-        }
-        else {
-          Map<String, String> complexCellInput = readDivs(childDivs);
-          handler.cell(complexCellInput, classValues, rowIndex, colIndex);
-        }
-      }
-    }
+    return asDom;
   }
 
   private Map<String, String> readDivs(NodeList childDivs) throws IOException {
