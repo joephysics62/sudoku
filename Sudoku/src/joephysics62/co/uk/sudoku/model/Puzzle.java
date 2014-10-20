@@ -19,8 +19,6 @@ public interface Puzzle extends PuzzleGrid {
 
   boolean isUnsolveable();
 
-  int completeness();
-
   Puzzle deepCopy();
 
 }

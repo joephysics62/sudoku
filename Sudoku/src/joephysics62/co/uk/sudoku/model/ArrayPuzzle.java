@@ -119,15 +119,6 @@ public class ArrayPuzzle extends IntegerArrayGrid implements Puzzle {
     return false;
   }
 
-  @Override
-  public int completeness() {
-    int completeness = 0;
-    for(Coord coord : this) {
-      completeness += Integer.bitCount(get(coord));
-    }
-    return completeness;
-  }
-
   public void addCells(Grid<Integer> givenValues) {
     for (final Coord coord : givenValues) {
       final Integer value = givenValues.get(coord);
