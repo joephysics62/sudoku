@@ -68,21 +68,26 @@ public class ArrayBuilder implements Builder {
   }
 
   public List<Constraint> addRowUniquenessConstraints() {
-    return addGeometricConstraints(new IdProvider() {
-      @Override
-      public int getId(PuzzleLayout layout, Coord coord) {
-        return coord.getRow();
-      }
-    });
+    return addGeometricConstraints(this::getRowAsId);
+  }
+
+  private int getColAsId(PuzzleLayout layout, Coord coord) {
+    return coord.getCol();
+  }
+
+  private int getRowAsId(PuzzleLayout layout, Coord coord) {
+    return coord.getRow();
+  }
+
+  public int getSubtableId(PuzzleLayout layout, Coord coord) {
+    int subTableCol = 1 + (coord.getCol() - 1) / layout.getSubTableWidth();
+    int subTableRow = 1 + (coord.getRow() - 1) / layout.getSubTableHeight();
+    int subTableId = (subTableRow - 1) * (_layout.getWidth() / layout.getSubTableWidth()) + subTableCol;
+    return subTableId;
   }
 
   public List<Constraint> addColumnUniquenessConstraints() {
-    return addGeometricConstraints(new IdProvider() {
-      @Override
-      public int getId(PuzzleLayout layout, Coord coord) {
-        return coord.getCol();
-      }
-    });
+    return addGeometricConstraints(this::getColAsId);
   }
 
   private interface IdProvider {
@@ -90,15 +95,7 @@ public class ArrayBuilder implements Builder {
   }
 
   public List<Constraint> addSubTableUniquenessConstraints() {
-    return addGeometricConstraints(new IdProvider() {
-      @Override
-      public int getId(PuzzleLayout layout, Coord coord) {
-        int subTableCol = 1 + (coord.getCol() - 1) / layout.getSubTableWidth();
-        int subTableRow = 1 + (coord.getRow() - 1) / layout.getSubTableHeight();
-        int subTableId = (subTableRow - 1) * (_layout.getWidth() / layout.getSubTableWidth()) + subTableCol;
-        return subTableId;
-      }
-    });
+    return addGeometricConstraints(this::getSubtableId);
   }
 
   private List<Constraint> addGeometricConstraints(IdProvider idProvider) {
