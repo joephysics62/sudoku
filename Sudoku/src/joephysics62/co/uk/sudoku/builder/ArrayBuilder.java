@@ -68,60 +68,51 @@ public class ArrayBuilder implements Builder {
   }
 
   public List<Constraint> addRowUniquenessConstraints() {
-    final List<Constraint> addedConstraints = new ArrayList<>();
-
-    final Map<Integer, List<Coord>> rows = new LinkedHashMap<>();
-    for (Coord coord : new IntegerArrayGrid(_layout)) {
-      int rowNum = coord.getRow();
-      if (!rows.containsKey(rowNum)) {
-        rows.put(rowNum, new ArrayList<>());
+    return addGeometricConstraints(new IdProvider() {
+      @Override
+      public int getId(PuzzleLayout layout, Coord coord) {
+        return coord.getRow();
       }
-      rows.get(rowNum).add(coord);
-    }
-    for (List<Coord> row : rows.values()) {
-      addedConstraints.add(AllValuesUniqueness.of(row));
-    }
-    for (Constraint constraint : addedConstraints) {
-      addConstraint(constraint);
-    }
-    return Collections.unmodifiableList(addedConstraints);
+    });
   }
 
   public List<Constraint> addColumnUniquenessConstraints() {
-    final List<Constraint> addedConstraints = new ArrayList<>();
-    final Map<Integer, List<Coord>> cols = new LinkedHashMap<>();
-    for (Coord coord : new IntegerArrayGrid(_layout)) {
-      int colNum = coord.getCol();
-      if (!cols.containsKey(colNum)) {
-        cols.put(colNum, new ArrayList<>());
+    return addGeometricConstraints(new IdProvider() {
+      @Override
+      public int getId(PuzzleLayout layout, Coord coord) {
+        return coord.getCol();
       }
-      cols.get(colNum).add(coord);
-    }
-    for (List<Coord> col : cols.values()) {
-      addedConstraints.add(AllValuesUniqueness.of(col));
-    }
-    for (Constraint constraint : addedConstraints) {
-      addConstraint(constraint);
-    }
-    return Collections.unmodifiableList(addedConstraints);
+    });
+  }
+
+  private interface IdProvider {
+    int getId(PuzzleLayout layout, Coord coord);
   }
 
   public List<Constraint> addSubTableUniquenessConstraints() {
-    final List<Constraint> addedConstraints = new ArrayList<>();
-    int subTableHeight = _layout.getSubTableHeight();
-    int subTableWidth = _layout.getSubTableWidth();
-    final Map<Integer, List<Coord>> subtables = new LinkedHashMap<>();
-    for (Coord coord : new IntegerArrayGrid(_layout)) {
-      int subTableCol = 1 + (coord.getCol() - 1) / subTableWidth;
-      int subTableRow = 1 + (coord.getRow() - 1) / subTableHeight;
-      int subTableId = (subTableRow - 1) * (_layout.getWidth() / subTableWidth) + subTableCol;
-      if (!subtables.containsKey(subTableId)) {
-        subtables.put(subTableId, new ArrayList<>());
+    return addGeometricConstraints(new IdProvider() {
+      @Override
+      public int getId(PuzzleLayout layout, Coord coord) {
+        int subTableCol = 1 + (coord.getCol() - 1) / layout.getSubTableWidth();
+        int subTableRow = 1 + (coord.getRow() - 1) / layout.getSubTableHeight();
+        int subTableId = (subTableRow - 1) * (_layout.getWidth() / layout.getSubTableWidth()) + subTableCol;
+        return subTableId;
       }
-      subtables.get(subTableId).add(coord);
+    });
+  }
+
+  private List<Constraint> addGeometricConstraints(IdProvider idProvider) {
+    final List<Constraint> addedConstraints = new ArrayList<>();
+    final Map<Integer, List<Coord>> groupsById = new LinkedHashMap<>();
+    for (Coord coord : new IntegerArrayGrid(_layout)) {
+      final int groupId = idProvider.getId(_layout, coord);
+      if (!groupsById.containsKey(groupId)) {
+        groupsById.put(groupId, new ArrayList<>());
+      }
+      groupsById.get(groupId).add(coord);
     }
-    for (List<Coord> subtable : subtables.values()) {
-      addedConstraints.add(AllValuesUniqueness.of(subtable));
+    for (List<Coord> group : groupsById.values()) {
+      addedConstraints.add(AllValuesUniqueness.of(group));
     }
     for (Constraint constraint : addedConstraints) {
       addConstraint(constraint);
