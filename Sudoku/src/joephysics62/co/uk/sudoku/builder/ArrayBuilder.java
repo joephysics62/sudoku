@@ -2,14 +2,17 @@ package joephysics62.co.uk.sudoku.builder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.constraints.AllValuesUniqueness;
 import joephysics62.co.uk.constraints.Constraint;
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.grid.Grid;
+import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 import joephysics62.co.uk.grid.map.MapGrid;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
@@ -66,11 +69,16 @@ public class ArrayBuilder implements Builder {
 
   public List<Constraint> addRowUniquenessConstraints() {
     final List<Constraint> addedConstraints = new ArrayList<>();
-    for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
-      final List<Coord> row = new ArrayList<>();
-      for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
-        row.add(Coord.of(rowNum, colNum));
+
+    final Map<Integer, List<Coord>> rows = new LinkedHashMap<>();
+    for (Coord coord : new IntegerArrayGrid(_layout)) {
+      int rowNum = coord.getRow();
+      if (!rows.containsKey(rowNum)) {
+        rows.put(rowNum, new ArrayList<>());
       }
+      rows.get(rowNum).add(coord);
+    }
+    for (List<Coord> row : rows.values()) {
       addedConstraints.add(AllValuesUniqueness.of(row));
     }
     for (Constraint constraint : addedConstraints) {
@@ -81,12 +89,16 @@ public class ArrayBuilder implements Builder {
 
   public List<Constraint> addColumnUniquenessConstraints() {
     final List<Constraint> addedConstraints = new ArrayList<>();
-    for (int colNum = 1; colNum <= _layout.getWidth(); colNum++) {
-      final List<Coord> column = new ArrayList<>();
-      for (int rowNum = 1; rowNum <= _layout.getHeight(); rowNum++) {
-        column.add(Coord.of(rowNum, colNum));
+    final Map<Integer, List<Coord>> cols = new LinkedHashMap<>();
+    for (Coord coord : new IntegerArrayGrid(_layout)) {
+      int colNum = coord.getCol();
+      if (!cols.containsKey(colNum)) {
+        cols.put(colNum, new ArrayList<>());
       }
-      addedConstraints.add(AllValuesUniqueness.of(column));
+      cols.get(colNum).add(coord);
+    }
+    for (List<Coord> col : cols.values()) {
+      addedConstraints.add(AllValuesUniqueness.of(col));
     }
     for (Constraint constraint : addedConstraints) {
       addConstraint(constraint);
@@ -98,18 +110,18 @@ public class ArrayBuilder implements Builder {
     final List<Constraint> addedConstraints = new ArrayList<>();
     int subTableHeight = _layout.getSubTableHeight();
     int subTableWidth = _layout.getSubTableWidth();
-    for (int subTableRowNum = 1; subTableRowNum <= _layout.getHeight() / subTableHeight; subTableRowNum++) {
-      for (int subTableColNum = 1; subTableColNum <= _layout.getWidth() / subTableWidth; subTableColNum++) {
-        final Set<Coord> subTableCells = new LinkedHashSet<>();
-        for (int rowNumInSubTable = 1; rowNumInSubTable <= subTableHeight; rowNumInSubTable++) {
-          for (int colNumInSubTable = 1; colNumInSubTable <= subTableWidth; colNumInSubTable++) {
-            int row = (subTableRowNum - 1) * subTableHeight + rowNumInSubTable;
-            int col = (subTableColNum - 1) * subTableWidth + colNumInSubTable;
-            subTableCells.add(Coord.of(row, col));
-          }
-        }
-        addedConstraints.add(AllValuesUniqueness.of(subTableCells));
+    final Map<Integer, List<Coord>> subtables = new LinkedHashMap<>();
+    for (Coord coord : new IntegerArrayGrid(_layout)) {
+      int subTableCol = 1 + (coord.getCol() - 1) / subTableWidth;
+      int subTableRow = 1 + (coord.getRow() - 1) / subTableHeight;
+      int subTableId = (subTableRow - 1) * (_layout.getWidth() / subTableWidth) + subTableCol;
+      if (!subtables.containsKey(subTableId)) {
+        subtables.put(subTableId, new ArrayList<>());
       }
+      subtables.get(subTableId).add(coord);
+    }
+    for (List<Coord> subtable : subtables.values()) {
+      addedConstraints.add(AllValuesUniqueness.of(subtable));
     }
     for (Constraint constraint : addedConstraints) {
       addConstraint(constraint);
