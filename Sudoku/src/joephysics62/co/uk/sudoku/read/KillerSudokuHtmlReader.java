@@ -21,6 +21,9 @@ import joephysics62.co.uk.sudoku.read.html.HTMLTableParser.InputCell;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
 
   private final PuzzleLayout _layout;
@@ -37,7 +40,7 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
     final ArrayBuilder killerBuilder = new ArrayBuilder(_layout);
 
     final Map<String, Integer> sumByGroup = new LinkedHashMap<>();
-    final Map<String, List<Coord>> cellsByGroup = new LinkedHashMap<>();
+    final Multimap<String, Coord> cellsByGroup = ArrayListMultimap.create();
     Grid<InputCell> table = tableParser.parseTable(input);
     for (Coord coord : table) {
       InputCell inputCell = table.get(coord);
@@ -81,15 +84,12 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
     return killerBuilder.build();
   }
 
-  private String readGroupFromClasses(Set<String> classes, Map<String, List<Coord>> cellsByGroup, final Coord coord) {
+  private String readGroupFromClasses(Set<String> classes, Multimap<String, Coord> cellsByGroup, final Coord coord) {
     if (classes.size() != 1) {
       throw new RuntimeException("Bad input, more than more class on killer sudoku cell.");
     }
     final String group = classes.iterator().next();
-    if (!cellsByGroup.containsKey(group)) {
-      cellsByGroup.put(group, new ArrayList<Coord>());
-    }
-    cellsByGroup.get(group).add(coord);
+    cellsByGroup.put(group, coord);
     return group;
   }
 
@@ -119,7 +119,7 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
     return out;
   }
 
-  private List<UniqueSum> buildUniqueSumConstraints(final Map<String, Integer> sumByGroup, final Map<String, List<Coord>> cellsByGroup) {
+  private List<UniqueSum> buildUniqueSumConstraints(final Map<String, Integer> sumByGroup, final Multimap<String, Coord> cellsByGroup) {
     final List<UniqueSum> uniqueSumConstraints = new ArrayList<>();
     for (Entry<String, Integer> entry : sumByGroup.entrySet()) {
       String groupId = entry.getKey();

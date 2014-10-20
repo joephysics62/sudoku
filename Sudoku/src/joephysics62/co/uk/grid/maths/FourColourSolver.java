@@ -2,34 +2,32 @@ package joephysics62.co.uk.grid.maths;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
+
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
 
 
 public class FourColourSolver {
   private Map<Integer, Colour> _solution;
 
   public final Map<Integer, Colour> calculateColourMap(final IntegerArrayGrid groupIds) {
-    final Map<Integer, Set<Coord>> cellsByGroup = new LinkedHashMap<>();
+    final Multimap<Integer, Coord> cellsByGroup = LinkedHashMultimap.create();
     final Map<Coord, Integer> groupByCoord = new LinkedHashMap<>();
     for (final Coord coord : groupIds) {
       final int id = groupIds.get(coord);
-      if (!cellsByGroup.containsKey(id)) {
-        cellsByGroup.put(id, new LinkedHashSet<Coord>());
-      }
-      cellsByGroup.get(id).add(coord);
+      cellsByGroup.put(id, coord);
       groupByCoord.put(coord, id);
     }
     recurse(new LinkedHashMap<Integer, Colour>(), cellsByGroup, groupByCoord);
     return _solution;
   }
 
-  private void recurse(final Map<Integer, Colour> currentMap, final Map<Integer, Set<Coord>> cellsByGroup, final Map<Coord, Integer> groupByCoord) {
+  private void recurse(final Map<Integer, Colour> currentMap, final Multimap<Integer, Coord> cellsByGroup, final Map<Coord, Integer> groupByCoord) {
     if (_solution != null) {
       return;
     }

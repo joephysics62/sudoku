@@ -1,11 +1,10 @@
 package joephysics62.co.uk.sudoku.builder;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import joephysics62.co.uk.constraints.AllValuesUniqueness;
@@ -16,6 +15,9 @@ import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
 import joephysics62.co.uk.grid.map.MapGrid;
 import joephysics62.co.uk.sudoku.model.ArrayPuzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
 public class ArrayBuilder implements Builder {
 
@@ -71,6 +73,18 @@ public class ArrayBuilder implements Builder {
     return addGeometricConstraints(this::getRowAsId);
   }
 
+  public List<Constraint> addColumnUniquenessConstraints() {
+    return addGeometricConstraints(this::getColAsId);
+  }
+
+  public List<Constraint> addSubTableUniquenessConstraints() {
+    return addGeometricConstraints(this::getSubtableId);
+  }
+
+  private interface IdProvider {
+    int getId(PuzzleLayout layout, Coord coord);
+  }
+
   private int getColAsId(PuzzleLayout layout, Coord coord) {
     return coord.getCol();
   }
@@ -86,29 +100,13 @@ public class ArrayBuilder implements Builder {
     return subTableId;
   }
 
-  public List<Constraint> addColumnUniquenessConstraints() {
-    return addGeometricConstraints(this::getColAsId);
-  }
-
-  private interface IdProvider {
-    int getId(PuzzleLayout layout, Coord coord);
-  }
-
-  public List<Constraint> addSubTableUniquenessConstraints() {
-    return addGeometricConstraints(this::getSubtableId);
-  }
-
   private List<Constraint> addGeometricConstraints(IdProvider idProvider) {
     final List<Constraint> addedConstraints = new ArrayList<>();
-    final Map<Integer, List<Coord>> groupsById = new LinkedHashMap<>();
+    final Multimap<Integer, Coord> groupsById = ArrayListMultimap.create();
     for (Coord coord : new IntegerArrayGrid(_layout)) {
-      final int groupId = idProvider.getId(_layout, coord);
-      if (!groupsById.containsKey(groupId)) {
-        groupsById.put(groupId, new ArrayList<>());
-      }
-      groupsById.get(groupId).add(coord);
+      groupsById.put(idProvider.getId(_layout, coord), coord);
     }
-    for (List<Coord> group : groupsById.values()) {
+    for (Collection<Coord> group : groupsById.asMap().values()) {
       addedConstraints.add(AllValuesUniqueness.of(group));
     }
     for (Constraint constraint : addedConstraints) {

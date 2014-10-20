@@ -4,7 +4,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +18,9 @@ import joephysics62.co.uk.grid.maths.FourColourSolver;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
 public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
 
   private static final String TEMPLATE_FTL = "killerSudokuTemplate.ftl";
@@ -32,7 +34,7 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
   @Override
   protected void addPuzzleSpecificParams(Map<String, Object> root, final Puzzle puzzle) {
     IntegerArrayGrid groupIds = calculateGroupsIdsGrid(puzzle);
-    Map<Colour, List<Integer>> colourToGroups = calculateColourToGroups(groupIds);
+    Multimap<Colour, Integer> colourToGroups = calculateColourToGroups(groupIds);
     for (Colour colour : Colour.values()) {
       root.put(colour + "Groups", colourToGroups.containsKey(colour) ? colourToGroups.get(colour) : Collections.emptyList());
     }
@@ -40,15 +42,12 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
     root.put("subTableWidth", puzzle.getLayout().getSubTableWidth());
   }
 
-  private Map<Colour, List<Integer>> calculateColourToGroups(IntegerArrayGrid groupIds) {
-    Map<Colour, List<Integer>> reverseMap = new LinkedHashMap<>();
+  private Multimap<Colour, Integer> calculateColourToGroups(IntegerArrayGrid groupIds) {
+    final Multimap<Colour, Integer> reverseMap = ArrayListMultimap.create();
     for (Entry<Integer, Colour> entry : _fcs.calculateColourMap(groupIds).entrySet()) {
       Integer groupId = entry.getKey();
       Colour colour = entry.getValue();
-      if (!reverseMap.containsKey(colour)) {
-        reverseMap.put(colour, new ArrayList<Integer>());
-      }
-      reverseMap.get(colour).add(groupId);
+      reverseMap.put(colour, groupId);
     }
     return reverseMap;
   }

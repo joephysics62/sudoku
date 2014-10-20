@@ -1,6 +1,7 @@
 package joephysics62.co.uk.constraints;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import joephysics62.co.uk.grid.Coord;
@@ -83,7 +84,7 @@ public class UniqueSum extends Uniqueness {
     return _maxValue * n - (n * (n - 1)) / 2;
   }
 
-  public static UniqueSum of(final int originalSum, final int maxValue, List<Coord> cells) {
+  public static UniqueSum of(final int originalSum, final int maxValue, Collection<Coord> cells) {
     return new UniqueSum(originalSum, maxValue, new ArrayList<Coord>(cells));
   }
 
