@@ -21,9 +21,6 @@ public class FutoshikiHtmlReader extends HtmlPuzzleReader {
     return new GridLayout(2 * _layout.getHeight() - 1, 2 * _layout.getWidth() - 1);
   }
   @Override protected PuzzleLayout getPuzzleLayout() { return _layout; }
-  @Override protected boolean hasColumnUniqueness() { return true; }
-  @Override protected boolean hasRowUniqueness() { return true; }
-  @Override protected boolean hasSubtableUniqueness() { return false; }
 
   @Override
   protected void handleInputCell(InputCell inputCell, Coord coord, final ArrayBuilder builder) {

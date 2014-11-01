@@ -17,9 +17,6 @@ public class SudokuHtmlReader extends HtmlPuzzleReader {
 
   @Override protected GridLayout getInputTableLayout() { return _layout; }
   @Override protected PuzzleLayout getPuzzleLayout() { return _layout; }
-  @Override protected boolean hasColumnUniqueness() { return true; }
-  @Override protected boolean hasRowUniqueness() { return true; }
-  @Override protected boolean hasSubtableUniqueness() { return true; }
 
   @Override
   protected void handleInputCell(InputCell inputCell, final Coord coord, final ArrayBuilder puzzleBuilder) {

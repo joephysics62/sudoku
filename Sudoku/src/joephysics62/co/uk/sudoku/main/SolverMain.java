@@ -3,8 +3,9 @@ package joephysics62.co.uk.sudoku.main;
 import java.io.File;
 import java.io.IOException;
 
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.sudoku.model.GridUniqueness;
 import joephysics62.co.uk.sudoku.model.Puzzle;
+import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.FutoshikiHtmlReader;
 import joephysics62.co.uk.sudoku.read.KakuroHtmlReader;
 import joephysics62.co.uk.sudoku.read.KillerSudokuHtmlReader;
@@ -32,7 +33,7 @@ public class SolverMain {
       return new SudokuHtmlReader(PuzzleLayout.SUPER_SUDOKU);
     }
     else if (type.equals("kakuro")) {
-      return new KakuroHtmlReader(new PuzzleLayout(10, 10, 0, 0, 9)); // TODO this obviously isn't generic enough.
+      return new KakuroHtmlReader(new PuzzleLayout(10, 10, 0, 0, 9, GridUniqueness.CUSTOM)); // TODO this obviously isn't generic enough.
     }
     else if (type.equals("killer")) {
       return new KillerSudokuHtmlReader(PuzzleLayout.CLASSIC_SUDOKU);

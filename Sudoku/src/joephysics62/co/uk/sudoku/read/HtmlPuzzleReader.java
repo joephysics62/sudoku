@@ -7,6 +7,7 @@ import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.grid.Grid;
 import joephysics62.co.uk.grid.GridLayout;
 import joephysics62.co.uk.sudoku.builder.ArrayBuilder;
+import joephysics62.co.uk.sudoku.model.GridUniqueness;
 import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.sudoku.read.html.HTMLTableParser;
@@ -23,23 +24,21 @@ public abstract class HtmlPuzzleReader implements PuzzleReader {
       InputCell inputCell = table.get(coord);
       handleInputCell(inputCell, coord, puzzleBuilder);
     }
-    if (hasColumnUniqueness()) {
+    if (getPuzzleLayout().getGridUniqueness() == GridUniqueness.ROWS_COLUMNS) {
+      puzzleBuilder.addRowUniquenessConstraints();
       puzzleBuilder.addColumnUniquenessConstraints();
     }
-    if (hasRowUniqueness()) {
+    else if (getPuzzleLayout().getGridUniqueness() == GridUniqueness.ROWS_COLUMNS_SUBTABLES) {
       puzzleBuilder.addRowUniquenessConstraints();
-    }
-    if (hasSubtableUniqueness()) {
+      puzzleBuilder.addColumnUniquenessConstraints();
       puzzleBuilder.addSubTableUniquenessConstraints();
     }
+
     return puzzleBuilder.build();
   }
 
   protected abstract void handleInputCell(InputCell inputCell, Coord coord, ArrayBuilder puzzleBuilder);
   protected abstract PuzzleLayout getPuzzleLayout();
   protected abstract GridLayout getInputTableLayout();
-  protected abstract boolean hasColumnUniqueness();
-  protected abstract boolean hasRowUniqueness();
-  protected abstract boolean hasSubtableUniqueness();
 
 }
