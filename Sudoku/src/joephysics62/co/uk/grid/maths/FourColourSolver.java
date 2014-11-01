@@ -64,12 +64,7 @@ public class FourColourSolver {
           return false;
         }
       }
-      final List<Coord> neighbours = Arrays.asList(
-          Coord.of(coord.getRow() - 1, coord.getCol()),
-          Coord.of(coord.getRow() + 1, coord.getCol()),
-          Coord.of(coord.getRow(), coord.getCol() - 1),
-          Coord.of(coord.getRow(), coord.getCol() + 1)
-      );
+      final List<Coord> neighbours = Arrays.asList(coord.left(), coord.right(), coord.up(), coord.down());
       for (final Coord neighbour : neighbours) {
         if (groupByCoord.keySet().contains(neighbour)) {
           if (!groupByCoord.get(neighbour).equals(groupId) && thisColour == candidate.get(groupByCoord.get(neighbour))) {

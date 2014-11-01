@@ -8,7 +8,7 @@ import joephysics62.co.uk.sudoku.model.Puzzle;
 import joephysics62.co.uk.sudoku.read.FutoshikiHtmlReader;
 import joephysics62.co.uk.sudoku.read.KakuroHtmlReader;
 import joephysics62.co.uk.sudoku.read.KillerSudokuHtmlReader;
-import joephysics62.co.uk.sudoku.read.PuzzleHtmlReader;
+import joephysics62.co.uk.sudoku.read.PuzzleReader;
 import joephysics62.co.uk.sudoku.read.SudokuHtmlReader;
 import joephysics62.co.uk.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.sudoku.solver.SolutionResult;
@@ -18,7 +18,7 @@ import joephysics62.co.uk.sudoku.write.PuzzleTextWriter;
 
 public class SolverMain {
 
-  private static PuzzleHtmlReader readerForType(final String type) {
+  private static PuzzleReader readerForType(final String type) {
     if (type.equals("timesMini")) {
       return new SudokuHtmlReader(PuzzleLayout.TIMES_MINI);
     }

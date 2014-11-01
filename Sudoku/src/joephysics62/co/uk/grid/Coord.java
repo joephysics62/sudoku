@@ -18,12 +18,13 @@ public class Coord {
     return String.format("Coord(Row=%s,Col=%s)", _row, _col);
   }
 
-  public int getRow() {
-    return _row;
-  }
-  public int getCol() {
-    return _col;
-  }
+  public int getRow() { return _row; }
+  public int getCol() { return _col; }
+
+  public Coord left() { return Coord.of(_row, _col - 1); }
+  public Coord right() { return Coord.of(_row, _col + 1); }
+  public Coord up() { return Coord.of(_row - 1, _col); }
+  public Coord down() { return Coord.of(_row + 1, _col); }
 
   @Override
   public int hashCode() {

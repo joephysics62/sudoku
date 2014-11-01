@@ -19,7 +19,7 @@ import joephysics62.co.uk.sudoku.read.html.HTMLTableParser.InputCell;
 
 import org.apache.log4j.Logger;
 
-public class KakuroHtmlReader implements PuzzleHtmlReader {
+public class KakuroHtmlReader implements PuzzleReader {
 
   private static final Logger LOG = Logger.getLogger(KakuroHtmlReader.class);
 
@@ -40,40 +40,44 @@ public class KakuroHtmlReader implements PuzzleHtmlReader {
     final Grid<InputCell> table = tableParser.parseTable(input);
     for (Coord inputCoord : table) {
       final InputCell inputCell = table.get(inputCoord);
-      final Set<String> classValues = inputCell.getClasses();
-      final Map<String, String> complexCellInput = inputCell.getComplexValue();
-      final String textValue = inputCell.getTextValue();
-      if (!complexCellInput.isEmpty()) {
-        LOG.debug(String.format("At html table (%s) found cell with classes %s and complex content %s", inputCoord, classValues, complexCellInput));
-        boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, inputCoord);
-        if (!isNonValue) {
-          throw new RuntimeException();
-        }
-        String acrossValue = complexCellInput.get("across");
-        acrosses[inputCoord.getRow() - 1][inputCoord.getCol() - 1] = null == acrossValue ? - 1 : Integer.valueOf(acrossValue);
-        String downValue = complexCellInput.get("down");
-        downs[inputCoord.getCol() - 1][inputCoord.getRow() - 1] = null == downValue ? -1 : Integer.valueOf(downValue);
-      }
-      else {
-        if (!textValue.isEmpty()) {
-          throw new UnsupportedOperationException();
-        }
-        LOG.debug(String.format("At html table (%s) found cell with classes %s and simple cell content '%s'", inputCoord, classValues, textValue));
-        boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, inputCoord);
-        if (isNonValue) {
-          acrosses[inputCoord.getRow() - 1][inputCoord.getCol() - 1] = -1;
-          downs[inputCoord.getCol() - 1][inputCoord.getRow() - 1] = -1;
-        }
-        else {
-          // TODO: this is just to initialise the givens. Shouldn't need to do this!
-          kakuroBuilder.addGiven(null, inputCoord);
-        }
-      }
+      handleInputCell(kakuroBuilder, acrosses, downs, inputCoord, inputCell);
     }
     addConstraints(kakuroBuilder, acrosses, true);
     addConstraints(kakuroBuilder, downs, false);
     kakuroBuilder.addTitle("Kakuro");
     return kakuroBuilder.build();
+  }
+
+  private void handleInputCell(final ArrayBuilder kakuroBuilder, final int[][] acrosses, final int[][] downs, Coord inputCoord, final InputCell inputCell) {
+    final Set<String> classValues = inputCell.getClasses();
+    final Map<String, String> complexCellInput = inputCell.getComplexValue();
+    final String textValue = inputCell.getTextValue();
+    if (!complexCellInput.isEmpty()) {
+      LOG.debug(String.format("At html table (%s) found cell with classes %s and complex content %s", inputCoord, classValues, complexCellInput));
+      boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, inputCoord);
+      if (!isNonValue) {
+        throw new RuntimeException();
+      }
+      String acrossValue = complexCellInput.get("across");
+      acrosses[inputCoord.getRow() - 1][inputCoord.getCol() - 1] = null == acrossValue ? - 1 : Integer.valueOf(acrossValue);
+      String downValue = complexCellInput.get("down");
+      downs[inputCoord.getCol() - 1][inputCoord.getRow() - 1] = null == downValue ? -1 : Integer.valueOf(downValue);
+    }
+    else {
+      if (!textValue.isEmpty()) {
+        throw new UnsupportedOperationException();
+      }
+      LOG.debug(String.format("At html table (%s) found cell with classes %s and simple cell content '%s'", inputCoord, classValues, textValue));
+      boolean isNonValue = checkForNonValue(kakuroBuilder, classValues, inputCoord);
+      if (isNonValue) {
+        acrosses[inputCoord.getRow() - 1][inputCoord.getCol() - 1] = -1;
+        downs[inputCoord.getCol() - 1][inputCoord.getRow() - 1] = -1;
+      }
+      else {
+        // TODO: this is just to initialise the givens. Shouldn't need to do this!
+        kakuroBuilder.addGiven(null, inputCoord);
+      }
+    }
   }
 
   private boolean checkForNonValue(final ArrayBuilder kakuroBuilder, Set<String> classValues, final Coord inputCoord) {

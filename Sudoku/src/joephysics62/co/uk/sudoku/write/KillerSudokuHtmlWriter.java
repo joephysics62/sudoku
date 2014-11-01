@@ -104,7 +104,7 @@ public class KillerSudokuHtmlWriter extends PuzzleHtmlWriter {
       if (!cellsInUniqueSum.contains(coord)) {
         throw new RuntimeException();
       }
-      Coord cellToIndicateSum = topLeftCell(cellsInUniqueSum);
+      final Coord cellToIndicateSum = topLeftCell(cellsInUniqueSum);
       if (coord.equals(cellToIndicateSum)) {
         return uniqueSum.getSum();
       }

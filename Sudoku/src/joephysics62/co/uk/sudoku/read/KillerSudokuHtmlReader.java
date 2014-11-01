@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
-public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
+public class KillerSudokuHtmlReader implements PuzzleReader {
 
   private final PuzzleLayout _layout;
 
@@ -44,26 +44,7 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
     Grid<InputCell> table = tableParser.parseTable(input);
     for (Coord coord : table) {
       InputCell inputCell = table.get(coord);
-      final Set<String> classes = inputCell.getClasses();
-      Map<String, String> complexCellInput = inputCell.getComplexValue();
-      if (!complexCellInput.isEmpty()) {
-        // TODO: this is just to initialise the givens. Shouldn't need to do this!
-        killerBuilder.addGiven(null, coord);
-
-        final String group = readGroupFromClasses(classes, cellsByGroup, coord);
-        if (complexCellInput.size() != 1) {
-          throw new RuntimeException("Expect at most one div value in killer sudoku input.");
-        }
-        final int sumValue = Integer.valueOf(complexCellInput.entrySet().iterator().next().getValue());
-        if (null != sumByGroup.put(group, sumValue)) {
-          throw new RuntimeException("Bad input, more than sum for the same group class");
-        }
-      }
-      else {
-        // TODO: this is just to initialise the givens. Shouldn't need to do this!
-        killerBuilder.addGiven(null, coord);
-        readGroupFromClasses(classes, cellsByGroup, coord);
-      }
+      handleInputCell(killerBuilder, sumByGroup, cellsByGroup, coord, inputCell);
     }
     if (!sumByGroup.keySet().equals(cellsByGroup.keySet())) {
       throw new RuntimeException("Sum keyset = " + sumByGroup.keySet() + " but group keyset = " + cellsByGroup.keySet());
@@ -82,6 +63,29 @@ public class KillerSudokuHtmlReader implements PuzzleHtmlReader {
       killerBuilder.addConstraint(constraint);
     }
     return killerBuilder.build();
+  }
+
+  private void handleInputCell(final ArrayBuilder killerBuilder, final Map<String, Integer> sumByGroup, final Multimap<String, Coord> cellsByGroup, Coord coord, InputCell inputCell) {
+    final Set<String> classes = inputCell.getClasses();
+    Map<String, String> complexCellInput = inputCell.getComplexValue();
+    if (!complexCellInput.isEmpty()) {
+      // TODO: this is just to initialise the givens. Shouldn't need to do this!
+      killerBuilder.addGiven(null, coord);
+
+      final String group = readGroupFromClasses(classes, cellsByGroup, coord);
+      if (complexCellInput.size() != 1) {
+        throw new RuntimeException("Expect at most one div value in killer sudoku input.");
+      }
+      final int sumValue = Integer.valueOf(complexCellInput.entrySet().iterator().next().getValue());
+      if (null != sumByGroup.put(group, sumValue)) {
+        throw new RuntimeException("Bad input, more than sum for the same group class");
+      }
+    }
+    else {
+      // TODO: this is just to initialise the givens. Shouldn't need to do this!
+      killerBuilder.addGiven(null, coord);
+      readGroupFromClasses(classes, cellsByGroup, coord);
+    }
   }
 
   private String readGroupFromClasses(Set<String> classes, Multimap<String, Coord> cellsByGroup, final Coord coord) {
