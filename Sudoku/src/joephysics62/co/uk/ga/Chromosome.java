@@ -26,8 +26,7 @@ public class Chromosome {
 		return String.format("C(%s), F=%s", _genes, fitness());
 	}
 
-	public Chromosome cross(final Chromosome right) {
-		Random r = new Random();
+	public Chromosome cross(final Chromosome right, Random r) {
 		int cut = r.nextInt(_genes.size() - 1) + 1;
 		List<Integer> crossed = new ArrayList<>();
 		crossed.addAll(_genes.subList(0, cut));

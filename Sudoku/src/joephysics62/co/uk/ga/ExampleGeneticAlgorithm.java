@@ -70,7 +70,7 @@ private static List<Chromosome> crossover(final List<Chromosome> newPopulation) 
     		Integer rightIndex = crossovers.get(rightCrossoverIndex);
     		System.out.println(String.format("Crossing C%s with C%s", leftIndex, rightIndex));
 			Chromosome right = newPopulation.get(rightIndex);
-    		Chromosome crossed = left.cross(right);
+    		Chromosome crossed = left.cross(right, _random);
     		crossedPopulation.add(crossed);
     	}
     	else {
