@@ -1,42 +1,41 @@
 package joephysics62.co.uk.ga;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 
 public class Chromosome {
-	private int a;
-	private int b;
-	private int c;
-	private int d;
+	private List<Integer> _genes;
 
-	public Chromosome(final int a, final int b, final int c, final int d) {
-		this.a = a;
-		this.b = b;
-		this.c = c;
-		this.d = d;
+	public Chromosome(final List<Integer> genes) {
+		_genes = genes;
 	}
 	
+	public Chromosome(Integer... genes) {
+		this(Arrays.asList(genes));
+	}
+
 	public double fitness() {
-		return 1.0 / (1.0 + Math.abs(a + 2 * b + 3 * c + 4 * d - 30));
+		return 1.0 / (1.0 + Math.abs(_genes.get(0) + 2 * _genes.get(1) + 3 * _genes.get(2) + 4 * _genes.get(3) - 30));
 	}
 	
 	@Override
 	public String toString() {
-		return String.format("Chromosome(%s, %s, %s, %s)", a, b, c, d);
+		return String.format("C(%s), F=%s", _genes, fitness());
 	}
 
 	public Chromosome cross(final Chromosome right) {
 		Random r = new Random();
-		int cut = r.nextInt(3) + 1;
-		if (cut == 1) {
-			return new Chromosome(a, right.b, right.c, right.d);
-		}
-		if (cut == 2) {
-			return new Chromosome(a, b, right.c, right.d);
-		}
-		if (cut == 3) {
-			return new Chromosome(a, b, c, right.d);
-		}
-		throw new RuntimeException();
+		int cut = r.nextInt(_genes.size() - 1) + 1;
+		List<Integer> crossed = new ArrayList<>();
+		crossed.addAll(_genes.subList(0, cut));
+		crossed.addAll(right._genes.subList(cut, right._genes.size()));
+		return new Chromosome(crossed);
+	}
+
+	public void mutate(int geneIndex, int newValue) {
+		_genes.set(geneIndex, newValue);
 	}
 }
