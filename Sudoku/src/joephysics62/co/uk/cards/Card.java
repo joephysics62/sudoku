@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class Card {
+
 	private final Rank _rank;
 	private final Suit _suit;
 	private Set<Integer> _values;
@@ -24,21 +25,29 @@ public class Card {
 
 	@Override
 	public String toString() {
-		return String.format("%s of %s", _rank, _suit);
+		return longName();
 	}
 	
+	public String longName() {
+		return _rank.longName() + " of " + _suit.longName();
+	}
+	
+	public String shortName() {
+		return _rank.shortName() + _suit.shortName();
+	}
+
 	public Set<Integer> values() {
 		return _values;
 	}
-	
+
 	public Rank getRank() {
 		return _rank;
 	}
-	
+
 	public Suit getSuit() {
 		return _suit;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
