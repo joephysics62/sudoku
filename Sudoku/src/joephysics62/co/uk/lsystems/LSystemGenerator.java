@@ -31,24 +31,25 @@ public class LSystemGenerator {
 	
 	@SuppressWarnings("serial")
 	public static void main(String[] args) {
+		final int iterations = 7;
 		LSystemGenerator lSystemGenerator = new LSystemGenerator();
-		final List<Character> generate = lSystemGenerator.generate(new PythagoreanTree(), 7);
-		System.out.println(generate.stream().map(String::valueOf).collect(Collectors.joining()));
+		final List<Character> generate = lSystemGenerator.generate(new PythagoreanTree(), iterations);
 		
 		JFrame frame = new JFrame();
 		
-		final double elementLength = 2.0;
+		final double elementLength = 300.0 / Math.pow(2.0, iterations);
 
+		double rotateAngle = Math.PI / 7;
 	    frame.add(new JComponent() {
 	    	@Override
 	    	public void paint(Graphics g) {
 	    	    Graphics2D g2d = (Graphics2D) g;
-	    	    g2d.setBackground(Color.WHITE);
+	    	    setBackground(Color.WHITE);
+	    	    g2d.setColor(Color.GREEN);
 	    	    Coord c = new Coord(0, 0);
 	    	    double angle = 0;
 	    	    Stack<Coord> coordStack = new Stack<Coord>();
 	    	    Stack<Double> angleStack = new Stack<Double>();
-	    	    double rotateAngle = Math.PI / 8;
 	    	    for (final Character character : generate) {
 					switch (character) {
 					case '1':
