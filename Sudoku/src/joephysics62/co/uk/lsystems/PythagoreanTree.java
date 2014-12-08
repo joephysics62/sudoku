@@ -6,49 +6,32 @@ import java.util.List;
 import java.util.Map;
 
 public class PythagoreanTree implements LSystem {
-	
-	private static class UnitForward implements TurtleMove {
-		private char _id;
-		private UnitForward(char id) { _id = id; }
-		@Override public int moveUnits() { return 1; }
-		@Override public double angleChange() { return 0; }
-		@Override public boolean doPush() { return false; }
-		@Override public boolean doPop() { return false; }
-		@Override public char id() { return _id; }
-	}
-	
-	private static final TurtleMove F0 = new UnitForward('0'); 
-	private static final TurtleMove F1 = new UnitForward('1');
-	private static final TurtleMove LB = new TurtleMove() {
-		@Override public int moveUnits() { return 0; }
-		@Override public char id() { return '['; }
-		@Override public boolean doPush() { return true; }
-		@Override public boolean doPop() { return false; }
-		@Override public double angleChange() { return Math.PI / 4; }
-	};
-	private static final TurtleMove RB = new TurtleMove() {
-		@Override public int moveUnits() { return 0; }
-		@Override public char id() { return '['; }
-		@Override public boolean doPush() { return false; }
-		@Override public boolean doPop() { return true; }
-		@Override public double angleChange() { return -Math.PI / 4; }
-	};
 
-	private static final Map<TurtleMove, List<TurtleMove>> MAP = new LinkedHashMap<>();
-	static {
-		MAP.put(F0, Arrays.asList(F1, LB, F0, RB, F0));
-		MAP.put(F1, Arrays.asList(F1, F1));
-	}
+	private final SimpleTurtleMove _pushTurnLeft;
+	private final SimpleTurtleMove _popTurnRight;
+	private final SimpleTurtleMove _stick;
+	private final SimpleTurtleMove _leaf;
+
+	private final Map<TurtleMove, List<TurtleMove>> _map = new LinkedHashMap<>();
 	
+	public PythagoreanTree(double angle) {
+		_pushTurnLeft = new SimpleTurtleMove('[', 0, StackChange.PUSH, angle);
+		_popTurnRight = new SimpleTurtleMove(']', 0, StackChange.POP, -angle);
+		_stick = new SimpleTurtleMove('0', 1, StackChange.NONE, 0);
+		_leaf = new SimpleTurtleMove('1', 1, StackChange.NONE, 0);
+		_map.put(_stick, Arrays.asList(_leaf, _pushTurnLeft, _stick, _popTurnRight, _stick));
+		_map.put(_leaf, Arrays.asList(_leaf, _leaf));
+	}
+
 	@Override
 	public List<TurtleMove> axiom() {
-		return Arrays.asList(F0);
+		return Arrays.asList(_stick);
 	}
 
 	@Override
 	public List<TurtleMove> applyRule(TurtleMove input) {
-		if (MAP.containsKey(input)) {
-			return MAP.get(input);
+		if (_map.containsKey(input)) {
+			return _map.get(input);
 		}
 		return Arrays.asList(input);
 	}

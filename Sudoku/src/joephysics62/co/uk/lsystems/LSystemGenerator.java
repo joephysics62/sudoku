@@ -33,7 +33,7 @@ public class LSystemGenerator {
 	public static void main(String[] args) throws IOException {
 		final int iterations = 9;
 		LSystemGenerator lSystemGenerator = new LSystemGenerator();
-		final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(), iterations);
+		final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(Math.PI / 7), iterations);
 		
 	    BufferedImage bi = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
 
@@ -58,14 +58,17 @@ public class LSystemGenerator {
 	    		drawSegment(g2d, c, next);
 	    		c = next;
 	    	}
-	    	if (move.doPush()) {
-	    		coordStack.push(c);
-	    		angleStack.push(angle);
-	    	}
-	    	else if (move.doPop()) {
-	    		c = coordStack.pop();
-	    		angle = angleStack.pop();
-	    	}
+	    	switch (move.stackChange()) {
+			case PUSH:
+				coordStack.push(c);
+				angleStack.push(angle);
+				break;
+			case POP:
+				c = coordStack.pop();
+				angle = angleStack.pop();
+			default:
+				break;
+			}
 	    	if (move.angleChange() != 0) {
 	    		angle += move.angleChange();
 	    	}
