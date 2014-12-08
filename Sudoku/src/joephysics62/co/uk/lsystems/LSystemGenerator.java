@@ -10,6 +10,8 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.FileImageOutputStream;
+import javax.imageio.stream.ImageOutputStream;
 
 public class LSystemGenerator {
 	List<TurtleMove> generate(LSystem lsystem, int limit) {
@@ -31,17 +33,23 @@ public class LSystemGenerator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		final int iterations = 9;
-		LSystemGenerator lSystemGenerator = new LSystemGenerator();
-		final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(Math.PI / 7), iterations);
-		
-	    BufferedImage bi = new BufferedImage(500, 500, BufferedImage.TYPE_INT_ARGB);
-
-	    Graphics2D g2d = bi.createGraphics();
-	    final double elementLength = 300.0 / Math.pow(2.0, iterations);
-		writeToGraphics(elementLength, turtleMoves, g2d);
-		
-		ImageIO.write(bi, "GIF", new File("out.gif"));
+	    try(final ImageOutputStream outputStream = new FileImageOutputStream(new File("out.gif"))) {
+			GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
+			
+			int divide = 480;
+			for (int i = 0; i < divide; i++) {
+				final int iterations = 9;
+				LSystemGenerator lSystemGenerator = new LSystemGenerator();
+				final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(2 * Math.PI * i / divide), iterations);
+			    BufferedImage bi = new BufferedImage(500, 500, BufferedImage.TYPE_INT_RGB);
+			    Graphics2D g2d = bi.createGraphics();
+			    final double elementLength = 300.0 / Math.pow(2.0, iterations);
+				writeToGraphics(elementLength, turtleMoves, g2d);
+				gifSequenceWriter.writeToSequence(bi);
+				//ImageIO.write(bi, "GIF", new File("temp/out" + i + ".gif"));
+			}
+			gifSequenceWriter.close();
+	    }
 	}
 
 	private static void writeToGraphics(final double elementLength, final List<TurtleMove> generate, Graphics2D g2d) {
