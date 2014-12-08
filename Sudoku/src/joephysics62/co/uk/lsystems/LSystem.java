@@ -4,10 +4,8 @@ import java.util.List;
 
 public interface LSystem {
 
-	public abstract List<Character> axiom();
+	List<TurtleMove> axiom();
 
-	public abstract List<Character> variables();
-
-	public abstract List<Character> applyRule(Character input);
+	List<TurtleMove> applyRule(TurtleMove input);
 
 }
