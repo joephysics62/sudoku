@@ -10,7 +10,7 @@ public class DragonCurve extends CharacterMapLSystem {
 	public DragonCurve() {
 		super(
 				Arrays.asList(
-						Turtle.forward('F'),
+						Turtle.draw('F'),
 						Turtle.left('-'),
 						Turtle.right('+'),
 						Turtle.identity('X'),

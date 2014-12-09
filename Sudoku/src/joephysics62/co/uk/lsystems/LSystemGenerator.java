@@ -59,7 +59,7 @@ public class LSystemGenerator {
 	}
 
 	private static BufferedImage createBufferedImage(final List<Turtle> turtleMoves,
-			final DoubleProvider lenghProvider, final DoubleProvider angleProvider) {
+		  final DoubleProvider lenghProvider, final DoubleProvider angleProvider) {
 		final BufferedImage bi = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g2d = bi.createGraphics();
 		writeToGraphics(turtleMoves, lenghProvider, angleProvider, g2d);
@@ -79,7 +79,9 @@ public class LSystemGenerator {
 				final double nextX = c._x + move.moveUnits() * elementLength * Math.sin(angle);
 				final double nextY = c._y + move.moveUnits() * elementLength * Math.cos(angle);
 				final Coord next = new Coord(nextX, nextY);
-				drawSegment(g2d, 350, 400, c, next);
+				if (move.draw()) {
+				  drawSegment(g2d, 350, 400, c, next);
+				}
 				c = next;
 			}
 			switch (move.stackChange()) {

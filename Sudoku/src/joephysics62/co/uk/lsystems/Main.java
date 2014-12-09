@@ -3,19 +3,18 @@ package joephysics62.co.uk.lsystems;
 import java.io.IOException;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.examples.PythagoreanTree;
+import joephysics62.co.uk.lsystems.examples.IslandsAndLakes;
 import joephysics62.co.uk.lsystems.turtle.DoubleProvider;
-import joephysics62.co.uk.lsystems.turtle.StochasticDoubleProvider;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class Main {
 	public static void main(final String[] args) throws IOException {
-		final int iterations = 7;
+		final int iterations = 2;
 		final LSystemGenerator lSystemGenerator = new LSystemGenerator();
-		final List<Turtle> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(), iterations);
+		final List<Turtle> turtleMoves = lSystemGenerator.generate(new IslandsAndLakes(), iterations);
 
-		final DoubleProvider angleProvider = new StochasticDoubleProvider(Math.PI / 7, 1.0);
-		final DoubleProvider lengthProvider = new StochasticDoubleProvider(350.0 / Math.pow(2.0, iterations), 4);
+		final DoubleProvider angleProvider = DoubleProvider.fixed(Math.PI / 2);
+		final DoubleProvider lengthProvider = DoubleProvider.fixed(35.0 / Math.pow(2.0, iterations));
 
 		//Pictures
 		LSystemGenerator.writeGif("C:\\Users\\joe\\Pictures\\outStatic.gif", turtleMoves, lengthProvider, angleProvider);

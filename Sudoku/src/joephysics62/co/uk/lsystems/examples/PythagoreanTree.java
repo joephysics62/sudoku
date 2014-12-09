@@ -15,10 +15,10 @@ public class PythagoreanTree extends CharacterMapLSystem {
 	private static final List<RewriteRule> REWRITE_RULES = Arrays.asList(RewriteRule.of('0', "1[0]0"), RewriteRule.of('1', "11"));
 
 	private static final List<Turtle> MOVES = Arrays.asList(
-			new SimpleTurtle('[', 0, StackChange.PUSH, TurtleTurn.LEFT),
-			new SimpleTurtle(']', 0, StackChange.POP, TurtleTurn.RIGHT),
-			Turtle.forward('0'),
-			Turtle.forward('1')
+			new SimpleTurtle('[', 0, false, StackChange.PUSH, TurtleTurn.LEFT),
+			new SimpleTurtle(']', 0, false, StackChange.POP, TurtleTurn.RIGHT),
+			Turtle.draw('0'),
+			Turtle.draw('1')
 			);
 
 	public PythagoreanTree() {

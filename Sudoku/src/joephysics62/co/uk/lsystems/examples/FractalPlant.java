@@ -12,7 +12,7 @@ public class FractalPlant extends CharacterMapLSystem {
 				Arrays.asList(
 						Turtle.push('['),
 						Turtle.pop(']'),
-						Turtle.forward('F'),
+						Turtle.draw('F'),
 						Turtle.left('-'),
 						Turtle.right('+'),
 						Turtle.identity('X')
