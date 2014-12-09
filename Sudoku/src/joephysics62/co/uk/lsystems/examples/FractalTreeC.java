@@ -1,17 +1,17 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import java.util.Arrays;
-
-import joephysics62.co.uk.lsystems.RewriteRule;
+import joephysics62.co.uk.lsystems.Rewrite;
+import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
+import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
 
 
 public class FractalTreeC extends CharacterMapLSystem {
 
   public FractalTreeC() {
     super(
-        Arrays.asList(Turtle.draw('F'), Turtle.left('-'), Turtle.right('+'), Turtle.push('['), Turtle.pop(']')),
-        Arrays.asList(RewriteRule.of('F', "FF-[-F+F+F]+[+F-F-F]")),
+        new TurtleMoves(Turtle.draw('F'), Turtle.left('-'), Turtle.right('+'), Turtle.push('['), Turtle.pop(']')),
+        new DeterministicRewriteSystem(Rewrite.of('F', "FF-[-F+F+F]+[+F-F-F]")),
         "F"
     );
   }

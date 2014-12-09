@@ -1,15 +1,15 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import java.util.Arrays;
-
-import joephysics62.co.uk.lsystems.RewriteRule;
+import joephysics62.co.uk.lsystems.Rewrite;
+import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
+import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
 
 public class FractalPlant extends CharacterMapLSystem {
 
 	public FractalPlant() {
 		super(
-				Arrays.asList(
+		    new TurtleMoves(
 						Turtle.push('['),
 						Turtle.pop(']'),
 						Turtle.draw('F'),
@@ -17,7 +17,7 @@ public class FractalPlant extends CharacterMapLSystem {
 						Turtle.right('+'),
 						Turtle.identity('X')
 						),
-						Arrays.asList(RewriteRule.of('F', "FF"), RewriteRule.of('X', "F-[[X]+X]+F[+FX]-X")),
+						new DeterministicRewriteSystem(Rewrite.of('F', "FF"), Rewrite.of('X', "F-[[X]+X]+F[+FX]-X")),
 						"X"
 				);
 

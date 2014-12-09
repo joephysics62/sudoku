@@ -1,16 +1,16 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import java.util.Arrays;
-
-import joephysics62.co.uk.lsystems.RewriteRule;
+import joephysics62.co.uk.lsystems.Rewrite;
+import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
+import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
 
 public class SierpinskiGasket extends CharacterMapLSystem {
 
   public SierpinskiGasket() {
     super(
-        Arrays.asList(Turtle.draw('f'), Turtle.draw('g'), Turtle.left('-'), Turtle.right('+')),
-        Arrays.asList(RewriteRule.of('g', "f+g+f"), RewriteRule.of('f', "g-f-g")),
+        new TurtleMoves(Turtle.draw('f'), Turtle.draw('g'), Turtle.left('-'), Turtle.right('+')),
+        new DeterministicRewriteSystem(Rewrite.of('g', "f+g+f"), Rewrite.of('f', "g-f-g")),
         "f"
     );
   }
