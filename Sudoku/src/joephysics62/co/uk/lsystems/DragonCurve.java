@@ -8,26 +8,25 @@ import java.util.stream.Collectors;
 
 import com.google.common.primitives.Chars;
 
-public class FractalPlant implements LSystem {
+public class DragonCurve implements LSystem {
 
 	private final Map<Character, String> _map = new LinkedHashMap<>();
 	private final Map<Character, TurtleMove> _moveKey = new LinkedHashMap<>();
 
-	public FractalPlant() {
-		_moveKey.put('[', new SimpleTurtleMove('[', 0, StackChange.PUSH, TurtleTurn.NONE));
-		_moveKey.put(']', new SimpleTurtleMove('[', 0, StackChange.POP, TurtleTurn.NONE));
+	public DragonCurve() {
 		_moveKey.put('F', new SimpleTurtleMove('F', 1, StackChange.NONE, TurtleTurn.NONE));
 		_moveKey.put('-', new SimpleTurtleMove('-', 0, StackChange.NONE, TurtleTurn.LEFT));
 		_moveKey.put('+', new SimpleTurtleMove('+', 0, StackChange.NONE, TurtleTurn.RIGHT));
 		_moveKey.put('X', new SimpleTurtleMove('X', 0, StackChange.NONE, TurtleTurn.NONE));
+		_moveKey.put('Y', new SimpleTurtleMove('Y', 0, StackChange.NONE, TurtleTurn.NONE));
 
-		_map.put('F', "FF");
-		_map.put('X', "F-[[X]+X]+F[+FX]-X");
+		_map.put('X', "X+YF");
+		_map.put('Y', "FX-Y");
 	}
 
 	@Override
 	public List<TurtleMove> axiom() {
-		return Arrays.asList(_moveKey.get('X'));
+		return Arrays.asList(_moveKey.get('F'), _moveKey.get('X'));
 	}
 
 	@Override

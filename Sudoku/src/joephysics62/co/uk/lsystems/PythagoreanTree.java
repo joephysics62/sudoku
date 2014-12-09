@@ -14,11 +14,11 @@ public class PythagoreanTree implements LSystem {
 
 	private final Map<TurtleMove, List<TurtleMove>> _map = new LinkedHashMap<>();
 	
-	public PythagoreanTree(double angle) {
-		_pushTurnLeft = new SimpleTurtleMove('[', 0, StackChange.PUSH, angle);
-		_popTurnRight = new SimpleTurtleMove(']', 0, StackChange.POP, -angle);
-		_stick = new SimpleTurtleMove('0', 1, StackChange.NONE, 0);
-		_leaf = new SimpleTurtleMove('1', 1, StackChange.NONE, 0);
+	public PythagoreanTree() {
+		_pushTurnLeft = new SimpleTurtleMove('[', 0, StackChange.PUSH, TurtleTurn.LEFT);
+		_popTurnRight = new SimpleTurtleMove(']', 0, StackChange.POP, TurtleTurn.RIGHT);
+		_stick = new SimpleTurtleMove('0', 1, StackChange.NONE, TurtleTurn.NONE);
+		_leaf = new SimpleTurtleMove('1', 1, StackChange.NONE, TurtleTurn.NONE);
 		_map.put(_stick, Arrays.asList(_leaf, _pushTurnLeft, _stick, _popTurnRight, _stick));
 		_map.put(_leaf, Arrays.asList(_leaf, _leaf));
 	}

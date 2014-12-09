@@ -4,13 +4,13 @@ class SimpleTurtleMove implements TurtleMove {
 	private char _id;
 	private int _moveUnits;
 	private StackChange _stackChange;
-	private double _angleChange;
+	private TurtleTurn _turn;
 
-	public SimpleTurtleMove(final char id, final int moveUnits, final StackChange stackChange, final double angleChange) {
+	public SimpleTurtleMove(final char id, final int moveUnits, final StackChange stackChange, final TurtleTurn turn) {
 		_id = id;
 		_moveUnits = moveUnits;
 		_stackChange = stackChange;
-		_angleChange = angleChange;
+		_turn = turn;
 	}
 
 	@Override
@@ -19,8 +19,8 @@ class SimpleTurtleMove implements TurtleMove {
 	}
 
 	@Override
-	public double angleChange() {
-		return _angleChange;
+	public TurtleTurn angleChange() {
+		return _turn;
 	}
 
 	@Override
