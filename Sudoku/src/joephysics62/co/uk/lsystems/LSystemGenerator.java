@@ -5,6 +5,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
@@ -19,7 +20,7 @@ import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class LSystemGenerator {
 
-	List<Turtle> generate(final LSystem lsystem, final int limit) {
+  List<Turtle> generate(final LSystem lsystem, final int limit) {
 		List<Turtle> current = lsystem.axiom();
 		for (int i = 0; i < limit; i++) {
 			current = current.stream().map(lsystem::applyRule).flatMap(l -> l.stream()).collect(Collectors.toList());
@@ -66,31 +67,85 @@ public class LSystemGenerator {
 		return bi;
 	}
 
-	private static void writeToGraphics(final List<Turtle> generate,
-			final DoubleProvider lengthProvider, final DoubleProvider angleProvider, final Graphics2D g2d) {
+	private static class Line {
+	  private final Coord _from;
+    private final Coord _to;
+
+    private Line(final Coord from, final Coord to) {
+      _from = from;
+      _to = to;
+	  }
+    public Coord getFrom() {
+      return _from;
+    }
+    public Coord getTo() {
+      return _to;
+    }
+	}
+
+	private static void writeToGraphics(final List<Turtle> turtle, final DoubleProvider lengthProvider, final DoubleProvider angleProvider, final Graphics2D g2d) {
+		final List<Line> toDraw = getLines(turtle, lengthProvider, angleProvider);
+		// needs to fit into 700, 700
+		final double xscale = maxX - minX;
+    final double yscale = maxY - minY;
+    final double scale = Math.max(xscale, yscale);
 		g2d.setColor(Color.GREEN);
-		Coord c = new Coord(0, 0);
+
+    System.out.println(String.format("%s, %s -> %s, %s", minX, maxX, minY, maxY));
+
+		for (final Line line : toDraw) {
+		  final int x1 = (int) (700 / scale * (-minX + line.getFrom()._x));
+		  final int y1 = (int) (700 / scale * (-minY + line.getFrom()._y));
+		  final int x2 = (int) (700 / scale * (-minX + line.getTo()._x));
+		  final int y2 = (int) (700 / scale * (-minY + line.getTo()._y));
+		  //System.out.println(String.format("%s, %s -> %s, %s", x1, y1, x2, y2));
+ 		  g2d.drawLine(x1, y1, x2, y2);
+    }
+	}
+
+	private static double minX = 0;
+	private static double maxX = 0;
+	private static double minY = 0;
+	private static double maxY = 0;
+
+  private static List<Line> getLines(final List<Turtle> generate,
+      final DoubleProvider lengthProvider, final DoubleProvider angleProvider) {
+    Coord current = new Coord(0, 0);
 		double angle = 0;
 		final Stack<Coord> coordStack = new Stack<Coord>();
 		final Stack<Double> angleStack = new Stack<Double>();
+		final List<Line> toDraw = new ArrayList<>();
 		for (final Turtle move : generate) {
 			if (move.moveUnits() != 0) {
 				final double elementLength = lengthProvider.nextDouble();
-				final double nextX = c._x + move.moveUnits() * elementLength * Math.sin(angle);
-				final double nextY = c._y + move.moveUnits() * elementLength * Math.cos(angle);
+				final double nextX = current._x + move.moveUnits() * elementLength * Math.sin(angle);
+				final double nextY = current._y + move.moveUnits() * elementLength * Math.cos(angle);
+
+				if (nextX > maxX) {
+				  maxX = nextX;
+				}
+				if (nextX < minX) {
+				  minX = nextX;
+				}
+				if (nextY > maxY) {
+				  maxY = nextY;
+				}
+				if (nextY < minY) {
+				  minY = nextY;
+				}
 				final Coord next = new Coord(nextX, nextY);
 				if (move.draw()) {
-				  drawSegment(g2d, 350, 400, c, next);
+				  toDraw.add(new Line(current, next));
 				}
-				c = next;
+				current = next;
 			}
 			switch (move.stackChange()) {
 			case PUSH:
-				coordStack.push(c);
+				coordStack.push(current);
 				angleStack.push(angle);
 				break;
 			case POP:
-				c = coordStack.pop();
+				current = coordStack.pop();
 				angle = angleStack.pop();
 				break;
 			default:
@@ -107,10 +162,7 @@ public class LSystemGenerator {
 				break;
 			}
 		}
-	}
-
-	private static void drawSegment(final Graphics2D g2d, final int startx, final int starty, final Coord from, final Coord to) {
-		g2d.drawLine(startx + (int) from._x, starty - (int) from._y, startx + (int) to._x, starty - (int) to._y);
-	}
+    return toDraw;
+  }
 
 }
