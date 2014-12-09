@@ -14,9 +14,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
-import joephysics62.co.uk.lsystems.examples.PythagoreanTree;
 import joephysics62.co.uk.lsystems.turtle.DoubleProvider;
-import joephysics62.co.uk.lsystems.turtle.StochasticDoubleProvider;
 import joephysics62.co.uk.lsystems.turtle.TurtleMove;
 
 public class LSystemGenerator {
@@ -39,25 +37,15 @@ public class LSystemGenerator {
 		}
 	}
 
-	public static void main(final String[] args) throws IOException {
-		final int iterations = 7;
-		final LSystemGenerator lSystemGenerator = new LSystemGenerator();
-		final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(), iterations);
 
-		final DoubleProvider angleProvider = new StochasticDoubleProvider(Math.PI / 7, 1.0);
-		final DoubleProvider lengthProvider = new StochasticDoubleProvider(350.0 / Math.pow(2.0, iterations), 4);
 
-		writeGif("outStatic.gif", turtleMoves, lengthProvider, angleProvider);
-		//angleAnimatedGif("out.gif", turtleMoves, 350.0 / Math.pow(2.0, iterations), 480);
-	}
-
-	private static void writeGif(final String fileName, final List<TurtleMove> turtleMoves,
+	public static void writeGif(final String fileName, final List<TurtleMove> turtleMoves,
 			final DoubleProvider lengthProvider, final DoubleProvider angleProvider) throws IOException {
 		final BufferedImage bi = createBufferedImage(turtleMoves, lengthProvider, angleProvider);
 		ImageIO.write(bi, "GIF", new File(fileName));
 	}
 
-	private static void angleAnimatedGif(final String fileName, final List<TurtleMove> turtleMoves, final DoubleProvider lengthProvider, final int frames) throws IOException {
+	public static void angleAnimatedGif(final String fileName, final List<TurtleMove> turtleMoves, final DoubleProvider lengthProvider, final int frames) throws IOException {
 		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
 			final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
 
