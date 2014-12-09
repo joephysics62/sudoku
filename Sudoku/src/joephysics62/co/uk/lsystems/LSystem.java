@@ -2,12 +2,12 @@ package joephysics62.co.uk.lsystems;
 
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.turtle.TurtleMove;
+import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public interface LSystem {
 
-	List<TurtleMove> axiom();
+	List<Turtle> axiom();
 
-	List<TurtleMove> applyRule(TurtleMove input);
+	List<Turtle> applyRule(Turtle input);
 
 }

@@ -15,12 +15,12 @@ import javax.imageio.stream.ImageOutputStream;
 
 import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
 import joephysics62.co.uk.lsystems.turtle.DoubleProvider;
-import joephysics62.co.uk.lsystems.turtle.TurtleMove;
+import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class LSystemGenerator {
 
-	List<TurtleMove> generate(final LSystem lsystem, final int limit) {
-		List<TurtleMove> current = lsystem.axiom();
+	List<Turtle> generate(final LSystem lsystem, final int limit) {
+		List<Turtle> current = lsystem.axiom();
 		for (int i = 0; i < limit; i++) {
 			current = current.stream().map(lsystem::applyRule).flatMap(l -> l.stream()).collect(Collectors.toList());
 		}
@@ -39,13 +39,13 @@ public class LSystemGenerator {
 
 
 
-	public static void writeGif(final String fileName, final List<TurtleMove> turtleMoves,
+	public static void writeGif(final String fileName, final List<Turtle> turtleMoves,
 			final DoubleProvider lengthProvider, final DoubleProvider angleProvider) throws IOException {
 		final BufferedImage bi = createBufferedImage(turtleMoves, lengthProvider, angleProvider);
 		ImageIO.write(bi, "GIF", new File(fileName));
 	}
 
-	public static void angleAnimatedGif(final String fileName, final List<TurtleMove> turtleMoves, final DoubleProvider lengthProvider, final int frames) throws IOException {
+	public static void angleAnimatedGif(final String fileName, final List<Turtle> turtleMoves, final DoubleProvider lengthProvider, final int frames) throws IOException {
 		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
 			final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
 
@@ -58,7 +58,7 @@ public class LSystemGenerator {
 		}
 	}
 
-	private static BufferedImage createBufferedImage(final List<TurtleMove> turtleMoves,
+	private static BufferedImage createBufferedImage(final List<Turtle> turtleMoves,
 			final DoubleProvider lenghProvider, final DoubleProvider angleProvider) {
 		final BufferedImage bi = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g2d = bi.createGraphics();
@@ -66,14 +66,14 @@ public class LSystemGenerator {
 		return bi;
 	}
 
-	private static void writeToGraphics(final List<TurtleMove> generate,
+	private static void writeToGraphics(final List<Turtle> generate,
 			final DoubleProvider lengthProvider, final DoubleProvider angleProvider, final Graphics2D g2d) {
 		g2d.setColor(Color.GREEN);
 		Coord c = new Coord(0, 0);
 		double angle = 0;
 		final Stack<Coord> coordStack = new Stack<Coord>();
 		final Stack<Double> angleStack = new Stack<Double>();
-		for (final TurtleMove move : generate) {
+		for (final Turtle move : generate) {
 			if (move.moveUnits() != 0) {
 				final double elementLength = lengthProvider.nextDouble();
 				final double nextX = c._x + move.moveUnits() * elementLength * Math.sin(angle);
