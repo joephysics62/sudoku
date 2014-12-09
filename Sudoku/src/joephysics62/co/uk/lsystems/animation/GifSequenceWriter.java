@@ -1,4 +1,4 @@
-package joephysics62.co.uk.lsystems;
+package joephysics62.co.uk.lsystems.animation;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;

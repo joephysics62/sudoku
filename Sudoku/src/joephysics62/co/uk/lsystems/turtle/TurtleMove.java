@@ -1,6 +1,7 @@
-package joephysics62.co.uk.lsystems;
+package joephysics62.co.uk.lsystems.turtle;
 
-interface TurtleMove {
+
+public interface TurtleMove {
 	int moveUnits();
 	TurtleTurn angleChange();
 	StackChange stackChange();

@@ -1,10 +1,11 @@
-package joephysics62.co.uk.lsystems;
+package joephysics62.co.uk.lsystems.turtle;
 
-class SimpleTurtleMove implements TurtleMove {
-	private char _id;
-	private int _moveUnits;
-	private StackChange _stackChange;
-	private TurtleTurn _turn;
+
+public class SimpleTurtleMove implements TurtleMove {
+	private final char _id;
+	private final int _moveUnits;
+	private final StackChange _stackChange;
+	private final TurtleTurn _turn;
 
 	public SimpleTurtleMove(final char id, final int moveUnits, final StackChange stackChange, final TurtleTurn turn) {
 		_id = id;

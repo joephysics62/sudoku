@@ -9,10 +9,16 @@ import java.util.List;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import javax.imageio.ImageIO;
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
+import joephysics62.co.uk.lsystems.examples.PythagoreanTree;
+import joephysics62.co.uk.lsystems.turtle.TurtleMove;
+
 public class LSystemGenerator {
+
 	List<TurtleMove> generate(final LSystem lsystem, final int limit) {
 		List<TurtleMove> current = lsystem.axiom();
 		for (int i = 0; i < limit; i++) {
@@ -36,24 +42,35 @@ public class LSystemGenerator {
 		final LSystemGenerator lSystemGenerator = new LSystemGenerator();
 		final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(), iterations);
 
-		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File("out.gif"))) {
+		angleAnimatedGif("out.gif", turtleMoves, 350.0 / Math.pow(2.0, iterations), 480);
+	}
+
+	private static void writeGif(final String fileName, final List<TurtleMove> turtleMoves, final double scale, final double angle) throws IOException {
+		final BufferedImage bi = createBufferedImage(turtleMoves, scale, angle);
+		ImageIO.write(bi, "GIF", new File(fileName));
+	}
+
+	private static void angleAnimatedGif(final String fileName, final List<TurtleMove> turtleMoves, final double scale, final int frames) throws IOException {
+		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
 			final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
 
-			final int divide = 480;
-			for (int i = 0; i < divide; i++) {
-				final BufferedImage bi = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
-				final Graphics2D g2d = bi.createGraphics();
-				final double elementLength = 350.0 / Math.pow(2.0, iterations);
-				final double angle = Math.PI * 2 * i / divide;
-				writeToGraphics(elementLength, angle, turtleMoves, g2d);
+			for (int i = 0; i < frames; i++) {
+				final double angle = Math.PI * 2 * i / frames;
+				final BufferedImage bi = createBufferedImage(turtleMoves, scale, angle);
 				gifSequenceWriter.writeToSequence(bi);
-				//ImageIO.write(bi, "GIF", new File("temp/out" + i + ".gif"));
 			}
 			gifSequenceWriter.close();
 		}
 	}
 
-	private static void writeToGraphics(final double elementLength, final double angleRadians, final List<TurtleMove> generate, final Graphics2D g2d) {
+	private static BufferedImage createBufferedImage(final List<TurtleMove> turtleMoves, final double scale, final double angle) {
+		final BufferedImage bi = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
+		final Graphics2D g2d = bi.createGraphics();
+		writeToGraphics(turtleMoves, scale, angle, g2d);
+		return bi;
+	}
+
+	private static void writeToGraphics(final List<TurtleMove> generate, final double elementLength, final double angleRadians, final Graphics2D g2d) {
 		g2d.setColor(Color.GREEN);
 		Coord c = new Coord(0, 0);
 		double angle = 0;
