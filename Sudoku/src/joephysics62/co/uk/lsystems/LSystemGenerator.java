@@ -93,9 +93,9 @@ public class LSystemGenerator {
 
 		for (final Line line : toDraw) {
 		  final int x1 = 25 + (int) (650 / scale * (-minX + line.getFrom()._x));
-		  final int y1 = 25 + (int) (650 / scale * (-minY + line.getFrom()._y));
+		  final int y1 = 25 + 650 - (int) (650 / scale * (-minY + line.getFrom()._y));
 		  final int x2 = 25 + (int) (650 / scale * (-minX + line.getTo()._x));
-		  final int y2 = 25 + (int) (650 / scale * (-minY + line.getTo()._y));
+		  final int y2 = 25 + 650 - (int) (650 / scale * (-minY + line.getTo()._y));
 		  //System.out.println(String.format("%s, %s -> %s, %s", x1, y1, x2, y2));
  		  g2d.drawLine(x1, y1, x2, y2);
     }
