@@ -91,13 +91,11 @@ public class LSystemGenerator {
     final double scale = Math.max(xscale, yscale);
 		g2d.setColor(Color.GREEN);
 
-    System.out.println(String.format("%s, %s -> %s, %s", minX, maxX, minY, maxY));
-
 		for (final Line line : toDraw) {
-		  final int x1 = (int) (700 / scale * (-minX + line.getFrom()._x));
-		  final int y1 = (int) (700 / scale * (-minY + line.getFrom()._y));
-		  final int x2 = (int) (700 / scale * (-minX + line.getTo()._x));
-		  final int y2 = (int) (700 / scale * (-minY + line.getTo()._y));
+		  final int x1 = 25 + (int) (650 / scale * (-minX + line.getFrom()._x));
+		  final int y1 = 25 + (int) (650 / scale * (-minY + line.getFrom()._y));
+		  final int x2 = 25 + (int) (650 / scale * (-minX + line.getTo()._x));
+		  final int y2 = 25 + (int) (650 / scale * (-minY + line.getTo()._y));
 		  //System.out.println(String.format("%s, %s -> %s, %s", x1, y1, x2, y2));
  		  g2d.drawLine(x1, y1, x2, y2);
     }

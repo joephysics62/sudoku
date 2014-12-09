@@ -3,15 +3,17 @@ package joephysics62.co.uk.lsystems;
 import java.io.IOException;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.examples.QuadraticSnowflake;
+import joephysics62.co.uk.lsystems.examples.GeneralKochCurve;
 import joephysics62.co.uk.lsystems.turtle.DoubleProvider;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class Main {
 	public static void main(final String[] args) throws IOException {
-		final int iterations = 4;
+		final int iterations = 5;
+		final LSystem lsystem = new GeneralKochCurve("F-FF--F-F");
+
 		final LSystemGenerator lSystemGenerator = new LSystemGenerator();
-		final List<Turtle> turtleMoves = lSystemGenerator.generate(new QuadraticSnowflake(), iterations);
+    final List<Turtle> turtleMoves = lSystemGenerator.generate(lsystem, iterations);
 
 		final DoubleProvider angleProvider = DoubleProvider.fixed(Math.PI / 2);
 		final DoubleProvider lengthProvider = DoubleProvider.fixed(1.0);
