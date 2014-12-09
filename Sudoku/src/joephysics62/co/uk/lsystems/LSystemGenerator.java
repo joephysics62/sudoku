@@ -15,6 +15,8 @@ import javax.imageio.stream.ImageOutputStream;
 
 import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
 import joephysics62.co.uk.lsystems.examples.PythagoreanTree;
+import joephysics62.co.uk.lsystems.turtle.DoubleProvider;
+import joephysics62.co.uk.lsystems.turtle.StochasticDoubleProvider;
 import joephysics62.co.uk.lsystems.turtle.TurtleMove;
 
 public class LSystemGenerator {
@@ -42,35 +44,42 @@ public class LSystemGenerator {
 		final LSystemGenerator lSystemGenerator = new LSystemGenerator();
 		final List<TurtleMove> turtleMoves = lSystemGenerator.generate(new PythagoreanTree(), iterations);
 
-		angleAnimatedGif("out.gif", turtleMoves, 350.0 / Math.pow(2.0, iterations), 480);
+		final DoubleProvider angleProvider = new StochasticDoubleProvider(Math.PI / 7, 1.0);
+		final DoubleProvider lengthProvider = new StochasticDoubleProvider(350.0 / Math.pow(2.0, iterations), 4);
+
+		writeGif("outStatic.gif", turtleMoves, lengthProvider, angleProvider);
+		//angleAnimatedGif("out.gif", turtleMoves, 350.0 / Math.pow(2.0, iterations), 480);
 	}
 
-	private static void writeGif(final String fileName, final List<TurtleMove> turtleMoves, final double scale, final double angle) throws IOException {
-		final BufferedImage bi = createBufferedImage(turtleMoves, scale, angle);
+	private static void writeGif(final String fileName, final List<TurtleMove> turtleMoves,
+			final DoubleProvider lengthProvider, final DoubleProvider angleProvider) throws IOException {
+		final BufferedImage bi = createBufferedImage(turtleMoves, lengthProvider, angleProvider);
 		ImageIO.write(bi, "GIF", new File(fileName));
 	}
 
-	private static void angleAnimatedGif(final String fileName, final List<TurtleMove> turtleMoves, final double scale, final int frames) throws IOException {
+	private static void angleAnimatedGif(final String fileName, final List<TurtleMove> turtleMoves, final DoubleProvider lengthProvider, final int frames) throws IOException {
 		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
 			final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
 
 			for (int i = 0; i < frames; i++) {
 				final double angle = Math.PI * 2 * i / frames;
-				final BufferedImage bi = createBufferedImage(turtleMoves, scale, angle);
+				final BufferedImage bi = createBufferedImage(turtleMoves, lengthProvider, () -> angle);
 				gifSequenceWriter.writeToSequence(bi);
 			}
 			gifSequenceWriter.close();
 		}
 	}
 
-	private static BufferedImage createBufferedImage(final List<TurtleMove> turtleMoves, final double scale, final double angle) {
+	private static BufferedImage createBufferedImage(final List<TurtleMove> turtleMoves,
+			final DoubleProvider lenghProvider, final DoubleProvider angleProvider) {
 		final BufferedImage bi = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g2d = bi.createGraphics();
-		writeToGraphics(turtleMoves, scale, angle, g2d);
+		writeToGraphics(turtleMoves, lenghProvider, angleProvider, g2d);
 		return bi;
 	}
 
-	private static void writeToGraphics(final List<TurtleMove> generate, final double elementLength, final double angleRadians, final Graphics2D g2d) {
+	private static void writeToGraphics(final List<TurtleMove> generate,
+			final DoubleProvider lengthProvider, final DoubleProvider angleProvider, final Graphics2D g2d) {
 		g2d.setColor(Color.GREEN);
 		Coord c = new Coord(0, 0);
 		double angle = 0;
@@ -78,6 +87,7 @@ public class LSystemGenerator {
 		final Stack<Double> angleStack = new Stack<Double>();
 		for (final TurtleMove move : generate) {
 			if (move.moveUnits() != 0) {
+				final double elementLength = lengthProvider.nextDouble();
 				final double nextX = c._x + move.moveUnits() * elementLength * Math.sin(angle);
 				final double nextY = c._y + move.moveUnits() * elementLength * Math.cos(angle);
 				final Coord next = new Coord(nextX, nextY);
@@ -98,10 +108,10 @@ public class LSystemGenerator {
 			}
 			switch (move.angleChange()) {
 			case LEFT:
-				angle += angleRadians;
+				angle += angleProvider.nextDouble();
 				break;
 			case RIGHT:
-				angle -= angleRadians;
+				angle -= angleProvider.nextDouble();
 				break;
 			default:
 				break;
