@@ -1,7 +1,5 @@
 package joephysics62.co.uk.lsystems;
 
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.IntStream;
 
 import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
@@ -13,19 +11,13 @@ public class StochasticRewriteSystem implements RewriteSystem {
   private final Rewrite[] _rewrites;
   private final EnumeratedIntegerDistribution _eid;
 
-  public StochasticRewriteSystem(final char from, final Map<String, Double> rules) {
+  public StochasticRewriteSystem(final char from, final double[] weights, final String[] rewrites) {
     _from = from;
-    final int size = rules.size();
-    final double[] weights = new double[size];
-    _rewrites = new Rewrite[size];
-
-    int i = 0;
-    for (final Entry<String, Double> entry : rules.entrySet()) {
-      weights[i] = entry.getValue();
-      _rewrites[i] = Rewrite.of(_from, entry.getKey());
-      i++;
+    _rewrites = new Rewrite[weights.length];
+    for (int i = 0; i < weights.length; i++) {
+      _rewrites[i] = Rewrite.of(from, rewrites[i]);
     }
-    _eid = new EnumeratedIntegerDistribution(IntStream.range(0, size).toArray(), weights);
+    _eid = new EnumeratedIntegerDistribution(IntStream.range(0, weights.length).toArray(), weights);
   }
 
   @Override
