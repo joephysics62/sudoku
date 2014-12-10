@@ -16,6 +16,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Sphere;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
@@ -38,7 +39,7 @@ public class LSystem3dWriter extends Application {
   @Override
   public void start(final Stage primaryStage) throws Exception {
     primaryStage.setResizable(false);
-    final Scene scene = new Scene(createContent(new BushExample3d(), 2));
+    final Scene scene = new Scene(createContent(new BushExample3d(), 7));
     primaryStage.setScene(scene);
     primaryStage.show();
   }
@@ -46,7 +47,7 @@ public class LSystem3dWriter extends Application {
   private Parent createContent(final LSystem lsystem, final int iterations) {
     // Create and position camera
     final PerspectiveCamera camera = new PerspectiveCamera(true);
-    camera.getTransforms().addAll(new Rotate(-110, Rotate.X_AXIS), new Rotate(25, Rotate.Y_AXIS), new Translate(0, 0, -15));
+    camera.getTransforms().addAll(new Rotate(-110, Rotate.X_AXIS), new Rotate(25, Rotate.Y_AXIS), new Translate(0, -1.5, -10));
 
     // Build the Scene Graph
     final Group root = new Group();
@@ -62,8 +63,8 @@ public class LSystem3dWriter extends Application {
   }
 
   private List<Node> buildLsystemNodes(final LSystem lsystem, final int iterations) {
-    final double cylinderLength = 1;
-    final double cylinderRadius = 0.05;
+    final double cylinderLength = 0.1;
+    final double cylinderRadius = 0.02;
     Point3D currentPoint = new Point3D(0, 0, 0);
     RealMatrix currentDirection = MatrixUtils.createRealIdentityMatrix(3);
 
@@ -110,14 +111,24 @@ public class LSystem3dWriter extends Application {
             currentPoint.getY() + change[1],
             currentPoint.getZ() + change[2]
         );
-        System.err.println(turtle.id() + ":" +  currentPoint + " -> " + nextPoint);
         if (turtle.draw()) {
           final Cylinder cylinder = new Cylinder(cylinderRadius, cylinderLength);
           cylinder.setMaterial(new PhongMaterial(Color.GREEN));
+          final Affine affine = new Affine(
+              currentDirection.getEntry(0, 0), currentDirection.getEntry(0, 2), currentDirection.getEntry(0, 1), 0.0,
+              currentDirection.getEntry(2, 0), currentDirection.getEntry(2, 2), currentDirection.getEntry(2, 1), 0.0,
+              currentDirection.getEntry(1, 0), currentDirection.getEntry(1, 2), currentDirection.getEntry(1, 1), 0.0
+          );
+          // 2d
+          // [a b]   x-> (1,0) ->  (a,c)  (0,1) -> (b,d)
+          // [c d]     [c]
           cylinder.getTransforms().addAll(
               new Translate(currentPoint.getX(), currentPoint.getY(), currentPoint.getZ() + 0.5 * cylinderLength),
               new Rotate(90, Rotate.X_AXIS));
           nodes.add(cylinder);
+          final Sphere sphere = new Sphere(cylinderRadius);
+          sphere.getTransforms().add(new Translate(currentPoint.getX(), currentPoint.getY(), currentPoint.getZ()));
+          nodes.add(sphere);
         }
         currentPoint = nextPoint;
       }
