@@ -43,12 +43,10 @@ public class LSystemGenerator {
 		}
 	}
 
-
-
-	public static void writeGif(final String fileName, final List<Turtle> turtleMoves, final Double angleDeg, final int imageSize) throws IOException {
-		final BufferedImage bi = createBufferedImage(turtleMoves, angleDeg, imageSize);
-		ImageIO.write(bi, "GIF", new File(fileName));
-	}
+  public void writeGif(final LSystem lsystem, final int iterations, final String fileName, final int imageSize) throws IOException {
+    final BufferedImage bi = createBufferedImage(generate(lsystem, iterations), lsystem.angleDegrees(), imageSize);
+    ImageIO.write(bi, "GIF", new File(fileName));
+  }
 
 	public static void angleAnimatedGif(final String fileName, final List<Turtle> turtleMoves, final int frames) throws IOException {
 		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
