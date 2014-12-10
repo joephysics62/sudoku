@@ -30,7 +30,7 @@ public class BushExample3d extends CharacterMapLSystem {
       Rewrite.of('S', "FL")
   );
   private static final String axiomString = "A";
-  private static final Double angleDegrees = 22.5;
+  private static final Double angleDegrees = 5.0;
 
   public BushExample3d() {
     super(moves, rewriteRules, axiomString, angleDegrees);
