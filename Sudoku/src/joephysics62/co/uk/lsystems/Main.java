@@ -3,7 +3,7 @@ package joephysics62.co.uk.lsystems;
 import java.io.IOException;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.examples.SierpinskiGasket;
+import joephysics62.co.uk.lsystems.examples.IslandsAndLakes;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class Main {
@@ -20,7 +20,7 @@ public class Main {
 //		    new StochasticRewriteSystem('F', weightedStochasticTo),
 //		    "F", 23.0) {
 //    };
-		final LSystem lsystem = new SierpinskiGasket();
+		final LSystem lsystem = new IslandsAndLakes();
 
 		final LSystemGenerator lSystemGenerator = new LSystemGenerator();
     final List<Turtle> turtleMoves = lSystemGenerator.generate(lsystem, iterations);
