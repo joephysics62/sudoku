@@ -46,7 +46,7 @@ public class LSystem3dWriter extends Application {
   private Parent createContent(final LSystem lsystem, final int iterations) {
     // Create and position camera
     final PerspectiveCamera camera = new PerspectiveCamera(true);
-    camera.getTransforms().addAll(new Rotate(-20, Rotate.Y_AXIS), new Rotate(-20, Rotate.X_AXIS), new Translate(0, 0, -15));
+    camera.getTransforms().addAll(new Rotate(-110, Rotate.X_AXIS), new Rotate(25, Rotate.Y_AXIS), new Translate(0, 0, -15));
 
     // Build the Scene Graph
     final Group root = new Group();
@@ -63,7 +63,7 @@ public class LSystem3dWriter extends Application {
 
   private List<Node> buildLsystemNodes(final LSystem lsystem, final int iterations) {
     final double cylinderLength = 1;
-    final double cylinderWidth = 0.02;
+    final double cylinderRadius = 0.05;
     Point3D currentPoint = new Point3D(0, 0, 0);
     RealMatrix currentDirection = MatrixUtils.createRealIdentityMatrix(3);
 
@@ -71,52 +71,53 @@ public class LSystem3dWriter extends Application {
     final double sinA = Math.sin(Math.toRadians(lsystem.angleDegrees()));
 
     final RealMatrix positiveYaw = MatrixUtils.createRealMatrix(new double[][] {
-            { cosA, sinA, 0},
-            {-sinA, cosA, 0},
-            {0, 0, 1}});
+            { cosA,    0, sinA},
+            {    0,    1, 0},
+            {-sinA,    0, cosA}});
     final RealMatrix negativeYaw = MatrixUtils.createRealMatrix(new double[][] {
-        {cosA, -sinA, 0},
-        {sinA,  cosA, 0},
-        {0, 0, 1}});
-    final RealMatrix positivePitch = MatrixUtils.createRealMatrix(new double[][] {
-        { cosA, 0, -sinA},
-        {    0, 1,     0},
-        { sinA, 0,  cosA}});
-    final RealMatrix negativePitch = MatrixUtils.createRealMatrix(new double[][] {
-        { cosA, 0,  sinA},
-        {    0, 1,     0},
-        {-sinA, 0,  cosA}});
+        { cosA,    0, -sinA},
+        {    0,    1, 0},
+        { sinA,    0, cosA}});
     final RealMatrix positiveRoll = MatrixUtils.createRealMatrix(new double[][] {
-        { 1, 0,        0},
-        { 0, cosA, -sinA},
-        { 0, sinA,  cosA}});
+        { cosA, -sinA, 0},
+        { sinA, cosA,  0},
+        {     0,    0, 1}});
     final RealMatrix negativeRoll = MatrixUtils.createRealMatrix(new double[][] {
+        { cosA,  sinA, 0},
+        {-sinA,  cosA,  0},
+        {     0,    0, 1}});
+    final RealMatrix positivePitch = MatrixUtils.createRealMatrix(new double[][] {
+        { 1,     0,    0},
+        { 0,  cosA, sinA},
+        { 0, -sinA, cosA}});
+    final RealMatrix negativePitch = MatrixUtils.createRealMatrix(new double[][] {
         { 1,     0,     0},
-        { 0,  cosA,  sinA},
-        { 0, -sinA,  cosA}});
+        { 0,  cosA, -sinA},
+        { 0,  sinA,  cosA}});
 
     final Stack<Point3D> coordStack = new Stack<>();
     final Stack<RealMatrix> angles = new Stack<>();
     final List<Turtle> turtleData = _generator.generate(lsystem, iterations);
 
     final List<Node> nodes = new ArrayList<>();
+    addMarkers(nodes);
+
     for (final Turtle turtle : turtleData) {
       if (turtle.moveUnits() != 0) {
-        final double[] change = currentDirection.operate(new double[] {0, -cylinderLength, 0});
+        final double[] change = currentDirection.operate(new double[] {0, 0, cylinderLength});
         final Point3D nextPoint = new Point3D(
             currentPoint.getX() + change[0],
             currentPoint.getY() + change[1],
             currentPoint.getZ() + change[2]
         );
+        System.err.println(turtle.id() + ":" +  currentPoint + " -> " + nextPoint);
         if (turtle.draw()) {
-          final Cylinder cylinder = new Cylinder(cylinderWidth, cylinderLength);
-          cylinder.getTransforms().add(new Translate(0, -0.5 * cylinderLength, 0));
-          cylinder.getTransforms().add(new Translate(currentPoint.getX(), currentPoint.getY(), currentPoint.getZ()));
-          final Sphere sphere = new Sphere(0.1);
-          sphere.setMaterial(new PhongMaterial(Color.RED));
+          final Cylinder cylinder = new Cylinder(cylinderRadius, cylinderLength);
           cylinder.setMaterial(new PhongMaterial(Color.GREEN));
+          cylinder.getTransforms().addAll(
+              new Translate(currentPoint.getX(), currentPoint.getY(), currentPoint.getZ() + 0.5 * cylinderLength),
+              new Rotate(90, Rotate.X_AXIS));
           nodes.add(cylinder);
-          nodes.add(sphere);
         }
         currentPoint = nextPoint;
       }
@@ -156,6 +157,27 @@ public class LSystem3dWriter extends Application {
       }
     }
     return nodes;
+  }
+
+  private void addMarkers(final List<Node> nodes) {
+    final Sphere origin = new Sphere(0.1);
+    final Sphere unitZ = new Sphere(0.1);
+    unitZ.getTransforms().add(new Translate(0, 0, 1));
+    unitZ.setMaterial(new PhongMaterial(Color.BLUE));
+
+    final Sphere unitY = new Sphere(0.1);
+    unitY.getTransforms().add(new Translate(0, 1, 0));
+    unitY.setMaterial(new PhongMaterial(Color.GREEN));
+
+    final Sphere unitX = new Sphere(0.1);
+    unitX.getTransforms().add(new Translate(1, 0, 0));
+    unitX.setMaterial(new PhongMaterial(Color.BLACK));
+
+    origin.setMaterial(new PhongMaterial(Color.RED));
+    nodes.add(origin);
+    nodes.add(unitZ);
+    nodes.add(unitY);
+    nodes.add(unitX);
   }
 
   public static void main(final String[] args) {
