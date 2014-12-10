@@ -15,7 +15,6 @@ import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
-import joephysics62.co.uk.lsystems.turtle.DoubleProvider;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class LSystemGenerator {
@@ -40,30 +39,28 @@ public class LSystemGenerator {
 
 
 
-	public static void writeGif(final String fileName, final List<Turtle> turtleMoves,
-			final DoubleProvider lengthProvider, final DoubleProvider angleProvider) throws IOException {
-		final BufferedImage bi = createBufferedImage(turtleMoves, lengthProvider, angleProvider);
+	public static void writeGif(final String fileName, final List<Turtle> turtleMoves, final Double angleDeg, final int imageSize) throws IOException {
+		final BufferedImage bi = createBufferedImage(turtleMoves, angleDeg, imageSize);
 		ImageIO.write(bi, "GIF", new File(fileName));
 	}
 
-	public static void angleAnimatedGif(final String fileName, final List<Turtle> turtleMoves, final DoubleProvider lengthProvider, final int frames) throws IOException {
+	public static void angleAnimatedGif(final String fileName, final List<Turtle> turtleMoves, final int frames) throws IOException {
 		try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
 			final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
 
 			for (int i = 0; i < frames; i++) {
-				final double angle = Math.PI * 2 * i / frames;
-				final BufferedImage bi = createBufferedImage(turtleMoves, lengthProvider, () -> angle);
+				final double angle = 360 * i / frames;
+				final BufferedImage bi = createBufferedImage(turtleMoves, angle, 700);
 				gifSequenceWriter.writeToSequence(bi);
 			}
 			gifSequenceWriter.close();
 		}
 	}
 
-	private static BufferedImage createBufferedImage(final List<Turtle> turtleMoves,
-		  final DoubleProvider lenghProvider, final DoubleProvider angleProvider) {
-		final BufferedImage bi = new BufferedImage(700, 700, BufferedImage.TYPE_INT_RGB);
+	private static BufferedImage createBufferedImage(final List<Turtle> turtleMoves, final double angle, final int imageSize) {
+		final BufferedImage bi = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
 		final Graphics2D g2d = bi.createGraphics();
-		writeToGraphics(turtleMoves, lenghProvider, angleProvider, g2d);
+		writeToGraphics(turtleMoves, angle, imageSize, g2d);
 		return bi;
 	}
 
@@ -83,20 +80,20 @@ public class LSystemGenerator {
     }
 	}
 
-	private static void writeToGraphics(final List<Turtle> turtle, final DoubleProvider lengthProvider, final DoubleProvider angleProvider, final Graphics2D g2d) {
-		final List<Line> toDraw = getLines(turtle, lengthProvider, angleProvider);
-		// needs to fit into 700, 700
+	private static void writeToGraphics(final List<Turtle> turtle, final double angle, final int imageSize, final Graphics2D g2d) {
+		final List<Line> toDraw = getLines(turtle, angle);
 		final double xscale = maxX - minX;
     final double yscale = maxY - minY;
     final double scale = Math.max(xscale, yscale);
 		g2d.setColor(Color.GREEN);
 
+		final int margin = imageSize / 20;
+		final int drawSize = imageSize - 2 * margin;
 		for (final Line line : toDraw) {
-		  final int x1 = 25 + (int) (650 / scale * (-minX + line.getFrom()._x));
-		  final int y1 = 25 + 650 - (int) (650 / scale * (-minY + line.getFrom()._y));
-		  final int x2 = 25 + (int) (650 / scale * (-minX + line.getTo()._x));
-		  final int y2 = 25 + 650 - (int) (650 / scale * (-minY + line.getTo()._y));
-		  //System.out.println(String.format("%s, %s -> %s, %s", x1, y1, x2, y2));
+		  final int x1 = margin + (int) (drawSize / scale * (-minX + line.getFrom()._x));
+		  final int y1 = margin + drawSize - (int) (drawSize / scale * (-minY + line.getFrom()._y));
+		  final int x2 = margin + (int) (drawSize / scale * (-minX + line.getTo()._x));
+		  final int y2 = margin + drawSize - (int) (drawSize / scale * (-minY + line.getTo()._y));
  		  g2d.drawLine(x1, y1, x2, y2);
     }
 	}
@@ -106,18 +103,17 @@ public class LSystemGenerator {
 	private static double minY = 0;
 	private static double maxY = 0;
 
-  private static List<Line> getLines(final List<Turtle> generate,
-      final DoubleProvider lengthProvider, final DoubleProvider angleProvider) {
+  private static List<Line> getLines(final List<Turtle> generate, final double turnAngleDegrees) {
     Coord current = new Coord(0, 0);
+    final double turnAngleRadians = turnAngleDegrees * Math.PI / 180.0;
 		double angle = 0;
 		final Stack<Coord> coordStack = new Stack<Coord>();
 		final Stack<Double> angleStack = new Stack<Double>();
 		final List<Line> toDraw = new ArrayList<>();
 		for (final Turtle move : generate) {
 			if (move.moveUnits() != 0) {
-				final double elementLength = lengthProvider.nextDouble();
-				final double nextX = current._x + move.moveUnits() * elementLength * Math.sin(angle);
-				final double nextY = current._y + move.moveUnits() * elementLength * Math.cos(angle);
+				final double nextX = current._x + move.moveUnits() * Math.sin(angle);
+				final double nextY = current._y + move.moveUnits() * Math.cos(angle);
 
 				if (nextX > maxX) {
 				  maxX = nextX;
@@ -151,10 +147,10 @@ public class LSystemGenerator {
 			}
 			switch (move.angleChange()) {
 			case LEFT:
-				angle += angleProvider.nextDouble();
+				angle += turnAngleRadians;
 				break;
 			case RIGHT:
-				angle -= angleProvider.nextDouble();
+				angle -= turnAngleRadians;
 				break;
 			default:
 				break;

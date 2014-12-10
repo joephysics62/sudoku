@@ -1,7 +1,7 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.Rewrite;
 import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
+import joephysics62.co.uk.lsystems.Rewrite;
 import joephysics62.co.uk.lsystems.RewriteSystem;
 import joephysics62.co.uk.lsystems.turtle.SimpleTurtle;
 import joephysics62.co.uk.lsystems.turtle.StackChange;
@@ -22,7 +22,7 @@ public class PythagoreanTree extends CharacterMapLSystem {
 			);
 
 	public PythagoreanTree() {
-		super(MOVES, REWRITE_RULES, AXIOM);
+		super(MOVES, REWRITE_RULES, AXIOM, 45.0);
 	}
 
 }

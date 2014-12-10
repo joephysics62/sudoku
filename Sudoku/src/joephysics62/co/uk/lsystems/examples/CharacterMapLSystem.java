@@ -16,11 +16,18 @@ public abstract class CharacterMapLSystem implements LSystem {
 	private final String _axiomString;
   private final TurtleMoves _moves;
   private final RewriteSystem _rewriteRules;
+  private final Double _angleDegrees;
 
-	public CharacterMapLSystem(final TurtleMoves moves, final RewriteSystem rewriteRules, final String axiomString) {
+	public CharacterMapLSystem(final TurtleMoves moves, final RewriteSystem rewriteRules, final String axiomString, final Double angleDegrees) {
 		_moves = moves;
     _rewriteRules = rewriteRules;
     _axiomString = axiomString;
+    _angleDegrees = angleDegrees;
+	}
+
+	@Override
+	public Double angleDegrees() {
+	  return _angleDegrees;
 	}
 
 	@Override

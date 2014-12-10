@@ -10,4 +10,6 @@ public interface LSystem {
 
 	List<Turtle> applyRule(Turtle input);
 
+	Double angleDegrees();
+
 }
