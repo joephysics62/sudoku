@@ -1,5 +1,6 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import joephysics62.co.uk.lsystems.CharacterMapLSystem;
 import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
 import joephysics62.co.uk.lsystems.Rewrite;
 import joephysics62.co.uk.lsystems.turtle.Turtle;

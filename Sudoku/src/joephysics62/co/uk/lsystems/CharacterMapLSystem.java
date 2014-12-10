@@ -1,11 +1,9 @@
-package joephysics62.co.uk.lsystems.examples;
+package joephysics62.co.uk.lsystems;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import joephysics62.co.uk.lsystems.LSystem;
-import joephysics62.co.uk.lsystems.RewriteSystem;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
 import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
 
