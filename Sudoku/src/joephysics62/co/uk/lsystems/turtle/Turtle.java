@@ -5,6 +5,7 @@ public interface Turtle {
 	int moveUnits();
 	boolean draw();
 	Turn angleChange();
+	WidthChange getWidthChange();
 	StackChange stackChange();
 	char id();
 
@@ -22,4 +23,5 @@ public interface Turtle {
   public static Turtle move(final char id) { return new SimpleTurtle(id, 1, false, StackChange.NONE, Turn.NONE); }
 
 	public static Turtle identity(final char id) { return new SimpleTurtle(id, 0, false, StackChange.NONE, Turn.NONE); }
+  public static Turtle narrow(final char c) { return new SimpleTurtle(c, 0, false, StackChange.NONE, Turn.NONE, WidthChange.NARROW); }
 }

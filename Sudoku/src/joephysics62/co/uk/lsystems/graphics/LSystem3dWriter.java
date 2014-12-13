@@ -90,11 +90,13 @@ public class LSystem3dWriter extends Application {
 
   private List<Node> buildLsystemNodes(final LSystem lsystem, final int iterations) {
     final double stepSize = 0.1;
+    double currentWidth = 0.03;
     Point3D currentPoint = new Point3D(0, 0, 0);
     RealMatrix currentDirection = MatrixUtils.createRealIdentityMatrix(3);
 
     final Stack<Point3D> coordStack = new Stack<>();
     final Stack<RealMatrix> angles = new Stack<>();
+    final Stack<Double> widths = new Stack<>();
     final List<Turtle> turtleData = _generator.generate(lsystem, iterations);
 
     final List<Node> nodes = new ArrayList<>();
@@ -107,18 +109,31 @@ public class LSystem3dWriter extends Application {
             currentPoint.getZ() + change[2]
         );
         if (turtle.draw()) {
-          nodes.add(connectingCylinder(currentPoint, nextPoint, 0.02));
+          nodes.add(connectingCylinder(currentPoint, nextPoint, currentWidth));
         }
         currentPoint = nextPoint;
+      }
+      switch (turtle.getWidthChange()) {
+      case GROW:
+        currentWidth *= 1.6;
+        break;
+      case NARROW:
+        currentWidth /= 1.6;
+        break;
+      case NONE:
+      default:
+        break;
       }
       switch (turtle.stackChange()) {
       case PUSH:
         angles.push(currentDirection);
         coordStack.push(currentPoint);
+        widths.push(currentWidth);
         break;
       case POP:
         currentPoint = coordStack.pop();
         currentDirection = angles.pop();
+        currentWidth = widths.pop();
         break;
       default:
         break;

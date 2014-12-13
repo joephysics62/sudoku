@@ -15,7 +15,7 @@ public class BushExample3d extends CharacterMapLSystem {
       Turtle.draw('S'),
       Turtle.identity('L'),
       Turtle.identity('\''),
-      Turtle.identity('!'),
+      Turtle.narrow('!'),
       Turtle.push('['),
       Turtle.pop(']'),
       Turtle.left('-'),
