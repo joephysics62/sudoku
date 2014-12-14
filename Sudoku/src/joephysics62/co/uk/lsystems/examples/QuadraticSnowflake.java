@@ -1,20 +1,25 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class QuadraticSnowflake extends CharacterMapLSystem {
+public class QuadraticSnowflake implements TurtleLSystem {
 
-	public QuadraticSnowflake() {
-		super(
-		    new TurtleMoves(Turtle.draw('F'), Turtle.left('-'), Turtle.right('+')),
-		    new DeterministicRewriteSystem(Rewrite.of('F', "F+F-F-F+F")),
-				"-F",
-				60.0
-				);
-	}
+  @Override
+  public String axiom() {
+    return "-F";
+  }
+
+  @Override
+  public String applyRule(final Character input) {
+    if (input.equals('F')) {
+      return "F+F-F-F+F";
+    }
+    return input.toString();
+  }
+
+  @Override
+  public double angle() {
+    return 60;
+  }
 
 }

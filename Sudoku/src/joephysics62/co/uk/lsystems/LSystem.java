@@ -1,15 +1,9 @@
 package joephysics62.co.uk.lsystems;
 
-import java.util.List;
-
-import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public interface LSystem {
 
-	List<Turtle> axiom();
+	String axiom();
 
-	List<Turtle> applyRule(Turtle input);
-
-	Double angleDegrees();
-
+	String applyRule(Character input);
 }

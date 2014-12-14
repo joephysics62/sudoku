@@ -1,29 +1,29 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.RewriteSystem;
-import joephysics62.co.uk.lsystems.turtle.SimpleTurtle;
-import joephysics62.co.uk.lsystems.turtle.StackChange;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
-import joephysics62.co.uk.lsystems.turtle.Turn;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class PythagoreanTree extends CharacterMapLSystem {
-	private static final String AXIOM = "0";
+public class PythagoreanTree implements TurtleLSystem {
 
-	private static final RewriteSystem REWRITE_RULES = new DeterministicRewriteSystem(Rewrite.of('0', "1[0]0"), Rewrite.of('1', "11"));
+  @Override
+  public String axiom() {
+    return "F";
+  }
 
-	private static final TurtleMoves MOVES = new TurtleMoves(
-			new SimpleTurtle('[', 0, false, StackChange.PUSH, Turn.LEFT),
-			new SimpleTurtle(']', 0, false, StackChange.POP, Turn.RIGHT),
-			Turtle.draw('0'),
-			Turtle.draw('1')
-			);
+  @Override
+  public String applyRule(final Character input) {
+    switch (input) {
+    case 'F':
+      return "G[F]F";
+    case 'G':
+      return "GG";
+    default:
+      return input.toString();
+    }
+  }
 
-	public PythagoreanTree() {
-		super(MOVES, REWRITE_RULES, AXIOM, 45.0);
-	}
+  @Override
+  public double angle() {
+    return 45.0;
+  }
 
 }

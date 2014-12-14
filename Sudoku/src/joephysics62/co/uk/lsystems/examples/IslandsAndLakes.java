@@ -1,23 +1,29 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class IslandsAndLakes extends CharacterMapLSystem {
+public class IslandsAndLakes implements TurtleLSystem {
 
-	public IslandsAndLakes() {
-		super(
-		    new TurtleMoves(Turtle.draw('F'), Turtle.move('f'), Turtle.left('-'), Turtle.right('+')),
-		    new DeterministicRewriteSystem(
-				    Rewrite.of('f', "ffffff"),
-				    Rewrite.of('F', "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF")
-				),
-				"F+F+F+F",
-				90.0
-		);
-	}
+  @Override
+  public String axiom() {
+    return "F+F+F+F";
+  }
+
+  @Override
+  public String applyRule(final Character input) {
+    switch (input) {
+    case 'f':
+      return "ffffff";
+    case 'F':
+      return "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF";
+    default:
+      return input.toString();
+    }
+  }
+
+  @Override
+  public double angle() {
+    return 90.0;
+  }
 
 }

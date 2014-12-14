@@ -1,39 +1,31 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.RewriteSystem;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class BushExample3d extends CharacterMapLSystem {
+public class BushExample3d implements TurtleLSystem {
 
-  private static final TurtleMoves moves = new TurtleMoves(
-      Turtle.draw('A'),
-      Turtle.draw('F'),
-      Turtle.draw('S'),
-      Turtle.identity('L'),
-      Turtle.identity('\''),
-      Turtle.narrow('!'),
-      Turtle.push('['),
-      Turtle.pop(']'),
-      Turtle.left('-'),
-      Turtle.right('+'),
-      Turtle.up('^'),
-      Turtle.down('&'),
-      Turtle.rollRight('/')
-  );
-  private static final RewriteSystem rewriteRules = new DeterministicRewriteSystem(
-      Rewrite.of('A', "[&FL!A]/////'[&FL!A]///////'[&FL!A]"),
-      Rewrite.of('F', "S/////F"),
-      Rewrite.of('S', "FL")
-  );
-  private static final String axiomString = "A";
-  private static final Double angleDegrees = 22.0;
+  @Override
+  public String axiom() {
+    return "A";
+  }
 
-  public BushExample3d() {
-    super(moves, rewriteRules, axiomString, angleDegrees);
+  @Override
+  public String applyRule(final Character input) {
+    switch (input) {
+    case 'A':
+      return "[&FL!A]/////'[&FL!A]///////'[&FL!A]";
+    case 'F':
+      return "S/////F";
+    case 'S':
+      return "FL";
+    default:
+      return input.toString();
+    }
+  }
+
+  @Override
+  public double angle() {
+    return 22;
   }
 
 }

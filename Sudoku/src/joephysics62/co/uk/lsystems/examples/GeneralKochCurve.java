@@ -1,20 +1,33 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class GeneralKochCurve extends CharacterMapLSystem {
+public class GeneralKochCurve implements TurtleLSystem {
+
+  private final String _drawRewrite;
 
   public GeneralKochCurve(final String drawRewrite) {
-    super(
-        new TurtleMoves(Turtle.draw('F'), Turtle.left('-'), Turtle.right('+')),
-        new DeterministicRewriteSystem(Rewrite.of('F', drawRewrite)),
-        "F-F-F-F",
-        90.0
-     );
+    _drawRewrite = drawRewrite;
+  }
+
+  @Override
+  public String axiom() {
+    return "F-F-F-F";
+  }
+
+  @Override
+  public String applyRule(final Character input) {
+    switch (input) {
+    case 'F':
+      return _drawRewrite;
+    default:
+      return input.toString();
+    }
+  }
+
+  @Override
+  public double angle() {
+    return 90;
   }
 
 }

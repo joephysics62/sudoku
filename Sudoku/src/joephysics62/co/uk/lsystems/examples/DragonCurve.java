@@ -1,26 +1,29 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class DragonCurve extends CharacterMapLSystem {
+public class DragonCurve implements TurtleLSystem {
 
-	public DragonCurve() {
-		super(
-				new TurtleMoves(
-						Turtle.draw('F'),
-						Turtle.left('-'),
-						Turtle.right('+'),
-						Turtle.identity('X'),
-						Turtle.identity('Y')
-						),
-			   new DeterministicRewriteSystem(Rewrite.of('X', "X+YF"), Rewrite.of('Y', "FX-Y")),
-						"FX",
-						90.0
-				);
-	}
+  @Override
+  public String axiom() {
+    return "FX";
+  }
+
+  @Override
+  public String applyRule(final Character input) {
+    switch (input) {
+    case 'X':
+      return "X+YF";
+    case 'Y':
+      return "FX-Y";
+    default:
+      return input.toString();
+    }
+  }
+
+  @Override
+  public double angle() {
+    return 90.0;
+  }
 
 }

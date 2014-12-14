@@ -1,21 +1,28 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.CharacterMapLSystem;
-import joephysics62.co.uk.lsystems.DeterministicRewriteSystem;
-import joephysics62.co.uk.lsystems.Rewrite;
-import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleMoves;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 
-public class FractalTreeC extends CharacterMapLSystem {
+public class FractalTreeC implements TurtleLSystem {
 
-  public FractalTreeC() {
-    super(
-        new TurtleMoves(Turtle.draw('F'), Turtle.left('-'), Turtle.right('+'), Turtle.push('['), Turtle.pop(']')),
-        new DeterministicRewriteSystem(Rewrite.of('F', "FF-[-F+F+F]+[+F-F-F]")),
-        "F",
-        22.5
-    );
+  @Override
+  public String axiom() {
+    return "F";
+  }
+
+  @Override
+  public String applyRule(final Character input) {
+    switch (input) {
+    case 'F':
+      return "FF-[-F+F+F]+[+F-F-F]";
+    default:
+      return input.toString();
+    }
+  }
+
+  @Override
+  public double angle() {
+    return 22.5;
   }
 
 }
