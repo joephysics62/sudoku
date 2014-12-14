@@ -15,9 +15,9 @@ public class Graphics2DListener implements TurtleListener {
   }
 
   @Override
-  public void drawLine(final Point3D start, final Point3D coord, final Color color, final double width) {
+  public void drawLine(final Point3D start, final Point3D end, final Color color, final double width) {
     _g2d.setColor(new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue()));
-    _g2d.drawLine((int) start.getX(), (int) start.getY(), (int) coord.getX(), (int) coord.getY());
+    _g2d.drawLine((int) start.getX(), (int) start.getZ(), (int) end.getX(), (int) end.getZ());
   }
 
 }
