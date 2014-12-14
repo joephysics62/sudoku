@@ -7,7 +7,7 @@ import joephysics62.co.uk.lsystems.turtle.Turtle;
 
 public class LSystemGenerator {
 
-  private static final int MAX_ELEMENTS = 10000;
+  private static final int MAX_ELEMENTS = 50000;
 
   public List<Turtle> generate(final LSystem lsystem, final int limit) {
 		List<Turtle> current = lsystem.axiom();

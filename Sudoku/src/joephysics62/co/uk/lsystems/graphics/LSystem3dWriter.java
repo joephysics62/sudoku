@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -12,6 +13,7 @@ import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.SubScene;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Cylinder;
@@ -30,6 +32,10 @@ import org.apache.commons.math3.linear.RealMatrix;
 public class LSystem3dWriter extends Application {
 
   private final LSystemGenerator _generator;
+  private final double cameraDist = 10;
+  private final double rotateChangeDeg = 5;
+  private final double currentAngle = 0;
+  private PerspectiveCamera _camera;
 
   public LSystem3dWriter() {
     _generator = new LSystemGenerator();
@@ -39,23 +45,45 @@ public class LSystem3dWriter extends Application {
   public void start(final Stage primaryStage) throws Exception {
     primaryStage.setResizable(false);
     final Scene scene = new Scene(createContent(new BushExample3d(), 7));
+    scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+      @Override
+      public void handle(final KeyEvent keyEvent) {
+        switch (keyEvent.getCode()) {
+        case Z:
+          _camera.getTransforms().add(new Translate(0, 0, 1));
+          break;
+        case A:
+          _camera.getTransforms().add(new Translate(0, 0, -1));
+          break;
+        case LEFT:
+          _camera.getTransforms().add(new Rotate(-5, Rotate.Y_AXIS));
+          break;
+        case RIGHT:
+          _camera.getTransforms().add(new Rotate(5, Rotate.Y_AXIS));
+          break;
+        default:
+          break;
+        }
+      }
+    });
     primaryStage.setScene(scene);
     primaryStage.show();
   }
 
   private Parent createContent(final LSystem lsystem, final int iterations) {
-    // Create and position camera
-    final PerspectiveCamera camera = new PerspectiveCamera(true);
-    camera.getTransforms().addAll(new Rotate(-110, Rotate.X_AXIS), new Rotate(25, Rotate.Y_AXIS), new Translate(0, -2, -10));
+    _camera = new PerspectiveCamera(true);
+    _camera.getTransforms().add(new Rotate(-115, Rotate.X_AXIS));
+    _camera.getTransforms().add(new Translate(0, -2, -15));
 
     // Build the Scene Graph
     final Group root = new Group();
-    root.getChildren().add(camera);
+    root.getChildren().add(_camera);
     root.getChildren().addAll(buildLsystemNodes(lsystem, iterations));
     // Use a SubScene
     final SubScene subScene = new SubScene(root, 600, 600);
     subScene.setFill(Color.WHITE);
-    subScene.setCamera(camera);
+    subScene.setCamera(_camera);
     final Group group = new Group();
     group.getChildren().add(subScene);
     return group;
