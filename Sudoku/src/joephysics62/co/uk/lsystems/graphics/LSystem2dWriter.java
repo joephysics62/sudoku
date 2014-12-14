@@ -4,6 +4,8 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
@@ -12,8 +14,8 @@ import javax.imageio.ImageIO;
 
 import joephysics62.co.uk.lsystems.LSystemGenerator;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
+import joephysics62.co.uk.lsystems.Line3D;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
-import joephysics62.co.uk.lsystems.turtle.TurtleListener;
 
 public class LSystem2dWriter {
   private final LSystemGenerator _generator;
@@ -24,9 +26,28 @@ public class LSystem2dWriter {
 
   public void writeGif(final TurtleLSystem lsystem, final int iterations, final String fileName, final int imageSize) throws IOException {
     final BufferedImage bi = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
-    final TurtleListener graphics2dListener = new Graphics2DListener(bi.createGraphics());
-    final LSystemTurtleInterpreter interpreter = new LSystemTurtleInterpreter(graphics2dListener, lsystem.angle(), 0.1, 1.0);
-    interpreter.interpret(_generator.generate(lsystem, iterations));
+    final LSystemTurtleInterpreter interpreter = new LSystemTurtleInterpreter(lsystem.angle(), 0.1, 1.0);
+    final List<Line3D> lines = interpreter.interpret(_generator.generate(lsystem, iterations));
+    final double minX = lines.stream().map(i -> Math.min(i.getStart().getX(), i.getEnd().getX())).collect(Collectors.minBy(Double::compare)).orElse(0.0);
+    final double maxX = lines.stream().map(i -> Math.max(i.getStart().getX(), i.getEnd().getX())).collect(Collectors.maxBy(Double::compare)).orElse(10.0);
+    final double minZ = lines.stream().map(i -> Math.min(i.getStart().getZ(), i.getEnd().getZ())).collect(Collectors.minBy(Double::compare)).orElse(0.0);
+    final double maxZ = lines.stream().map(i -> Math.max(i.getStart().getZ(), i.getEnd().getZ())).collect(Collectors.maxBy(Double::compare)).orElse(10.0);
+
+    final int margin = imageSize / 20;
+    final int plotSize = imageSize - 2 * margin;
+    final double scale = plotSize / Math.max(maxX - minX, maxZ - minZ);
+    final Graphics2D g2d = bi.createGraphics();
+    for (final Line3D line3d : lines) {
+      final Color color = line3d.getColour();
+      final Point3D start = line3d.getStart();
+      final Point3D end = line3d.getEnd();
+      g2d.setColor(new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue()));
+      final int drawXStart = margin + (int) ((start.getX() - minX) * scale);
+      final int drawZStart = margin + (int) (plotSize - (start.getZ() - minZ) * scale);
+      final int drawXEnd = margin + (int) ((end.getX() - minX) * scale);
+      final int drawZEnd = margin + (int) (plotSize - (end.getZ() - minZ) * scale);
+      g2d.drawLine(drawXStart, drawZStart, drawXEnd, drawZEnd);
+    }
     ImageIO.write(bi, "GIF", new File(fileName));
   }
 
@@ -42,20 +63,5 @@ public class LSystem2dWriter {
 //      gifSequenceWriter.close();
 //    }
 //  }
-  private static class Graphics2DListener implements TurtleListener {
-
-    private final Graphics2D _g2d;
-
-    public Graphics2DListener(final Graphics2D g2d) {
-      _g2d = g2d;
-    }
-
-    @Override
-    public void drawLine(final Point3D start, final Point3D end, final Color color, final double width) {
-      _g2d.setColor(new java.awt.Color((float) color.getRed(), (float) color.getGreen(), (float) color.getBlue()));
-      _g2d.drawLine((int) start.getX(), (int) start.getZ(), (int) end.getX(), (int) end.getZ());
-    }
-
-  }
 
 }

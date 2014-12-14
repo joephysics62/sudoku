@@ -13,7 +13,7 @@ public class PythagoreanTree implements TurtleLSystem {
   public String applyRule(final Character input) {
     switch (input) {
     case 'F':
-      return "G[F]F";
+      return "G[+F]-F";
     case 'G':
       return "GG";
     default:

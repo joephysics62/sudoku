@@ -13,7 +13,7 @@ public class TurtleState {
   private final Color _colour;
   private final RealMatrix _angle;
 
-  private static final double[] INITIAL_DIRECTION = {1, 0, 0};
+  private static final double[] INITIAL_DIRECTION = {0, 0, 1};
 
   public TurtleState(final Point3D location, final RealMatrix angle, final double width, final Color colour) {
     _coord = location;

@@ -69,7 +69,7 @@ public class LSystem3dWriter extends Application {
     final Group root = new Group();
     root.getChildren().add(_camera);
     final TurtleListener javaFXListener = new JavaFXListener(root);
-    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(javaFXListener, lsystem.angle(), 0.1, 1.6);
+    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem.angle(), 0.1, 1.6);
     turtleInterpreter.interpret(_generator.generate(lsystem, iterations));
     // Use a SubScene
     final SubScene subScene = new SubScene(root, 600, 600);

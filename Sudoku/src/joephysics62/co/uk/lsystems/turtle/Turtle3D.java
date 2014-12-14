@@ -2,17 +2,13 @@ package joephysics62.co.uk.lsystems.turtle;
 
 import java.util.Stack;
 
-import javafx.geometry.Point3D;
-
 public class Turtle3D {
 
   private final Stack<TurtleState> _stateStack = new Stack<>();
   private TurtleState _currentState;
-  private final TurtleListener _listener;
 
-  public Turtle3D(final TurtleState start, final TurtleListener listener) {
+  public Turtle3D(final TurtleState start) {
     _currentState = start;
-    _listener = listener;
   }
 
   public void push() {
@@ -39,12 +35,12 @@ public class Turtle3D {
     _currentState = _currentState.changeWidth(factor);
   }
 
-  public void move(final double distance, final boolean draw) {
-    final Point3D start = _currentState.getCoord();
+  public void move(final double distance) {
     _currentState = _currentState.move(distance);
-    if (draw) {
-      _listener.drawLine(start, _currentState.getCoord(), _currentState.getColor(), _currentState.getWidth());
-    }
+  }
+
+  public TurtleState getState() {
+    return _currentState;
   }
 
 

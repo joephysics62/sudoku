@@ -1,9 +1,11 @@
 package joephysics62.co.uk.lsystems;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
 import joephysics62.co.uk.lsystems.turtle.Turtle3D;
-import joephysics62.co.uk.lsystems.turtle.TurtleListener;
 import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
 import org.apache.commons.math3.linear.MatrixUtils;
@@ -16,17 +18,18 @@ public class LSystemTurtleInterpreter {
   private final double _drawStep;
   private final double _narrowFactor;
 
-  public LSystemTurtleInterpreter(final TurtleListener listener, final double angleStep, final double drawStep, final double narrowFactor) {
+  public LSystemTurtleInterpreter(final double angleStep, final double drawStep, final double narrowFactor) {
     _angleStep = angleStep;
     _drawStep = drawStep;
     _narrowFactor = narrowFactor;
     final Point3D origin = new Point3D(0, 0, 0);
     final RealMatrix identityMatrix = MatrixUtils.createRealIdentityMatrix(3);
     final TurtleState initialState = new TurtleState(origin, identityMatrix, 0.03, Color.GREEN);
-    _turtle3d = new Turtle3D(initialState, listener);
+    _turtle3d = new Turtle3D(initialState);
   }
 
-  public void interpret(final String lsystemResult) {
+  public List<Line3D> interpret(final String lsystemResult) {
+    final List<Line3D> out = new ArrayList<>();
     for (final char c : lsystemResult.toCharArray()) {
       switch (c) {
       case '+':
@@ -54,11 +57,14 @@ public class LSystemTurtleInterpreter {
       case 'F':
       case 'G':
       case 'S':
-        _turtle3d.move(_drawStep, true);
+        final TurtleState start = _turtle3d.getState();
+        _turtle3d.move(_drawStep);
+        final TurtleState end = _turtle3d.getState();
+        out.add(new Line3D(start.getCoord(), end.getCoord(), start.getColor(), start.getWidth()));
         break;
       case 'f':
       case 'g':
-        _turtle3d.move(_drawStep, false);
+        _turtle3d.move(_drawStep);
         break;
       case '[':
         _turtle3d.push();
@@ -70,6 +76,7 @@ public class LSystemTurtleInterpreter {
         break;
       }
     }
+    return out;
   }
 
 }
