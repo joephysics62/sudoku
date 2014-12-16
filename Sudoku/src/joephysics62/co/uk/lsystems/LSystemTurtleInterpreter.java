@@ -5,11 +5,9 @@ import java.util.List;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Rotate;
 import joephysics62.co.uk.lsystems.turtle.Turtle3D;
 import joephysics62.co.uk.lsystems.turtle.TurtleState;
-
-import org.apache.commons.math3.linear.MatrixUtils;
-import org.apache.commons.math3.linear.RealMatrix;
 
 public class LSystemTurtleInterpreter {
 
@@ -23,8 +21,7 @@ public class LSystemTurtleInterpreter {
     _drawStep = drawStep;
     _narrowFactor = narrowFactor;
     final Point3D origin = new Point3D(0, 0, 0);
-    final RealMatrix identityMatrix = MatrixUtils.createRealIdentityMatrix(3);
-    final TurtleState initialState = new TurtleState(origin, identityMatrix, 0.03, Color.GREEN);
+    final TurtleState initialState = new TurtleState(origin, Rotate.Z_AXIS, Rotate.X_AXIS, 0.03, Color.GREEN);
     _turtle3d = new Turtle3D(initialState);
   }
 
