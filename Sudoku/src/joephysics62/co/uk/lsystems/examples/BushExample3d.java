@@ -28,4 +28,9 @@ public class BushExample3d implements TurtleLSystem {
     return 22;
   }
 
+  @Override
+  public double narrowing() {
+    return 0.6;
+  }
+
 }

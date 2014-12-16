@@ -20,10 +20,12 @@ import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.Line3D;
 import joephysics62.co.uk.lsystems.examples.BushExample3d;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
+import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
 public class LSystem3dWriter extends Application {
 
-  private static final double NARROWING = 0.6;
+  private static final int ITERATIONS = 6;
+  private static final double DRAW_STEP = 0.1;
   private final LSystemGenerator _generator;
   private PerspectiveCamera _camera;
 
@@ -34,7 +36,7 @@ public class LSystem3dWriter extends Application {
   @Override
   public void start(final Stage primaryStage) throws Exception {
     primaryStage.setResizable(false);
-    final Scene scene = new Scene(createContent(new BushExample3d(), 6));
+    final Scene scene = new Scene(createContent(new BushExample3d(), ITERATIONS));
     scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
       @Override
@@ -70,9 +72,12 @@ public class LSystem3dWriter extends Application {
     // Build the Scene Graph
     final Group root = new Group();
     root.getChildren().add(_camera);
-    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem.angle(), 0.1, NARROWING);
+
+    final TurtleState initialState = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.03, Color.BROWN);
+
+    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem.angle(), DRAW_STEP, lsystem.narrowing());
     final String result = _generator.generate(lsystem, iterations);
-    for (final Line3D line3d : turtleInterpreter.interpret(result)) {
+    for (final Line3D line3d : turtleInterpreter.interpret(result, initialState)) {
       root.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), line3d.getWidth() / 2));
     }
     // Use a SubScene

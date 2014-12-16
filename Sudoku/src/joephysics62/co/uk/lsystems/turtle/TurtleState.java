@@ -8,10 +8,9 @@ public class TurtleState {
 
   private final Point3D _coord;
   private final double _width;
-  private final Color _colour;
-
   private final Point3D _heading;
   private final Point3D _left;
+  private final Color _colour;
 
   public TurtleState(final Point3D location, final Point3D heading, final Point3D left, final double width, final Color colour) {
     _coord = location;
@@ -21,15 +20,15 @@ public class TurtleState {
     _colour = colour;
   }
 
+  public Color getColour() {
+    return _colour;
+  }
+
   public Point3D getHeading() {
     return _heading;
   }
   public Point3D getLeft() {
     return _left;
-  }
-
-  public Color getColor() {
-    return _colour;
   }
   public Point3D getCoord() {
     return _coord;
