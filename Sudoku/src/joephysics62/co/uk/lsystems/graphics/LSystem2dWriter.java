@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Rotate;
 
 import javax.imageio.ImageIO;
 
@@ -17,7 +16,6 @@ import joephysics62.co.uk.lsystems.LSystemGenerator;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.Line3D;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
-import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
 public class LSystem2dWriter {
   private final LSystemGenerator _generator;
@@ -28,10 +26,9 @@ public class LSystem2dWriter {
 
   public void writeGif(final TurtleLSystem lsystem, final int iterations, final String fileName, final int imageSize) throws IOException {
     final BufferedImage bi = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
-    final TurtleState initialState = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.03, Color.GREEN);
 
-    final LSystemTurtleInterpreter interpreter = new LSystemTurtleInterpreter(lsystem.angle(), 0.1, lsystem.narrowing());
-    final List<Line3D> lines = interpreter.interpret(_generator.generate(lsystem, iterations), initialState);
+    final LSystemTurtleInterpreter interpreter = new LSystemTurtleInterpreter(lsystem);
+    final List<Line3D> lines = interpreter.interpret(_generator.generate(lsystem, iterations));
     final double minX = lines.stream().map(i -> Math.min(i.getStart().getX(), i.getEnd().getX())).collect(Collectors.minBy(Double::compare)).orElse(0.0);
     final double maxX = lines.stream().map(i -> Math.max(i.getStart().getX(), i.getEnd().getX())).collect(Collectors.maxBy(Double::compare)).orElse(10.0);
     final double minZ = lines.stream().map(i -> Math.min(i.getStart().getZ(), i.getEnd().getZ())).collect(Collectors.minBy(Double::compare)).orElse(0.0);

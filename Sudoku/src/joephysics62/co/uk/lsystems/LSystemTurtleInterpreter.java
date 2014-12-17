@@ -1,27 +1,28 @@
 package joephysics62.co.uk.lsystems;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import javafx.scene.paint.Color;
+import javafx.geometry.Point3D;
+import javafx.scene.transform.Rotate;
 import joephysics62.co.uk.lsystems.turtle.Turtle3D;
+import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
 public class LSystemTurtleInterpreter {
 
-  private final double _angleStep;
-  private final double _drawStep;
-  private final double _narrowFactor;
+  private final TurtleLSystem _lSystem;
 
-  public LSystemTurtleInterpreter(final double angleStep, final double drawStep, final double narrowFactor) {
-    _angleStep = angleStep;
-    _drawStep = drawStep;
-    _narrowFactor = narrowFactor;
+  public LSystemTurtleInterpreter(final TurtleLSystem lSystem) {
+    _lSystem = lSystem;
   }
 
-  public List<Line3D> interpret(final String lsystemResult, final TurtleState initialState) {
-    final Turtle3D turtle3d = new Turtle3D(initialState, Arrays.asList(Color.BROWN, Color.DARKGREEN, Color.GREEN));
+  public List<Line3D> interpret(final String lsystemResult) {
+    final double _angleStep = _lSystem.angle();
+    final double _narrowFactor = _lSystem.narrowing();
+    final double _drawStep = _lSystem.drawStep();
+    final TurtleState start = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.05, 0);
+    final Turtle3D turtle3d = new Turtle3D(start);
     final List<Line3D> out = new ArrayList<>();
     for (final char c : lsystemResult.toCharArray()) {
       switch (c) {
@@ -53,10 +54,10 @@ public class LSystemTurtleInterpreter {
       case 'F':
       case 'G':
       case 'S':
-        final TurtleState start = turtle3d.getState();
+        final TurtleState before = turtle3d.getState();
         turtle3d.move(_drawStep);
         final TurtleState end = turtle3d.getState();
-        out.add(new Line3D(start.getCoord(), end.getCoord(), start.getColour(), start.getWidth()));
+        out.add(new Line3D(before.getCoord(), end.getCoord(), _lSystem.indexedColour(before.getColourIndex()), before.getWidth()));
         break;
       case 'f':
       case 'g':

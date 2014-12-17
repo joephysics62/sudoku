@@ -1,19 +1,14 @@
 package joephysics62.co.uk.lsystems.turtle;
 
-import java.util.List;
 import java.util.Stack;
-
-import javafx.scene.paint.Color;
 
 public class Turtle3D {
 
   private final Stack<TurtleState> _stateStack = new Stack<>();
   private TurtleState _currentState;
-  private final List<Color> _colours;
 
-  public Turtle3D(final TurtleState start, final List<Color> colours) {
+  public Turtle3D(final TurtleState start) {
     _currentState = start;
-    _colours = colours;
   }
 
   public void push() {
@@ -50,9 +45,7 @@ public class Turtle3D {
   }
 
   public void incrementColour() {
-    final Color currentColour = _currentState.getColour();
-    final int index = _colours.indexOf(currentColour);
-    _currentState = _currentState.changeColour(_colours.get(Math.min(_colours.size() - 1, index + 1)));
+    _currentState = _currentState.incrementColour();
   }
 
 }

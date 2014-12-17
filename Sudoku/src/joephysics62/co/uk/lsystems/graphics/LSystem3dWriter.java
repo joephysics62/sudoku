@@ -18,14 +18,15 @@ import javafx.stage.Stage;
 import joephysics62.co.uk.lsystems.LSystemGenerator;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.Line3D;
-import joephysics62.co.uk.lsystems.examples.NodeRewrier;
+import joephysics62.co.uk.lsystems.examples.BushExample3d;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
-import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
 public class LSystem3dWriter extends Application {
 
+  private static final TurtleLSystem LSYSTEM = new BushExample3d();
+
   private static final int ITERATIONS = 6;
-  private static final double DRAW_STEP = 0.1;
+
   private final LSystemGenerator _generator;
   private PerspectiveCamera _camera;
 
@@ -36,7 +37,7 @@ public class LSystem3dWriter extends Application {
   @Override
   public void start(final Stage primaryStage) throws Exception {
     primaryStage.setResizable(false);
-    final Scene scene = new Scene(createContent(new NodeRewrier(), ITERATIONS));
+    final Scene scene = new Scene(createContent(LSYSTEM, ITERATIONS));
     scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
       @Override
@@ -73,11 +74,9 @@ public class LSystem3dWriter extends Application {
     final Group root = new Group();
     root.getChildren().add(_camera);
 
-    final TurtleState initialState = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.03, Color.BROWN);
-
-    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem.angle(), DRAW_STEP, lsystem.narrowing());
+    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem);
     final String result = _generator.generate(lsystem, iterations);
-    for (final Line3D line3d : turtleInterpreter.interpret(result, initialState)) {
+    for (final Line3D line3d : turtleInterpreter.interpret(result)) {
       final double radius = line3d.getWidth() / 2;
       root.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
     }
