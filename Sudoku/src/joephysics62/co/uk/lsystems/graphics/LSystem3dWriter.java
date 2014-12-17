@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 import joephysics62.co.uk.lsystems.LSystemGenerator;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.Line3D;
-import joephysics62.co.uk.lsystems.examples.BushExample3d;
+import joephysics62.co.uk.lsystems.examples.NodeRewrier;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
@@ -36,7 +36,7 @@ public class LSystem3dWriter extends Application {
   @Override
   public void start(final Stage primaryStage) throws Exception {
     primaryStage.setResizable(false);
-    final Scene scene = new Scene(createContent(new BushExample3d(), ITERATIONS));
+    final Scene scene = new Scene(createContent(new NodeRewrier(), ITERATIONS));
     scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
       @Override
@@ -78,7 +78,8 @@ public class LSystem3dWriter extends Application {
     final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem.angle(), DRAW_STEP, lsystem.narrowing());
     final String result = _generator.generate(lsystem, iterations);
     for (final Line3D line3d : turtleInterpreter.interpret(result, initialState)) {
-      root.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), line3d.getWidth() / 2));
+      final double radius = line3d.getWidth() / 2;
+      root.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
     }
     // Use a SubScene
     final SubScene subScene = new SubScene(root, 600, 600);
