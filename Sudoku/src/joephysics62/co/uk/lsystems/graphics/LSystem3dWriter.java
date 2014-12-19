@@ -2,7 +2,6 @@ package joephysics62.co.uk.lsystems.graphics;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
-import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
@@ -10,8 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
@@ -85,7 +82,7 @@ public class LSystem3dWriter extends Application {
     final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem);
     for (final Line3D line3d : turtleInterpreter.interpret(lsystem.generate(iterations))) {
       final double radius = line3d.getWidth() / 2;
-      _output.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
+      _output.getChildren().add(new ConnectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
     }
     // Use a SubScene
     final SubScene subScene = new SubScene(root, 600, 600);
@@ -99,16 +96,6 @@ public class LSystem3dWriter extends Application {
 
   public static void main(final String[] args) {
     launch(args);
-  }
-
-  private static Cylinder connectingCylinder(final Point3D source, final Point3D target, final Color color, final double radius) {
-    final Cylinder cylinder = new Cylinder(radius, target.distance(source));
-    final Point3D midpoint = target.midpoint(source);
-    cylinder.getTransforms().add(new Translate(midpoint.getX(), midpoint.getY(), midpoint.getZ()));
-    final Point3D diff = target.subtract(source);
-    cylinder.getTransforms().add(new Rotate(-diff.angle(Rotate.Y_AXIS), diff.crossProduct(Rotate.Y_AXIS)));
-    cylinder.setMaterial(new PhongMaterial(color));
-    return cylinder;
   }
 
 }
