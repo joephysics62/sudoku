@@ -1,16 +1,15 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class DragonCurve implements TurtleLSystem {
+public class DragonCurve extends ContextFreeLSystem {
 
   @Override
-  public String axiom() {
+  public String axiomString() {
     return "FX";
   }
 
   @Override
-  public String applyRule(final Character input) {
+  public String applyRuleString(final Character input) {
     switch (input) {
     case 'X':
       return "X+YF";

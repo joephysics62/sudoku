@@ -1,16 +1,14 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
-
-public class IslandsAndLakes implements TurtleLSystem {
+public class IslandsAndLakes extends ContextFreeLSystem {
 
   @Override
-  public String axiom() {
+  public String axiomString() {
     return "F+F+F+F";
   }
 
   @Override
-  public String applyRule(final Character input) {
+  public String applyRuleString(final Character input) {
     switch (input) {
     case 'f':
       return "ffffff";

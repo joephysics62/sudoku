@@ -15,24 +15,17 @@ import javafx.scene.shape.Cylinder;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Translate;
 import javafx.stage.Stage;
-import joephysics62.co.uk.lsystems.LSystemGenerator;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.Line3D;
-import joephysics62.co.uk.lsystems.examples.BushExample3d;
+import joephysics62.co.uk.lsystems.examples.PythagoreanTree3d;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class LSystem3dWriter extends Application {
 
-  private static final TurtleLSystem LSYSTEM = new BushExample3d();
+  private static final TurtleLSystem LSYSTEM = new PythagoreanTree3d();
+  private static final int ITERATIONS = 5;
 
-  private static final int ITERATIONS = 6;
-
-  private final LSystemGenerator _generator;
   private PerspectiveCamera _camera;
-
-  public LSystem3dWriter() {
-    _generator = new LSystemGenerator();
-  }
 
   @Override
   public void start(final Stage primaryStage) throws Exception {
@@ -45,15 +38,23 @@ public class LSystem3dWriter extends Application {
         switch (keyEvent.getCode()) {
         case Z:
           _camera.getTransforms().add(new Translate(0, 0, 1));
+          _distance--;
           break;
         case A:
           _camera.getTransforms().add(new Translate(0, 0, -1));
+          _distance++;
           break;
         case LEFT:
-          _camera.getTransforms().add(new Rotate(-5, Rotate.Y_AXIS));
+          _output.getTransforms().add(new Rotate(-5, Rotate.Z_AXIS));
           break;
         case RIGHT:
-          _camera.getTransforms().add(new Rotate(5, Rotate.Y_AXIS));
+          _output.getTransforms().add(new Rotate(5, Rotate.Z_AXIS));
+          break;
+        case UP:
+          _output.getTransforms().add(new Translate(0, 0, 1));
+          break;
+        case DOWN:
+          _output.getTransforms().add(new Translate(0, 0, -1));
           break;
         default:
           break;
@@ -64,21 +65,27 @@ public class LSystem3dWriter extends Application {
     primaryStage.show();
   }
 
+  private double _distance = 15;
+
+  private Group _output;
+
   private Parent createContent(final TurtleLSystem lsystem, final int iterations) {
     _camera = new PerspectiveCamera(true);
     _camera.getTransforms().add(new Rotate(5, Rotate.Z_AXIS));
     _camera.getTransforms().add(new Rotate(-115, Rotate.X_AXIS));
-    _camera.getTransforms().add(new Translate(0, -2, -15));
+    _camera.getTransforms().add(new Translate(0, -2, -_distance));
 
     // Build the Scene Graph
     final Group root = new Group();
     root.getChildren().add(_camera);
 
+    _output = new Group();
+    root.getChildren().add(_output);
+
     final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(lsystem);
-    final String result = _generator.generate(lsystem, iterations);
-    for (final Line3D line3d : turtleInterpreter.interpret(result)) {
+    for (final Line3D line3d : turtleInterpreter.interpret(lsystem.generate(iterations))) {
       final double radius = line3d.getWidth() / 2;
-      root.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
+      _output.getChildren().add(connectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
     }
     // Use a SubScene
     final SubScene subScene = new SubScene(root, 600, 600);

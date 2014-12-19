@@ -1,16 +1,15 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class FractalPlant implements TurtleLSystem {
+public class FractalPlant extends ContextFreeLSystem {
 
   @Override
-  public String axiom() {
+  public String axiomString() {
     return "X";
   }
 
   @Override
-  public String applyRule(final Character input) {
+  public String applyRuleString(final Character input) {
     switch (input) {
     case 'F':
       return "FF";

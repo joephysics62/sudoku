@@ -12,23 +12,17 @@ import javafx.scene.paint.Color;
 
 import javax.imageio.ImageIO;
 
-import joephysics62.co.uk.lsystems.LSystemGenerator;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.Line3D;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class LSystem2dWriter {
-  private final LSystemGenerator _generator;
-
-  public LSystem2dWriter(final LSystemGenerator generator) {
-    _generator = generator;
-  }
 
   public void writeGif(final TurtleLSystem lsystem, final int iterations, final String fileName, final int imageSize) throws IOException {
     final BufferedImage bi = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
 
     final LSystemTurtleInterpreter interpreter = new LSystemTurtleInterpreter(lsystem);
-    final List<Line3D> lines = interpreter.interpret(_generator.generate(lsystem, iterations));
+    final List<Line3D> lines = interpreter.interpret(lsystem.generate(iterations));
     final double minX = lines.stream().map(i -> Math.min(i.getStart().getX(), i.getEnd().getX())).collect(Collectors.minBy(Double::compare)).orElse(0.0);
     final double maxX = lines.stream().map(i -> Math.max(i.getStart().getX(), i.getEnd().getX())).collect(Collectors.maxBy(Double::compare)).orElse(10.0);
     final double minZ = lines.stream().map(i -> Math.min(i.getStart().getZ(), i.getEnd().getZ())).collect(Collectors.minBy(Double::compare)).orElse(0.0);

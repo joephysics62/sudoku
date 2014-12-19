@@ -2,18 +2,16 @@ package joephysics62.co.uk.lsystems.examples;
 
 import java.util.Random;
 
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
-
-public class SimpleStochasticPlant implements TurtleLSystem {
+public class SimpleStochasticPlant extends ContextFreeLSystem {
   private final Random _random = new Random();
 
   @Override
-  public String axiom() {
+  public String axiomString() {
     return "F";
   }
 
   @Override
-  public String applyRule(final Character input) {
+  public String applyRuleString(final Character input) {
     if (input.equals('F')) {
       switch (_random.nextInt(3)) {
       case 0:

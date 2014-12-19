@@ -1,16 +1,15 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
-public class QuadraticSnowflake implements TurtleLSystem {
+public class QuadraticSnowflake extends ContextFreeLSystem {
 
   @Override
-  public String axiom() {
+  public String axiomString() {
     return "-F";
   }
 
   @Override
-  public String applyRule(final Character input) {
+  public String applyRuleString(final Character input) {
     if (input.equals('F')) {
       return "F+F-F-F+F";
     }

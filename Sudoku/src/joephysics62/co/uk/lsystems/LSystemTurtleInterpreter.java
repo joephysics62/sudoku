@@ -17,20 +17,23 @@ public class LSystemTurtleInterpreter {
     _lSystem = lSystem;
   }
 
-  public List<Line3D> interpret(final String lsystemResult) {
+  public List<Line3D> interpret(final List<Character> lsystemResult) {
     final double _angleStep = _lSystem.angle();
     final double _narrowFactor = _lSystem.narrowing();
     final double _drawStep = _lSystem.drawStep();
     final TurtleState start = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.05, 0);
     final Turtle3D turtle3d = new Turtle3D(start);
     final List<Line3D> out = new ArrayList<>();
-    for (final char c : lsystemResult.toCharArray()) {
+    for (final char c : lsystemResult) {
       switch (c) {
       case '+':
         turtle3d.turn(_angleStep);
         break;
       case '-':
         turtle3d.turn(-_angleStep);
+        break;
+      case '|':
+        turtle3d.turn(180);
         break;
       case '^':
         turtle3d.pitch(_angleStep);
@@ -50,7 +53,10 @@ public class LSystemTurtleInterpreter {
       case '\'':
         turtle3d.incrementColour();
         break;
-      case 'A':
+      //case 'A':
+      //case 'B':
+      //case 'C':
+      //case 'D':
       case 'F':
       case 'G':
       case 'S':
