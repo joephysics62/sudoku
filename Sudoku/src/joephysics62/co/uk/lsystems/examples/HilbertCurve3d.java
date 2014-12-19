@@ -1,5 +1,6 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import joephysics62.co.uk.lsystems.ContextFreeLSystem;
 
 public class HilbertCurve3d extends ContextFreeLSystem {
 

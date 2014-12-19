@@ -1,6 +1,6 @@
 package joephysics62.co.uk.lsystems.examples;
 
-
+import joephysics62.co.uk.lsystems.ContextFreeLSystem;
 
 public class FractalTreeC extends ContextFreeLSystem {
 

@@ -2,6 +2,8 @@ package joephysics62.co.uk.lsystems.examples;
 
 import java.util.Random;
 
+import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+
 public class SimpleStochasticPlant extends ContextFreeLSystem {
   private final Random _random = new Random();
 

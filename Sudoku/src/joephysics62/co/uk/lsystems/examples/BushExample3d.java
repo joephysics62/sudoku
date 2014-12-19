@@ -1,6 +1,7 @@
 package joephysics62.co.uk.lsystems.examples;
 
 import javafx.scene.paint.Color;
+import joephysics62.co.uk.lsystems.ContextFreeLSystem;
 
 public class BushExample3d extends ContextFreeLSystem {
 

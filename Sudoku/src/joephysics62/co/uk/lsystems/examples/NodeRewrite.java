@@ -1,7 +1,8 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import joephysics62.co.uk.lsystems.ContextFreeLSystem;
 
-public class NodeRewrier extends ContextFreeLSystem {
+public class NodeRewrite extends ContextFreeLSystem {
 
   @Override
   public String axiomString() {

@@ -1,4 +1,4 @@
-package joephysics62.co.uk.lsystems;
+package joephysics62.co.uk.lsystems.graphics;
 
 import javafx.geometry.Point3D;
 import javafx.scene.paint.Color;

@@ -13,7 +13,6 @@ import javafx.scene.paint.Color;
 import javax.imageio.ImageIO;
 
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
-import joephysics62.co.uk.lsystems.Line3D;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class LSystem2dWriter {
