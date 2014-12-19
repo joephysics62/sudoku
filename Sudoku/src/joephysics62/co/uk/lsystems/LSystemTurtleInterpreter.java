@@ -11,9 +11,9 @@ import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
 public class LSystemTurtleInterpreter {
 
-  private final TurtleLSystem _lSystem;
+  private final TurtleLSystem<Character> _lSystem;
 
-  public LSystemTurtleInterpreter(final TurtleLSystem lSystem) {
+  public LSystemTurtleInterpreter(final TurtleLSystem<Character> lSystem) {
     _lSystem = lSystem;
   }
 

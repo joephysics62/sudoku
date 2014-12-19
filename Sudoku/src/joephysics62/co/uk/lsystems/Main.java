@@ -8,7 +8,7 @@ import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class Main {
 	public static void main(final String[] args) throws IOException {
-		final TurtleLSystem lsystem = new SimpleStochasticPlant();
+		final TurtleLSystem<Character> lsystem = new SimpleStochasticPlant();
 
 		final LSystem2dWriter writer2d = new LSystem2dWriter();
 		writer2d.writeGif(lsystem, 13, "C:\\Users\\joe\\Pictures\\outStatic.gif", 600);

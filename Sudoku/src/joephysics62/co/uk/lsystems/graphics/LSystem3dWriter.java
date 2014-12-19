@@ -22,7 +22,7 @@ import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class LSystem3dWriter extends Application {
 
-  private static final TurtleLSystem LSYSTEM = new PythagoreanTree3d();
+  private static final TurtleLSystem<Character> LSYSTEM = new PythagoreanTree3d();
   private static final int ITERATIONS = 5;
 
   private PerspectiveCamera _camera;
@@ -69,7 +69,7 @@ public class LSystem3dWriter extends Application {
 
   private Group _output;
 
-  private Parent createContent(final TurtleLSystem lsystem, final int iterations) {
+  private Parent createContent(final TurtleLSystem<Character> lsystem, final int iterations) {
     _camera = new PerspectiveCamera(true);
     _camera.getTransforms().add(new Rotate(5, Rotate.Z_AXIS));
     _camera.getTransforms().add(new Rotate(-115, Rotate.X_AXIS));

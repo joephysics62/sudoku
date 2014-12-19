@@ -4,7 +4,7 @@ import javafx.scene.paint.Color;
 import joephysics62.co.uk.lsystems.LSystem;
 
 
-public interface TurtleLSystem extends LSystem {
+public interface TurtleLSystem<T> extends LSystem<T> {
   double angle();
   default double drawStep() {
     return 0.1;

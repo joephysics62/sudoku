@@ -3,13 +3,14 @@ package joephysics62.co.uk.lsystems;
 import java.util.List;
 
 
-public interface LSystem {
+public interface LSystem<T> {
 
   public static final int MAX_ELEMENTS = 50000;
 
-	List<Character> axiom();
+	List<T> axiom();
 
-	List<Character> applyRule(Character input);
+	List<T> applyRule(int index, List<T> current);
 
-	List<Character> generate(int iterations);
+  List<T> generate(int iterations);
+
 }
