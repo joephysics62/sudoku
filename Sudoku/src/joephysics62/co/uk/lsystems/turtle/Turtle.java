@@ -2,12 +2,12 @@ package joephysics62.co.uk.lsystems.turtle;
 
 import java.util.Stack;
 
-public class Turtle3D {
+public class Turtle {
 
   private final Stack<TurtleState> _stateStack = new Stack<>();
   private TurtleState _currentState;
 
-  public Turtle3D(final TurtleState start) {
+  public Turtle(final TurtleState start) {
     _currentState = start;
   }
 

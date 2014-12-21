@@ -2,6 +2,8 @@ package joephysics62.co.uk.lsystems;
 
 import java.util.List;
 
+import joephysics62.co.uk.lsystems.rules.Rule;
+
 
 public interface LSystem<T> {
 

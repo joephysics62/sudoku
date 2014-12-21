@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.ContextFreeRule;
-import joephysics62.co.uk.lsystems.Rule;
+import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
+import joephysics62.co.uk.lsystems.rules.Rule;
 
 public class IslandsAndLakes extends CharacterLSystem {
 

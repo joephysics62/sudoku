@@ -6,7 +6,7 @@ import java.util.List;
 import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
 import joephysics62.co.uk.lsystems.graphics.Line3D;
-import joephysics62.co.uk.lsystems.turtle.Turtle3D;
+import joephysics62.co.uk.lsystems.turtle.Turtle;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 import joephysics62.co.uk.lsystems.turtle.TurtleState;
 
@@ -23,7 +23,7 @@ public class LSystemTurtleInterpreter {
     final double _narrowFactor = _lSystem.narrowing();
     final double _drawStep = _lSystem.drawStep();
     final TurtleState start = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.05, 0);
-    final Turtle3D turtle3d = new Turtle3D(start);
+    final Turtle turtle3d = new Turtle(start);
     final List<Line3D> out = new ArrayList<>();
     for (final char c : lsystemResult) {
       switch (c) {

@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.Rule;
-import joephysics62.co.uk.lsystems.StochasticContextFreeRule;
+import joephysics62.co.uk.lsystems.rules.Rule;
+import joephysics62.co.uk.lsystems.rules.StochasticContextFreeRule;
 
 public class SimpleStochasticPlant extends CharacterLSystem {
 

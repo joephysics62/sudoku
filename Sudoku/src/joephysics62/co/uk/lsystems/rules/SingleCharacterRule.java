@@ -1,4 +1,4 @@
-package joephysics62.co.uk.lsystems;
+package joephysics62.co.uk.lsystems.rules;
 
 import java.util.List;
 

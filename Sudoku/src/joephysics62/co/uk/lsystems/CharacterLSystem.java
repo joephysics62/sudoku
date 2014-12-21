@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import joephysics62.co.uk.lsystems.rules.Rule;
 import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public abstract class CharacterLSystem implements TurtleLSystem<Character> {
