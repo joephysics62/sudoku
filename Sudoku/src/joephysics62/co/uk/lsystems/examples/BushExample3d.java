@@ -5,7 +5,7 @@ import java.util.List;
 
 import javafx.scene.paint.Color;
 import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
+import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
 public class BushExample3d extends CharacterLSystem {
@@ -18,9 +18,9 @@ public class BushExample3d extends CharacterLSystem {
   @Override
   public List<Rule<Character>> rules() {
     return Arrays.asList(
-        ContextFreeRule.of('A', "[&F'L!A]/////[&F'L!A]///////[&F'L!A]"),
-        ContextFreeRule.of('F', "S/////F"),
-        ContextFreeRule.of('S', "FL")
+        SimpleContextFreeRule.of('A', "[&F'L!A]/////[&F'L!A]///////[&F'L!A]"),
+        SimpleContextFreeRule.of('F', "S/////F"),
+        SimpleContextFreeRule.of('S', "FL")
     );
   }
 

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
+import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
 
@@ -18,8 +18,8 @@ public class SierpinskiGasket extends CharacterLSystem {
   @Override
   public List<Rule<Character>> rules() {
     return Arrays.asList(
-        ContextFreeRule.of('F', "G-F-G"),
-        ContextFreeRule.of('G', "F+G+F")
+        SimpleContextFreeRule.of('F', "G-F-G"),
+        SimpleContextFreeRule.of('G', "F+G+F")
     );
   }
 

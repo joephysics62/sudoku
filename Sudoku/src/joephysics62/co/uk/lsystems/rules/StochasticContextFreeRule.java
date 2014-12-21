@@ -8,7 +8,7 @@ import java.util.stream.IntStream;
 import org.apache.commons.math3.distribution.EnumeratedIntegerDistribution;
 import org.apache.commons.math3.distribution.IntegerDistribution;
 
-public class StochasticContextFreeRule extends SingleCharacterRule {
+public class StochasticContextFreeRule extends ContextFreeRule<Character> {
 
   private final List<List<Character>> _replacements = new ArrayList<>();
   private final IntegerDistribution _selector;

@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
+import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
 public class NodeRewrite extends CharacterLSystem {
@@ -17,8 +17,8 @@ public class NodeRewrite extends CharacterLSystem {
   @Override
   public List<Rule<Character>> rules() {
     return Arrays.asList(
-        ContextFreeRule.of('X', "F[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]FX"),
-        ContextFreeRule.of('F', "FF")
+        SimpleContextFreeRule.of('X', "F[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]FX"),
+        SimpleContextFreeRule.of('F', "FF")
     );
   }
 

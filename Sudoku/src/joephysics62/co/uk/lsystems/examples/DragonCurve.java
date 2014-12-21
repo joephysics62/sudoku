@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
+import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
 
@@ -18,8 +18,8 @@ public class DragonCurve extends CharacterLSystem {
   @Override
   public List<Rule<Character>> rules() {
     return Arrays.asList(
-        ContextFreeRule.of('X', "X+YF"),
-        ContextFreeRule.of('Y', "FX-Y")
+        SimpleContextFreeRule.of('X', "X+YF"),
+        SimpleContextFreeRule.of('Y', "FX-Y")
     );
   }
 
