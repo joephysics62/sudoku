@@ -1,8 +1,13 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
 
-public class NodeRewrite extends ContextFreeLSystem {
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
+
+public class NodeRewrite extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -10,16 +15,11 @@ public class NodeRewrite extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    if ('X' == input) {
-      return "F[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]FX";
-    }
-    else if ('F' == input) {
-      return "FF";
-    }
-    else {
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('X', "F[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]//[&!X]FX"),
+        ContextFreeRule.of('F', "FF")
+    );
   }
 
   @Override

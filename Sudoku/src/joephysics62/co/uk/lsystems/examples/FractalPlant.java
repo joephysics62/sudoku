@@ -1,9 +1,14 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
+
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
 
 
-public class FractalPlant extends ContextFreeLSystem {
+public class FractalPlant extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -11,15 +16,11 @@ public class FractalPlant extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    switch (input) {
-    case 'F':
-      return "FF";
-    case 'X':
-      return "F-[[X]+X]+F[+FX]-X";
-    default:
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('F', "FF"),
+        ContextFreeRule.of('X', "F-[[X]+X]+F[+FX]-X")
+    );
   }
 
   @Override

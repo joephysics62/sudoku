@@ -1,9 +1,14 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import javafx.scene.paint.Color;
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
 
-public class BushExample3d extends ContextFreeLSystem {
+import javafx.scene.paint.Color;
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
+
+public class BushExample3d extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -11,17 +16,12 @@ public class BushExample3d extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    switch (input) {
-    case 'A':
-      return "[&F'L!A]/////[&F'L!A]///////[&F'L!A]";
-    case 'F':
-      return "S/////F";
-    case 'S':
-      return "FL";
-    default:
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('A', "[&F'L!A]/////[&F'L!A]///////[&F'L!A]"),
+        ContextFreeRule.of('F', "S/////F"),
+        ContextFreeRule.of('S', "FL")
+    );
   }
 
   @Override

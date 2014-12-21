@@ -1,9 +1,14 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
+
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
 
 
-public class GeneralKochCurve extends ContextFreeLSystem {
+public class GeneralKochCurve extends CharacterLSystem {
 
   private final String _drawRewrite;
 
@@ -17,13 +22,10 @@ public class GeneralKochCurve extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    switch (input) {
-    case 'F':
-      return _drawRewrite;
-    default:
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('F', _drawRewrite)
+    );
   }
 
   @Override

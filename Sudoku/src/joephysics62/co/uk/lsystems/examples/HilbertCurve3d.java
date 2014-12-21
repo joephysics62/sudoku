@@ -1,8 +1,13 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
 
-public class HilbertCurve3d extends ContextFreeLSystem {
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
+
+public class HilbertCurve3d extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -10,19 +15,13 @@ public class HilbertCurve3d extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    switch (input) {
-    case 'A':
-      return "B-F+CFC+F-D&F^D-F+&&CFC+F+B//";
-    case 'B':
-      return "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//";
-    case 'C':
-      return "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//";
-    case 'D':
-      return "|CFB-F+B|FA&F^A&&FB-F+B|FC//";
-    default:
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('A', "B-F+CFC+F-D&F^D-F+&&CFC+F+B//"),
+        ContextFreeRule.of('B', "A&F^CFB^F^D^^-F-D^|F^B|FC^F^A//"),
+        ContextFreeRule.of('C', "|D^|F^B-F+C^F^A&&FA&F^C+F+B^F^D//"),
+        ContextFreeRule.of('D', "|CFB-F+B|FA&F^A&&FB-F+B|FC//")
+    );
   }
 
   @Override

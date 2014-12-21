@@ -1,15 +1,21 @@
 package joephysics62.co.uk.lsystems;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ContextFreeRule implements Rule<Character> {
 
   private final Character _match;
-  private final String _replacement;
+  private final List<Character> _replacement;
 
-  public ContextFreeRule(final Character match, final String replacement) {
+  private ContextFreeRule(final Character match, final List<Character> replacement) {
     _match = match;
-    _replacement = replacement;
+    _replacement = Collections.unmodifiableList(replacement);
+  }
+
+  public static ContextFreeRule of(final Character match, final String replacement) {
+    return new ContextFreeRule(match, replacement.chars().mapToObj(c -> (char) c).collect(Collectors.toList()));
   }
 
   @Override
@@ -19,7 +25,7 @@ public class ContextFreeRule implements Rule<Character> {
 
   @Override
   public List<Character> replacement() {
-    return null;
+    return _replacement;
   }
 
 }

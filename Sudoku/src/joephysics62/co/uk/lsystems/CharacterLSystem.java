@@ -1,6 +1,7 @@
 package joephysics62.co.uk.lsystems;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,9 +31,18 @@ public abstract class CharacterLSystem implements TurtleLSystem<Character> {
     }
     final List<Character> newChars = new ArrayList<Character>();
     for (int index = 0; index < chars.size(); index++) {
-      newChars.addAll(applyRule(index, chars));
+      newChars.addAll(findAndApply(index, chars));
     }
     return recursiveReplace(newChars, iterations + 1, limit);
+  }
+
+  private List<Character> findAndApply(final int index, final List<Character> chars) {
+    for (final Rule<Character> rule : rules()) {
+      if (rule.matches(index, chars)) {
+        return rule.replacement();
+      }
+    }
+    return Collections.singletonList(chars.get(index));
   }
 
 }

@@ -1,9 +1,14 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
+
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
 
 
-public class PythagoreanTree3d extends ContextFreeLSystem {
+public class PythagoreanTree3d extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -11,16 +16,11 @@ public class PythagoreanTree3d extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    switch (input) {
-    case 'F':
-      // "[&FL!A]/////'[&FL!A]///////'[&FL!A]";
-      return "G[&!F]//[&!F]//[&!F]-!F";
-    case 'G':
-      return "GG";
-    default:
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('F', "G[&!F]//[&!F]//[&!F]-!F"),
+        ContextFreeRule.of('G', "GG")
+    );
   }
 
   @Override

@@ -1,9 +1,14 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
+
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
 
 
-public class QuadraticSnowflake extends ContextFreeLSystem {
+public class QuadraticSnowflake extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -11,11 +16,10 @@ public class QuadraticSnowflake extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    if (input.equals('F')) {
-      return "F+F-F-F+F";
-    }
-    return input.toString();
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('F', "F+F-F-F+F")
+    );
   }
 
   @Override

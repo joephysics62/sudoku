@@ -9,7 +9,7 @@ public interface LSystem<T> {
 
 	List<T> axiom();
 
-	List<T> applyRule(int index, List<T> current);
+	List<Rule<T>> rules();
 
   List<T> generate(int iterations);
 

@@ -7,11 +7,6 @@ public abstract class ContextSenstive1LSytem extends CharacterLSystem {
 
   protected abstract String applyContextSensitiveRule(final Character input, final Optional<Character> preceding, final Optional<Character> successor);
 
-  @Override
-  public List<Character> applyRule(final int index, final List<Character> current) {
-    return toCharList(applyContextSensitiveRule(current.get(index), preceding(index, current), successor(index, current)));
-  }
-
   private Optional<Character> successor(final int index, final List<Character> current) {
     for (int i = index + 1; i < current.size(); i++) {
       if (!contextIgnorable().contains(current.get(i))) {

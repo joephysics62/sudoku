@@ -1,8 +1,13 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import joephysics62.co.uk.lsystems.ContextFreeLSystem;
+import java.util.Arrays;
+import java.util.List;
 
-public class IslandsAndLakes extends ContextFreeLSystem {
+import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.ContextFreeRule;
+import joephysics62.co.uk.lsystems.Rule;
+
+public class IslandsAndLakes extends CharacterLSystem {
 
   @Override
   public String axiomString() {
@@ -10,15 +15,11 @@ public class IslandsAndLakes extends ContextFreeLSystem {
   }
 
   @Override
-  public String applyRuleString(final Character input) {
-    switch (input) {
-    case 'f':
-      return "ffffff";
-    case 'F':
-      return "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF";
-    default:
-      return input.toString();
-    }
+  public List<Rule<Character>> rules() {
+    return Arrays.asList(
+        ContextFreeRule.of('f', "ffffff"),
+        ContextFreeRule.of('F', "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF")
+    );
   }
 
   @Override
