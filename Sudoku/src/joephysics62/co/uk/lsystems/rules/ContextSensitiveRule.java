@@ -3,21 +3,23 @@ package joephysics62.co.uk.lsystems.rules;
 import java.util.List;
 import java.util.Stack;
 
-public abstract class ContextSensitiveRule<T> implements Rule<T> {
+import joephysics62.co.uk.lsystems.TurtleElement;
 
-  private final T _match;
+public abstract class ContextSensitiveRule implements Rule {
 
-  protected abstract T predecessor();
-  protected abstract T successor();
-  protected abstract T popper();
-  protected abstract T pusher();
-  protected abstract List<T> ignorable();
+  private final Character _match;
 
-  protected ContextSensitiveRule(final T match) {
-    _match = match;
+  protected abstract Character predecessor();
+  protected abstract Character successor();
+  protected abstract Character popper();
+  protected abstract Character pusher();
+  protected abstract List<Character> ignorable();
+
+  protected ContextSensitiveRule(final Character matchId) {
+    _match = matchId;
   }
 
-  private final boolean predecessorSatisfied(final int index, final List<T> input) {
+  private final boolean predecessorSatisfied(final int index, final List<TurtleElement> input) {
     if (predecessor() == null) {
       return true;
     }
@@ -26,7 +28,7 @@ public abstract class ContextSensitiveRule<T> implements Rule<T> {
     }
     final Stack<Void> stack = new Stack<>();
     for (int i = index - 1; i >= 0; i--) {
-      final T temp = input.get(i);
+      final Character temp = input.get(i).getId();
       if (temp.equals(pusher())) {
         if (!stack.isEmpty()) {
           stack.pop();
@@ -50,7 +52,7 @@ public abstract class ContextSensitiveRule<T> implements Rule<T> {
     return false;
   }
 
-  private final boolean successorSatisfied(final int index, final List<T> input) {
+  private final boolean successorSatisfied(final int index, final List<TurtleElement> input) {
     if (successor() == null) {
       return true;
     }
@@ -59,7 +61,7 @@ public abstract class ContextSensitiveRule<T> implements Rule<T> {
     }
     final Stack<Void> stack = new Stack<>();
     for (int i = index + 1; i < input.size(); i++) {
-      final T temp = input.get(i);
+      final Character temp = input.get(i).getId();
       if (temp.equals(pusher())) {
         stack.push(null);
         continue;
@@ -85,8 +87,8 @@ public abstract class ContextSensitiveRule<T> implements Rule<T> {
   }
 
   @Override
-  public final boolean matches(final int index, final List<T> input) {
-    if (!_match.equals(input.get(index))) {
+  public final boolean matches(final int index, final List<TurtleElement> input) {
+    if (!_match.equals(input.get(index).getId())) {
       return false;
     }
     return predecessorSatisfied(index, input) && successorSatisfied(index, input);

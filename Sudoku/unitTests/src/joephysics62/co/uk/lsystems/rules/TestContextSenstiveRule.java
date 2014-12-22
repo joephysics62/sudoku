@@ -1,8 +1,12 @@
 package joephysics62.co.uk.lsystems.rules;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import joephysics62.co.uk.lsystems.TurtleElement;
 import joephysics62.co.uk.lsystems.Utils;
 
 import org.junit.Assert;
@@ -10,39 +14,54 @@ import org.junit.Test;
 
 public class TestContextSenstiveRule {
 
-  private static class SuccessorRuleForTesting extends ContextSensitiveRule<Character> {
+  private static TurtleElement A = new TurtleElement('A', 0);
+  private static TurtleElement B = new TurtleElement('B', 0);
+  private static TurtleElement LEFT = new TurtleElement('+', 0);
+  private static TurtleElement RIGHT = new TurtleElement('-', 0);
+  private static TurtleElement PUSH = new TurtleElement('[', 0);
+  private static TurtleElement POP = new TurtleElement(']', 0);
 
-    protected SuccessorRuleForTesting() { super('A'); }
-    @Override public List<Character> replacement() { return Arrays.asList('B'); }
+  private static List<TurtleElement> SUPPORTED = Arrays.asList(A, B, LEFT, RIGHT, PUSH, POP);
+  private static Map<Character, TurtleElement> CHAR_MAP = new LinkedHashMap<>();
+  static {
+    for (final TurtleElement turtleElement : SUPPORTED) {
+      CHAR_MAP.put(turtleElement.getId(), turtleElement);
+    }
+  }
+
+  private static class SuccessorRuleForTesting extends ContextSensitiveRule {
+
+    protected SuccessorRuleForTesting() { super(A.getId()); }
+    @Override public List<TurtleElement> replacement(final double x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return null; }
-    @Override protected Character successor() { return 'B'; }
-    @Override protected Character popper() { return ']'; }
-    @Override protected Character pusher() { return '['; }
-    @Override protected List<Character> ignorable() { return Arrays.asList('+', '-'); }
+    @Override protected Character successor() { return B.getId(); }
+    @Override protected Character popper() { return POP.getId(); }
+    @Override protected Character pusher() { return PUSH.getId(); }
+    @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
   }
 
-  private static class PredecessorRuleForTesting extends ContextSensitiveRule<Character> {
+  private static class PredecessorRuleForTesting extends ContextSensitiveRule {
 
-    protected PredecessorRuleForTesting() { super('A'); }
-    @Override public List<Character> replacement() { return Arrays.asList('B'); }
-    @Override protected Character predecessor() { return 'B'; }
+    protected PredecessorRuleForTesting() { super(A.getId()); }
+    @Override public List<TurtleElement> replacement(final double x) { return Arrays.asList(B); }
+    @Override protected Character predecessor() { return B.getId(); }
     @Override protected Character successor() { return null; }
-    @Override protected Character popper() { return ']'; }
-    @Override protected Character pusher() { return '['; }
-    @Override protected List<Character> ignorable() { return Arrays.asList('+', '-'); }
+    @Override protected Character popper() { return POP.getId(); }
+    @Override protected Character pusher() { return PUSH.getId(); }
+    @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
   }
 
-  private void runTest(final Rule<Character> rule, final String input, final Integer... matches) {
-    final List<Character> chars = Utils.toChars(input);
+  private void runTest(final Rule rule, final String input, final Integer... matches) {
+    final List<TurtleElement> elems = Utils.toChars(input).stream().map(c -> CHAR_MAP.get(c)).collect(Collectors.toList());
     final List<Integer> matchList = Arrays.asList(matches);
-    for (int i = 0; i < chars.size(); i++) {
-      Assert.assertEquals("Failure at char = " + i, matchList.contains(i), rule.matches(i, chars));
+    for (int i = 0; i < elems.size(); i++) {
+      Assert.assertEquals("Failure at char = " + i, matchList.contains(i), rule.matches(i, elems));
     }
   }
 
   @Test
   public void testSuccessorRule() {
-    final Rule<Character> rule = new SuccessorRuleForTesting();
+    final Rule rule = new SuccessorRuleForTesting();
     runTest(rule, "");
     runTest(rule, "AB", 0);
     runTest(rule, "BA");
@@ -71,7 +90,7 @@ public class TestContextSenstiveRule {
 
   @Test
   public void testPredecessorRule() {
-    final Rule<Character> rule = new PredecessorRuleForTesting();
+    final Rule rule = new PredecessorRuleForTesting();
     runTest(rule, "");
     runTest(rule, "A");
     runTest(rule, "B");

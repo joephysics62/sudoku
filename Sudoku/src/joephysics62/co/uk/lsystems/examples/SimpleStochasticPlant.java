@@ -3,11 +3,10 @@ package joephysics62.co.uk.lsystems.examples;
 import java.util.Arrays;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.CharacterLSystem;
+import joephysics62.co.uk.lsystems.UnparametricLSystem;
 import joephysics62.co.uk.lsystems.rules.Rule;
-import joephysics62.co.uk.lsystems.rules.StochasticContextFreeRule;
 
-public class SimpleStochasticPlant extends CharacterLSystem {
+public class SimpleStochasticPlant extends UnparametricLSystem {
 
   @Override
   public String axiomString() {
@@ -15,9 +14,13 @@ public class SimpleStochasticPlant extends CharacterLSystem {
   }
 
   @Override
-  public List<Rule<Character>> rules() {
+  public List<Rule> rules() {
     return Arrays.asList(
-        new StochasticContextFreeRule('F', new double[] {0.33, 0.33, 0.34}, new String[] {"F[+F]F[-F]F", "F[+F]F", "F[-F]F"}));
+        stochasticContextFreeRule(
+            'F',
+            new double[] {0.33, 0.33, 0.34},
+            new String[] {"F[+F]F[-F]F", "F[+F]F", "F[-F]F"})
+        );
 
   }
 

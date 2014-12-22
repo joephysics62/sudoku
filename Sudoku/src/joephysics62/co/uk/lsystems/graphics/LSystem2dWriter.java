@@ -12,12 +12,12 @@ import javafx.scene.paint.Color;
 
 import javax.imageio.ImageIO;
 
+import joephysics62.co.uk.lsystems.LSystem;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class LSystem2dWriter {
 
-  public void writeGif(final TurtleLSystem<Character> lsystem, final int iterations, final String fileName, final int imageSize) throws IOException {
+  public void writeGif(final LSystem lsystem, final int iterations, final String fileName, final int imageSize) throws IOException {
     final BufferedImage bi = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_RGB);
 
     final LSystemTurtleInterpreter interpreter = new LSystemTurtleInterpreter(lsystem);

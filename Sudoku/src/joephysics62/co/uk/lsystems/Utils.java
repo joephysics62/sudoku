@@ -9,8 +9,8 @@ public class Utils {
     return string.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
   }
 
-  public static String toString(final List<Character> chars) {
-    return chars.stream().map(c -> String.valueOf(c)).collect(Collectors.joining());
+  public static String toString(final List<TurtleElement> chars) {
+    return chars.stream().map(c -> c.getId()).map(c -> String.valueOf(c)).collect(Collectors.joining());
   }
 
 }

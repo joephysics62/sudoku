@@ -3,11 +3,10 @@ package joephysics62.co.uk.lsystems.examples;
 import java.util.Arrays;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
+import joephysics62.co.uk.lsystems.UnparametricLSystem;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
-public class FractalTreeC extends CharacterLSystem {
+public class FractalTreeC extends UnparametricLSystem {
 
   @Override
   public String axiomString() {
@@ -15,9 +14,9 @@ public class FractalTreeC extends CharacterLSystem {
   }
 
   @Override
-  public List<Rule<Character>> rules() {
+  public List<Rule> rules() {
     return Arrays.asList(
-        SimpleContextFreeRule.of('F', "FF-[-F+F+F]+[+F-F-F]")
+        contextFreeRule('F', "FF-[-F+F+F]+[+F-F-F]")
     );
   }
 

@@ -3,12 +3,10 @@ package joephysics62.co.uk.lsystems.examples;
 import java.util.Arrays;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
+import joephysics62.co.uk.lsystems.UnparametricLSystem;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
-
-public class SierpinskiGasket extends CharacterLSystem {
+public class SierpinskiGasket extends UnparametricLSystem {
 
   @Override
   public String axiomString() {
@@ -16,10 +14,10 @@ public class SierpinskiGasket extends CharacterLSystem {
   }
 
   @Override
-  public List<Rule<Character>> rules() {
+  public List<Rule> rules() {
     return Arrays.asList(
-        SimpleContextFreeRule.of('F', "G-F-G"),
-        SimpleContextFreeRule.of('G', "F+G+F")
+        contextFreeRule('F', "G-F-G"),
+        contextFreeRule('G', "F+G+F")
     );
   }
 

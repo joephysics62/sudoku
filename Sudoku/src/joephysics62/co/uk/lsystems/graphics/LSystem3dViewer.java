@@ -1,13 +1,13 @@
 package joephysics62.co.uk.lsystems.graphics;
 
 import javafx.scene.Group;
+import joephysics62.co.uk.lsystems.LSystem;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
 import joephysics62.co.uk.lsystems.examples.BushExample3d;
-import joephysics62.co.uk.lsystems.turtle.TurtleLSystem;
 
 public class LSystem3dViewer extends Simple3dViewer {
 
-  private static final TurtleLSystem<Character> LSYSTEM = new BushExample3d();
+  private static final LSystem LSYSTEM = new BushExample3d();
   private static final int ITERATIONS = 5;
 
   @Override

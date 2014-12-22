@@ -19,8 +19,8 @@ public class TestContextSensitive2dBushB {
   }
 
   private void runTest(final int iterations, final String expected) {
-    final LSystem<Character> lsystem = new ContextSensitive2dBushB();
-    final String actual = lsystem.generate(iterations).stream().map(c -> String.valueOf(c)).collect(Collectors.joining());
+    final LSystem lsystem = new ContextSensitive2dBushB();
+    final String actual = lsystem.generate(iterations).stream().map(c -> String.valueOf(c.getId())).collect(Collectors.joining());
     Assert.assertEquals(expected, actual);
   }
 

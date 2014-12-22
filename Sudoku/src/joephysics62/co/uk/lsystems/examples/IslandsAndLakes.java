@@ -3,11 +3,10 @@ package joephysics62.co.uk.lsystems.examples;
 import java.util.Arrays;
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.CharacterLSystem;
-import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
+import joephysics62.co.uk.lsystems.UnparametricLSystem;
 import joephysics62.co.uk.lsystems.rules.Rule;
 
-public class IslandsAndLakes extends CharacterLSystem {
+public class IslandsAndLakes extends UnparametricLSystem {
 
   @Override
   public String axiomString() {
@@ -15,10 +14,10 @@ public class IslandsAndLakes extends CharacterLSystem {
   }
 
   @Override
-  public List<Rule<Character>> rules() {
+  public List<Rule> rules() {
     return Arrays.asList(
-        SimpleContextFreeRule.of('f', "ffffff"),
-        SimpleContextFreeRule.of('F', "F+f-FF+F+FF+Ff+FF-f+FF-F-FF-Ff-FFF")
+        contextFreeRule('G', "GGGGGG"),
+        contextFreeRule('F', "F+G-FF+F+FF+FG+FF-G+FF-F-FF-FG-FFF")
     );
   }
 
