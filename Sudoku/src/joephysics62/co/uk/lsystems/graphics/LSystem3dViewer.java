@@ -8,7 +8,7 @@ import joephysics62.co.uk.lsystems.examples.BushExample3d;
 public class LSystem3dViewer extends Simple3dViewer {
 
   private static final LSystem LSYSTEM = new BushExample3d();
-  private static final int ITERATIONS = 5;
+  private static final int ITERATIONS = 7;
 
   @Override
   protected Group createContentGroup() {
