@@ -20,7 +20,7 @@ public class StochasticContextFreeRule extends ContextFreeRule {
   }
 
   @Override
-  public List<TurtleElement> replacement(final double x) {
+  public List<TurtleElement> replacement(final double... x) {
     return _replacements.get(_selector.sample());
   }
 

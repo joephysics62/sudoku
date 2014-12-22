@@ -32,10 +32,10 @@ public abstract class AbstractLSystem implements LSystem {
       }
     }
     if (matches.size() == 1) {
-      return matches.get(0).replacement(chars.get(index).getParameter());
+      return matches.get(0).replacement(chars.get(index).getParameters());
     }
     else if (matches.size() > 1) {
-      return matches.get(matches.size() - 1).replacement(chars.get(index).getParameter());
+      return matches.get(matches.size() - 1).replacement(chars.get(index).getParameters());
     }
     else {
       return Collections.singletonList(chars.get(index));

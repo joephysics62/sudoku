@@ -36,8 +36,8 @@ public class TurtleState {
     return _width;
   }
 
-  public TurtleState changeWidth(final double factor) {
-    return new TurtleState(_coord, _heading, _left, factor * _width, _colourIndex);
+  public TurtleState setWidth(final double newWidth) {
+    return new TurtleState(_coord, _heading, _left, newWidth, _colourIndex);
   }
 
   public TurtleState incrementColour() {

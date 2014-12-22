@@ -24,7 +24,7 @@ public class SimpleContextSensitiveRule extends ContextSensitiveRule {
     _ignorable = Utils.toChars(ignore);
   }
 
-  @Override public final List<TurtleElement> replacement(final double x) { return _replacement; }
+  @Override public final List<TurtleElement> replacement(final double... x) { return _replacement; }
   @Override protected final Character predecessor() { return _predecessor; }
   @Override protected final Character successor() { return _successor; }
   @Override protected final Character popper() { return ']'; }

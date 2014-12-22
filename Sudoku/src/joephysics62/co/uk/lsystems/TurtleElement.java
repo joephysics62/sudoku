@@ -2,17 +2,17 @@ package joephysics62.co.uk.lsystems;
 
 public class TurtleElement {
   private final Character _id;
-  private final double _parameter;
+  private final double[] _parameters;
 
-  public TurtleElement(final Character id, final double parameter) {
+  public TurtleElement(final Character id, final double... parameters) {
     _id = id;
-    _parameter = parameter;
+    _parameters = parameters;
   }
 
   public Character getId() {
     return _id;
   }
-  public double getParameter() {
-    return _parameter;
+  public double[] getParameters() {
+    return _parameters;
   }
 }

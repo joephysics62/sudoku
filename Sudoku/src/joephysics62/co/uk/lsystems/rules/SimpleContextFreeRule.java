@@ -18,7 +18,7 @@ public class SimpleContextFreeRule extends ContextFreeRule {
   }
 
   @Override
-  public List<TurtleElement> replacement(final double x) {
+  public List<TurtleElement> replacement(final double... x) {
     return _replacement;
   }
 

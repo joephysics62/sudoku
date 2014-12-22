@@ -29,11 +29,12 @@ public class RowOfTrees extends AbstractLSystem {
     }
 
     @Override
-    public List<TurtleElement> replacement(final double x) {
+    public List<TurtleElement> replacement(final double... params) {
       final double c = 1;
       final double p = 0.3;
       final double q = c - p;
       final double h = Math.pow(p * q, 0.5);
+      final double x = params[0];
       return Arrays.asList(
           new TurtleElement('F', x * p),
           new TurtleElement('+', ANGLE),

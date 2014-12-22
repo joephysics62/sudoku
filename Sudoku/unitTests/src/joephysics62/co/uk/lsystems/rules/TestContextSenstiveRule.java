@@ -32,7 +32,7 @@ public class TestContextSenstiveRule {
   private static class SuccessorRuleForTesting extends ContextSensitiveRule {
 
     protected SuccessorRuleForTesting() { super(A.getId()); }
-    @Override public List<TurtleElement> replacement(final double x) { return Arrays.asList(B); }
+    @Override public List<TurtleElement> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return null; }
     @Override protected Character successor() { return B.getId(); }
     @Override protected Character popper() { return POP.getId(); }
@@ -43,7 +43,7 @@ public class TestContextSenstiveRule {
   private static class PredecessorRuleForTesting extends ContextSensitiveRule {
 
     protected PredecessorRuleForTesting() { super(A.getId()); }
-    @Override public List<TurtleElement> replacement(final double x) { return Arrays.asList(B); }
+    @Override public List<TurtleElement> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return B.getId(); }
     @Override protected Character successor() { return null; }
     @Override protected Character popper() { return POP.getId(); }

@@ -32,7 +32,7 @@ public class Turtle {
   }
 
   public void narrow(final double factor) {
-    _currentState = _currentState.changeWidth(factor);
+    _currentState = _currentState.setWidth(factor * _currentState.getWidth());
   }
 
   public void move(final double distance) {
@@ -46,6 +46,10 @@ public class Turtle {
 
   public void incrementColour() {
     _currentState = _currentState.incrementColour();
+  }
+
+  public void width(final double width) {
+    _currentState = _currentState.setWidth(width);
   }
 
 }

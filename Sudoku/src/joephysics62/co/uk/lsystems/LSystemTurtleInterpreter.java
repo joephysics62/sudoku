@@ -19,37 +19,41 @@ public class LSystemTurtleInterpreter {
 
   public List<Line3D> interpret(final List<TurtleElement> lsystemResult) {
     final TurtleState start = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.05, 0);
-    final Turtle turtle3d = new Turtle(start);
+    final Turtle turtle = new Turtle(start);
     final List<Line3D> out = new ArrayList<>();
     for (final TurtleElement c : lsystemResult) {
-      final double parameter = c.getParameter();
+      final double[] parameters = c.getParameters();
+      final double param = parameters[0];
       switch (c.getId()) {
       case '+':
-        turtle3d.turn(parameter);
+        turtle.turn(param);
         break;
       case '-':
-        turtle3d.turn(-parameter);
+        turtle.turn(-param);
         break;
       case '|':
-        turtle3d.turn(180);
+        turtle.turn(180);
         break;
       case '^':
-        turtle3d.pitch(parameter);
+        turtle.pitch(param);
         break;
       case '&':
-        turtle3d.pitch(-parameter);
+        turtle.pitch(-param);
         break;
       case '/':
-        turtle3d.roll(parameter);
+        turtle.roll(param);
         break;
       case '\\':
-        turtle3d.roll(-parameter);
+        turtle.roll(-param);
         break;
       case '!':
-        turtle3d.narrow(parameter);
+        turtle.narrow(param);
+        break;
+      case '£':
+        turtle.width(param);
         break;
       case '\'':
-        turtle3d.incrementColour();
+        turtle.incrementColour();
         break;
       //case 'A':
       //case 'B':
@@ -58,20 +62,20 @@ public class LSystemTurtleInterpreter {
       case 'F':
       case 'G':
       case 'S':
-        final TurtleState before = turtle3d.getState();
-        turtle3d.move(parameter);
-        final TurtleState end = turtle3d.getState();
+        final TurtleState before = turtle.getState();
+        turtle.move(param);
+        final TurtleState end = turtle.getState();
         out.add(new Line3D(before.getCoord(), end.getCoord(), _lSystem.indexedColour(before.getColourIndex()), before.getWidth()));
         break;
       case 'f':
       case 'g':
-        turtle3d.move(parameter);
+        turtle.move(param);
         break;
       case '[':
-        turtle3d.push();
+        turtle.push();
         break;
       case ']':
-        turtle3d.pop();
+        turtle.pop();
         break;
       default:
         break;
