@@ -27,7 +27,7 @@ public abstract class CharacterLSystem implements TurtleLSystem<Character> {
   }
 
   private List<Character> recursiveReplace(final List<Character> chars, final int iterations, final int limit) {
-    if (iterations > limit || chars.size() > MAX_ELEMENTS) {
+    if (iterations >= limit || chars.size() > MAX_ELEMENTS) {
       return chars;
     }
     final List<Character> newChars = new ArrayList<Character>();

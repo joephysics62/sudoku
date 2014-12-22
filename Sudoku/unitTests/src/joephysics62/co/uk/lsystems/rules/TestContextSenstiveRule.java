@@ -2,14 +2,15 @@ package joephysics62.co.uk.lsystems.rules;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import joephysics62.co.uk.lsystems.Utils;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestContextSenstiveRule {
 
-  private static class SuccessorRuleForTesting extends ContextSenstiveRule<Character> {
+  private static class SuccessorRuleForTesting extends ContextSensitiveRule<Character> {
 
     protected SuccessorRuleForTesting() { super('A'); }
     @Override public List<Character> replacement() { return Arrays.asList('B'); }
@@ -20,7 +21,7 @@ public class TestContextSenstiveRule {
     @Override protected List<Character> ignorable() { return Arrays.asList('+', '-'); }
   }
 
-  private static class PredecessorRuleForTesting extends ContextSenstiveRule<Character> {
+  private static class PredecessorRuleForTesting extends ContextSensitiveRule<Character> {
 
     protected PredecessorRuleForTesting() { super('A'); }
     @Override public List<Character> replacement() { return Arrays.asList('B'); }
@@ -32,7 +33,7 @@ public class TestContextSenstiveRule {
   }
 
   private void runTest(final Rule<Character> rule, final String input, final Integer... matches) {
-    final List<Character> chars = toChars(input);
+    final List<Character> chars = Utils.toChars(input);
     final List<Integer> matchList = Arrays.asList(matches);
     for (int i = 0; i < chars.size(); i++) {
       Assert.assertEquals("Failure at char = " + i, matchList.contains(i), rule.matches(i, chars));
@@ -95,10 +96,6 @@ public class TestContextSenstiveRule {
     runTest(rule, "B[+B]B[-A]A[+A]A", 8, 10);
     runTest(rule, "B[+B]B[-B]B[+A]A", 13, 15);
     runTest(rule, "B[+B]B[-B]B[+B]B");
-  }
-
-  private List<Character> toChars(final String string) {
-    return string.chars().mapToObj(c -> (char) c).collect(Collectors.toList());
   }
 
 }
