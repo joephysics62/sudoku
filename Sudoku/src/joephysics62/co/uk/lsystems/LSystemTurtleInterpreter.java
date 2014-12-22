@@ -52,6 +52,11 @@ public class LSystemTurtleInterpreter {
       case '£':
         turtle.width(param);
         break;
+      case '$':
+        final Point3D left = turtle.getState().getLeft();
+        left.angle(new Point3D(0, 0, 1));
+        turtle.roll(90 - left.angle(new Point3D(0, 0, 1)));
+        break;
       case '\'':
         turtle.incrementColour();
         break;

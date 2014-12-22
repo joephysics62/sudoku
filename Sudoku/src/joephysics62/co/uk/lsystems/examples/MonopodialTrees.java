@@ -10,15 +10,16 @@ import joephysics62.co.uk.lsystems.rules.Rule;
 
 public class MonopodialTrees extends AbstractLSystem {
 
+  private static final TurtleElement ROLL_LEFT_FLAT = new TurtleElement('$', -1);
   private static final TurtleElement POP = new TurtleElement(']', -1);
   private static final TurtleElement PUSH = new TurtleElement('[', -1);
-  private static final double A0 = 45;
-  private static final double A2 = 45;
+  private static final double TRUNK_BRANCH_ANGLE = 30;
+  private static final double LATERAL_BRANCH_ANGLE = -30;
 
-  private static final double R1 = 0.9;
-  private static final double R2 = 0.6;
-  private static final double WR = 0.707;
-  private static final double D = 137.5;
+  private static final double TRUNK_CONTRACTION = 0.9;
+  private static final double BRANCH_CONTRACTION = 0.7;
+  private static final double WIDTH_DECREASE = 0.707;
+  private static final double DIVERGENCE = 137.5;
 
 
   @Override
@@ -33,49 +34,51 @@ public class MonopodialTrees extends AbstractLSystem {
         new ContextFreeRule('A') {
           @Override
           public List<TurtleElement> replacement(final double... parameters) {
-            final double L = parameters[0];
-            final double w = parameters[1];
+            final double length = parameters[0];
+            final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', w),
-                new TurtleElement('F', L),
+                new TurtleElement('£', width),
+                new TurtleElement('F', length),
                 PUSH,
-                new TurtleElement('&', A0),
-                new TurtleElement('B', L * R2, w * WR),
+                new TurtleElement('&', TRUNK_BRANCH_ANGLE),
+                new TurtleElement('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
                 POP,
-                new TurtleElement('/', D),
-                new TurtleElement('A', L * R1, w * WR)
+                new TurtleElement('/', DIVERGENCE),
+                new TurtleElement('A', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         },
         new ContextFreeRule('B') {
           @Override
           public List<TurtleElement> replacement(final double... parameters) {
-            final double L = parameters[0];
-            final double w = parameters[1];
+            final double length = parameters[0];
+            final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', w),
-                new TurtleElement('F', L),
+                new TurtleElement('£', width),
+                new TurtleElement('F', length),
                 PUSH,
-                new TurtleElement('-', A2),
-                new TurtleElement('C', L * R2, w * WR),
+                new TurtleElement('-', LATERAL_BRANCH_ANGLE),
+                ROLL_LEFT_FLAT,
+                new TurtleElement('C', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
                 POP,
-                new TurtleElement('C', L * R1, w * WR)
+                new TurtleElement('C', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         },
         new ContextFreeRule('C') {
           @Override
           public List<TurtleElement> replacement(final double... parameters) {
-            final double L = parameters[0];
-            final double w = parameters[1];
+            final double length = parameters[0];
+            final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', w),
-                new TurtleElement('F', L),
+                new TurtleElement('£', width),
+                new TurtleElement('F', length),
                 PUSH,
-                new TurtleElement('+', A2),
-                new TurtleElement('B', L * R2, w * WR),
+                new TurtleElement('+', LATERAL_BRANCH_ANGLE),
+                ROLL_LEFT_FLAT,
+                new TurtleElement('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
                 POP,
-                new TurtleElement('B', L * R1, w * WR)
+                new TurtleElement('B', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         }
