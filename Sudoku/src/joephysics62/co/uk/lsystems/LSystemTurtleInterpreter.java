@@ -23,7 +23,7 @@ public class LSystemTurtleInterpreter {
     final List<Line3D> out = new ArrayList<>();
     for (final TurtleElement c : lsystemResult) {
       final double[] parameters = c.getParameters();
-      final double param = parameters[0];
+      final double param = parameters.length == 0 ? - 1 : parameters[0];
       switch (c.getId()) {
       case '+':
         turtle.turn(param);
