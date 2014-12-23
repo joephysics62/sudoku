@@ -1,5 +1,11 @@
 package joephysics62.co.uk.lsystems.rules;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.create;
+import static joephysics62.co.uk.lsystems.TurtleElement.left;
+import static joephysics62.co.uk.lsystems.TurtleElement.pop;
+import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.TurtleElement.right;
+
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -14,14 +20,12 @@ import org.junit.Test;
 
 public class TestContextSenstiveRule {
 
-  private static TurtleElement A = new TurtleElement('A', 0);
-  private static TurtleElement B = new TurtleElement('B', 0);
-  private static TurtleElement LEFT = new TurtleElement('+', 0);
-  private static TurtleElement RIGHT = new TurtleElement('-', 0);
-  private static TurtleElement PUSH = new TurtleElement('[', 0);
-  private static TurtleElement POP = new TurtleElement(']', 0);
+  private static TurtleElement A = create('A');
+  private static TurtleElement B = create('B');
+  private static TurtleElement LEFT = left(0);
+  private static TurtleElement RIGHT = right(0);
 
-  private static List<TurtleElement> SUPPORTED = Arrays.asList(A, B, LEFT, RIGHT, PUSH, POP);
+  private static List<TurtleElement> SUPPORTED = Arrays.asList(A, B, LEFT, RIGHT, push(), pop());
   private static Map<Character, TurtleElement> CHAR_MAP = new LinkedHashMap<>();
   static {
     for (final TurtleElement turtleElement : SUPPORTED) {
@@ -35,8 +39,6 @@ public class TestContextSenstiveRule {
     @Override public List<TurtleElement> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return null; }
     @Override protected Character successor() { return B.getId(); }
-    @Override protected Character popper() { return POP.getId(); }
-    @Override protected Character pusher() { return PUSH.getId(); }
     @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
   }
 
@@ -46,8 +48,6 @@ public class TestContextSenstiveRule {
     @Override public List<TurtleElement> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return B.getId(); }
     @Override protected Character successor() { return null; }
-    @Override protected Character popper() { return POP.getId(); }
-    @Override protected Character pusher() { return PUSH.getId(); }
     @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
   }
 

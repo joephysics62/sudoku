@@ -1,5 +1,16 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.create;
+import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
+import static joephysics62.co.uk.lsystems.TurtleElement.left;
+import static joephysics62.co.uk.lsystems.TurtleElement.pitchDown;
+import static joephysics62.co.uk.lsystems.TurtleElement.pop;
+import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.TurtleElement.right;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollLeft;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollLeftFlat;
+import static joephysics62.co.uk.lsystems.TurtleElement.width;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,9 +21,6 @@ import joephysics62.co.uk.lsystems.rules.Rule;
 
 public class MonopodialTrees extends AbstractLSystem {
 
-  private static final TurtleElement ROLL_LEFT_FLAT = new TurtleElement('$', -1);
-  private static final TurtleElement POP = new TurtleElement(']', -1);
-  private static final TurtleElement PUSH = new TurtleElement('[', -1);
   private static final double TRUNK_BRANCH_ANGLE = 30;
   private static final double LATERAL_BRANCH_ANGLE = -30;
 
@@ -24,7 +32,7 @@ public class MonopodialTrees extends AbstractLSystem {
 
   @Override
   public List<TurtleElement> axiom() {
-    return Arrays.asList(new TurtleElement('A', 1, 0.1));
+    return Arrays.asList(create('A', 1, 0.1));
   }
 
 
@@ -37,14 +45,14 @@ public class MonopodialTrees extends AbstractLSystem {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', width),
-                new TurtleElement('F', length),
-                PUSH,
-                new TurtleElement('&', TRUNK_BRANCH_ANGLE),
-                new TurtleElement('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
-                POP,
-                new TurtleElement('/', DIVERGENCE),
-                new TurtleElement('A', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
+                width(width),
+                drawf(length),
+                push(),
+                pitchDown(TRUNK_BRANCH_ANGLE),
+                create('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
+                pop(),
+                rollLeft(DIVERGENCE),
+                create('A', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         },
@@ -54,14 +62,14 @@ public class MonopodialTrees extends AbstractLSystem {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', width),
-                new TurtleElement('F', length),
-                PUSH,
-                new TurtleElement('-', LATERAL_BRANCH_ANGLE),
-                ROLL_LEFT_FLAT,
-                new TurtleElement('C', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
-                POP,
-                new TurtleElement('C', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
+                width(width),
+                drawf(length),
+                push(),
+                right(LATERAL_BRANCH_ANGLE),
+                rollLeftFlat(),
+                create('C', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
+                pop(),
+                create('C', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         },
@@ -71,19 +79,18 @@ public class MonopodialTrees extends AbstractLSystem {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', width),
-                new TurtleElement('F', length),
-                PUSH,
-                new TurtleElement('+', LATERAL_BRANCH_ANGLE),
-                ROLL_LEFT_FLAT,
-                new TurtleElement('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
-                POP,
-                new TurtleElement('B', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
+                width(width),
+                drawf(length),
+                push(),
+                left(LATERAL_BRANCH_ANGLE),
+                rollLeftFlat(),
+                create('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
+                pop(),
+                create('B', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         }
     );
   }
-
 
 }

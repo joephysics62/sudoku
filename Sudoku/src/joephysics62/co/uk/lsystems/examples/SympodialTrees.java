@@ -1,5 +1,10 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
+import static joephysics62.co.uk.lsystems.TurtleElement.pop;
+import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollLeftFlat;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,9 +15,6 @@ import joephysics62.co.uk.lsystems.rules.Rule;
 
 public class SympodialTrees extends AbstractLSystem {
 
-  private static final TurtleElement ROLL_LEFT_FLAT = new TurtleElement('$', -1);
-  private static final TurtleElement POP = new TurtleElement(']', -1);
-  private static final TurtleElement PUSH = new TurtleElement('[', -1);
   private static final double FIRST_BRANCH_ANGLE = 35;
   private static final double SECOND_BRANCH_ANGLE = 35;
 
@@ -38,16 +40,16 @@ public class SympodialTrees extends AbstractLSystem {
             final double width = parameters[1];
             return Arrays.asList(
                 new TurtleElement('£', width),
-                new TurtleElement('F', length),
-                PUSH,
+                drawf(length),
+                push(),
                 new TurtleElement('&', FIRST_BRANCH_ANGLE),
                 new TurtleElement('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
-                POP,
+                pop(),
                 new TurtleElement('/', DIVERGENCE),
-                PUSH,
+                push(),
                 new TurtleElement('&', SECOND_BRANCH_ANGLE),
                 new TurtleElement('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
-                POP
+                pop()
             );
           }
         },
@@ -58,17 +60,17 @@ public class SympodialTrees extends AbstractLSystem {
             final double width = parameters[1];
             return Arrays.asList(
                 new TurtleElement('£', width),
-                new TurtleElement('F', length),
-                PUSH,
+                drawf(length),
+                push(),
                 new TurtleElement('+', FIRST_BRANCH_ANGLE),
-                ROLL_LEFT_FLAT,
+                rollLeftFlat(),
                 new TurtleElement('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
-                POP,
-                PUSH,
+                pop(),
+                push(),
                 new TurtleElement('-', SECOND_BRANCH_ANGLE),
-                ROLL_LEFT_FLAT,
+                rollLeftFlat(),
                 new TurtleElement('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
-                POP
+                pop()
             );
           }
         }

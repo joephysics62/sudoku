@@ -1,5 +1,12 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
+import static joephysics62.co.uk.lsystems.TurtleElement.pitchDown;
+import static joephysics62.co.uk.lsystems.TurtleElement.pop;
+import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollLeft;
+import static joephysics62.co.uk.lsystems.TurtleElement.width;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,10 +21,7 @@ public class TernaryBranchingTrees extends AbstractLSystem {
   private static final double START_WIDTH = 0.02;
   private static final double BRANCH_LENGTH = 1;
 
-  private static final TurtleElement PARAMETERLESS = new TurtleElement('A');
-  private static final TurtleElement POP = new TurtleElement(']', -1);
-  private static final TurtleElement PUSH = new TurtleElement('[', -1);
-
+  private static final TurtleElement A_MOD = TurtleElement.create('A');
   private static final double DIVERGENCE_1 = 94.74;
   private static final double DIVERGENCE_2 = 132.63;
 
@@ -28,10 +32,10 @@ public class TernaryBranchingTrees extends AbstractLSystem {
   @Override
   public List<TurtleElement> axiom() {
     return Arrays.asList(
-        new TurtleElement('£', START_WIDTH),
-        new TurtleElement('F', START_LENGTH),
-        new TurtleElement('/', 45),
-        PARAMETERLESS
+        width(START_WIDTH),
+        drawf(START_LENGTH),
+        rollLeft(45),
+        A_MOD
     );
   }
 
@@ -43,25 +47,25 @@ public class TernaryBranchingTrees extends AbstractLSystem {
           @Override
           public List<TurtleElement> replacement(final double... parameters) {
             return Arrays.asList(
-                new TurtleElement('£', WIDTH_INCREASE_RATE),
-                new TurtleElement('F', BRANCH_LENGTH),
-                PUSH,
-                new TurtleElement('&', BRANCH_ANGLE),
-                new TurtleElement('F', BRANCH_LENGTH),
-                PARAMETERLESS,
-                POP,
-                new TurtleElement('/', DIVERGENCE_1),
-                PUSH,
-                new TurtleElement('&', BRANCH_ANGLE),
-                new TurtleElement('F', BRANCH_LENGTH),
-                PARAMETERLESS,
-                POP,
-                new TurtleElement('/', DIVERGENCE_2),
-                PUSH,
-                new TurtleElement('&', BRANCH_ANGLE),
-                new TurtleElement('F', BRANCH_LENGTH),
-                PARAMETERLESS,
-                POP
+                width(WIDTH_INCREASE_RATE),
+                drawf(BRANCH_LENGTH),
+                push(),
+                pitchDown(BRANCH_ANGLE),
+                drawf(BRANCH_LENGTH),
+                A_MOD,
+                pop(),
+                rollLeft(DIVERGENCE_1),
+                push(),
+                pitchDown(BRANCH_ANGLE),
+                drawf(BRANCH_LENGTH),
+                A_MOD,
+                pop(),
+                rollLeft(DIVERGENCE_2),
+                push(),
+                pitchDown(BRANCH_ANGLE),
+                drawf(BRANCH_LENGTH),
+                A_MOD,
+                pop()
             );
           }
         },
@@ -69,14 +73,14 @@ public class TernaryBranchingTrees extends AbstractLSystem {
           @Override
           public List<TurtleElement> replacement(final double... parameters) {
             final double length = parameters[0];
-            return Arrays.asList(new TurtleElement('F', length * ELONGATION_RATE));
+            return Arrays.asList(drawf(length * ELONGATION_RATE));
           }
         },
         new ContextFreeRule('£') {
           @Override
           public List<TurtleElement> replacement(final double... parameters) {
             final double width = parameters[0];
-            return Arrays.asList(new TurtleElement('£', width * WIDTH_INCREASE_RATE));
+            return Arrays.asList(width(width * WIDTH_INCREASE_RATE));
           }
         }
     );

@@ -1,5 +1,8 @@
 package joephysics62.co.uk.lsystems.rules;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.pop;
+import static joephysics62.co.uk.lsystems.TurtleElement.push;
+
 import java.util.List;
 import java.util.Stack;
 
@@ -11,8 +14,6 @@ public abstract class ContextSensitiveRule implements Rule {
 
   protected abstract Character predecessor();
   protected abstract Character successor();
-  protected abstract Character popper();
-  protected abstract Character pusher();
   protected abstract List<Character> ignorable();
 
   protected ContextSensitiveRule(final Character matchId) {
@@ -29,13 +30,13 @@ public abstract class ContextSensitiveRule implements Rule {
     final Stack<Void> stack = new Stack<>();
     for (int i = index - 1; i >= 0; i--) {
       final Character temp = input.get(i).getId();
-      if (temp.equals(pusher())) {
+      if (temp.equals(push().getId())) {
         if (!stack.isEmpty()) {
           stack.pop();
         }
         continue;
       }
-      if (temp.equals(popper())) {
+      if (temp.equals(pop().getId())) {
         stack.push(null);
         continue;
       }
@@ -62,11 +63,11 @@ public abstract class ContextSensitiveRule implements Rule {
     final Stack<Void> stack = new Stack<>();
     for (int i = index + 1; i < input.size(); i++) {
       final Character temp = input.get(i).getId();
-      if (temp.equals(pusher())) {
+      if (temp.equals(push().getId())) {
         stack.push(null);
         continue;
       }
-      if (temp.equals(popper())) {
+      if (temp.equals(pop().getId())) {
         if (stack.isEmpty()) {
           return false;
         }
