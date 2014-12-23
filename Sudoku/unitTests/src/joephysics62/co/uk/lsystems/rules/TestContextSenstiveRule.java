@@ -1,10 +1,10 @@
 package joephysics62.co.uk.lsystems.rules;
 
-import static joephysics62.co.uk.lsystems.TurtleElement.create;
-import static joephysics62.co.uk.lsystems.TurtleElement.left;
-import static joephysics62.co.uk.lsystems.TurtleElement.pop;
-import static joephysics62.co.uk.lsystems.TurtleElement.push;
-import static joephysics62.co.uk.lsystems.TurtleElement.right;
+import static joephysics62.co.uk.lsystems.turtle.Module.create;
+import static joephysics62.co.uk.lsystems.turtle.Module.left;
+import static joephysics62.co.uk.lsystems.turtle.Module.pop;
+import static joephysics62.co.uk.lsystems.turtle.Module.push;
+import static joephysics62.co.uk.lsystems.turtle.Module.right;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -12,23 +12,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import joephysics62.co.uk.lsystems.TurtleElement;
 import joephysics62.co.uk.lsystems.Utils;
+import joephysics62.co.uk.lsystems.turtle.Module;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 public class TestContextSenstiveRule {
 
-  private static TurtleElement A = create('A');
-  private static TurtleElement B = create('B');
-  private static TurtleElement LEFT = left(0);
-  private static TurtleElement RIGHT = right(0);
+  private static Module A = create('A');
+  private static Module B = create('B');
+  private static Module LEFT = left(0);
+  private static Module RIGHT = right(0);
 
-  private static List<TurtleElement> SUPPORTED = Arrays.asList(A, B, LEFT, RIGHT, push(), pop());
-  private static Map<Character, TurtleElement> CHAR_MAP = new LinkedHashMap<>();
+  private static List<Module> SUPPORTED = Arrays.asList(A, B, LEFT, RIGHT, push(), pop());
+  private static Map<Character, Module> CHAR_MAP = new LinkedHashMap<>();
   static {
-    for (final TurtleElement turtleElement : SUPPORTED) {
+    for (final Module turtleElement : SUPPORTED) {
       CHAR_MAP.put(turtleElement.getId(), turtleElement);
     }
   }
@@ -36,7 +36,7 @@ public class TestContextSenstiveRule {
   private static class SuccessorRuleForTesting extends ContextSensitiveRule {
 
     protected SuccessorRuleForTesting() { super(A.getId()); }
-    @Override public List<TurtleElement> replacement(final double... x) { return Arrays.asList(B); }
+    @Override public List<Module> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return null; }
     @Override protected Character successor() { return B.getId(); }
     @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
@@ -45,14 +45,14 @@ public class TestContextSenstiveRule {
   private static class PredecessorRuleForTesting extends ContextSensitiveRule {
 
     protected PredecessorRuleForTesting() { super(A.getId()); }
-    @Override public List<TurtleElement> replacement(final double... x) { return Arrays.asList(B); }
+    @Override public List<Module> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return B.getId(); }
     @Override protected Character successor() { return null; }
     @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
   }
 
   private void runTest(final Rule rule, final String input, final Integer... matches) {
-    final List<TurtleElement> elems = Utils.toChars(input).stream().map(c -> CHAR_MAP.get(c)).collect(Collectors.toList());
+    final List<Module> elems = Utils.toChars(input).stream().map(c -> CHAR_MAP.get(c)).collect(Collectors.toList());
     final List<Integer> matchList = Arrays.asList(matches);
     for (int i = 0; i < elems.size(); i++) {
       Assert.assertEquals("Failure at char = " + i, matchList.contains(i), rule.matches(i, elems));

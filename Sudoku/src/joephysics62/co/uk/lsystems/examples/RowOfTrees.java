@@ -1,21 +1,21 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
-import static joephysics62.co.uk.lsystems.TurtleElement.left;
-import static joephysics62.co.uk.lsystems.TurtleElement.right;
+import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
+import static joephysics62.co.uk.lsystems.turtle.Module.left;
+import static joephysics62.co.uk.lsystems.turtle.Module.right;
 
 import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.AbstractLSystem;
-import joephysics62.co.uk.lsystems.TurtleElement;
 import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
+import joephysics62.co.uk.lsystems.turtle.Module;
 
 public class RowOfTrees extends AbstractLSystem {
 
   @Override
-  public List<TurtleElement> axiom() {
+  public List<Module> axiom() {
     return Arrays.asList(drawf(1.0));
   }
 
@@ -33,7 +33,7 @@ public class RowOfTrees extends AbstractLSystem {
     }
 
     @Override
-    public List<TurtleElement> replacement(final double... params) {
+    public List<Module> replacement(final double... params) {
       final double c = 1;
       final double p = 0.3;
       final double q = c - p;

@@ -2,20 +2,20 @@ package joephysics62.co.uk.lsystems.rules;
 
 import java.util.List;
 
-import joephysics62.co.uk.lsystems.TurtleElement;
 import joephysics62.co.uk.lsystems.Utils;
+import joephysics62.co.uk.lsystems.turtle.Module;
 
 public class SimpleContextSensitiveRule extends ContextSensitiveRule {
 
   private final Character _predecessor;
   private final Character _successor;
-  private final List<TurtleElement> _replacement;
+  private final List<Module> _replacement;
   private final List<Character> _ignorable;
   private final Character _match2;
 
   public SimpleContextSensitiveRule(
       final Character predecessor, final Character match, final Character successor,
-      final String ignore, final List<TurtleElement> replacement) {
+      final String ignore, final List<Module> replacement) {
     super(match);
     _match2 = match;
     _predecessor = predecessor;
@@ -24,7 +24,7 @@ public class SimpleContextSensitiveRule extends ContextSensitiveRule {
     _ignorable = Utils.toChars(ignore);
   }
 
-  @Override public final List<TurtleElement> replacement(final double... x) { return _replacement; }
+  @Override public final List<Module> replacement(final double... x) { return _replacement; }
   @Override protected final Character predecessor() { return _predecessor; }
   @Override protected final Character successor() { return _successor; }
   @Override protected final List<Character> ignorable() { return _ignorable; }

@@ -6,22 +6,28 @@ import java.util.List;
 import javafx.geometry.Point3D;
 import javafx.scene.transform.Rotate;
 import joephysics62.co.uk.lsystems.graphics.Line3D;
+import joephysics62.co.uk.lsystems.turtle.Module;
 import joephysics62.co.uk.lsystems.turtle.Turtle;
-import joephysics62.co.uk.lsystems.turtle.TurtleState;
+import joephysics62.co.uk.lsystems.turtle.State;
 
 public class LSystemTurtleInterpreter {
 
+  private static final int INITIAL_COLOUR_INDEX = 0;
+  private static final double INTIAL_WIDTH = 0.15;
+  private static final Point3D INITIAL_LEFT = Rotate.X_AXIS;
+  private static final Point3D INITIAL_HEADING = Rotate.Z_AXIS;
+  private static final Point3D ORIGIN = new Point3D(0, 0, 0);
   private final LSystem _lSystem;
 
   public LSystemTurtleInterpreter(final LSystem lSystem) {
     _lSystem = lSystem;
   }
 
-  public List<Line3D> interpret(final List<TurtleElement> lsystemResult) {
-    final TurtleState start = new TurtleState(new Point3D(0, 0, 0), Rotate.Z_AXIS, Rotate.X_AXIS, 0.05, 0);
+  public List<Line3D> interpret(final List<Module> lsystemResult) {
+    final State start = new State(ORIGIN, INITIAL_HEADING, INITIAL_LEFT, INTIAL_WIDTH, INITIAL_COLOUR_INDEX);
     final Turtle turtle = new Turtle(start);
     final List<Line3D> out = new ArrayList<>();
-    for (final TurtleElement c : lsystemResult) {
+    for (final Module c : lsystemResult) {
       final double[] parameters = c.getParameters();
       final double param = parameters.length == 0 ? - 1 : parameters[0];
       switch (c.getId()) {
@@ -67,9 +73,9 @@ public class LSystemTurtleInterpreter {
       case 'F':
       case 'G':
       case 'S':
-        final TurtleState before = turtle.getState();
+        final State before = turtle.getState();
         turtle.move(param);
-        final TurtleState end = turtle.getState();
+        final State end = turtle.getState();
         out.add(new Line3D(before.getCoord(), end.getCoord(), _lSystem.indexedColour(before.getColourIndex()), before.getWidth()));
         break;
       case 'f':

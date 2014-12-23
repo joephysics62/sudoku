@@ -3,12 +3,12 @@ package joephysics62.co.uk.lsystems.graphics;
 import javafx.scene.Group;
 import joephysics62.co.uk.lsystems.LSystem;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
-import joephysics62.co.uk.lsystems.examples.MonopodialTrees;
+import joephysics62.co.uk.lsystems.examples.TernaryBranchingTrees;
 
 public class LSystem3dViewer extends Simple3dViewer {
 
-  private static final LSystem LSYSTEM = new MonopodialTrees();
-  private static final int ITERATIONS = 10;
+  private static final LSystem LSYSTEM = new TernaryBranchingTrees();
+  private static final int ITERATIONS = 7;
 
   @Override
   protected Group createContentGroup() {

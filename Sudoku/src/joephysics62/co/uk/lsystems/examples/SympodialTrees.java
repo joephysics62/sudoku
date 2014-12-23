@@ -1,23 +1,23 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import static joephysics62.co.uk.lsystems.TurtleElement.create;
-import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
-import static joephysics62.co.uk.lsystems.TurtleElement.left;
-import static joephysics62.co.uk.lsystems.TurtleElement.pitchDown;
-import static joephysics62.co.uk.lsystems.TurtleElement.pop;
-import static joephysics62.co.uk.lsystems.TurtleElement.push;
-import static joephysics62.co.uk.lsystems.TurtleElement.right;
-import static joephysics62.co.uk.lsystems.TurtleElement.rollLeft;
-import static joephysics62.co.uk.lsystems.TurtleElement.rollLeftFlat;
-import static joephysics62.co.uk.lsystems.TurtleElement.width;
+import static joephysics62.co.uk.lsystems.turtle.Module.create;
+import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
+import static joephysics62.co.uk.lsystems.turtle.Module.left;
+import static joephysics62.co.uk.lsystems.turtle.Module.pitchDown;
+import static joephysics62.co.uk.lsystems.turtle.Module.pop;
+import static joephysics62.co.uk.lsystems.turtle.Module.push;
+import static joephysics62.co.uk.lsystems.turtle.Module.right;
+import static joephysics62.co.uk.lsystems.turtle.Module.rollLeft;
+import static joephysics62.co.uk.lsystems.turtle.Module.rollLeftFlat;
+import static joephysics62.co.uk.lsystems.turtle.Module.width;
 
 import java.util.Arrays;
 import java.util.List;
 
 import joephysics62.co.uk.lsystems.AbstractLSystem;
-import joephysics62.co.uk.lsystems.TurtleElement;
 import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
+import joephysics62.co.uk.lsystems.turtle.Module;
 
 public class SympodialTrees extends AbstractLSystem {
 
@@ -31,7 +31,7 @@ public class SympodialTrees extends AbstractLSystem {
 
 
   @Override
-  public List<TurtleElement> axiom() {
+  public List<Module> axiom() {
     return Arrays.asList(create('A', 1, 0.1));
   }
 
@@ -41,7 +41,7 @@ public class SympodialTrees extends AbstractLSystem {
     return Arrays.asList(
         new ContextFreeRule('A') {
           @Override
-          public List<TurtleElement> replacement(final double... parameters) {
+          public List<Module> replacement(final double... parameters) {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
@@ -61,7 +61,7 @@ public class SympodialTrees extends AbstractLSystem {
         },
         new ContextFreeRule('B') {
           @Override
-          public List<TurtleElement> replacement(final double... parameters) {
+          public List<Module> replacement(final double... parameters) {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(

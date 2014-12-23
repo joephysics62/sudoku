@@ -4,10 +4,10 @@ import java.util.Stack;
 
 public class Turtle {
 
-  private final Stack<TurtleState> _stateStack = new Stack<>();
-  private TurtleState _currentState;
+  private final Stack<State> _stateStack = new Stack<>();
+  private State _currentState;
 
-  public Turtle(final TurtleState start) {
+  public Turtle(final State start) {
     _currentState = start;
   }
 
@@ -40,7 +40,7 @@ public class Turtle {
   }
 
 
-  public TurtleState getState() {
+  public State getState() {
     return _currentState;
   }
 

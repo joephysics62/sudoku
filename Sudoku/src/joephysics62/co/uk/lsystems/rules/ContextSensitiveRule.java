@@ -1,12 +1,12 @@
 package joephysics62.co.uk.lsystems.rules;
 
-import static joephysics62.co.uk.lsystems.TurtleElement.pop;
-import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.turtle.Module.pop;
+import static joephysics62.co.uk.lsystems.turtle.Module.push;
 
 import java.util.List;
 import java.util.Stack;
 
-import joephysics62.co.uk.lsystems.TurtleElement;
+import joephysics62.co.uk.lsystems.turtle.Module;
 
 public abstract class ContextSensitiveRule implements Rule {
 
@@ -20,7 +20,7 @@ public abstract class ContextSensitiveRule implements Rule {
     _match = matchId;
   }
 
-  private final boolean predecessorSatisfied(final int index, final List<TurtleElement> input) {
+  private final boolean predecessorSatisfied(final int index, final List<Module> input) {
     if (predecessor() == null) {
       return true;
     }
@@ -53,7 +53,7 @@ public abstract class ContextSensitiveRule implements Rule {
     return false;
   }
 
-  private final boolean successorSatisfied(final int index, final List<TurtleElement> input) {
+  private final boolean successorSatisfied(final int index, final List<Module> input) {
     if (successor() == null) {
       return true;
     }
@@ -88,7 +88,7 @@ public abstract class ContextSensitiveRule implements Rule {
   }
 
   @Override
-  public final boolean matches(final int index, final List<TurtleElement> input) {
+  public final boolean matches(final int index, final List<Module> input) {
     if (!_match.equals(input.get(index).getId())) {
       return false;
     }
