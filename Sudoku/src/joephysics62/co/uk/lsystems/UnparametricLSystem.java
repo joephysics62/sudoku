@@ -1,5 +1,18 @@
 package joephysics62.co.uk.lsystems;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.create;
+import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
+import static joephysics62.co.uk.lsystems.TurtleElement.left;
+import static joephysics62.co.uk.lsystems.TurtleElement.narrow;
+import static joephysics62.co.uk.lsystems.TurtleElement.pitchDown;
+import static joephysics62.co.uk.lsystems.TurtleElement.pitchUp;
+import static joephysics62.co.uk.lsystems.TurtleElement.pop;
+import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.TurtleElement.right;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollLeft;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollRight;
+import static joephysics62.co.uk.lsystems.TurtleElement.uturn;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -18,19 +31,19 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
 
   public UnparametricLSystem() {
     final List<TurtleElement> elements = Arrays.asList(
-      new TurtleElement('[', 0),
-      new TurtleElement(']', 0),
-      new TurtleElement('F', drawStep()),
-      new TurtleElement('G', drawStep()),
-      new TurtleElement('f', drawStep()),
-      new TurtleElement('!', narrowing()),
-      new TurtleElement('+', angle()),
-      new TurtleElement('-', angle()),
-      new TurtleElement('^', angle()),
-      new TurtleElement('&', angle()),
-      new TurtleElement('/', angle()),
-      new TurtleElement('\\', angle()),
-      new TurtleElement('|', 0)
+      push(),
+      pop(),
+      drawf(drawStep()),
+      create('G', drawStep()),
+      create('f', drawStep()),
+      narrow(narrowing()),
+      left(angle()),
+      right(angle()),
+      pitchUp(angle()),
+      pitchDown(angle()),
+      rollLeft(angle()),
+      rollRight(angle()),
+      uturn()
     );
     _map = new LinkedHashMap<>();
     for (final TurtleElement turtleElement : elements) {
@@ -60,7 +73,7 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
   }
 
   private TurtleElement elementByChar(final Character c) {
-    return _map.containsKey(c) ? _map.get(c) : new TurtleElement(c, 0);
+    return _map.containsKey(c) ? _map.get(c) : create(c);
   }
 
   protected abstract String axiomString();

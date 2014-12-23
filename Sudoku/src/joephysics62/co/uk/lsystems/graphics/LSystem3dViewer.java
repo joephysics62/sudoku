@@ -3,11 +3,11 @@ package joephysics62.co.uk.lsystems.graphics;
 import javafx.scene.Group;
 import joephysics62.co.uk.lsystems.LSystem;
 import joephysics62.co.uk.lsystems.LSystemTurtleInterpreter;
-import joephysics62.co.uk.lsystems.examples.SympodialTrees;
+import joephysics62.co.uk.lsystems.examples.MonopodialTrees;
 
 public class LSystem3dViewer extends Simple3dViewer {
 
-  private static final LSystem LSYSTEM = new SympodialTrees();
+  private static final LSystem LSYSTEM = new MonopodialTrees();
   private static final int ITERATIONS = 10;
 
   @Override

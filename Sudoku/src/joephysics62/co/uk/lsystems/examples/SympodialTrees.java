@@ -1,9 +1,15 @@
 package joephysics62.co.uk.lsystems.examples;
 
+import static joephysics62.co.uk.lsystems.TurtleElement.create;
 import static joephysics62.co.uk.lsystems.TurtleElement.drawf;
+import static joephysics62.co.uk.lsystems.TurtleElement.left;
+import static joephysics62.co.uk.lsystems.TurtleElement.pitchDown;
 import static joephysics62.co.uk.lsystems.TurtleElement.pop;
 import static joephysics62.co.uk.lsystems.TurtleElement.push;
+import static joephysics62.co.uk.lsystems.TurtleElement.right;
+import static joephysics62.co.uk.lsystems.TurtleElement.rollLeft;
 import static joephysics62.co.uk.lsystems.TurtleElement.rollLeftFlat;
+import static joephysics62.co.uk.lsystems.TurtleElement.width;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,7 +32,7 @@ public class SympodialTrees extends AbstractLSystem {
 
   @Override
   public List<TurtleElement> axiom() {
-    return Arrays.asList(new TurtleElement('A', 1, 0.1));
+    return Arrays.asList(create('A', 1, 0.1));
   }
 
 
@@ -39,16 +45,16 @@ public class SympodialTrees extends AbstractLSystem {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', width),
+                width(width),
                 drawf(length),
                 push(),
-                new TurtleElement('&', FIRST_BRANCH_ANGLE),
-                new TurtleElement('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
+                pitchDown(FIRST_BRANCH_ANGLE),
+                create('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
-                new TurtleElement('/', DIVERGENCE),
+                rollLeft(DIVERGENCE),
                 push(),
-                new TurtleElement('&', SECOND_BRANCH_ANGLE),
-                new TurtleElement('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
+                pitchDown(SECOND_BRANCH_ANGLE),
+                create('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
                 pop()
             );
           }
@@ -59,17 +65,17 @@ public class SympodialTrees extends AbstractLSystem {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
-                new TurtleElement('£', width),
+                width(width),
                 drawf(length),
                 push(),
-                new TurtleElement('+', FIRST_BRANCH_ANGLE),
+                left(FIRST_BRANCH_ANGLE),
                 rollLeftFlat(),
-                new TurtleElement('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
+                create('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
                 push(),
-                new TurtleElement('-', SECOND_BRANCH_ANGLE),
+                right(SECOND_BRANCH_ANGLE),
                 rollLeftFlat(),
-                new TurtleElement('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
+                create('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
                 pop()
             );
           }
