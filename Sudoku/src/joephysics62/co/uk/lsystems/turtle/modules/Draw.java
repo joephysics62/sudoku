@@ -11,7 +11,7 @@ public class Draw extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.move(getParameters()[0], true);
+    turtle.move(getParameter(0), true);
   }
 
 }

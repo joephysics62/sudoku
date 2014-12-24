@@ -11,7 +11,7 @@ public class Narrow extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.narrow(getParameters()[0]);
+    turtle.narrow(getParameter(0));
   }
 
 }

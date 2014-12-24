@@ -11,7 +11,7 @@ public class Move extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.move(getParameters()[0], false);
+    turtle.move(getParameter(0), false);
   }
 
 }

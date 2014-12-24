@@ -30,6 +30,11 @@ public abstract class Module implements IModule {
   public Character getId() {
     return _id;
   }
+
+  protected double getParameter(final int index) {
+    return _parameters[index];
+  }
+
   @Override
   public double[] getParameters() {
     return _parameters;

@@ -4,8 +4,8 @@ public interface IModule {
 
   Character getId();
 
-  double[] getParameters();
-
   void apply(Turtle turtle);
+
+  double[] getParameters();
 
 }

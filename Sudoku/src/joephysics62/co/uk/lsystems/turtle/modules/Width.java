@@ -11,7 +11,7 @@ public class Width extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.width(getParameters()[0]);
+    turtle.width(getParameter(0));
   }
 
 }

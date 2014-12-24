@@ -11,7 +11,7 @@ public class Right extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.turn(-getParameters()[0]);
+    turtle.turn(-getParameter(0));
   }
 
 }

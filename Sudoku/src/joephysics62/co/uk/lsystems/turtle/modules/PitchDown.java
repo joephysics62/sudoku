@@ -11,7 +11,7 @@ public class PitchDown extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.pitch(-getParameters()[0]);
+    turtle.pitch(-getParameter(0));
   }
 
 }

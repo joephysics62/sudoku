@@ -11,7 +11,7 @@ public class RollRight extends Module {
 
   @Override
   public void apply(final Turtle turtle) {
-    turtle.roll(-getParameters()[0]);
+    turtle.roll(-getParameter(0));
   }
 
 }
