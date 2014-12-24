@@ -17,7 +17,7 @@ import java.util.List;
 import joephysics62.co.uk.lsystems.AbstractLSystem;
 import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
-import joephysics62.co.uk.lsystems.turtle.Module;
+import joephysics62.co.uk.lsystems.turtle.IModule;
 
 public class SympodialTrees extends AbstractLSystem {
 
@@ -31,7 +31,7 @@ public class SympodialTrees extends AbstractLSystem {
 
 
   @Override
-  public List<Module> axiom() {
+  public List<IModule> axiom() {
     return Arrays.asList(create('A', 1, 0.1));
   }
 
@@ -41,7 +41,7 @@ public class SympodialTrees extends AbstractLSystem {
     return Arrays.asList(
         new ContextFreeRule('A') {
           @Override
-          public List<Module> replacement(final double... parameters) {
+          public List<IModule> replacement(final double... parameters) {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(
@@ -61,7 +61,7 @@ public class SympodialTrees extends AbstractLSystem {
         },
         new ContextFreeRule('B') {
           @Override
-          public List<Module> replacement(final double... parameters) {
+          public List<IModule> replacement(final double... parameters) {
             final double length = parameters[0];
             final double width = parameters[1];
             return Arrays.asList(

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import joephysics62.co.uk.lsystems.Utils;
+import joephysics62.co.uk.lsystems.turtle.IModule;
 import joephysics62.co.uk.lsystems.turtle.Module;
 
 import org.junit.Assert;
@@ -36,7 +37,7 @@ public class TestContextSenstiveRule {
   private static class SuccessorRuleForTesting extends ContextSensitiveRule {
 
     protected SuccessorRuleForTesting() { super(A.getId()); }
-    @Override public List<Module> replacement(final double... x) { return Arrays.asList(B); }
+    @Override public List<IModule> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return null; }
     @Override protected Character successor() { return B.getId(); }
     @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
@@ -45,14 +46,14 @@ public class TestContextSenstiveRule {
   private static class PredecessorRuleForTesting extends ContextSensitiveRule {
 
     protected PredecessorRuleForTesting() { super(A.getId()); }
-    @Override public List<Module> replacement(final double... x) { return Arrays.asList(B); }
+    @Override public List<IModule> replacement(final double... x) { return Arrays.asList(B); }
     @Override protected Character predecessor() { return B.getId(); }
     @Override protected Character successor() { return null; }
     @Override protected List<Character> ignorable() { return Arrays.asList(LEFT.getId(), RIGHT.getId()); }
   }
 
   private void runTest(final Rule rule, final String input, final Integer... matches) {
-    final List<Module> elems = Utils.toChars(input).stream().map(c -> CHAR_MAP.get(c)).collect(Collectors.toList());
+    final List<IModule> elems = Utils.toChars(input).stream().map(c -> CHAR_MAP.get(c)).collect(Collectors.toList());
     final List<Integer> matchList = Arrays.asList(matches);
     for (int i = 0; i < elems.size(); i++) {
       Assert.assertEquals("Failure at char = " + i, matchList.contains(i), rule.matches(i, elems));

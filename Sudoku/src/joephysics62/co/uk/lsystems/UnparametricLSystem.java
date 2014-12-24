@@ -24,14 +24,14 @@ import joephysics62.co.uk.lsystems.rules.Rule;
 import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.SimpleContextSensitiveRule;
 import joephysics62.co.uk.lsystems.rules.StochasticContextFreeRule;
-import joephysics62.co.uk.lsystems.turtle.Module;
+import joephysics62.co.uk.lsystems.turtle.IModule;
 
 public abstract class UnparametricLSystem extends AbstractLSystem {
 
-  private final Map<Character, Module> _map;
+  private final Map<Character, IModule> _map;
 
   public UnparametricLSystem() {
-    final List<Module> elements = Arrays.asList(
+    final List<IModule> elements = Arrays.asList(
       push(),
       pop(),
       drawf(drawStep()),
@@ -47,7 +47,7 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
       uturn()
     );
     _map = new LinkedHashMap<>();
-    for (final Module turtleElement : elements) {
+    for (final IModule turtleElement : elements) {
       _map.put(turtleElement.getId(), turtleElement);
     }
   }
@@ -57,7 +57,7 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
   }
 
   protected Rule stochasticContextFreeRule(final char match, final double[] weights, final String[] replacementsArray) {
-    final List<List<Module>> replacements = new ArrayList<>();
+    final List<List<IModule>> replacements = new ArrayList<>();
     for (final String string : replacementsArray) {
       replacements.add(toElemList(string));
     }
@@ -69,18 +69,18 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
         return new SimpleContextSensitiveRule(predecessor, match, successor, ignores, toElemList(replacement));
   }
 
-  private List<Module> toElemList(final String string) {
+  private List<IModule> toElemList(final String string) {
     return string.chars().mapToObj(c -> (char) c).map(c -> elementByChar(c)).collect(Collectors.toList());
   }
 
-  private Module elementByChar(final Character c) {
+  private IModule elementByChar(final Character c) {
     return _map.containsKey(c) ? _map.get(c) : create(c);
   }
 
   protected abstract String axiomString();
 
   @Override
-  public final List<Module> axiom() {
+  public final List<IModule> axiom() {
     return toElemList(axiomString());
   }
 

@@ -10,12 +10,12 @@ import java.util.List;
 import joephysics62.co.uk.lsystems.AbstractLSystem;
 import joephysics62.co.uk.lsystems.rules.ContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.Rule;
-import joephysics62.co.uk.lsystems.turtle.Module;
+import joephysics62.co.uk.lsystems.turtle.IModule;
 
 public class RowOfTrees extends AbstractLSystem {
 
   @Override
-  public List<Module> axiom() {
+  public List<IModule> axiom() {
     return Arrays.asList(drawf(1.0));
   }
 
@@ -33,7 +33,7 @@ public class RowOfTrees extends AbstractLSystem {
     }
 
     @Override
-    public List<Module> replacement(final double... params) {
+    public List<IModule> replacement(final double... params) {
       final double c = 1;
       final double p = 0.3;
       final double q = c - p;

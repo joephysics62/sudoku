@@ -1,6 +1,6 @@
 package joephysics62.co.uk.lsystems.turtle;
 
-public class Module {
+public class Module implements IModule {
   private final Character _id;
   private final double[] _parameters;
 
@@ -9,9 +9,11 @@ public class Module {
     _parameters = parameters;
   }
 
+  @Override
   public Character getId() {
     return _id;
   }
+  @Override
   public double[] getParameters() {
     return _parameters;
   }
