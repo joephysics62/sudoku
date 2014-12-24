@@ -1,8 +1,10 @@
 package joephysics62.co.uk.lsystems;
 
-import static joephysics62.co.uk.lsystems.turtle.Module.create;
+import static joephysics62.co.uk.lsystems.turtle.Module.draw;
 import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
+import static joephysics62.co.uk.lsystems.turtle.Module.identity;
 import static joephysics62.co.uk.lsystems.turtle.Module.left;
+import static joephysics62.co.uk.lsystems.turtle.Module.move;
 import static joephysics62.co.uk.lsystems.turtle.Module.narrow;
 import static joephysics62.co.uk.lsystems.turtle.Module.pitchDown;
 import static joephysics62.co.uk.lsystems.turtle.Module.pitchUp;
@@ -25,6 +27,7 @@ import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.SimpleContextSensitiveRule;
 import joephysics62.co.uk.lsystems.rules.StochasticContextFreeRule;
 import joephysics62.co.uk.lsystems.turtle.IModule;
+import joephysics62.co.uk.lsystems.turtle.Module;
 
 public abstract class UnparametricLSystem extends AbstractLSystem {
 
@@ -35,8 +38,8 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
       push(),
       pop(),
       drawf(drawStep()),
-      create('G', drawStep()),
-      create('f', drawStep()),
+      draw('G', drawStep()),
+      move('f', drawStep()),
       narrow(narrowing()),
       left(angle()),
       right(angle()),
@@ -44,7 +47,8 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
       pitchDown(angle()),
       rollLeft(angle()),
       rollRight(angle()),
-      uturn()
+      uturn(),
+      Module.incrementColour()
     );
     _map = new LinkedHashMap<>();
     for (final IModule turtleElement : elements) {
@@ -74,7 +78,7 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
   }
 
   private IModule elementByChar(final Character c) {
-    return _map.containsKey(c) ? _map.get(c) : create(c);
+    return _map.containsKey(c) ? _map.get(c) : identity(c);
   }
 
   protected abstract String axiomString();

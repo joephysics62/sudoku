@@ -1,7 +1,7 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import static joephysics62.co.uk.lsystems.turtle.Module.create;
 import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
+import static joephysics62.co.uk.lsystems.turtle.Module.identity;
 import static joephysics62.co.uk.lsystems.turtle.Module.left;
 import static joephysics62.co.uk.lsystems.turtle.Module.pitchDown;
 import static joephysics62.co.uk.lsystems.turtle.Module.pop;
@@ -32,7 +32,7 @@ public class MonopodialTrees extends AbstractLSystem {
 
   @Override
   public List<IModule> axiom() {
-    return Arrays.asList(create('A', 1, 0.1));
+    return Arrays.asList(identity('A', 1, 0.1));
   }
 
 
@@ -49,10 +49,10 @@ public class MonopodialTrees extends AbstractLSystem {
                 drawf(length),
                 push(),
                 pitchDown(TRUNK_BRANCH_ANGLE),
-                create('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
+                identity('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
                 rollLeft(DIVERGENCE),
-                create('A', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
+                identity('A', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         },
@@ -67,9 +67,9 @@ public class MonopodialTrees extends AbstractLSystem {
                 push(),
                 right(LATERAL_BRANCH_ANGLE),
                 rollLeftFlat(),
-                create('C', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
+                identity('C', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
-                create('C', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
+                identity('C', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         },
@@ -84,9 +84,9 @@ public class MonopodialTrees extends AbstractLSystem {
                 push(),
                 left(LATERAL_BRANCH_ANGLE),
                 rollLeftFlat(),
-                create('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
+                identity('B', length * BRANCH_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
-                create('B', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
+                identity('B', length * TRUNK_CONTRACTION, width * WIDTH_DECREASE)
             );
           }
         }

@@ -1,7 +1,7 @@
 package joephysics62.co.uk.lsystems.examples;
 
-import static joephysics62.co.uk.lsystems.turtle.Module.create;
 import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
+import static joephysics62.co.uk.lsystems.turtle.Module.identity;
 import static joephysics62.co.uk.lsystems.turtle.Module.left;
 import static joephysics62.co.uk.lsystems.turtle.Module.pitchDown;
 import static joephysics62.co.uk.lsystems.turtle.Module.pop;
@@ -32,7 +32,7 @@ public class SympodialTrees extends AbstractLSystem {
 
   @Override
   public List<IModule> axiom() {
-    return Arrays.asList(create('A', 1, 0.1));
+    return Arrays.asList(identity('A', 1, 0.1));
   }
 
 
@@ -49,12 +49,12 @@ public class SympodialTrees extends AbstractLSystem {
                 drawf(length),
                 push(),
                 pitchDown(FIRST_BRANCH_ANGLE),
-                create('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
+                identity('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
                 rollLeft(DIVERGENCE),
                 push(),
                 pitchDown(SECOND_BRANCH_ANGLE),
-                create('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
+                identity('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
                 pop()
             );
           }
@@ -70,12 +70,12 @@ public class SympodialTrees extends AbstractLSystem {
                 push(),
                 left(FIRST_BRANCH_ANGLE),
                 rollLeftFlat(),
-                create('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
+                identity('B', length * FIRST_CONTRACTION, width * WIDTH_DECREASE),
                 pop(),
                 push(),
                 right(SECOND_BRANCH_ANGLE),
                 rollLeftFlat(),
-                create('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
+                identity('B', length * SECOND_CONTRACTION, width * WIDTH_DECREASE),
                 pop()
             );
           }

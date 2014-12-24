@@ -2,8 +2,10 @@ package joephysics62.co.uk.lsystems.turtle;
 
 public interface IModule {
 
-  public abstract Character getId();
+  Character getId();
 
-  public abstract double[] getParameters();
+  double[] getParameters();
+
+  void apply(Turtle turtle);
 
 }

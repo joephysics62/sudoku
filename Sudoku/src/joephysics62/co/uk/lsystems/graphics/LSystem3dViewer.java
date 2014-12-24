@@ -14,10 +14,10 @@ public class LSystem3dViewer extends Simple3dViewer {
   protected Group createContentGroup() {
     final Group output = new Group();
 
-    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter(LSYSTEM);
+    final LSystemTurtleInterpreter turtleInterpreter = new LSystemTurtleInterpreter();
     for (final Line3D line3d : turtleInterpreter.interpret(LSYSTEM.generate(ITERATIONS))) {
       final double radius = line3d.getWidth() / 2;
-      output.getChildren().add(new ConnectingCylinder(line3d.getStart(), line3d.getEnd(), line3d.getColour(), radius));
+      output.getChildren().add(new ConnectingCylinder(line3d.getStart(), line3d.getEnd(), LSYSTEM.indexedColour(line3d.getColour()), radius));
     }
     return output;
   }

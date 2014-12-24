@@ -2,10 +2,13 @@ package joephysics62.co.uk.lsystems.turtle;
 
 import java.util.Stack;
 
+import javafx.geometry.Point3D;
+
 public class Turtle {
 
   private final Stack<State> _stateStack = new Stack<>();
   private State _currentState;
+  private Listener _listener;
 
   public Turtle(final State start) {
     _currentState = start;
@@ -35,8 +38,15 @@ public class Turtle {
     _currentState = _currentState.setWidth(factor * _currentState.getWidth());
   }
 
-  public void move(final double distance) {
+  public void move(final double distance, final boolean draw) {
+    final Point3D start = _currentState.getCoord();
     _currentState = _currentState.move(distance);
+    if (draw && _listener != null) {
+      final Point3D end = _currentState.getCoord();
+      final int colourIndex = _currentState.getColourIndex();
+      final double width = _currentState.getWidth();
+      _listener.drawLine(start, end, colourIndex, width);
+    }
   }
 
 
@@ -50,6 +60,10 @@ public class Turtle {
 
   public void width(final double width) {
     _currentState = _currentState.setWidth(width);
+  }
+
+  public void setListener(final Listener listener) {
+    _listener = listener;
   }
 
 }

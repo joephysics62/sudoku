@@ -1,6 +1,7 @@
 package joephysics62.co.uk.lsystems.examples;
 
 import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
+import static joephysics62.co.uk.lsystems.turtle.Module.identity;
 import static joephysics62.co.uk.lsystems.turtle.Module.narrow;
 import static joephysics62.co.uk.lsystems.turtle.Module.pitchDown;
 import static joephysics62.co.uk.lsystems.turtle.Module.pop;
@@ -22,7 +23,7 @@ public class TernaryBranchingTrees extends AbstractLSystem {
   private static final double START_LENGTH = 1;
   private static final double BRANCH_LENGTH = 0.25;
 
-  private static final Module A_MOD = Module.create('A');
+  private static final Module A_MOD = identity('A');
   private static final double DIVERGENCE_1 = 94.74;
   private static final double DIVERGENCE_2 = 132.63;
 

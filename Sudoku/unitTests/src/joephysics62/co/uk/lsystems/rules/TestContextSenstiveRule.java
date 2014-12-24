@@ -1,6 +1,6 @@
 package joephysics62.co.uk.lsystems.rules;
 
-import static joephysics62.co.uk.lsystems.turtle.Module.create;
+import static joephysics62.co.uk.lsystems.turtle.Module.identity;
 import static joephysics62.co.uk.lsystems.turtle.Module.left;
 import static joephysics62.co.uk.lsystems.turtle.Module.pop;
 import static joephysics62.co.uk.lsystems.turtle.Module.push;
@@ -21,8 +21,8 @@ import org.junit.Test;
 
 public class TestContextSenstiveRule {
 
-  private static Module A = create('A');
-  private static Module B = create('B');
+  private static Module A = identity('A');
+  private static Module B = identity('B');
   private static Module LEFT = left(0);
   private static Module RIGHT = right(0);
 
