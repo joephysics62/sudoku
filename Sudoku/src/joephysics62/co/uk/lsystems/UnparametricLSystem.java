@@ -3,6 +3,7 @@ package joephysics62.co.uk.lsystems;
 import static joephysics62.co.uk.lsystems.turtle.Module.draw;
 import static joephysics62.co.uk.lsystems.turtle.Module.drawf;
 import static joephysics62.co.uk.lsystems.turtle.Module.identity;
+import static joephysics62.co.uk.lsystems.turtle.Module.incrementColour;
 import static joephysics62.co.uk.lsystems.turtle.Module.left;
 import static joephysics62.co.uk.lsystems.turtle.Module.move;
 import static joephysics62.co.uk.lsystems.turtle.Module.narrow;
@@ -27,7 +28,6 @@ import joephysics62.co.uk.lsystems.rules.SimpleContextFreeRule;
 import joephysics62.co.uk.lsystems.rules.SimpleContextSensitiveRule;
 import joephysics62.co.uk.lsystems.rules.StochasticContextFreeRule;
 import joephysics62.co.uk.lsystems.turtle.IModule;
-import joephysics62.co.uk.lsystems.turtle.Module;
 
 public abstract class UnparametricLSystem extends AbstractLSystem {
 
@@ -48,7 +48,7 @@ public abstract class UnparametricLSystem extends AbstractLSystem {
       rollLeft(angle()),
       rollRight(angle()),
       uturn(),
-      Module.incrementColour()
+      incrementColour()
     );
     _map = new LinkedHashMap<>();
     for (final IModule turtleElement : elements) {

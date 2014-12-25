@@ -11,13 +11,13 @@ public class SimpleContextSensitiveRule extends ContextSensitiveRule {
   private final Character _successor;
   private final List<IModule> _replacement;
   private final List<Character> _ignorable;
-  private final Character _match2;
+  private final Character _match;
 
   public SimpleContextSensitiveRule(
       final Character predecessor, final Character match, final Character successor,
       final String ignore, final List<IModule> replacement) {
     super(match);
-    _match2 = match;
+    _match = match;
     _predecessor = predecessor;
     _successor = successor;
     _replacement = replacement;
@@ -31,7 +31,7 @@ public class SimpleContextSensitiveRule extends ContextSensitiveRule {
 
   @Override
   public String toString() {
-    return String.format("%s < %s > %s -> %s", _predecessor, _match2, _successor, Utils.toString(_replacement));
+    return String.format("%s < %s > %s -> %s", _predecessor, _match, _successor, Utils.toString(_replacement));
   }
 
 }

@@ -15,6 +15,9 @@ public class StochasticContextFreeRule extends ContextFreeRule {
 
   public StochasticContextFreeRule(final Character match, final double[] weights, final List<List<IModule>> replacements) {
     super(match);
+    if (weights.length != replacements.size()) {
+      throw new IllegalArgumentException();
+    }
     _replacements = replacements;
     _selector = new EnumeratedIntegerDistribution(IntStream.range(0, weights.length).toArray(), weights);
   }

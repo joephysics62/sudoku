@@ -14,7 +14,7 @@ import joephysics62.co.uk.lsystems.turtle.Turtle;
 public class LSystemTurtleInterpreter {
 
   private static final int INITIAL_COLOUR_INDEX = 0;
-  private static final double INTIAL_WIDTH = 0.45;
+  private static final double INTIAL_WIDTH = 0.05;
   private static final Point3D INITIAL_LEFT = Rotate.X_AXIS;
   private static final Point3D INITIAL_HEADING = Rotate.Z_AXIS;
   private static final Point3D ORIGIN = new Point3D(0, 0, 0);
