@@ -19,7 +19,7 @@ import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
 public class IFSRenderer {
 
   private static final int ITERATIONS = 200000;
-  private static final float SCALE = 500;
+  private static final float SCALE = 200;
   private static final Point3D START = Point3D.ZERO;
 
   public static void main(final String[] args) throws Exception {
@@ -30,10 +30,10 @@ public class IFSRenderer {
     try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
       final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, 1000 / 24, true);
 
-      final int numFrames = 240;
+      final int numFrames = 1;
       for (int i = 0; i < numFrames; i++) {
-        final double q = -0.5 + 1.0 * i / (1.0 * numFrames);
-        final IteratedFunctionSystem ifs = new Sierpinski(Math.sqrt(3) / 4.0, q);
+        final double q = 0;
+        final IteratedFunctionSystem ifs = new DragonCurve();
         final long startTime = System.currentTimeMillis();
         final BufferedImage bi = ifsRenderer.renderIFSEscapeTime(600, ifs);
         System.out.println("FRAME " + (i+1) + " " + q + " " + (System.currentTimeMillis() - startTime) + "ms");
@@ -55,8 +55,8 @@ public class IFSRenderer {
     final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-        final double initX = x / SCALE;
-        final double initY = y / SCALE;
+        final double initX = (x - 0.4 * width) / SCALE;
+        final double initY = (y - 0.3 * width) / SCALE;
         final Point3D start = new Point3D(initX, initY, 0);
         final Set<Integer> escapeTimes = new LinkedHashSet<>();
         recursiveEscapeTimes(ifs, 0, start, escapeTimes);
@@ -81,7 +81,7 @@ public class IFSRenderer {
       escapeTimes.add(depth);
       return;
     }
-    for (int f = 0; f < 3; f++) {
+    for (int f = 0; f < ifs.numTransforms(); f++) {
       final Point3D next = ifs.inverseTransform(f, curr);
       recursiveEscapeTimes(ifs, depth + 1, next, escapeTimes);
     }
