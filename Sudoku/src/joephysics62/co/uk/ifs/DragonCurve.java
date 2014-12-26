@@ -36,6 +36,12 @@ public class DragonCurve implements IteratedFunctionSystem {
   }
 
   @Override
+  public Point3D inverseTransform(final int fnum, final Point3D input) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
   public Point3D transform(final Point3D input) {
     return _affines.get(_eid.sample()).transform(input);
   }

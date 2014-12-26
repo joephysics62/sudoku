@@ -31,6 +31,12 @@ public class BarnsleyFern implements IteratedFunctionSystem {
     return _affines.get(_eid.sample()).transform(input);
   }
 
+  @Override
+  public Point3D inverseTransform(final int fnum, final Point3D input) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
   private static Affine from2d(final double xx, final double xy, final double yx, final double yy, final double tx, final double ty) {
     return new Affine(xx, xy, 0, tx,
                       yx, yy, 0, ty,
