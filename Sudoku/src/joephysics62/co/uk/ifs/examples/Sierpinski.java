@@ -1,8 +1,10 @@
-package joephysics62.co.uk.ifs;
+package joephysics62.co.uk.ifs.examples;
 
 import java.util.Arrays;
 
 import javafx.scene.transform.NonInvertibleTransformException;
+import joephysics62.co.uk.ifs.AffineIFS;
+import joephysics62.co.uk.ifs.IteratedFunctionSystem;
 
 public class Sierpinski extends AffineIFS {
   private static final double H = 0.5;
