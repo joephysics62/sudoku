@@ -24,22 +24,32 @@ public class ChaosGame implements IFSRender {
 
     final double scale = height / (maxY - minY);
 
+    final int[][] counts = new int[width][height];
+    double maxCount = 0;
+
     final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < _iterations; i++) {
       final int x = (int) ((curr.getX() - minX) * scale);
       final int y = (int) ((curr.getY() - minY) * scale);
       if (x > 0 && y > 0 && x < width && y < height) {
-        final Color current = new Color(bi.getRGB(x, y));
-        final Color newC = new Color(simulateAlpha(current.getRed()), simulateAlpha(current.getGreen()), simulateAlpha(current.getBlue()));
-        bi.setRGB(x, y, newC.getRGB());
+        final int newCount = counts[x][y] + 1;
+        if (newCount > maxCount) {
+          maxCount = newCount;
+        }
+        counts[x][y] = newCount;
       }
       curr = ifs.transform(curr);
     }
-    return bi;
-  }
 
-  private int simulateAlpha(final int input) {
-    return Math.min(255, input + 50);
+    for (int x = 0; x < width; x++) {
+      for (int y = 0; y < height; y++) {
+        final int c = counts[x][y];
+        final int brightness = (int) (255.0 * c / maxCount);
+        final Color newC = new Color(brightness, brightness, brightness);
+        bi.setRGB(x, y, newC.getRGB());
+      }
+    }
+    return bi;
   }
 
 }
