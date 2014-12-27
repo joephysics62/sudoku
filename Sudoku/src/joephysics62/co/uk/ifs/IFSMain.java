@@ -28,7 +28,7 @@ public class IFSMain {
         final double q = 360 * i / (1.0 * numFrames);
         final IteratedFunctionSystem ifs = new Sierpinski(Math.sqrt(3) / 4.0, 0.2);
         final long startTime = System.currentTimeMillis();
-        final BufferedImage bi = ifsRenderer.render(600, -0.2, 1, -0.5, ifs);
+        final BufferedImage bi = ifsRenderer.render(ifs, -0.2, 1, 600, -0.5);
         System.out.println("FRAME " + (i+1) + " " + q + " " + (System.currentTimeMillis() - startTime) + "ms");
         final Graphics2D g2d = bi.createGraphics();
         g2d.drawString("Q = " + q, 10, 10);

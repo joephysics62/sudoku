@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javafx.geometry.Point3D;
+import joephysics62.co.uk.grid.Coord;
 import joephysics62.co.uk.ifs.IFSRender;
 import joephysics62.co.uk.ifs.IteratedFunctionSystem;
 
@@ -22,17 +23,16 @@ public class DiscreteEscapeTimeRender implements IFSRender {
   }
 
   @Override
-  public BufferedImage render(final int height, final double minY, final double maxY, final double minX, final IteratedFunctionSystem ifs) {
-    final int width = 3 * height / 2;
+  public BufferedImage render(final IteratedFunctionSystem ifs, final double minY, final double maxY, final int height, final double minX) {
     final double scale = height / (maxY - minY);
-
+    final int width = 3 * height / 2;
     final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
         final double initX = minX + x / scale;
         final double initY = minY + y / scale;
         final Point3D start = new Point3D(initX, initY, 0);
-        final double escapeTime = escapeTime(ifs, start);
+        final double escapeTime = escapeTime(ifs, start, Coord.of(x, y));
         final int c = (int) Math.min(255.0, (255.0 / _maxDepth) * escapeTime);
         final Color color = new Color(c, c, c);
         bi.setRGB(x, y, color.getRGB());
@@ -59,7 +59,7 @@ public class DiscreteEscapeTimeRender implements IFSRender {
     }
   }
 
-  private double escapeTime(final IteratedFunctionSystem ifs, final Point3D start) {
+  private double escapeTime(final IteratedFunctionSystem ifs, final Point3D start, final Coord pixelCoord) {
     final Set<Integer> escapeTimes = new LinkedHashSet<>();
     recursiveEscapeTimes(ifs, 0, start, escapeTimes, true);
     return escapeTimes.stream().collect(Collectors.maxBy(Integer::compare)).orElse(0);

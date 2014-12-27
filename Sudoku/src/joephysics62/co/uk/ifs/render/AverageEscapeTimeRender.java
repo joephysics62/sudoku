@@ -21,7 +21,7 @@ public class AverageEscapeTimeRender implements IFSRender {
   }
 
   @Override
-  public BufferedImage render(final int height, final double minY, final double maxY, final double minX, final IteratedFunctionSystem ifs) {
+  public BufferedImage render(final IteratedFunctionSystem ifs, final double minY, final double maxY, final int height, final double minX) {
     final int width = (int) (1.5 * height);
     final double scale = height / (maxY - minY);
 
