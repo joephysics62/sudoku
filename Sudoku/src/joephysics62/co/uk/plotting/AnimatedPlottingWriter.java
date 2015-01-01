@@ -9,14 +9,19 @@ import javax.imageio.stream.ImageOutputStream;
 
 import joephysics62.co.uk.lsystems.animation.GifSequenceWriter;
 
-public abstract class AnimatedPlottingWriter {
+public final class AnimatedPlottingWriter<T> {
 
   private final int _numFrames;
   private final int _framesPerSecond;
+  private ImageBuilder<T> _imageBuilder;
 
   public AnimatedPlottingWriter(final int numFrames, final int framesPerSecond) {
     _numFrames = numFrames;
     _framesPerSecond = framesPerSecond;
+  }
+
+  public void setImageBuilder(final ImageBuilder<T> imageBuilder) {
+    _imageBuilder = imageBuilder;
   }
 
   public void write(final String fileName) throws IOException {
@@ -24,13 +29,12 @@ public abstract class AnimatedPlottingWriter {
     try (final ImageOutputStream outputStream = new FileImageOutputStream(new File(fileName))) {
       final GifSequenceWriter gifSequenceWriter = new GifSequenceWriter(outputStream, BufferedImage.TYPE_INT_RGB, timeBetweenFrames, true);
       for (int i = 0; i < _numFrames; i++) {
-        final BufferedImage bi = createImage(i / (1.0 * _numFrames));
+        final long startTime = System.currentTimeMillis();
+        final BufferedImage bi = _imageBuilder.createImage(i / (1.0 * _numFrames));
         gifSequenceWriter.writeToSequence(bi);
-        System.out.println("Done FRAME " + i);
+        System.out.println("Done FRAME " + i + " (" + (System.currentTimeMillis() - startTime)  + "ms)");
       }
     }
   }
-
-  protected abstract BufferedImage createImage(double animationProgress);
 
 }
