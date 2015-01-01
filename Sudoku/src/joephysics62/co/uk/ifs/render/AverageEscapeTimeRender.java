@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javafx.geometry.Point3D;
 import joephysics62.co.uk.ifs.IFSRender;
 import joephysics62.co.uk.ifs.IteratedFunctionSystem;
+import joephysics62.co.uk.plotting.ImageScale;
 
 public class AverageEscapeTimeRender implements IFSRender {
 
@@ -21,16 +22,13 @@ public class AverageEscapeTimeRender implements IFSRender {
   }
 
   @Override
-  public BufferedImage render(final IteratedFunctionSystem ifs, final double minY, final double maxY, final int height, final double minX) {
-    final int width = (int) (1.5 * height);
-    final double scale = height / (maxY - minY);
-
+  public BufferedImage render(final IteratedFunctionSystem ifs, final ImageScale imageScale) {
+    final int width = imageScale.getWidth();
+    final int height = imageScale.getHeight();
     final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int x = 0; x < width; x++) {
       for (int y = 0; y < height; y++) {
-        final double initX = minX + x / scale;
-        final double initY = minY + y / scale;
-        final Point3D start = new Point3D(initX, initY, 0);
+        final Point3D start = new Point3D(imageScale.dataX(x), imageScale.dataY(y), 0);
         final double escapeTime = escapeTime(ifs, start);
         final int c = (int) Math.min(255.0, (255.0 / _maxDepth) * escapeTime);
         final Color color = new Color(c, c, c);

@@ -6,6 +6,7 @@ import java.awt.image.BufferedImage;
 import javafx.geometry.Point3D;
 import joephysics62.co.uk.ifs.IFSRender;
 import joephysics62.co.uk.ifs.IteratedFunctionSystem;
+import joephysics62.co.uk.plotting.ImageScale;
 
 public class ChaosGame implements IFSRender {
 
@@ -18,20 +19,18 @@ public class ChaosGame implements IFSRender {
   }
 
   @Override
-  public BufferedImage render(final IteratedFunctionSystem ifs, final double minY, final double maxY, final int height, final double minX) {
-    final int width = (int) (1.5 * height);
+  public BufferedImage render(final IteratedFunctionSystem ifs, final ImageScale imageScale) {
     Point3D curr = _start;
-
-    final double scale = height / (maxY - minY);
-
+    final int width = imageScale.getWidth();
+    final int height = imageScale.getHeight();
     final int[][] counts = new int[width][height];
     double maxCount = 0;
 
     final BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int i = 0; i < _iterations; i++) {
-      final int x = (int) ((curr.getX() - minX) * scale);
-      final int y = (int) ((curr.getY() - minY) * scale);
-      if (x > 0 && y > 0 && x < width && y < height) {
+      final int x = imageScale.pixelX(curr.getX());
+      final int y = imageScale.pixelY(curr.getY());
+      if (imageScale.isOnPlot(x, y)) {
         final int newCount = counts[x][y] + 1;
         if (newCount > maxCount) {
           maxCount = newCount;
@@ -45,7 +44,7 @@ public class ChaosGame implements IFSRender {
       for (int y = 0; y < height; y++) {
         final int c = counts[x][y];
         final int brightness = (int) (255.0 * c / maxCount);
-        final Color newC = new Color(brightness, brightness, brightness);
+        final Color newC = new Color(brightness / 2, brightness, brightness / 2);
         bi.setRGB(x, y, newC.getRGB());
       }
     }
