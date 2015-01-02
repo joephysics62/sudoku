@@ -34,8 +34,7 @@ public class EscapeTimeRender {
     animatedPlottingWriter.write(fileName);
   }
 
-  private static ImageBuilder<Double> juliaSetBuilder(final ImageScale imageScale, final double escapeLimit,
-      final CyclicColorProvider cp) {
+  private static ImageBuilder<Double> juliaSetBuilder(final ImageScale imageScale, final double escapeLimit, final CyclicColorProvider cp) {
     final EscapeTime esc = new EscapeTime();
     final ImageBuilder<Double> imageBuilder = new ImageBuilder<Double>(imageScale, cp) {
       @Override

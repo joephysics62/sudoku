@@ -23,7 +23,7 @@ public abstract class ImageBuilder<T> {
     for (int x = 0; x < _imageScale.getWidth(); x++) {
       for (int y = 0; y < _imageScale.getHeight(); y++) {
         final T value = valueForPixel(_imageScale.dataX(x), _imageScale.dataY(y), animationProgress);
-        if (null != _predicate && _predicate.test(value)) {
+        if (null == _predicate || _predicate.test(value)) {
           bi.setRGB(x, y, _colorProvider.getColouring(value).getRGB());
         }
       }
