@@ -11,7 +11,6 @@ public class EscapeTime {
     Complex curr = initial.get();
     final double logOfMaxIterations = Math.log(maxIterations);
     final double logOfBase = Math.log(2);
-
     for (int i = 0; i < maxIterations; i++) {
       final double mod = curr.abs();
       if (mod > escapeLimit) {
