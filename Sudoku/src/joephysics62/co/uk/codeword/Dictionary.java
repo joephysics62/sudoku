@@ -16,7 +16,7 @@ public class Dictionary {
 
   private final Multimap<Integer, String> _words = HashMultimap.create();
 
-  public Dictionary() throws URISyntaxException, IOException {
+  public Dictionary() throws IOException, URISyntaxException {
     final File file = new File(getClass().getResource("sowpods.txt").toURI());
     try (final BufferedReader bufferedReader = new BufferedReader(new FileReader(file))) {
       String line;

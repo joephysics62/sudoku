@@ -10,22 +10,31 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CodewordSolver {
-  private static final String FILE = "examples\\codeword\\codeWordTimes2611.csv";
+  private static final String FILE = "examples\\codeword\\codeWordTimes2612.csv";
 
   private static final int THRESHOLD = 25;
 
   public static void main(final String[] args) throws IOException, URISyntaxException {
-
-    final Dictionary dictionary = new Dictionary();
     final String file = FILE;
     final CodeWord puzzle = CodeWord.readFromFile(file);
+    final CodewordSolver codewordSolver = new CodewordSolver();
+    codewordSolver.solve(puzzle);
+  }
+
+  private final Dictionary _dictionary;
+
+  public CodewordSolver() throws IOException, URISyntaxException {
+    _dictionary = new Dictionary();
+  }
+
+  public void solve(final CodeWord puzzle) {
     final long start = System.currentTimeMillis();
-    recurse(dictionary, puzzle.getGrid(), puzzle.getKey());
+    recurse(puzzle.getGrid(), puzzle.getKey());
     System.out.println("Time taken " + (System.currentTimeMillis() - start) + " ms");
   }
 
-  private static void recurse(final Dictionary dictionary, final CodeWordGrid grid, final CodeWordKey currentKey) {
-    if (!isValid(dictionary, grid, currentKey)) {
+  private void recurse(final CodeWordGrid grid, final CodeWordKey currentKey) {
+    if (!isValid(grid, currentKey)) {
       return;
     }
     if (currentKey.isSolved()) {
@@ -39,7 +48,7 @@ public class CodewordSolver {
       if (codeWordWord.isSolved(currentKey)) {
         continue;
       }
-      final List<String> matches = matches(dictionary, codeWordWord, currentKey);
+      final List<String> matches = matches(codeWordWord, currentKey);
       if (null != matches) {
         mapz.put(codeWordWord, matches);
       }
@@ -75,16 +84,16 @@ public class CodewordSolver {
     final List<String> matches = mapz.get(bestGuesser);
     for (final String match : matches) {
       if (basekey.isViableMatch(bestGuesser, match)) {
-        recurse(dictionary, grid, basekey.setWord(bestGuesser, match));
+        recurse(grid, basekey.setWord(bestGuesser, match));
       }
     }
 
   }
 
-  private static boolean isValid(final Dictionary dictionary, final CodeWordGrid grid, final CodeWordKey newKey) {
+  private boolean isValid(final CodeWordGrid grid, final CodeWordKey newKey) {
     for (final CodeWordWord word : grid.getAllWords()) {
       final String setAnswer = word.getRegex(newKey);
-      final List<String> matches = dictionary.matches(setAnswer, word.size(), THRESHOLD);
+      final List<String> matches = _dictionary.matches(setAnswer, word.size(), THRESHOLD);
       if (matches != null && matches.isEmpty()) {
         return false;
       }
@@ -92,9 +101,9 @@ public class CodewordSolver {
     return true;
   }
 
-  private static List<String> matches(final Dictionary dictionary, final CodeWordWord word, final CodeWordKey key) {
+  private List<String> matches(final CodeWordWord word, final CodeWordKey key) {
     final String regex = word.getRegex(key);
-    final List<String> matches = dictionary.matches(regex, word.size(), THRESHOLD);
+    final List<String> matches = _dictionary.matches(regex, word.size(), THRESHOLD);
     if (matches.size() >= THRESHOLD) {
       return null;
     }
