@@ -1,0 +1,21 @@
+ {
+  "height": 6, 
+  "arithmeticConstraints": [
+  	{"target":24,"operator":"MULTIPLY","coords":["1 1", "2 1", "2 2"]},
+  	{"target":5,"operator":"SUBTRACT","coords":["1 2", "1 3"]},
+  	{"target":3,"operator":"SUBTRACT","coords":["1 4", "2 4"]},
+  	{"target":8,"operator":"ADD","coords":["1 5", "2 5"]},
+  	{"target":1,"operator":"SUBTRACT","coords":["1 6", "2 6"]},
+  	{"target":11,"operator":"ADD","coords":["2 3", "3 3", "3 4", "4 4"]},
+  	{"target":3,"operator":"DIVIDE","coords":["3 1", "3 2"]},
+  	{"target":10,"operator":"ADD","coords":["3 5", "4 5"]},
+  	{"target":1,"operator":"SUBTRACT","coords":["3 6", "4 6"]},
+  	{"target":8,"operator":"ADD","coords":["4 1", "4 2", "5 1"]},  	
+  	{"target":9,"operator":"ADD","coords":["4 3", "5 3"]},
+  	{"target":5,"operator":"ADD","coords":["5 2"]},
+  	{"target":3,"operator":"DIVIDE","coords":["5 4", "5 5"]},
+  	{"target":3,"operator":"SUBTRACT","coords":["5 6", "6 6"]},
+  	{"target":1,"operator":"SUBTRACT","coords":["6 1", "6 2"]},
+  	{"target":6,"operator":"MULTIPLY","coords":["6 3", "6 4", "6 5"]}
+  ]
+ }
