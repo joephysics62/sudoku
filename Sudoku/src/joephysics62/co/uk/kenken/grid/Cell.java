@@ -1,5 +1,6 @@
-package joephysics62.co.uk.kenken;
+package joephysics62.co.uk.kenken.grid;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -42,9 +43,28 @@ public class Cell {
     return _possibles.isEmpty();
   }
 
+  public int getSolvedValue() {
+    if (isSolved()) {
+      return _possibles.iterator().next();
+    }
+    throw new RuntimeException();
+  }
+
   @Override
   public String toString() {
     return "Cell(possibles=" + _possibles + ")";
+  }
+
+  public Set<Integer> getPossibles() {
+    return _possibles;
+  }
+
+  public void setValue(final Integer value) {
+    _possibles.retainAll(Collections.singleton(value));
+  }
+
+  public void removeAll(final Collection<Integer> values) {
+    _possibles.removeAll(values);
   }
 
 }

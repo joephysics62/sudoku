@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import joephysics62.co.uk.kenken.constraint.ArithmeticConstraint;
+import joephysics62.co.uk.kenken.grid.Coordinate;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Reader {

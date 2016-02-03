@@ -1,4 +1,4 @@
-package joephysics62.co.uk.kenken;
+package joephysics62.co.uk.kenken.grid;
 
 import java.io.IOException;
 

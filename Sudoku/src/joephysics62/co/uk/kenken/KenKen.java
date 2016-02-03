@@ -7,14 +7,21 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import joephysics62.co.uk.kenken.constraint.ArithmeticConstraint;
+import joephysics62.co.uk.kenken.constraint.Constraint;
+import joephysics62.co.uk.kenken.constraint.UniqueConstraint;
+import joephysics62.co.uk.kenken.grid.Coordinate;
+
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 
 public class KenKen {
 
   private final Multimap<Coordinate, Constraint> _coordsToConstraints = HashMultimap.create();
+  private final int _height;
 
   public KenKen(final int height, final List<ArithmeticConstraint> arithmetics) {
+    _height = height;
     for (final ArithmeticConstraint arithmeticConstraint : arithmetics) {
       for (final Coordinate coordinate : arithmeticConstraint.getCoords()) {
         _coordsToConstraints.put(coordinate, arithmeticConstraint);
@@ -24,6 +31,10 @@ public class KenKen {
       createUniquenessConstraints(height, col -> Coordinate.of(axis, col));
       createUniquenessConstraints(height, row -> Coordinate.of(row, axis));
     });
+  }
+
+  public int getHeight() {
+    return _height;
   }
 
   public Collection<Constraint> constraintsForCoord(final Coordinate coordinate) {
