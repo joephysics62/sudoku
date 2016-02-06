@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CodewordSolver {
-  private static final String FILE = "examples\\codeword\\codeWordTimes2612.csv";
+  private static final String FILE = "examples\\codeword\\codeWordTimes2623.csv";
 
   private static final int THRESHOLD = 25;
 

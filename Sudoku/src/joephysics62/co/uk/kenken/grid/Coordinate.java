@@ -22,25 +22,15 @@ public class Coordinate {
     _col = col;
   }
 
-  public int getCol() {
-    return _col;
-  }
-  public int getRow() {
-    return _row;
-  }
+  public int getCol() { return _col; }
+  public int getRow() { return _row; }
 
   public Optional<Coordinate> left() {
-    if (_col > 1) {
-      return Optional.of(new Coordinate(_row, _col - 1));
-    }
-    return Optional.empty();
+    return _col > 1 ? Optional.of(of(_row, _col - 1)) : Optional.empty();
   }
 
   public Optional<Coordinate> up() {
-    if (_row > 1) {
-      return Optional.of(new Coordinate(_row - 1, _col));
-    }
-    return Optional.empty();
+    return _row > 1 ? Optional.of(of(_row - 1, _col)) : Optional.empty();
   }
 
   @Override

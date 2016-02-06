@@ -36,14 +36,14 @@ public class Coord {
   }
 
   @Override
-  public boolean equals(Object obj) {
+  public boolean equals(final Object obj) {
     if (this == obj)
       return true;
     if (obj == null)
       return false;
     if (getClass() != obj.getClass())
       return false;
-    Coord other = (Coord) obj;
+    final Coord other = (Coord) obj;
     if (_col != other._col)
       return false;
     if (_row != other._row)

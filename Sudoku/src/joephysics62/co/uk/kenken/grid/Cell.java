@@ -60,7 +60,8 @@ public class Cell {
   }
 
   public void setValue(final Integer value) {
-    _possibles.retainAll(Collections.singleton(value));
+    _possibles.clear();
+    _possibles.add(value);
   }
 
   public void removeAll(final Collection<Integer> values) {

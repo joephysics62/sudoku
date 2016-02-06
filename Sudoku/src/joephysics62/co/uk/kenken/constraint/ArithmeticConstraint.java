@@ -2,42 +2,49 @@ package joephysics62.co.uk.kenken.constraint;
 
 import java.util.Set;
 
-import joephysics62.co.uk.kenken.Operator;
 import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
-public class ArithmeticConstraint implements Constraint {
-  private Set<Coordinate> _coords;
-  private int _target;
-  private Operator _operator;
+public abstract class ArithmeticConstraint implements Constraint {
+  private final Set<Coordinate> _coords;
+  private final int _target;
+  private final int _maximum;
 
-  public ArithmeticConstraint() {}
-
-  public ArithmeticConstraint(final Set<Coordinate> coords, final int target, final Operator operator) {
+  public ArithmeticConstraint(final Set<Coordinate> coords, final int target, final int maximum) {
     _coords = coords;
     _target = target;
-    _operator = operator;
-  }
-
-  @Override
-  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  @Override
-  public void applyConstraint(final PuzzleAnswer answer) {
-    // TODO Auto-generated method stub
-
+    _maximum = maximum;
   }
 
   @Override
   public Set<Coordinate> getCoords() { return _coords; }
-  public void setCoords(final Set<Coordinate> coords) { _coords = coords; }
 
   public int getTarget() { return _target; }
-  public void setTarget(final int target) { _target = target; }
 
-  public Operator getOperator() { return _operator; }
-  public void setOperator(final Operator operator) { _operator = operator; }
+  public int getMaximum() {
+    return _maximum;
+  }
+
+  @Override
+  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
+    int value = 0;
+    for (final Coordinate coordinate : getCoords()) {
+      final Cell cell = answer.cellAt(coordinate);
+      if (cell.isUnsolved()) {
+        return true;
+      }
+      final int solvedValue = cell.getSolvedValue();
+      if (value == 0) {
+        value = solvedValue;
+      }
+      else {
+        value = accumulate(value, solvedValue);
+      }
+    }
+    return Math.abs(value) == getTarget();
+  }
+
+  protected abstract int accumulate(int current, int solvedValue);
+
 }
