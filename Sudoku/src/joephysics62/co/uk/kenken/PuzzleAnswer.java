@@ -54,4 +54,9 @@ public class PuzzleAnswer {
   public boolean isInconsistent() {
     return cells().anyMatch(Cell::isInconsistent);
   }
+
+  @Override
+  public String toString() {
+    return _valueGrid.toString();
+  }
 }

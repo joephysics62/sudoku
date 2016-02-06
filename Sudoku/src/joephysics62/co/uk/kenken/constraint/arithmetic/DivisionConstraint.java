@@ -1,34 +1,45 @@
 package joephysics62.co.uk.kenken.constraint.arithmetic;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
-import joephysics62.co.uk.kenken.grid.Coordinate;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.stream.IntStream;
 
-import com.google.common.collect.Sets;
+import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.grid.Cell;
+import joephysics62.co.uk.kenken.grid.Coordinate;
 
 
 public class DivisionConstraint extends ArithmeticConstraint {
 
-  public DivisionConstraint(final Coordinate left, final Coordinate right, final int target, final int maximum) {
-    super(Sets.newHashSet(left, right), target, maximum);
+  private final Coordinate _left;
+  private final Coordinate _right;
+
+  public DivisionConstraint(final Set<Coordinate> coords, final int target, final int maximum) {
+    super(coords, target, maximum);
+    final Iterator<Coordinate> iterator = coords.iterator();
+    _left = iterator.next();
+    _right = iterator.next();
   }
 
   @Override
-  public void applyConstraint(final PuzzleAnswer answer) {
+  protected IntStream eliminatedValues() {
+    return null;
+  }
+
+  @Override
+  protected void handlePartiallySolved(final PuzzleAnswer answer) {
 
   }
 
-
   @Override
-  protected int accumulate(final int current, final int solvedValue) {
-    if (current >= solvedValue) {
-      if (current % solvedValue == 0) {
-        return current / solvedValue;
-      }
+  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
+    if (cells(answer).anyMatch(Cell::isUnsolved)) {
+      return true;
     }
-    else if (solvedValue % current == 0) {
-      return solvedValue / current;
-    }
-    return -1;
+    final int leftValue = answer.cellAt(_left).getSolvedValue();
+    final int rightValue = answer.cellAt(_right).getSolvedValue();
+
+    return rightValue * getTarget() == leftValue || leftValue * getTarget() == rightValue;
   }
 
 

@@ -1,6 +1,7 @@
 package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import joephysics62.co.uk.kenken.PuzzleAnswer;
 import joephysics62.co.uk.kenken.constraint.CoordinateSetConstraint;
@@ -24,24 +25,21 @@ public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
   }
 
   @Override
-  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
-    int value = 0;
-    for (final Coordinate coordinate : getCoords()) {
-      final Cell cell = answer.cellAt(coordinate);
-      if (cell.isUnsolved()) {
-        return true;
-      }
-      final int solvedValue = cell.getSolvedValue();
-      if (value == 0) {
-        value = solvedValue;
-      }
-      else {
-        value = accumulate(value, solvedValue);
-      }
+  public final void applyConstraint(final PuzzleAnswer answer) {
+    final IntStream eliminations = eliminatedValues();
+    eliminations
+      .forEach(x -> cells(answer).forEach(c -> c.remove(x)));
+    if (cells(answer).allMatch(Cell::isSolved)) {
+      return;
     }
-    return Math.abs(value) == getTarget();
+    if (cells(answer).anyMatch(Cell::isSolved)) {
+      handlePartiallySolved(answer);
+    }
   }
 
-  protected abstract int accumulate(int current, int solvedValue);
+  protected abstract IntStream eliminatedValues();
+
+  protected abstract void handlePartiallySolved(PuzzleAnswer answer);
+
 
 }

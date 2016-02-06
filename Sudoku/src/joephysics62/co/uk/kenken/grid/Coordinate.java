@@ -3,12 +3,8 @@ package joephysics62.co.uk.kenken.grid;
 import java.util.Arrays;
 import java.util.Optional;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Objects;
 
-@JsonSerialize(using = CoordinateSerializer.class)
-@JsonDeserialize(using = CoordinateDeserializer.class)
 public class Coordinate {
   private final int _row;
   private final int _col;
@@ -53,6 +49,6 @@ public class Coordinate {
 
   @Override
   public String toString() {
-    return "Coordinate(row=" + _row + ", col=" + _col + ")";
+    return "(" + _row + ", " + _col + ")";
   }
 }

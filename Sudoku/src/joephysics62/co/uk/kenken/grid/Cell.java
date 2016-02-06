@@ -68,4 +68,8 @@ public class Cell {
     _possibles.removeAll(values);
   }
 
+  public void setInconsistent() {
+    _possibles.clear();
+  }
+
 }
