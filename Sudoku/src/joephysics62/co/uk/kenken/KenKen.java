@@ -7,9 +7,9 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import joephysics62.co.uk.kenken.constraint.ArithmeticConstraint;
 import joephysics62.co.uk.kenken.constraint.Constraint;
 import joephysics62.co.uk.kenken.constraint.UniqueConstraint;
+import joephysics62.co.uk.kenken.constraint.arithmetic.ArithmeticConstraint;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import com.google.common.collect.HashMultimap;

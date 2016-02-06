@@ -1,10 +1,12 @@
-package joephysics62.co.uk.kenken.constraint;
+package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import static junit.framework.Assert.assertEquals;
 
 import java.util.Set;
 
 import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.constraint.Constraint;
+import joephysics62.co.uk.kenken.constraint.arithmetic.AdditionConstraint;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import org.junit.Test;

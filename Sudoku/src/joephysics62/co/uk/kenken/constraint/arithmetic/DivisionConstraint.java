@@ -1,4 +1,4 @@
-package joephysics62.co.uk.kenken.constraint;
+package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import joephysics62.co.uk.kenken.PuzzleAnswer;
 import joephysics62.co.uk.kenken.grid.Coordinate;

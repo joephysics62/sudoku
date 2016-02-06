@@ -1,13 +1,13 @@
-package joephysics62.co.uk.kenken.constraint;
+package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
 
 import joephysics62.co.uk.kenken.PuzzleAnswer;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
-public class MultiplicationConstraint extends ArithmeticConstraint {
+public class AdditionConstraint extends ArithmeticConstraint {
 
-  public MultiplicationConstraint(final Set<Coordinate> coords, final int target, final int maximum) {
+  public AdditionConstraint(final Set<Coordinate> coords, final int target, final int maximum) {
     super(coords, target, maximum);
   }
 
@@ -18,7 +18,8 @@ public class MultiplicationConstraint extends ArithmeticConstraint {
 
   @Override
   protected int accumulate(final int current, final int solvedValue) {
-    return current * solvedValue;
+    return current + solvedValue;
   }
+
 
 }

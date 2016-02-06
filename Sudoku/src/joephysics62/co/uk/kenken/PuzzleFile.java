@@ -3,7 +3,7 @@ package joephysics62.co.uk.kenken;
 import java.util.Collections;
 import java.util.List;
 
-import joephysics62.co.uk.kenken.constraint.ArithmeticConstraint;
+import joephysics62.co.uk.kenken.constraint.arithmetic.ArithmeticConstraint;
 
 
 public class PuzzleFile {

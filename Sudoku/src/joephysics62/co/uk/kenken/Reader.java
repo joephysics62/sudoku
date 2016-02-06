@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import joephysics62.co.uk.kenken.constraint.ArithmeticConstraint;
+import joephysics62.co.uk.kenken.constraint.arithmetic.ArithmeticConstraint;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 public class Reader {

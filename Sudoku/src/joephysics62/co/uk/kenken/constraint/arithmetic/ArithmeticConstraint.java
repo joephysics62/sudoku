@@ -1,24 +1,21 @@
-package joephysics62.co.uk.kenken.constraint;
+package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
 
 import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.constraint.CoordinateSetConstraint;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
-public abstract class ArithmeticConstraint implements Constraint {
-  private final Set<Coordinate> _coords;
+public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
   private final int _target;
   private final int _maximum;
 
   public ArithmeticConstraint(final Set<Coordinate> coords, final int target, final int maximum) {
-    _coords = coords;
+    super(coords);
     _target = target;
     _maximum = maximum;
   }
-
-  @Override
-  public Set<Coordinate> getCoords() { return _coords; }
 
   public int getTarget() { return _target; }
 
