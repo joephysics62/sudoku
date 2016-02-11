@@ -3,9 +3,13 @@ package joephysics62.co.uk.kenken.constraint.arithmetic;
 import static junit.framework.Assert.assertEquals;
 
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.Constraint;
+import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import org.junit.Test;
@@ -19,7 +23,24 @@ public class TestDivisionConstraint {
   private final int _maximum = 6;
   private final Set<Coordinate> _coords = Sets.newHashSet(_left, _right);
   private final Constraint _constraint = new DivisionConstraint(_coords, 2, _maximum);
-  private final PuzzleAnswer _answer = new PuzzleAnswer(_coords, _maximum);
+  private final Answer _answer = new Answer(_coords, _maximum);
+
+  @Test
+  public void testApplyConstraint() {
+    final DivisionConstraint constraint = new DivisionConstraint(_coords, 3, _maximum);
+    possiblesSet(constraint).forEach(r -> assertEquals(range(1, _maximum), r));
+    constraint.applyConstraint(_answer);
+    constraint.applyToCells(_answer, c -> assertEquals(Sets.newHashSet(1, 2, 3, 6), c.getPossibles()));
+    possiblesSet(constraint).forEach(r -> assertEquals(Sets.newHashSet(1, 2, 3, 6), r));
+  }
+
+  private Stream<Set<Integer>> possiblesSet(final Constraint constraint) {
+    return constraint.cells(_answer).map(Cell::getPossibles);
+  }
+
+  private Set<Integer> range(final int from, final int to) {
+    return IntStream.rangeClosed(from, to).boxed().collect(Collectors.toSet());
+  }
 
   @Test
   public void testIsSatisfiedBy() {

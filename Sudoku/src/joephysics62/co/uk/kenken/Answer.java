@@ -9,11 +9,11 @@ import java.util.stream.Stream;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
-public class PuzzleAnswer {
+public class Answer {
   private final Map<Coordinate, Cell> _valueGrid = new LinkedHashMap<>();
   private final Map<Coordinate, Cell> _unsolvedGrid = new LinkedHashMap<>();
 
-  public PuzzleAnswer(final Set<Coordinate> coords, final int maximum) {
+  public Answer(final Set<Coordinate> coords, final int maximum) {
     for (final Coordinate coordinate : coords) {
       final Cell cell = Cell.unsolvedCell(maximum);
       _valueGrid.put(coordinate, cell);

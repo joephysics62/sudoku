@@ -5,7 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
@@ -16,7 +16,7 @@ public class UniqueConstraint extends CoordinateSetConstraint {
   }
 
   @Override
-  public void applyConstraint(final PuzzleAnswer answer) {
+  public void applyConstraint(final Answer answer) {
     final Map<Coordinate, Integer> solvedCells = new LinkedHashMap<>();
     for (final Coordinate coordinate : getCoords()) {
       final Cell cellUnderConstraint = answer.cellAt(coordinate);
@@ -32,7 +32,7 @@ public class UniqueConstraint extends CoordinateSetConstraint {
   }
 
   @Override
-  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
+  public boolean isSatisfiedBy(final Answer answer) {
     final Set<Integer> values = new LinkedHashSet<>();
     for (final Coordinate coordinate: getCoords()) {
       final Cell cell = answer.cellAt(coordinate);

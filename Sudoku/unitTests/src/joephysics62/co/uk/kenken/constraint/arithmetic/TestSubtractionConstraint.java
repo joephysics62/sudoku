@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.Constraint;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
@@ -23,7 +23,7 @@ public class TestSubtractionConstraint {
   private final int _maximum = 6;
   private final Set<Coordinate> _coords = Sets.newHashSet(_left, _right);
   private final Constraint _constraint = new SubtractionConstraint(_coords, 2, _maximum);
-  private final PuzzleAnswer _answer = new PuzzleAnswer(_coords, _maximum);
+  private final Answer _answer = new Answer(_coords, _maximum);
 
   @Test
   public void testIsSatisfiedBy() {

@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class TestUniqueConstraint {
                           .mapToObj(x -> Coordinate.of(1, x))
                           .collect(Collectors.toSet());
     final UniqueConstraint row = new UniqueConstraint(coords);
-    final PuzzleAnswer answer = new PuzzleAnswer(coords, 6);
+    final Answer answer = new Answer(coords, 6);
     answer.setSolvedValue(Coordinate.of(1, 1), 1);
     row.applyConstraint(answer);
     assertEquals(Collections.singleton(1), answer.possiblesAt(1, 1));

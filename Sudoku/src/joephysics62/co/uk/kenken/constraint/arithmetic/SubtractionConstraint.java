@@ -1,35 +1,29 @@
 package joephysics62.co.uk.kenken.constraint.arithmetic;
 
-import java.util.Iterator;
 import java.util.Set;
+import java.util.function.IntBinaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 
-public class SubtractionConstraint extends ArithmeticConstraint {
-
-  private final Coordinate _left;
-  private final Coordinate _right;
+public class SubtractionConstraint extends NonCommutingArithmeticConstraint {
 
   public SubtractionConstraint(final Set<Coordinate> coords, final int target, final int maximum) {
     super(coords, target, maximum);
-    final Iterator<Coordinate> iterator = coords.iterator();
-    _left = iterator.next();
-    _right = iterator.next();
   }
 
   @Override
-  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
-    if (cells(answer).anyMatch(Cell::isUnsolved)) {
-      return true;
-    }
-    final int leftValue = answer.cellAt(_left).getSolvedValue();
-    final int rightValue = answer.cellAt(_right).getSolvedValue();
+  protected IntBinaryOperator inverseOperator() {
+    return Integer::sum;
+  }
 
-    return getTarget() == leftValue - rightValue || getTarget() == rightValue - leftValue;
+  @Override
+  protected IntBinaryOperator binaryOperator() {
+    return (x, y) -> x - y;
   }
 
   @Override
@@ -38,22 +32,22 @@ public class SubtractionConstraint extends ArithmeticConstraint {
   }
 
   @Override
-  protected void handlePartiallySolved(final PuzzleAnswer answer) {
-    final Cell leftCell = answer.cellAt(_left);
-    final Cell rightCell = answer.cellAt(_right);
-    check(leftCell, rightCell);
-    check(rightCell, leftCell);
+  protected void handlePartiallySolved(final Answer answer) {
+    check(getLeft(), getRight(), answer);
+    check(getRight(), getLeft(), answer);
   }
 
-  private void check(final Cell first, final Cell second) {
+  private void check(final Coordinate firstC, final Coordinate secondC, final Answer answer) {
+    final Cell first = answer.cellAt(firstC);
+    final Cell second = answer.cellAt(secondC);
     if (first.isSolved()) {
       final int solvedValue = first.getSolvedValue();
-      final int secondValue = Math.abs(solvedValue - getTarget());
-      if (secondValue < 1 || secondValue > getMaximum()) {
-        first.setInconsistent();
-        second.setInconsistent();
-      }
-      second.setValue(secondValue);
+      final Set<Integer> newPossibles = IntStream
+        .of(solvedValue - getTarget(), solvedValue + getTarget()) // s OP t   or s INV(OP) t
+        .filter(x -> x > 0 && x <= getMaximum())                  // if > 0    if <= maximum
+        .boxed()
+        .collect(Collectors.toSet());
+      second.retain(newPossibles);
     }
   }
 

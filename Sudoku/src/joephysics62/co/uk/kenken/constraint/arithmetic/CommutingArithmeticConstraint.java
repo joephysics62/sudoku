@@ -1,10 +1,9 @@
 package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
-import java.util.function.IntBinaryOperator;
 import java.util.stream.Collectors;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.Constraint;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
@@ -18,7 +17,7 @@ public abstract class CommutingArithmeticConstraint extends ArithmeticConstraint
   }
 
   @Override
-  public boolean isSatisfiedBy(final PuzzleAnswer answer) {
+  public boolean isSatisfiedBy(final Answer answer) {
     if (cells(answer).anyMatch(Cell::isUnsolved)) {
       return true;
     }
@@ -28,7 +27,7 @@ public abstract class CommutingArithmeticConstraint extends ArithmeticConstraint
   }
 
   @Override
-  protected final void handlePartiallySolved(final PuzzleAnswer answer) {
+  protected final void handlePartiallySolved(final Answer answer) {
     final int solvedReduction = cells(answer)
         .filter(Cell::isSolved)
         .mapToInt(Cell::getSolvedValue)
@@ -50,10 +49,6 @@ public abstract class CommutingArithmeticConstraint extends ArithmeticConstraint
       newSubConstraint(remainingCoords, remaining).applyConstraint(answer);
     }
   }
-
-  protected abstract IntBinaryOperator binaryOperator();
-
-  protected abstract IntBinaryOperator inverseOperator();
 
   protected abstract int identity();
 

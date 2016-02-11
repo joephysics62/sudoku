@@ -64,8 +64,9 @@ public class Reader {
     }
   }
 
-  public KenKen read(final File file) throws IOException {
+  public Puzzle read(final File file) throws IOException {
     _builders.clear();
+
     final int maximum = GridCSVReader
         .newReader()
         .readFile(file, (coordinate, cell) -> {
@@ -93,7 +94,9 @@ public class Reader {
                              .mapToObj(row -> Coordinate.of(row, col))
                              .collect(Collectors.toSet()))
           .map(UniqueConstraint::new);
-    return null;
+    final Stream<Constraint> all = Stream.concat(definedConstraints,
+                                                 Stream.concat(horizConstraints, vertConstraints));
+    return new Puzzle(maximum, all);
   }
 
   private static IntStream newStream(final int maximum) {
@@ -115,9 +118,9 @@ public class Reader {
   private Coordinate readOther(final Coordinate coordinate, final String cell) {
     switch (cell) {
     case "^":
-      return coordinate.up().get();
+      return coordinate.up().orElseThrow(IllegalStateException::new);
     case "<":
-      return coordinate.left().get();
+      return coordinate.left().orElseThrow(IllegalStateException::new);
     default:
       throw new RuntimeException();
     }

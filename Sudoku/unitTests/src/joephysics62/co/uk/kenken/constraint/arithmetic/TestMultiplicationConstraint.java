@@ -4,7 +4,7 @@ import static junit.framework.Assert.assertEquals;
 
 import java.util.Set;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.Constraint;
 import joephysics62.co.uk.kenken.constraint.arithmetic.MultiplicationConstraint;
 import joephysics62.co.uk.kenken.grid.Coordinate;
@@ -22,7 +22,7 @@ public class TestMultiplicationConstraint {
 
   private final int _maximum = 6;
   private final Constraint _constraint = new MultiplicationConstraint(_coords, 15, _maximum);
-  private final PuzzleAnswer _answer = new PuzzleAnswer(_coords, _maximum);
+  private final Answer _answer = new Answer(_coords, _maximum);
 
   @Test
   public void testIsSatisfiedBy() {

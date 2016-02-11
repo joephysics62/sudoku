@@ -72,4 +72,8 @@ public class Cell {
     _possibles.clear();
   }
 
+  public void retain(final Set<Integer> newPossibles) {
+    _possibles.retainAll(newPossibles);
+  }
+
 }

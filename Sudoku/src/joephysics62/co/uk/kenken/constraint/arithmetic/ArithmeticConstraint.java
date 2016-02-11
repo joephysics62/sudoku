@@ -1,9 +1,10 @@
 package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
+import java.util.function.IntBinaryOperator;
 import java.util.stream.IntStream;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.CoordinateSetConstraint;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
@@ -25,7 +26,7 @@ public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
   }
 
   @Override
-  public final void applyConstraint(final PuzzleAnswer answer) {
+  public final void applyConstraint(final Answer answer) {
     final IntStream eliminations = eliminatedValues();
     eliminations
       .forEach(x -> cells(answer).forEach(c -> c.remove(x)));
@@ -37,9 +38,13 @@ public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
     }
   }
 
+  protected abstract IntBinaryOperator binaryOperator();
+
+  protected abstract IntBinaryOperator inverseOperator();
+
   protected abstract IntStream eliminatedValues();
 
-  protected abstract void handlePartiallySolved(PuzzleAnswer answer);
+  protected abstract void handlePartiallySolved(Answer answer);
 
 
 }

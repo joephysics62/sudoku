@@ -1,9 +1,10 @@
 package joephysics62.co.uk.kenken.constraint;
 
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import joephysics62.co.uk.kenken.PuzzleAnswer;
+import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
@@ -14,8 +15,7 @@ public abstract class CoordinateSetConstraint implements Constraint {
     _coords = coords;
   }
 
-  @Override
-  public final int numElements() {
+  protected final int numElements() {
     return _coords.size();
   }
 
@@ -30,7 +30,12 @@ public abstract class CoordinateSetConstraint implements Constraint {
   }
 
   @Override
-  public Stream<Cell> cells(final PuzzleAnswer answer) {
+  public Stream<Cell> cells(final Answer answer) {
     return coords().map(answer::cellAt);
+  }
+
+  @Override
+  public void applyToCells(final Answer answer, final Consumer<? super Cell> action) {
+    coords().map(answer::cellAt).forEach(action);
   }
 }
