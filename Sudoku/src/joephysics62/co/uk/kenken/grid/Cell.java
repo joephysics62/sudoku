@@ -2,16 +2,22 @@ package joephysics62.co.uk.kenken.grid;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Cell {
+public class Cell implements Cloneable {
 
   private final Set<Integer> _possibles;
 
   private Cell(final Set<Integer> possibles) {
     _possibles = possibles;
+  }
+
+  @Override
+  public Cell clone() {
+    return new Cell(new LinkedHashSet<Integer>(_possibles));
   }
 
   public static Cell unsolvedCell(final int maximum) {
@@ -64,16 +70,16 @@ public class Cell {
     _possibles.add(value);
   }
 
-  public void removeAll(final Collection<Integer> values) {
-    _possibles.removeAll(values);
+  public boolean removeAll(final Collection<Integer> values) {
+    return _possibles.removeAll(values);
   }
 
   public void setInconsistent() {
     _possibles.clear();
   }
 
-  public void retain(final Set<Integer> newPossibles) {
-    _possibles.retainAll(newPossibles);
+  public boolean retain(final Set<Integer> newPossibles) {
+    return _possibles.retainAll(newPossibles);
   }
 
 }

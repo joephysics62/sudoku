@@ -1,10 +1,14 @@
 package joephysics62.co.uk.kenken;
 
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import joephysics62.co.uk.kenken.constraint.Constraint;
+import joephysics62.co.uk.kenken.grid.Cell;
 import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import com.google.common.collect.HashMultimap;
@@ -14,26 +18,57 @@ public class Puzzle {
 
   private final Multimap<Coordinate, Constraint> _coordsToConstraints = HashMultimap.create();
   private final int _height;
+  private final Set<Constraint> _constraints;
 
   public Puzzle(final int height, final Stream<Constraint> constraints) {
     _height = height;
     constraints.forEach(c -> c.getCoords().forEach(co -> _coordsToConstraints.put(co, c)));
+    _constraints = new LinkedHashSet<>(_coordsToConstraints.values());
   }
 
-  public int getHeight() {
-    return _height;
+  public List<Answer> solvedUnique() {
+    final Answer answer = new Answer(_coordsToConstraints.keySet(), _height);
+
+    final List<Answer> solutions = new ArrayList<Answer>();
+    recursiveSolved(answer, solutions);
+    return solutions;
   }
 
-  public Collection<Constraint> constraintsForCoord(final Coordinate coordinate) {
-    return _coordsToConstraints.get(coordinate);
+  private void recursiveSolved(final Answer answer, final List<Answer> solutions) {
+    while (!applyAllConstraints(answer).isEmpty()) {
+      if (answer.isInconsistent()) {
+        return;
+      }
+      if (answer.isSolved()) {
+        solutions.add(answer);
+        return;
+      }
+    }
+    final Coordinate bestunsolvedCoord = answer.bestUnsolved().get();
+    final Cell bestUnsolvedCell = answer.cellAt(bestunsolvedCoord);
+
+    for (final Integer candidate : bestUnsolvedCell.getPossibles()) {
+      final Answer clonedAnswer = answer.clone();
+      clonedAnswer.setSolvedValue(bestunsolvedCoord, candidate);
+      recursiveSolved(clonedAnswer, solutions);
+    }
   }
 
-  public Collection<Constraint> getConstraints() {
-    return _coordsToConstraints.values();
+  private void checkForSolved(final Answer answer) {
+    _coordsToConstraints.keySet()
+      .stream()
+      .filter(co -> answer.cellAt(co).isSolved())
+      .forEach(co -> answer.setSolvedValue(co, answer.cellAt(co).getSolvedValue()));
   }
 
-  public Set<Coordinate> getCoords() {
-    return _coordsToConstraints.keySet();
+  private Set<Coordinate> applyAllConstraints(final Answer answer) {
+    Stream<Coordinate> coords = Stream.empty();
+    for (final Constraint constraint : _constraints) {
+      coords = Stream.concat(coords, constraint.applyConstraint(answer));
+    }
+    checkForSolved(answer);
+    return coords.collect(Collectors.toSet());
   }
+
 
 }

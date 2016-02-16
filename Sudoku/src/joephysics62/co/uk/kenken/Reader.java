@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -30,7 +31,12 @@ public class Reader {
   private static final String EXAMPLE = "examples\\kenken\\times-3604.csv";
 
   public static void main(final String[] args) throws IOException {
-    new Reader().read(new File(EXAMPLE));
+    final Puzzle puzzle = new Reader().read(new File(EXAMPLE));
+
+    final List<Answer> solvedUnique = puzzle.solvedUnique();
+    for (final Answer answer : solvedUnique) {
+      answer.writeAsGrid(System.out);
+    }
   }
 
   private static class ConstraintBuilder {

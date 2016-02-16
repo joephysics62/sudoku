@@ -11,7 +11,7 @@ import joephysics62.co.uk.kenken.grid.Coordinate;
 public interface Constraint {
   Set<Coordinate> getCoords();
 
-  void applyConstraint(Answer answer);
+  Stream<Coordinate> applyConstraint(Answer answer);
 
   boolean isSatisfiedBy(Answer answer);
 

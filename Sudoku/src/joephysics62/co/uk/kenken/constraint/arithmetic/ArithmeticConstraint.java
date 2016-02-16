@@ -2,7 +2,9 @@ package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
 import java.util.function.IntBinaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.CoordinateSetConstraint;
@@ -26,16 +28,21 @@ public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
   }
 
   @Override
-  public final void applyConstraint(final Answer answer) {
-    final IntStream eliminations = eliminatedValues();
-    eliminations
-      .forEach(x -> cells(answer).forEach(c -> c.remove(x)));
+  public final Stream<Coordinate> applyConstraint(final Answer answer) {
+    final Set<Integer> eliminations = eliminatedValues().boxed().collect(Collectors.toSet());
+
+    final Set<Coordinate> coords = getCoords();
+
+    final Stream<Coordinate> updated = coords
+                                        .stream()
+                                        .filter(co -> answer.cellAt(co).removeAll(eliminations));
     if (cells(answer).allMatch(Cell::isSolved)) {
-      return;
+      return updated;
     }
     if (cells(answer).anyMatch(Cell::isSolved)) {
-      handlePartiallySolved(answer);
+      return handlePartiallySolved(answer);
     }
+    return updated;
   }
 
   protected abstract IntBinaryOperator binaryOperator();
@@ -44,7 +51,7 @@ public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
 
   protected abstract IntStream eliminatedValues();
 
-  protected abstract void handlePartiallySolved(Answer answer);
+  protected abstract Stream<Coordinate> handlePartiallySolved(Answer answer);
 
 
 }

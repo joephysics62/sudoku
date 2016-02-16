@@ -2,6 +2,7 @@ package joephysics62.co.uk.kenken.constraint.arithmetic;
 
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.constraint.Constraint;
@@ -27,7 +28,7 @@ public abstract class CommutingArithmeticConstraint extends ArithmeticConstraint
   }
 
   @Override
-  protected final void handlePartiallySolved(final Answer answer) {
+  protected final Stream<Coordinate> handlePartiallySolved(final Answer answer) {
     final int solvedReduction = cells(answer)
         .filter(Cell::isSolved)
         .mapToInt(Cell::getSolvedValue)
@@ -41,12 +42,18 @@ public abstract class CommutingArithmeticConstraint extends ArithmeticConstraint
     }
     if (remainingCoords.size() == 1) {
       if (remaining > getMaximum()) {
-        throw new RuntimeException();
+        remainingCoords.forEach(co -> answer.cellAt(co).setInconsistent());
+        return Stream.empty();
       }
-      answer.cellAt(remainingCoords.iterator().next()).setValue(remaining);
+      final Coordinate coord = remainingCoords.iterator().next();
+      answer.cellAt(coord).setValue(remaining);
+      return Stream.of(coord);
     }
     else if (!_isSub) {
-      newSubConstraint(remainingCoords, remaining).applyConstraint(answer);
+      return newSubConstraint(remainingCoords, remaining).applyConstraint(answer);
+    }
+    else {
+      return Stream.empty();
     }
   }
 

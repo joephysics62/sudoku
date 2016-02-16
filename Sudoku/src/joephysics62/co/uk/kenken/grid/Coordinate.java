@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import com.google.common.base.Objects;
 
-public class Coordinate {
+public class Coordinate implements Comparable<Coordinate> {
   private final int _row;
   private final int _col;
 
@@ -50,5 +50,14 @@ public class Coordinate {
   @Override
   public String toString() {
     return "(" + _row + ", " + _col + ")";
+  }
+
+  @Override
+  public int compareTo(final Coordinate other) {
+    final int rowCompare = Integer.compare(_row, other._row);
+    if (rowCompare == 0) {
+      return Integer.compare(_col, other._col);
+    }
+    return rowCompare;
   }
 }

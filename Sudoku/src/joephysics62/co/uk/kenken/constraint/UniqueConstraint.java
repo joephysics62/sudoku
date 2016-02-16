@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import joephysics62.co.uk.kenken.Answer;
 import joephysics62.co.uk.kenken.grid.Cell;
@@ -16,7 +17,7 @@ public class UniqueConstraint extends CoordinateSetConstraint {
   }
 
   @Override
-  public void applyConstraint(final Answer answer) {
+  public Stream<Coordinate> applyConstraint(final Answer answer) {
     final Map<Coordinate, Integer> solvedCells = new LinkedHashMap<>();
     for (final Coordinate coordinate : getCoords()) {
       final Cell cellUnderConstraint = answer.cellAt(coordinate);
@@ -24,11 +25,9 @@ public class UniqueConstraint extends CoordinateSetConstraint {
         solvedCells.put(coordinate, cellUnderConstraint.getPossibles().iterator().next());
       }
     }
-    for (final Coordinate coordinate : getCoords()) {
-      if (!solvedCells.containsKey(coordinate)) {
-        answer.cellAt(coordinate).removeAll(solvedCells.values());
-      }
-    }
+    return getCoords()
+      .stream()
+      .filter(co -> !solvedCells.containsKey(co) && answer.cellAt(co).removeAll(solvedCells.values()));
   }
 
   @Override
