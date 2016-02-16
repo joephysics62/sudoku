@@ -3,6 +3,7 @@ package joephysics62.co.uk.kenken;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,16 +41,29 @@ public class Puzzle {
         return;
       }
       if (answer.isSolved()) {
-        solutions.add(answer);
+        final boolean allSatisfied = _constraints.stream().allMatch(c -> c.isSatisfiedBy(answer));
+        if (allSatisfied) {
+          solutions.add(answer);
+        }
         return;
       }
     }
-    final Coordinate bestunsolvedCoord = answer.bestUnsolved().get();
-    final Cell bestUnsolvedCell = answer.cellAt(bestunsolvedCoord);
+    final Optional<Coordinate> opt = answer.bestUnsolved();
+    if (!opt.isPresent()) {
+      if (!answer.isInconsistent() && answer.isSolved()) {
+        final boolean allSatisfied = _constraints.stream().allMatch(c -> c.isSatisfiedBy(answer));
+        if (allSatisfied) {
+          solutions.add(answer);
+        }
+      }
+      return;
+    }
+    final Coordinate bestunsolved = opt.get();
+    final Cell bestUnsolvedCell = answer.cellAt(bestunsolved);
 
     for (final Integer candidate : bestUnsolvedCell.getPossibles()) {
       final Answer clonedAnswer = answer.clone();
-      clonedAnswer.setSolvedValue(bestunsolvedCoord, candidate);
+      clonedAnswer.setSolvedValue(bestunsolved, candidate);
       recursiveSolved(clonedAnswer, solutions);
     }
   }

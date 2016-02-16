@@ -1,7 +1,6 @@
 package joephysics62.co.uk.kenken.grid;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import com.google.common.base.Objects;
 
@@ -21,12 +20,20 @@ public class Coordinate implements Comparable<Coordinate> {
   public int getCol() { return _col; }
   public int getRow() { return _row; }
 
-  public Optional<Coordinate> left() {
-    return _col > 1 ? Optional.of(of(_row, _col - 1)) : Optional.empty();
+  public Coordinate left() {
+    return of(_row, _col - 1);
   }
 
-  public Optional<Coordinate> up() {
-    return _row > 1 ? Optional.of(of(_row - 1, _col)) : Optional.empty();
+  public Coordinate up() {
+    return of(_row - 1, _col);
+  }
+
+  public Coordinate right() {
+    return of(_row, _col + 1);
+  }
+
+  public Coordinate down() {
+    return of(_row + 1, _col);
   }
 
   @Override
@@ -60,4 +67,5 @@ public class Coordinate implements Comparable<Coordinate> {
     }
     return rowCompare;
   }
+
 }

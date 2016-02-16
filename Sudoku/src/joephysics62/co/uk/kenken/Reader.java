@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -26,18 +25,6 @@ import joephysics62.co.uk.kenken.grid.GridCSVReader;
 public class Reader {
 
   private final Pattern _pattern = Pattern.compile("([0-9]+)([x+-/])?");
-  private final Map<Coordinate, ConstraintBuilder> _builders = new LinkedHashMap<>();
-
-  private static final String EXAMPLE = "examples\\kenken\\times-3604.csv";
-
-  public static void main(final String[] args) throws IOException {
-    final Puzzle puzzle = new Reader().read(new File(EXAMPLE));
-
-    final List<Answer> solvedUnique = puzzle.solvedUnique();
-    for (final Answer answer : solvedUnique) {
-      answer.writeAsGrid(System.out);
-    }
-  }
 
   private static class ConstraintBuilder {
     private final int _target;
@@ -70,21 +57,47 @@ public class Reader {
     }
   }
 
-  public Puzzle read(final File file) throws IOException {
-    _builders.clear();
+  private void recurseAddCells(final Coordinate co, final ConstraintBuilder builder, final int maximum, final Map<Coordinate, String> cellMap) {
+   builder.add(co);
+   navigate(builder, maximum, cellMap, co.left(), ">");
+   navigate(builder, maximum, cellMap, co.right(), "<");
+   navigate(builder, maximum, cellMap, co.up(), "V");
+   navigate(builder, maximum, cellMap, co.down(), "^");
+  }
 
+  private void navigate(final ConstraintBuilder builder, final int maximum,
+      final Map<Coordinate, String> cellMap, final Coordinate other,
+      final String otherContinueValue) {
+    if (cellMap.containsKey(other)) {
+       final String cell = cellMap.get(other);
+       if (cell.equals(otherContinueValue)) {
+         recurseAddCells(other, builder, maximum, cellMap);
+       }
+     }
+  }
+
+  public Puzzle read(final File file) throws IOException {
+    final Map<Coordinate, String> cellMap = new LinkedHashMap<>();
     final int maximum = GridCSVReader
         .newReader()
         .readFile(file, (coordinate, cell) -> {
-            final ConstraintBuilder builder = getBuilder(coordinate, cell);
-            builder.add(coordinate);
-            _builders.put(coordinate, builder);
+          cellMap.put(coordinate, cell);
         });
-    final Stream<Constraint> definedConstraints =
-        _builders.values()
-                 .stream()
-                 .distinct()
-                 .map(cb -> cb.build(maximum));
+
+    final Set<ConstraintBuilder> builders = new LinkedHashSet<>();
+    cellMap.forEach((co, c) -> {
+      final Matcher matcher = _pattern.matcher(c);
+      if (matcher.matches()) {
+        final int target = Integer.valueOf(matcher.group(1));
+        final Operator operator = Operator.fromString(matcher.group(2));
+        final ConstraintBuilder builder = new ConstraintBuilder(target, operator);
+        builders.add(builder);
+        recurseAddCells(co, builder, maximum, cellMap);
+      }
+    });
+
+    final Stream<Constraint> definedConstraints = builders.stream()
+                                                          .map(cb -> cb.build(maximum));
 
     // rows
     final Stream<Constraint> horizConstraints =
@@ -107,29 +120,6 @@ public class Reader {
 
   private static IntStream newStream(final int maximum) {
     return IntStream.rangeClosed(1, maximum);
-  }
-
-  private ConstraintBuilder getBuilder(final Coordinate coordinate, final String cell) {
-    final Matcher matcher = _pattern.matcher(cell);
-    if (matcher.matches()) {
-      final int target = Integer.valueOf(matcher.group(1));
-      final Operator operator = Operator.fromString(matcher.group(2));
-      return new ConstraintBuilder(target, operator);
-    }
-    else {
-      return _builders.get(readOther(coordinate, cell));
-    }
-  }
-
-  private Coordinate readOther(final Coordinate coordinate, final String cell) {
-    switch (cell) {
-    case "^":
-      return coordinate.up().orElseThrow(IllegalStateException::new);
-    case "<":
-      return coordinate.left().orElseThrow(IllegalStateException::new);
-    default:
-      throw new RuntimeException();
-    }
   }
 
 }
