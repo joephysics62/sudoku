@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Main {
 
-  private static final String EXAMPLE = "examples\\kenken\\times-3613.csv";
+  private static final String EXAMPLE = "examples\\kenken\\times-3627.csv";
 
   public static void main(final String[] args) throws IOException {
     final Puzzle puzzle = new Reader().read(new File(EXAMPLE));

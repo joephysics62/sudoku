@@ -36,26 +36,24 @@ public class Puzzle {
   }
 
   private void recursiveSolved(final Answer answer, final List<Answer> solutions) {
-    while (!applyAllConstraints(answer).isEmpty()) {
-      if (answer.isInconsistent()) {
-        return;
+    if (answer.isInconsistent()) {
+      return;
+    }
+    if (answer.isSolved()) {
+      final boolean allSatisfied = _constraints.stream().allMatch(c -> c.isSatisfiedBy(answer));
+      if (allSatisfied) {
+        solutions.add(answer);
       }
-      if (answer.isSolved()) {
-        final boolean allSatisfied = _constraints.stream().allMatch(c -> c.isSatisfiedBy(answer));
-        if (allSatisfied) {
-          solutions.add(answer);
-        }
-        return;
-      }
+      return;
+    }
+    final Set<Coordinate> changedCells = applyAllConstraints(answer);
+    if (!changedCells.isEmpty()) {
+      recursiveSolved(answer, solutions);
+      return;
     }
     final Optional<Coordinate> opt = answer.bestUnsolved();
     if (!opt.isPresent()) {
-      if (!answer.isInconsistent() && answer.isSolved()) {
-        final boolean allSatisfied = _constraints.stream().allMatch(c -> c.isSatisfiedBy(answer));
-        if (allSatisfied) {
-          solutions.add(answer);
-        }
-      }
+      recursiveSolved(answer, solutions);
       return;
     }
     final Coordinate bestunsolved = opt.get();
