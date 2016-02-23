@@ -74,7 +74,7 @@ public class CodeWord {
                                             .map(x -> toInt(x))
                                             .toArray(Integer[]::new);
       if (codeWordPuzzle == null) {
-        codeWordPuzzle = new Integer[row.length][row.length];
+        codeWordPuzzle = new Integer[gridData.size()][row.length];
       }
       codeWordPuzzle[rowIndex++] = row;
     }

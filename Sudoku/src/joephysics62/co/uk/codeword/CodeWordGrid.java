@@ -11,13 +11,13 @@ public class CodeWordGrid {
 
   public CodeWordGrid(final Integer[][] grid) {
     _grid = grid;
-    _horizontals = findWords(grid, new GridGetter() {
+    _horizontals = findWords(grid, _grid.length, _grid[0].length, new GridGetter() {
       @Override
       public Integer get(final Integer[][] grid, final int first, final int second) {
         return grid[first][second];
       }
     });
-    _verticals = findWords(grid, new GridGetter() {
+    _verticals = findWords(grid, _grid[0].length, _grid.length, new GridGetter() {
       @Override
       public Integer get(final Integer[][] grid, final int first, final int second) {
         return grid[second][first];
@@ -25,12 +25,11 @@ public class CodeWordGrid {
     });
   }
 
-  private List<CodeWordWord> findWords(final Integer[][] grid, final GridGetter gridGetter) {
+  private List<CodeWordWord> findWords(final Integer[][] grid, final int height, final int width, final GridGetter gridGetter) {
     final List<CodeWordWord> words = new ArrayList<>();
-    final int size = grid.length;
-    for (int firstIndex = 0; firstIndex < size; firstIndex++) {
+    for (int firstIndex = 0; firstIndex < height; firstIndex++) {
       List<Integer> currentWord = null;
-      for (int secondIndex = 0; secondIndex < size; secondIndex++) {
+      for (int secondIndex = 0; secondIndex < width; secondIndex++) {
         final Integer cell = gridGetter.get(grid, firstIndex, secondIndex);
         if (cell != null) {
           if (currentWord == null) {
@@ -38,7 +37,7 @@ public class CodeWordGrid {
           }
           currentWord.add(cell);
         }
-        if (currentWord != null && (cell == null || secondIndex == size - 1)) {
+        if (currentWord != null && (cell == null || secondIndex == width - 1)) {
           if (currentWord.size() > 1) {
             words.add(new CodeWordWord(currentWord));
           }

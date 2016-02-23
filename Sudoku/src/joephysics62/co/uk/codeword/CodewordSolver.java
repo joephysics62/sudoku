@@ -2,6 +2,7 @@ package joephysics62.co.uk.codeword;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,16 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class CodewordSolver {
-  private static final String FILE = "examples\\codeword\\codeWordTimes2623.csv";
 
   private static final int THRESHOLD = 25;
-
-  public static void main(final String[] args) throws IOException, URISyntaxException {
-    final String file = FILE;
-    final CodeWord puzzle = CodeWord.readFromFile(file);
-    final CodewordSolver codewordSolver = new CodewordSolver();
-    codewordSolver.solve(puzzle);
-  }
 
   private final Dictionary _dictionary;
 
@@ -27,20 +20,18 @@ public class CodewordSolver {
     _dictionary = new Dictionary();
   }
 
-  public void solve(final CodeWord puzzle) {
-    final long start = System.currentTimeMillis();
-    recurse(puzzle.getGrid(), puzzle.getKey());
-    System.out.println("Time taken " + (System.currentTimeMillis() - start) + " ms");
+  public List<CodeWord> solve(final CodeWord puzzle) {
+    final List<CodeWord> solutions = new ArrayList<>();
+    recurse(puzzle.getGrid(), puzzle.getKey(), solutions);
+    return solutions;
   }
 
-  private void recurse(final CodeWordGrid grid, final CodeWordKey currentKey) {
+  private void recurse(final CodeWordGrid grid, final CodeWordKey currentKey, final List<CodeWord> solutions) {
     if (!isValid(grid, currentKey)) {
       return;
     }
     if (currentKey.isSolved()) {
-      System.out.println("SOLVED!!!");
-      System.out.println(currentKey);
-      System.out.println(new CodeWord(grid, currentKey));
+      solutions.add(new CodeWord(grid, currentKey));
       return;
     }
     final Map<CodeWordWord, List<String>> mapz = new LinkedHashMap<>();
@@ -84,7 +75,7 @@ public class CodewordSolver {
     final List<String> matches = mapz.get(bestGuesser);
     for (final String match : matches) {
       if (basekey.isViableMatch(bestGuesser, match)) {
-        recurse(grid, basekey.setWord(bestGuesser, match));
+        recurse(grid, basekey.setWord(bestGuesser, match), solutions);
       }
     }
 
