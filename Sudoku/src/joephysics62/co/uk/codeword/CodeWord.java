@@ -70,7 +70,8 @@ public class CodeWord {
     Integer[][] codeWordPuzzle = null;
     int rowIndex = 0;
     for (final String line : gridData) {
-      final Integer[] row = Arrays.asList(line.split(",")).stream()
+      final Integer[] row = Arrays.asList(line.split("\\|")).stream()
+                                            .skip(1)
                                             .map(x -> toInt(x))
                                             .toArray(Integer[]::new);
       if (codeWordPuzzle == null) {

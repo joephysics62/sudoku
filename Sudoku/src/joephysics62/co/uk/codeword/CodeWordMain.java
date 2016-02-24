@@ -6,7 +6,7 @@ import java.util.List;
 
 public class CodeWordMain {
 
-  private static final String FILE = "examples\\codeword\\codeWordTimes2635.csv";
+  private static final String FILE = "examples\\codeword\\codeWordTimes2635.txt";
 
   public static void main(final String[] args) throws IOException, URISyntaxException {
     final String file = FILE;
