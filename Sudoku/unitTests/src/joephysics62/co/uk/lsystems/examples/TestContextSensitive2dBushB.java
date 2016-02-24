@@ -2,7 +2,8 @@ package joephysics62.co.uk.lsystems.examples;
 
 import java.util.stream.Collectors;
 
-import joephysics62.co.uk.lsystems.LSystem;
+import joephysics62.co.uk.old.lsystems.LSystem;
+import joephysics62.co.uk.old.lsystems.examples.ContextSensitive2dBushB;
 
 import org.junit.Assert;
 import org.junit.Test;

@@ -3,11 +3,11 @@ package joephysics62.co.uk.sudoku.gridmaths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.grid.GridLayout;
-import joephysics62.co.uk.grid.arrays.IntegerArrayGrid;
-import joephysics62.co.uk.grid.maths.Colour;
-import joephysics62.co.uk.grid.maths.FourColourSolver;
+import joephysics62.co.uk.old.grid.Coord;
+import joephysics62.co.uk.old.grid.GridLayout;
+import joephysics62.co.uk.old.grid.arrays.IntegerArrayGrid;
+import joephysics62.co.uk.old.grid.maths.Colour;
+import joephysics62.co.uk.old.grid.maths.FourColourSolver;
 
 import org.junit.Assert;
 import org.junit.Test;

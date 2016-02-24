@@ -6,11 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import joephysics62.co.uk.constraints.UniqueSum;
-import joephysics62.co.uk.grid.Coord;
-import joephysics62.co.uk.sudoku.model.Cell;
-import joephysics62.co.uk.sudoku.model.PuzzleGrid;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.old.constraints.UniqueSum;
+import joephysics62.co.uk.old.grid.Coord;
+import joephysics62.co.uk.old.sudoku.model.Cell;
+import joephysics62.co.uk.old.sudoku.model.PuzzleGrid;
+import joephysics62.co.uk.old.sudoku.model.PuzzleLayout;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -32,29 +32,29 @@ public class TestUniqueSum {
 
   private static int expectedBitwise(final int... nonBitwises) {
     int out = 0;
-    for (int nonBitwise : nonBitwises) {
+    for (final int nonBitwise : nonBitwises) {
       out += Cell.cellValueAsBitwise(nonBitwise);
     }
     return out;
   }
 
-  private void runTests(int sumValue, Integer expected) {
-    PuzzleLayout layout = PuzzleLayout.CLASSIC_SUDOKU;
+  private void runTests(final int sumValue, final Integer expected) {
+    final PuzzleLayout layout = PuzzleLayout.CLASSIC_SUDOKU;
     final int groupSize = 3;
 
-    List<Coord> cells = new ArrayList<>();
+    final List<Coord> cells = new ArrayList<>();
     for (int i = 1; i <= groupSize; i++) {
       cells.add(Coord.of(1, i));
     }
-    Map<Coord, Integer> map = new LinkedHashMap<>();
-    for (Coord coord : cells) {
+    final Map<Coord, Integer> map = new LinkedHashMap<>();
+    for (final Coord coord : cells) {
       map.put(coord, layout.getInitialValue());
     }
 
-    UniqueSum uniqueSum = UniqueSum.of(sumValue, 9, cells);
+    final UniqueSum uniqueSum = UniqueSum.of(sumValue, 9, cells);
     final PuzzleGrid cellGrid = new MockCellGrid(layout, map);
     uniqueSum.eliminateValues(cellGrid);
-    for (Coord coord : cells) {
+    for (final Coord coord : cells) {
       Assert.assertEquals(expected, cellGrid.get(coord));
     }
   }
@@ -69,12 +69,12 @@ public class TestUniqueSum {
     }
 
     @Override
-    public Integer get(Coord coord) {
+    public Integer get(final Coord coord) {
       return _values.get(coord);
     }
 
     @Override
-    public void set(Integer cellValues, Coord coord) {
+    public void set(final Integer cellValues, final Coord coord) {
       _values.put(coord, cellValues);
     }
 

@@ -1,10 +1,10 @@
 package joephysics62.co.uk.lsystems.rules;
 
-import static joephysics62.co.uk.lsystems.turtle.Module.identity;
-import static joephysics62.co.uk.lsystems.turtle.Module.left;
-import static joephysics62.co.uk.lsystems.turtle.Module.pop;
-import static joephysics62.co.uk.lsystems.turtle.Module.push;
-import static joephysics62.co.uk.lsystems.turtle.Module.right;
+import static joephysics62.co.uk.old.lsystems.turtle.Module.identity;
+import static joephysics62.co.uk.old.lsystems.turtle.Module.left;
+import static joephysics62.co.uk.old.lsystems.turtle.Module.pop;
+import static joephysics62.co.uk.old.lsystems.turtle.Module.push;
+import static joephysics62.co.uk.old.lsystems.turtle.Module.right;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -12,9 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import joephysics62.co.uk.lsystems.Utils;
-import joephysics62.co.uk.lsystems.turtle.IModule;
-import joephysics62.co.uk.lsystems.turtle.Module;
+import joephysics62.co.uk.old.lsystems.Utils;
+import joephysics62.co.uk.old.lsystems.rules.ContextSensitiveRule;
+import joephysics62.co.uk.old.lsystems.rules.Rule;
+import joephysics62.co.uk.old.lsystems.turtle.IModule;
+import joephysics62.co.uk.old.lsystems.turtle.Module;
 
 import org.junit.Assert;
 import org.junit.Test;

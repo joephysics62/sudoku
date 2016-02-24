@@ -7,10 +7,12 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import joephysics62.co.uk.grid.maths.FourColourSolver;
-import joephysics62.co.uk.sudoku.model.PuzzleLayout;
-import joephysics62.co.uk.sudoku.model.Puzzle;
-import joephysics62.co.uk.sudoku.read.KillerSudokuHtmlReader;
+import joephysics62.co.uk.old.grid.maths.FourColourSolver;
+import joephysics62.co.uk.old.sudoku.model.Puzzle;
+import joephysics62.co.uk.old.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.old.sudoku.read.KillerSudokuHtmlReader;
+import joephysics62.co.uk.old.sudoku.write.KillerSudokuHtmlWriter;
+import joephysics62.co.uk.old.sudoku.write.PuzzleHtmlWriter;
 import junit.framework.Assert;
 
 import org.junit.Rule;
