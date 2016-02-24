@@ -1,11 +1,11 @@
-package joephysics62.co.uk.kenken.constraint.arithmetic;
+package joephysics62.co.uk.constraint.arithmetic;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.IntBinaryOperator;
 import java.util.stream.IntStream;
 
-import joephysics62.co.uk.kenken.grid.Coordinate;
+import joephysics62.co.uk.grid.Coordinate;
 
 
 public class DivisionConstraint extends NonCommutingArithmeticConstraint {

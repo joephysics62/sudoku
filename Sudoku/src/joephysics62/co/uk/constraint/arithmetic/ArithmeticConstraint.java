@@ -1,4 +1,4 @@
-package joephysics62.co.uk.kenken.constraint.arithmetic;
+package joephysics62.co.uk.constraint.arithmetic;
 
 import java.util.Set;
 import java.util.function.IntBinaryOperator;
@@ -6,10 +6,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import joephysics62.co.uk.constraint.CoordinateSetConstraint;
+import joephysics62.co.uk.grid.Cell;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.constraint.CoordinateSetConstraint;
-import joephysics62.co.uk.kenken.grid.Cell;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 public abstract class ArithmeticConstraint extends CoordinateSetConstraint {
   private final int _target;

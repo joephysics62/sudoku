@@ -4,10 +4,10 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class CodeWordWord {
+public class Word {
   private final List<Integer> _cells;
 
-  public CodeWordWord(final List<Integer> cells) {
+  public Word(final List<Integer> cells) {
     _cells = Collections.unmodifiableList(cells);
   }
 

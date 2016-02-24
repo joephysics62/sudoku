@@ -1,13 +1,13 @@
-package joephysics62.co.uk.kenken.constraint.arithmetic;
+package joephysics62.co.uk.constraint.arithmetic;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import joephysics62.co.uk.constraint.Constraint;
+import joephysics62.co.uk.grid.Cell;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.constraint.Constraint;
-import joephysics62.co.uk.kenken.grid.Cell;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 public abstract class CommutingArithmeticConstraint extends ArithmeticConstraint {
   private final boolean _isSub;

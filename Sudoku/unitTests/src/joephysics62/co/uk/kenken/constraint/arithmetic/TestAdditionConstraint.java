@@ -7,10 +7,11 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import joephysics62.co.uk.constraint.Constraint;
+import joephysics62.co.uk.constraint.arithmetic.AdditionConstraint;
+import joephysics62.co.uk.grid.Cell;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.constraint.Constraint;
-import joephysics62.co.uk.kenken.grid.Cell;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import org.junit.Test;
 

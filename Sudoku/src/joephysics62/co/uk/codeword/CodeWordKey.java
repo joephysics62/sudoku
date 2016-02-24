@@ -30,7 +30,7 @@ public class CodeWordKey {
     }
   }
 
-  public boolean isViableMatch(final CodeWordWord word, final String answer) {
+  public boolean isViableMatch(final Word word, final String answer) {
     if (word.getCells().size() != answer.length()) {
       return false;
     }
@@ -60,7 +60,7 @@ public class CodeWordKey {
     return true;
   }
 
-  public CodeWordKey setWord(final CodeWordWord word, final String answer) {
+  public CodeWordKey setWord(final Word word, final String answer) {
     final CodeWordKey newKey = new CodeWordKey(new LinkedHashMap<Integer, Character>(_solution));
     for (int i = 0; i < answer.length(); i++) {
       final Integer intKey = word.getCells().get(i);

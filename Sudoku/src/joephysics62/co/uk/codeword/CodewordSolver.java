@@ -34,8 +34,9 @@ public class CodewordSolver {
       solutions.add(new CodeWord(grid, currentKey));
       return;
     }
-    final Map<CodeWordWord, List<String>> mapz = new LinkedHashMap<>();
-    for (final CodeWordWord codeWordWord : grid.getAllWords()) {
+    final Map<Word, List<String>> mapz = new LinkedHashMap<>();
+
+    for (final Word codeWordWord : grid.getAllWords()) {
       if (codeWordWord.isSolved(currentKey)) {
         continue;
       }
@@ -49,13 +50,13 @@ public class CodewordSolver {
       return;
     }
 
-    final Set<Entry<CodeWordWord, List<String>>> entrySet = mapz.entrySet();
+    final Set<Entry<Word, List<String>>> entrySet = mapz.entrySet();
 
     CodeWordKey basekey = currentKey;
-    CodeWordWord bestGuesser = entrySet.iterator().next().getKey();
+    Word bestGuesser = entrySet.iterator().next().getKey();
     int bestSize = Integer.MAX_VALUE;
-    for (final Entry<CodeWordWord, List<String>> entry : entrySet) {
-      final CodeWordWord codeWordWord = entry.getKey();
+    for (final Entry<Word, List<String>> entry : entrySet) {
+      final Word codeWordWord = entry.getKey();
       final List<String> matches = entry.getValue();
       if (matches.size() == 1) {
         if (basekey.isViableMatch(codeWordWord, matches.get(0))) {
@@ -82,7 +83,7 @@ public class CodewordSolver {
   }
 
   private boolean isValid(final CodeWordGrid grid, final CodeWordKey newKey) {
-    for (final CodeWordWord word : grid.getAllWords()) {
+    for (final Word word : grid.getAllWords()) {
       final String setAnswer = word.getRegex(newKey);
       final List<String> matches = _dictionary.matches(setAnswer, word.size(), THRESHOLD);
       if (matches != null && matches.isEmpty()) {
@@ -92,7 +93,7 @@ public class CodewordSolver {
     return true;
   }
 
-  private List<String> matches(final CodeWordWord word, final CodeWordKey key) {
+  private List<String> matches(final Word word, final CodeWordKey key) {
     final String regex = word.getRegex(key);
     final List<String> matches = _dictionary.matches(regex, word.size(), THRESHOLD);
     if (matches.size() >= THRESHOLD) {

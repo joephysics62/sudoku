@@ -13,14 +13,14 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import joephysics62.co.uk.kenken.constraint.Constraint;
-import joephysics62.co.uk.kenken.constraint.UniqueConstraint;
-import joephysics62.co.uk.kenken.constraint.arithmetic.AdditionConstraint;
-import joephysics62.co.uk.kenken.constraint.arithmetic.DivisionConstraint;
-import joephysics62.co.uk.kenken.constraint.arithmetic.MultiplicationConstraint;
-import joephysics62.co.uk.kenken.constraint.arithmetic.SubtractionConstraint;
-import joephysics62.co.uk.kenken.grid.Coordinate;
-import joephysics62.co.uk.kenken.grid.GridCSVReader;
+import joephysics62.co.uk.constraint.Constraint;
+import joephysics62.co.uk.constraint.UniqueConstraint;
+import joephysics62.co.uk.constraint.arithmetic.AdditionConstraint;
+import joephysics62.co.uk.constraint.arithmetic.DivisionConstraint;
+import joephysics62.co.uk.constraint.arithmetic.MultiplicationConstraint;
+import joephysics62.co.uk.constraint.arithmetic.SubtractionConstraint;
+import joephysics62.co.uk.grid.Coordinate;
+import joephysics62.co.uk.grid.GridCSVReader;
 
 public class Reader {
 

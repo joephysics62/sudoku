@@ -9,8 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import joephysics62.co.uk.constraint.UniqueConstraint;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import org.junit.Test;
 

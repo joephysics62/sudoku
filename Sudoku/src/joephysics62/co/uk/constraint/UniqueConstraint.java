@@ -1,4 +1,4 @@
-package joephysics62.co.uk.kenken.constraint;
+package joephysics62.co.uk.constraint;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -6,9 +6,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import joephysics62.co.uk.grid.Cell;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.grid.Cell;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 public class UniqueConstraint extends CoordinateSetConstraint {
 

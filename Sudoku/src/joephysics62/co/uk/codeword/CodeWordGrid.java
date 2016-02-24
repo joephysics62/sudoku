@@ -6,8 +6,8 @@ import java.util.List;
 public class CodeWordGrid {
 
   private final Integer[][] _grid;
-  private final List<CodeWordWord> _horizontals;
-  private final List<CodeWordWord> _verticals;
+  private final List<Word> _horizontals;
+  private final List<Word> _verticals;
 
   public CodeWordGrid(final Integer[][] grid) {
     _grid = grid;
@@ -25,8 +25,8 @@ public class CodeWordGrid {
     });
   }
 
-  private List<CodeWordWord> findWords(final Integer[][] grid, final int height, final int width, final GridGetter gridGetter) {
-    final List<CodeWordWord> words = new ArrayList<>();
+  private List<Word> findWords(final Integer[][] grid, final int height, final int width, final GridGetter gridGetter) {
+    final List<Word> words = new ArrayList<>();
     for (int firstIndex = 0; firstIndex < height; firstIndex++) {
       List<Integer> currentWord = null;
       for (int secondIndex = 0; secondIndex < width; secondIndex++) {
@@ -39,7 +39,7 @@ public class CodeWordGrid {
         }
         if (currentWord != null && (cell == null || secondIndex == width - 1)) {
           if (currentWord.size() > 1) {
-            words.add(new CodeWordWord(currentWord));
+            words.add(new Word(currentWord));
           }
           currentWord = null;
         }
@@ -52,16 +52,16 @@ public class CodeWordGrid {
     Integer get(Integer[][] grid, int first, int second);
   }
 
-  public List<CodeWordWord> getHorizontals() {
+  public List<Word> getHorizontals() {
     return _horizontals;
   }
 
-  public List<CodeWordWord> getVerticals() {
+  public List<Word> getVerticals() {
     return _verticals;
   }
 
-  public List<CodeWordWord> getAllWords() {
-    final List<CodeWordWord> allWords = new ArrayList<CodeWordWord>();
+  public List<Word> getAllWords() {
+    final List<Word> allWords = new ArrayList<Word>();
     allWords.addAll(getHorizontals());
     allWords.addAll(getVerticals());
     return allWords;

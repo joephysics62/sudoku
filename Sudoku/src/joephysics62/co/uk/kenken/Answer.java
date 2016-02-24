@@ -8,8 +8,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import joephysics62.co.uk.kenken.grid.Cell;
-import joephysics62.co.uk.kenken.grid.Coordinate;
+import joephysics62.co.uk.grid.Cell;
+import joephysics62.co.uk.grid.Coordinate;
 
 public class Answer implements Cloneable {
   private final Map<Coordinate, Cell> _valueGrid = new LinkedHashMap<>();

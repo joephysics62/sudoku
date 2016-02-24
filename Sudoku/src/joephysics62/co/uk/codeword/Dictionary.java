@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -29,15 +29,9 @@ public class Dictionary {
 
   public List<String> matches(final String regex, final int wordLength, final int maxMatches) {
     final Pattern pattern = Pattern.compile(regex);
-    final List<String> out = new ArrayList<>();
-    for (final String word : _words.get(wordLength)) {
-      if (pattern.matcher(word).matches()) {
-        out.add(word);
-        if (out.size() >= maxMatches) {
-          return out;
-        }
-      }
-    }
-    return out;
+    return _words.get(wordLength).stream()
+          .filter(w -> pattern.matcher(w).matches())
+          .limit(maxMatches)
+          .collect(Collectors.toList());
   }
 }

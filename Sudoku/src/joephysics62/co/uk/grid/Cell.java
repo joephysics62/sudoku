@@ -1,4 +1,4 @@
-package joephysics62.co.uk.kenken.grid;
+package joephysics62.co.uk.grid;
 
 import java.util.Collection;
 import java.util.Collections;

@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CodeWord {
   private final CodeWordGrid _grid;
@@ -56,13 +56,10 @@ public class CodeWord {
     if (keyData.trim().isEmpty()) {
       return new CodeWordKey();
     }
-    final Map<Integer, Character> keyMap = new LinkedHashMap<>();
-    for (final String keyPair : keyData.split(",")) {
-      final String[] split = keyPair.split("=");
-      final Integer key = toInt(split[0]);
-      final Character value = Character.valueOf(split[1].trim().charAt(0));
-      keyMap.put(key, value);
-    }
+    final Map<Integer, Character> keyMap = Arrays.stream(keyData.split(","))
+          .map(pair -> pair.split("="))
+          .collect(Collectors.toMap(p -> toInt(p[0]),
+                                    p-> Character.valueOf(p[1].trim().charAt(0))));
     return new CodeWordKey(keyMap);
   }
 

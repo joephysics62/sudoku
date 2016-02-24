@@ -1,12 +1,12 @@
-package joephysics62.co.uk.kenken.constraint;
+package joephysics62.co.uk.constraint;
 
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import joephysics62.co.uk.grid.Cell;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.grid.Cell;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 public interface Constraint {
   Set<Coordinate> getCoords();

@@ -4,10 +4,10 @@ import static junit.framework.Assert.assertEquals;
 
 import java.util.Set;
 
+import joephysics62.co.uk.constraint.Constraint;
+import joephysics62.co.uk.constraint.arithmetic.MultiplicationConstraint;
+import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.kenken.Answer;
-import joephysics62.co.uk.kenken.constraint.Constraint;
-import joephysics62.co.uk.kenken.constraint.arithmetic.MultiplicationConstraint;
-import joephysics62.co.uk.kenken.grid.Coordinate;
 
 import org.junit.Test;
 
