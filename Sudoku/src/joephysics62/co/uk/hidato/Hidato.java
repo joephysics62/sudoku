@@ -2,14 +2,14 @@ package joephysics62.co.uk.hidato;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import joephysics62.co.uk.grid.Coordinate;
 
@@ -25,18 +25,26 @@ public class Hidato {
   private Hidato(final Set<Coordinate> grid, final BiMap<Integer, Coordinate> path) {
     _path = path;
     _grid = Collections.unmodifiableSet(grid);
-    _height = grid.stream().map(Coordinate::getRow).max(Integer::compare).get();
-    _width = grid.stream().map(Coordinate::getCol).max(Integer::compare).get();
+    _height = max(grid, Coordinate::getRow);
+    _width = max(grid, Coordinate::getCol);
   }
 
-  public Hidato solve() {
+  private int max(final Set<Coordinate> grid, final Function<Coordinate, Integer> func) {
+    return grid.stream().map(func).max(Integer::compare).get();
+  }
+
+  public HidatoSolution solve() {
     final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
     recurse(_path.get(1), _path, solns);
-    return new Hidato(_grid, solns.get(0));
+    if (solns.isEmpty()) {
+      return new HidatoSolution(Optional.empty(), SolutionType.NONE);
+    }
+    return new HidatoSolution(Optional.of(new Hidato(_grid, solns.get(0))),
+                              solns.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
   }
 
   private void recurse(final Coordinate coord, final BiMap<Integer, Coordinate> current, final List<BiMap<Integer, Coordinate>> solns) {
-    if (solns.size() > 0) {
+    if (solns.size() > 2) {
       return;
     }
     if (current.size() == _grid.size()) {
@@ -64,45 +72,31 @@ public class Hidato {
   public static Hidato read(final Path file) throws IOException {
     final Set<Coordinate> grid = new LinkedHashSet<>();
     final BiMap<Integer, Coordinate> path = HashBiMap.create();
-
-    final List<String> lines = Files.readAllLines(file);
-    for (int row = 1; row <= lines.size(); row++) {
-      final String line = lines.get(row - 1);
-      final String[] cells = line.split("\\|");
-      final List<String> cellsList = Arrays.asList(cells).subList(1, cells.length);
-      for (int col = 1; col <= cellsList.size(); col++) {
-        final String cell = cellsList.get(col - 1).trim();
-        if ("//".equals(cell)) {
-          continue;
-        }
-        final Coordinate coord = Coordinate.of(row, col);
-        grid.add(coord);
-        if (cell.matches("[0-9]+")) {
-          final Integer intValue = Integer.valueOf(cell);
-          path.put(intValue, coord);
-        }
+    PuzzleReader.read(file, (cell, coord) -> {
+      if ("//".equals(cell)) {
+        return;
       }
-    }
+      grid.add(coord);
+      if (cell.matches("[0-9]+")) {
+        final Integer intValue = Integer.valueOf(cell);
+        path.put(intValue, coord);
+      }
+    });
     return new Hidato(grid, path);
   }
 
-  public void writeToPrintStream(final PrintStream out) {
+  public void write(final PrintStream out) {
     final BiMap<Coordinate, Integer> inverse = _path.inverse();
-    for (int row = 1; row <= _height; row++) {
-      for (int col = 1; col <= _width; col++) {
-        out.print("|");
-        final Integer integer = inverse.get(Coordinate.of(row, col));
-        if (integer == null) {
-          out.print("//");
-        }
-        else if (integer < 10) {
-          out.print(" " + integer);
-        }
-        else {
-          out.print(integer);
-        }
-      }
-      out.println("|");
-    }
+    PuzzleWriter.newWriter(_height, _width)
+                .writeToStream(out, coord -> {
+                  final Integer integer = inverse.get(coord);
+                  if (integer == null) {
+                    return "//";
+                  }
+                  if (integer < 10) {
+                    return " " + integer;
+                  }
+                  return integer.toString();
+                });
   }
 }

@@ -11,7 +11,7 @@ public class Main {
   public static void main(final String[] args) throws IOException {
     final Hidato puzzle = Hidato.read(EXAMPLE);
 
-    final Hidato solution = puzzle.solve();
-    solution.writeToPrintStream(System.out);
+    final HidatoSolution solution = puzzle.solve();
+    solution.write(System.out);
   }
 }

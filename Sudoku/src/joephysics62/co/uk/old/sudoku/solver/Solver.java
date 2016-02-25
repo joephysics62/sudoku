@@ -4,6 +4,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.hidato.SolutionType;
 import joephysics62.co.uk.old.constraints.Constraint;
 import joephysics62.co.uk.old.grid.Coord;
 import joephysics62.co.uk.old.grid.arrays.IntegerArrayGrid;

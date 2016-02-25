@@ -1,4 +1,4 @@
-package joephysics62.co.uk.old.sudoku.solver;
+package joephysics62.co.uk.hidato;
 
 public enum SolutionType {
   NONE,

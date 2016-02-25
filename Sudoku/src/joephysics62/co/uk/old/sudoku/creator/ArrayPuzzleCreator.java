@@ -8,6 +8,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
+import joephysics62.co.uk.hidato.SolutionType;
 import joephysics62.co.uk.old.constraints.Constraint;
 import joephysics62.co.uk.old.grid.Coord;
 import joephysics62.co.uk.old.sudoku.builder.ArrayBuilder;
@@ -17,7 +18,6 @@ import joephysics62.co.uk.old.sudoku.model.Puzzle;
 import joephysics62.co.uk.old.sudoku.model.PuzzleLayout;
 import joephysics62.co.uk.old.sudoku.solver.CellFilter;
 import joephysics62.co.uk.old.sudoku.solver.SolutionResult;
-import joephysics62.co.uk.old.sudoku.solver.SolutionType;
 import joephysics62.co.uk.old.sudoku.solver.Solver;
 
 import org.apache.log4j.Logger;

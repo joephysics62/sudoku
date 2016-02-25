@@ -1,5 +1,7 @@
 package joephysics62.co.uk.old.sudoku.solver;
 
+import joephysics62.co.uk.hidato.SolutionType;
+
 public class SolutionResult {
 
   private final SolutionType _type;

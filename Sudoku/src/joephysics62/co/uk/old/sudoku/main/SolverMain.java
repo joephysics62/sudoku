@@ -3,6 +3,7 @@ package joephysics62.co.uk.old.sudoku.main;
 import java.io.File;
 import java.io.IOException;
 
+import joephysics62.co.uk.hidato.SolutionType;
 import joephysics62.co.uk.old.sudoku.model.GridUniqueness;
 import joephysics62.co.uk.old.sudoku.model.Puzzle;
 import joephysics62.co.uk.old.sudoku.model.PuzzleLayout;
@@ -13,7 +14,6 @@ import joephysics62.co.uk.old.sudoku.read.PuzzleReader;
 import joephysics62.co.uk.old.sudoku.read.SudokuHtmlReader;
 import joephysics62.co.uk.old.sudoku.solver.FirstClosestToSolved;
 import joephysics62.co.uk.old.sudoku.solver.SolutionResult;
-import joephysics62.co.uk.old.sudoku.solver.SolutionType;
 import joephysics62.co.uk.old.sudoku.solver.Solver;
 import joephysics62.co.uk.old.sudoku.write.PuzzleTextWriter;
 
