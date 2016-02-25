@@ -1,6 +1,7 @@
 package joephysics62.co.uk.grid;
 
 import java.util.Arrays;
+import java.util.stream.Stream;
 
 import com.google.common.base.Objects;
 
@@ -34,6 +35,13 @@ public class Coordinate implements Comparable<Coordinate> {
 
   public Coordinate down() {
     return of(_row + 1, _col);
+  }
+
+  public Stream<Coordinate> arounds() {
+    return Stream.of(of(_row, _col - 1), of(_row - 1, _col -1),
+                     of(_row - 1, _col), of(_row - 1, _col + 1),
+                     of(_row, _col + 1), of(_row + 1, _col + 1),
+                     of(_row + 1, _col), of (_row + 1, _col - 1));
   }
 
   @Override
