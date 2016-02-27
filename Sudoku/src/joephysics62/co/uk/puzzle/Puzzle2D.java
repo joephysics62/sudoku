@@ -4,9 +4,11 @@ import java.io.File;
 import java.io.PrintStream;
 
 public interface Puzzle2D {
-  void write(PrintStream out);
+  void writeAnswer(PrintStream out);
 
-  void render(File htmlFile) throws Exception;
+  void writePuzzle(PrintStream out);
+
+  void render(File htmlFile, int cellSize) throws Exception;
 
   PuzzleSolution<? extends Puzzle2D> solve();
 }

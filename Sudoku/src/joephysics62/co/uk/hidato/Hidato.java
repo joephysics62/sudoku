@@ -1,8 +1,6 @@
 package joephysics62.co.uk.hidato;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,30 +12,26 @@ import java.util.Set;
 import java.util.function.Function;
 
 import joephysics62.co.uk.grid.Coordinate;
-import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.Puzzle2DImpl;
 import joephysics62.co.uk.puzzle.PuzzleReader;
-import joephysics62.co.uk.puzzle.PuzzleRenderer;
 import joephysics62.co.uk.puzzle.PuzzleSolution;
-import joephysics62.co.uk.puzzle.PuzzleWriter;
 import joephysics62.co.uk.puzzle.SolutionType;
+import joephysics62.co.uk.xml.SvgBuilder;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class Hidato implements Puzzle2D {
+public class Hidato extends Puzzle2DImpl {
   private final Set<Coordinate> _grid;
   private final BiMap<Integer, Coordinate> _path;
-  private final Integer _height;
-  private final Integer _width;
 
   private Hidato(final Set<Coordinate> grid, final BiMap<Integer, Coordinate> path) {
+    super(max(grid, Coordinate::getRow), max(grid, Coordinate::getCol));
     _path = path;
     _grid = Collections.unmodifiableSet(grid);
-    _height = max(grid, Coordinate::getRow);
-    _width = max(grid, Coordinate::getCol);
   }
 
-  private int max(final Set<Coordinate> grid, final Function<Coordinate, Integer> func) {
+  private static int max(final Set<Coordinate> grid, final Function<Coordinate, Integer> func) {
     return grid.stream().map(func).max(Integer::compare).get();
   }
 
@@ -95,44 +89,44 @@ public class Hidato implements Puzzle2D {
   }
 
   @Override
-  public void write(final PrintStream out) {
-    final BiMap<Coordinate, Integer> inverse = _path.inverse();
-    PuzzleWriter.newWriter(_height, _width)
-                .writeToStream(out, coord -> {
-                  final Integer integer = inverse.get(coord);
-                  if (integer == null) {
-                    return "//";
-                  }
-                  if (integer < 10) {
-                    return " " + integer;
-                  }
-                  return integer.toString();
-                });
+  protected String clueAt(final Coordinate coord) {
+    throw new UnsupportedOperationException();
   }
 
   @Override
-  public void render(final File htmlFile) throws Exception {
-    final Path templateFile = Paths.get("templates", "hidato.css");
-    final PuzzleRenderer renderer = PuzzleRenderer.newRenderer(templateFile, _height, _width);
-
-    final int cellSize = 50;
-    final int fontSize = 7 * cellSize / 12;
-
+  protected String answerAt(final Coordinate coord) {
     final BiMap<Coordinate, Integer> inverse = _path.inverse();
-    renderer.render(htmlFile, cellSize, (svg, coord) -> {
-      if (_grid.contains(coord)) {
-        final Integer value = inverse.get(coord);
-        if (value != null) {
-          final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
-          final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
-          svg.addText(Integer.toString(value), x, y, fontSize);
-        }
+    final Integer integer = inverse.get(coord);
+    if (integer == null) {
+      return "//";
+    }
+    if (integer < 10) {
+      return " " + integer;
+    }
+    return integer.toString();
+  }
+
+  @Override
+  protected Path cssTemplate() {
+    return Paths.get("templates", "hidato.css");
+  }
+
+  @Override
+  protected void handle(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+    final int fontSize = 7 * cellSize / 12;
+    final BiMap<Coordinate, Integer> inverse = _path.inverse();
+    if (_grid.contains(coord)) {
+      final Integer value = inverse.get(coord);
+      if (value != null) {
+        final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
+        final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
+        svg.addText(Integer.toString(value), x, y, fontSize);
       }
-      else {
-        final int x = (coord.getCol() - 1) * cellSize;
-        final int y = (coord.getRow() - 1) * cellSize;
-        svg.addRectangle(cellSize, cellSize, x, y);
-      }
-    });
+    }
+    else {
+      final int x = (coord.getCol() - 1) * cellSize;
+      final int y = (coord.getRow() - 1) * cellSize;
+      svg.addRectangle(cellSize, cellSize, x, y);
+    }
   }
 }

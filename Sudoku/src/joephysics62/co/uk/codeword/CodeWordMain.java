@@ -14,7 +14,7 @@ public class CodeWordMain {
     final PuzzleSolution<CodeWord> solved = puzzle.solve();
     solved.write(System.out);
 
-    solved.getSolution().get().render(new File("out2.html"));
+    solved.getSolution().get().render(new File("out2.html"), 30);
   }
 
 }

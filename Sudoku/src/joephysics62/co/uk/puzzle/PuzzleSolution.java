@@ -19,7 +19,7 @@ public class PuzzleSolution<T extends Puzzle2D> {
 
   public void write(final PrintStream out) {
     out.println("Solution Type: " + _solutionType);
-    _solution.ifPresent(h -> h.write(out));
+    _solution.ifPresent(h -> h.writeAnswer(out));
   }
 
 }

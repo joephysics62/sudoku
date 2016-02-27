@@ -1,8 +1,6 @@
 package joephysics62.co.uk.codeword;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,14 +18,13 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import joephysics62.co.uk.grid.Coordinate;
-import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.Puzzle2DImpl;
 import joephysics62.co.uk.puzzle.PuzzleReader;
-import joephysics62.co.uk.puzzle.PuzzleRenderer;
 import joephysics62.co.uk.puzzle.PuzzleSolution;
-import joephysics62.co.uk.puzzle.PuzzleWriter;
 import joephysics62.co.uk.puzzle.SolutionType;
+import joephysics62.co.uk.xml.SvgBuilder;
 
-public class CodeWord implements Puzzle2D {
+public class CodeWord extends Puzzle2DImpl {
 
   private static final int THRESHOLD = 25;
 
@@ -39,13 +36,9 @@ public class CodeWord implements Puzzle2D {
   private final List<Word> _horizontals;
   private final List<Word> _verticals;
 
-  private final Integer _height;
-  private final Integer _width;
-
   public CodeWord(final CodeWordKey key, final int height, final int width, final Map<Coordinate, Integer> grid, final Dictionary dictionary) {
+    super(height, width);
     _key = key;
-    _height = height;
-    _width = width;
     _grid = grid;
     _dictionary = dictionary;
     _horizontals = findWords((a, b) -> Coordinate.of(a, b));
@@ -75,58 +68,50 @@ public class CodeWord implements Puzzle2D {
     return words;
   }
 
-  public void writePuzzle(final PrintStream out) {
-    PuzzleWriter.newWriter(_height, _width)
-                .writeToStream(out, coord -> {
-                  final Integer integer = _grid.get(coord);
-                  if (integer == null) {
-                    return "   ";
-                  }
-                  if (integer < 10) {
-                    return "  " + integer;
-                  }
-                  return " " + integer.toString();
-                });
+  @Override
+  protected String clueAt(final Coordinate coord) {
+    final Integer integer = _grid.get(coord);
+    if (integer == null) {
+      return "   ";
+    }
+    if (integer < 10) {
+      return "  " + integer;
+    }
+    return " " + integer.toString();
   }
 
   @Override
-  public void write(final PrintStream out) {
-    PuzzleWriter.newWriter(_height, _width)
-                .writeToStream(out, coord -> {
-                  final Integer integer = _grid.get(coord);
-                  final Character character = _key.get(integer);
-                  if (character == null) {
-                    return " ";
-                  }
-                  return character.toString();
-                });
+  protected String answerAt(final Coordinate coord) {
+    final Integer integer = _grid.get(coord);
+    final Character character = _key.get(integer);
+    if (character == null) {
+      return " ";
+    }
+    return character.toString();
   }
 
   @Override
-  public void render(final File htmlFile) throws Exception {
-    final Path templateFile = Paths.get("templates", "hidato.css");
-    final PuzzleRenderer renderer = PuzzleRenderer.newRenderer(templateFile, _height, _width);
+  protected Path cssTemplate() {
+    return Paths.get("templates", "hidato.css");
+  }
 
-    final int cellSize = 30;
+  @Override
+  protected void handle(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
     final int fontSize = 7 * cellSize / 12;
-
-    renderer.render(htmlFile, cellSize, (svg, coord) -> {
-      if (_grid.containsKey(coord)) {
-        final Integer value = _grid.get(coord);
-        final Character character = _key.get(value);
-        if (character != null) {
-          final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
-          final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
-          svg.addText(Character.toString(character), x, y, fontSize);
-        }
+    if (_grid.containsKey(coord)) {
+      final Integer value = _grid.get(coord);
+      final Character character = _key.get(value);
+      if (character != null) {
+        final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
+        final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
+        svg.addText(Character.toString(character), x, y, fontSize);
       }
-      else {
-        final int x = (coord.getCol() - 1) * cellSize;
-        final int y = (coord.getRow() - 1) * cellSize;
-        svg.addRectangle(cellSize, cellSize, x, y);
-      }
-    });
-
+    }
+    else {
+      final int x = (coord.getCol() - 1) * cellSize;
+      final int y = (coord.getRow() - 1) * cellSize;
+      svg.addRectangle(cellSize, cellSize, x, y);
+    }
   }
 
   public static CodeWord readFromFile(final String file) throws IOException, URISyntaxException {
