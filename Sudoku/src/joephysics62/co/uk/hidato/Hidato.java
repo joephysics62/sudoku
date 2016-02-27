@@ -12,15 +12,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import java.util.stream.IntStream;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 import joephysics62.co.uk.grid.Coordinate;
-import joephysics62.co.uk.xml.SvgBuilder;
-
-import org.xml.sax.SAXException;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -109,43 +102,28 @@ public class Hidato {
                 });
   }
 
-  public void render(final File htmlFile) throws SAXException, IOException, ParserConfigurationException, TransformerException {
+  public void render(final File htmlFile) throws Exception {
     final Path templateFile = Paths.get("templates", "hidato.css");
+    final PuzzleRenderer renderer = PuzzleRenderer.newRenderer(templateFile, _height, _width);
 
     final int cellSize = 50;
-    final int gridHeight = _height * cellSize;
-    final int gridWidth = _width * cellSize;
+    final int fontSize = 7 * cellSize / 10;
+    final int verticalOffset = cellSize / 4;
 
-    final SvgBuilder svgBuilder = SvgBuilder.newBuilder();
-    svgBuilder.addSvg(gridWidth + cellSize, gridHeight + cellSize);
-    svgBuilder.addCss(templateFile);
-
-    IntStream.rangeClosed(0, _height).forEach(x -> {
-      svgBuilder.addLine(0, x * cellSize, gridWidth, x * cellSize);
-    });
-    IntStream.rangeClosed(0, _width).forEach(x -> {
-      svgBuilder.addLine(x * cellSize, 0, x * cellSize, gridHeight);
-    });
     final BiMap<Coordinate, Integer> inverse = _path.inverse();
-    for (int row = 1; row <= _height; row++) {
-      for (int col = 1; col <= _width; col++) {
-        final Coordinate coord = Coordinate.of(row, col);
-        if (_grid.contains(coord)) {
-          final Integer value = inverse.get(coord);
-          if (value != null) {
-            final int fontSize = 7 * cellSize / 10;
-            final int verticalOffset = cellSize / 4;
-            final int horizontalOffset = value < 10 ? cellSize / 3 : cellSize / 8;
-            svgBuilder.addText(Integer.toString(value),
-                               (col - 1) * cellSize + horizontalOffset, row * cellSize - verticalOffset,
-                               fontSize);
-          }
-        }
-        else {
-          svgBuilder.addRectangle(cellSize, cellSize, (col - 1) * cellSize, (row - 1) * cellSize);
+    renderer.render(htmlFile, cellSize, (svg, coord) -> {
+      if (_grid.contains(coord)) {
+        final Integer value = inverse.get(coord);
+        if (value != null) {
+          final int horizontalOffset = value < 10 ? cellSize / 3 : cellSize / 8;
+          svg.addText(Integer.toString(value),
+                             (coord.getCol() - 1) * cellSize + horizontalOffset, coord.getRow() * cellSize - verticalOffset,
+                             fontSize);
         }
       }
-    }
-    svgBuilder.write(htmlFile);
+      else {
+        svg.addRectangle(cellSize, cellSize, (coord.getCol() - 1) * cellSize, (coord.getRow() - 1) * cellSize);
+      }
+    });
   }
 }
