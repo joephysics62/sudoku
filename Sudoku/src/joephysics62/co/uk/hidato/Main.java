@@ -12,7 +12,7 @@ public class Main {
 
   public static void main(final String[] args) throws Exception {
     final Hidato puzzle = Hidato.read(EXAMPLE);
-    puzzle.render(new File("out.html"), 50);
+    puzzle.renderPuzzle(new File("out.html"), 50);
     final PuzzleSolution<Hidato> solution = puzzle.solve();
     solution.write(System.out);
   }

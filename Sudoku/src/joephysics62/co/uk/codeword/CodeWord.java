@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
@@ -31,14 +32,17 @@ public class CodeWord extends Puzzle2DImpl {
   private final Dictionary _dictionary;
 
   private final CodeWordKey _key;
+  private final CodeWordKey _startKey;
 
   private final Map<Coordinate, Integer> _grid;
   private final List<Word> _horizontals;
   private final List<Word> _verticals;
 
-  public CodeWord(final CodeWordKey key, final int height, final int width, final Map<Coordinate, Integer> grid, final Dictionary dictionary) {
+
+  public CodeWord(final CodeWordKey key, final CodeWordKey startKey, final int height, final int width, final Map<Coordinate, Integer> grid, final Dictionary dictionary) {
     super(height, width);
     _key = key;
+    _startKey = startKey;
     _grid = grid;
     _dictionary = dictionary;
     _horizontals = findWords((a, b) -> Coordinate.of(a, b));
@@ -96,15 +100,25 @@ public class CodeWord extends Puzzle2DImpl {
   }
 
   @Override
-  protected void handle(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+  protected void renderAnswer(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+    renderGrid(svg, coord, cellSize,
+               c -> Optional.ofNullable(_grid.get(c)).map(v -> _key.get(v)).map(Object::toString).orElse(null));
+  }
+
+  @Override
+  protected void renderPuzzle(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+    renderGrid(svg, coord, cellSize, c ->  Optional.ofNullable(_grid.get(c)).map(Object::toString).orElse(null));
+    _startKey.render(svg, cellSize);
+  }
+
+  private void renderGrid(final SvgBuilder svg, final Coordinate coord, final int cellSize, final Function<Coordinate, String> cellString) {
     final int fontSize = 7 * cellSize / 12;
     if (_grid.containsKey(coord)) {
-      final Integer value = _grid.get(coord);
-      final Character character = _key.get(value);
-      if (character != null) {
+      final String cell = cellString.apply(coord);
+      if (cell != null) {
         final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
         final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
-        svg.addText(Character.toString(character), x, y, fontSize);
+        svg.addText(cell, x, y, fontSize);
       }
     }
     else {
@@ -127,7 +141,7 @@ public class CodeWord extends Puzzle2DImpl {
     });
     final int height = dimFind(grid, Coordinate::getRow);
     final int width = dimFind(grid, Coordinate::getCol);
-    return new CodeWord(key, height, width, grid, new Dictionary());
+    return new CodeWord(key, key, height, width, grid, new Dictionary());
   }
 
   private static int dimFind(final Map<Coordinate, Integer> grid, final ToIntFunction<Coordinate> toIntFunction) {
@@ -160,7 +174,7 @@ public class CodeWord extends Puzzle2DImpl {
     if (solutions.isEmpty()) {
       return new PuzzleSolution<CodeWord>(Optional.empty(), SolutionType.NONE);
     }
-    final CodeWord solvedCodeword = new CodeWord(solutions.get(0), _height, _width, _grid, _dictionary);
+    final CodeWord solvedCodeword = new CodeWord(solutions.get(0), _startKey, _height, _width, _grid, _dictionary);
     return new PuzzleSolution<CodeWord>(Optional.of(solvedCodeword), solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
   }
 

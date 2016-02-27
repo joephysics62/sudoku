@@ -24,10 +24,12 @@ import com.google.common.collect.HashBiMap;
 public class Hidato extends Puzzle2DImpl {
   private final Set<Coordinate> _grid;
   private final BiMap<Integer, Coordinate> _path;
+  private final BiMap<Integer, Coordinate> _startClues;
 
-  private Hidato(final Set<Coordinate> grid, final BiMap<Integer, Coordinate> path) {
+  private Hidato(final Set<Coordinate> grid, final BiMap<Integer, Coordinate> path, final BiMap<Integer, Coordinate> startClues) {
     super(max(grid, Coordinate::getRow), max(grid, Coordinate::getCol));
     _path = path;
+    _startClues = startClues;
     _grid = Collections.unmodifiableSet(grid);
   }
 
@@ -42,7 +44,7 @@ public class Hidato extends Puzzle2DImpl {
     if (solns.isEmpty()) {
       return new PuzzleSolution<Hidato>(Optional.empty(), SolutionType.NONE);
     }
-    return new PuzzleSolution<Hidato>(Optional.of(new Hidato(_grid, solns.get(0))),
+    return new PuzzleSolution<Hidato>(Optional.of(new Hidato(_grid, solns.get(0), _startClues)),
                               solns.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
   }
 
@@ -85,17 +87,21 @@ public class Hidato extends Puzzle2DImpl {
         path.put(intValue, coord);
       }
     });
-    return new Hidato(grid, path);
+    return new Hidato(grid, path, path);
   }
 
   @Override
   protected String clueAt(final Coordinate coord) {
-    throw new UnsupportedOperationException();
+    return valueAt(coord, _startClues);
   }
 
   @Override
   protected String answerAt(final Coordinate coord) {
-    final BiMap<Coordinate, Integer> inverse = _path.inverse();
+    return valueAt(coord, _path);
+  }
+
+  private String valueAt(final Coordinate coord, final BiMap<Integer, Coordinate> path) {
+    final BiMap<Coordinate, Integer> inverse = path.inverse();
     final Integer integer = inverse.get(coord);
     if (integer == null) {
       return "//";
@@ -112,9 +118,18 @@ public class Hidato extends Puzzle2DImpl {
   }
 
   @Override
-  protected void handle(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+  protected void renderAnswer(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+    render(svg, coord, cellSize, _path);
+  }
+
+  @Override
+  protected void renderPuzzle(final SvgBuilder svg, final Coordinate coord, final int cellSize) {
+    render(svg, coord, cellSize, _startClues);
+  }
+
+  private void render(final SvgBuilder svg, final Coordinate coord, final int cellSize, final BiMap<Integer, Coordinate> path) {
     final int fontSize = 7 * cellSize / 12;
-    final BiMap<Coordinate, Integer> inverse = _path.inverse();
+    final BiMap<Coordinate, Integer> inverse = path.inverse();
     if (_grid.contains(coord)) {
       final Integer value = inverse.get(coord);
       if (value != null) {

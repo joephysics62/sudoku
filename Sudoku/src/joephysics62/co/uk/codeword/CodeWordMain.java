@@ -11,10 +11,11 @@ public class CodeWordMain {
   public static void main(final String[] args) throws Exception {
     final String file = FILE;
     final CodeWord puzzle = CodeWord.readFromFile(file);
+    puzzle.renderPuzzle(new File("out.html"), 30);
     final PuzzleSolution<CodeWord> solved = puzzle.solve();
     solved.write(System.out);
 
-    solved.getSolution().get().render(new File("out2.html"), 30);
+    solved.getSolution().get().renderAnswer(new File("out2.html"), 30);
   }
 
 }

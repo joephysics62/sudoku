@@ -8,7 +8,9 @@ public interface Puzzle2D {
 
   void writePuzzle(PrintStream out);
 
-  void render(File htmlFile, int cellSize) throws Exception;
+  void renderAnswer(File htmlFile, int cellSize) throws Exception;
+
+  void renderPuzzle(File htmlFile, int cellSize) throws Exception;
 
   PuzzleSolution<? extends Puzzle2D> solve();
 }

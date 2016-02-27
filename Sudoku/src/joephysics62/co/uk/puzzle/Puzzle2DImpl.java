@@ -1,10 +1,14 @@
 package joephysics62.co.uk.puzzle;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
 
 import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.xml.SvgBuilder;
@@ -41,8 +45,33 @@ public abstract class Puzzle2DImpl implements Puzzle2D {
   }
   protected abstract String answerAt(final Coordinate coord);
 
+  private static interface GridHandle {
+    void render(SvgBuilder builder, Coordinate coord, int cellSize);
+  }
+
   @Override
-  public void render(final File htmlFile, final int cellSize) throws Exception {
+  public void renderPuzzle(final File htmlFile, final int cellSize) throws Exception {
+    final GridHandle gridHandle = new GridHandle() {
+      @Override
+      public void render(final SvgBuilder builder, final Coordinate coord, final int cellSize) {
+        renderPuzzle(builder, coord, cellSize);
+      }
+    };
+    render(htmlFile, cellSize, gridHandle);
+  }
+
+  @Override
+  public void renderAnswer(final File htmlFile, final int cellSize) throws Exception {
+    final GridHandle gridHandle = new GridHandle() {
+      @Override
+      public void render(final SvgBuilder builder, final Coordinate coord, final int cellSize) {
+        renderAnswer(builder, coord, cellSize);
+      }
+    };
+    render(htmlFile, cellSize, gridHandle);
+  }
+
+  private void render(final File htmlFile, final int cellSize, final GridHandle gridHandle) throws ParserConfigurationException, IOException, TransformerException {
     final int gridHeight = _height * cellSize;
     final int gridWidth = _width * cellSize;
 
@@ -58,11 +87,14 @@ public abstract class Puzzle2DImpl implements Puzzle2D {
     });
     for (int row = 1; row <= _height; row++) {
       for (int col = 1; col <= _width; col++) {
-        handle(svgBuilder, Coordinate.of(row, col), cellSize);
+        gridHandle.render(svgBuilder, Coordinate.of(row, col), cellSize);
       }
     }
     svgBuilder.write(htmlFile);
   }
-  protected abstract void handle(final SvgBuilder builder, final Coordinate coord, int cellSize);
+
+  protected abstract void renderAnswer(final SvgBuilder builder, final Coordinate coord, int cellSize);
+  protected abstract void renderPuzzle(final SvgBuilder builder, final Coordinate coord, int cellSize);
+
   protected abstract Path cssTemplate();
 }

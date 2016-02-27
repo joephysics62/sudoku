@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import joephysics62.co.uk.xml.SvgBuilder;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
@@ -108,6 +110,9 @@ public class CodeWordKey {
   @Override
   public String toString() {
     return _solution.toString();
+  }
+
+  public void render(final SvgBuilder svg, final int cellSize) {
   }
 
 }
