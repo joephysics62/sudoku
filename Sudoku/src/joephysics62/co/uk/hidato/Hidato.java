@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.puzzle.Puzzle2D;
@@ -87,7 +89,7 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
     final BiMap<Coordinate, Integer> inverse = path.inverse();
     final Integer integer = inverse.get(coord);
     if (integer == null) {
-      return "//";
+      return _grid.contains(coord) ? "  " : "//";
     }
     if (integer < 10) {
       return " " + integer;
@@ -126,6 +128,74 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
       final int y = (coord.getRow() - 1) * cellSize;
       svg.addRectangle(cellSize, cellSize, x, y);
     }
+  }
+
+  public static Hidato create(final int height, final int width) {
+    final Set<Coordinate> grid = new LinkedHashSet<>();
+    for (int row = 1; row <= height; row++) {
+      for (int col = 1; col <= width; col++) {
+        grid.add(Coordinate.of(row, col));
+      }
+    }
+    if (grid.size() < 2) {
+      throw new IllegalArgumentException();
+    }
+    // choose random starting point.
+    final Random random = new Random();
+    final Coordinate start = randCoord(height, width, random);
+    Coordinate end;
+    do {
+      end = randCoord(height, width, random);
+    } while (start.equals(end));
+    final HashBiMap<Integer, Coordinate> clues = HashBiMap.create();
+    clues.put(1, start);
+    clues.put(grid.size(), end);
+
+    final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
+    recurseBuildFinished(random, 1, grid, clues, solns);
+    return new Hidato(grid, null, clues);
+  }
+
+  private static void recurseBuildFinished(final Random random, final Integer currentStep, final Set<Coordinate> grid, final BiMap<Integer, Coordinate> currentClues, final List<BiMap<Integer, Coordinate>> solns) {
+    new Hidato(grid, currentClues, currentClues).writePuzzle(System.out);
+    if (!solns.isEmpty()) {
+      return;
+    }
+    if (grid.size() == currentClues.size()) {
+      solns.add(currentClues);
+      return;
+    }
+    final Coordinate coord = currentClues.get(currentStep);
+    if (currentClues.containsKey(currentStep + 1)) {
+      final boolean isValidStep = coord.arounds().anyMatch(c -> c.equals(currentClues.get(currentStep + 1)));
+      if (isValidStep) {
+        recurseBuildFinished(random, currentStep + 1, grid, currentClues, solns);
+      }
+      return;
+    }
+    final List<Coordinate> avaiableSpaces = coord.arounds().filter(c -> grid.contains(c))
+        .filter(c -> !currentClues.containsValue(c))
+        .collect(Collectors.toList());
+    if (avaiableSpaces.isEmpty()) {
+      return;
+    }
+    if (avaiableSpaces.size() == 1) {
+      currentClues.put(currentStep + 1, avaiableSpaces.get(0));
+      recurseBuildFinished(random, currentStep + 1, grid, currentClues, solns);
+    }
+    else {
+      Collections.shuffle(avaiableSpaces);
+      for (final Coordinate availableSpace : avaiableSpaces) {
+        final BiMap<Integer, Coordinate> newCurrent = HashBiMap.create(currentClues);
+        newCurrent.put(currentStep + 1, availableSpace);
+        recurseBuildFinished(random, currentStep + 1, grid, newCurrent, solns);
+      }
+    }
+
+  }
+
+  private static Coordinate randCoord(final int height, final int width, final Random random) {
+    return Coordinate.of(random.nextInt(height) + 1, random.nextInt(width) + 1);
   }
 
   public static class Reader extends Puzzle2DReaderImpl<Hidato> {
