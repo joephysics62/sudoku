@@ -9,7 +9,7 @@ public class CodeWordMain {
     final String file = FILE;
     final CodeWord puzzle = CodeWord.readFromFile(file);
     final CodeWord solved = puzzle.solve();
-    System.out.println(solved.toString());
+    solved.writeAnswer(System.out);
   }
 
 }

@@ -11,7 +11,10 @@ import joephysics62.co.uk.grid.Coordinate;
 
 public interface PuzzleReader {
   public static void read(final Path file, final BiConsumer<String, Coordinate> handler) throws IOException {
-    final List<String> lines = Files.readAllLines(file);
+    read(Files.readAllLines(file), handler);
+  }
+
+  public static void read(final List<String> lines, final BiConsumer<String, Coordinate> handler) {
     for (int row = 1; row <= lines.size(); row++) {
       final String line = lines.get(row - 1);
       final String[] cells = line.split("\\|");

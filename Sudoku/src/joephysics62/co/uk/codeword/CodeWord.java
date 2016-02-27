@@ -1,6 +1,7 @@
 package joephysics62.co.uk.codeword;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -12,6 +13,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import joephysics62.co.uk.hidato.PuzzleReader;
+import joephysics62.co.uk.hidato.PuzzleWriter;
 
 public class CodeWord {
 
@@ -75,32 +79,39 @@ public class CodeWord {
     return words;
   }
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    for (final Integer[] keys : _grid) {
-      for (final Integer key : keys) {
-        if (null == key) {
-          sb.append("   ");
-        }
-        else if (_key.isSolved(key)) {
-          sb.append("  " + _key.get(key));
-        }
-        else {
-          sb.append(key < 10 ? "  " : " ");
-          sb.append(key);
-        }
-      }
-      sb.append(String.format("%n"));
-    }
-    return sb.toString();
+  public void writePuzzle(final PrintStream out) {
+    PuzzleWriter.newWriter(_height, _width)
+                .writeToStream(out, coord -> {
+                  final Integer integer = _grid[coord.getRow() - 1][coord.getCol() - 1];
+                  if (integer == null) {
+                    return "   ";
+                  }
+                  if (integer < 10) {
+                    return "  " + integer;
+                  }
+                  return " " + integer.toString();
+                });
+  }
+  public void writeAnswer(final PrintStream out) {
+    PuzzleWriter.newWriter(_height, _width)
+                .writeToStream(out, coord -> {
+                  final Integer integer = _grid[coord.getRow() - 1][coord.getCol() - 1];
+                  final Character character = _key.get(integer);
+                  if (character == null) {
+                    return " ";
+                  }
+                  return character.toString();
+                });
   }
 
   public static CodeWord readFromFile(final String file) throws IOException, URISyntaxException {
     final List<String> allLines = Files.readAllLines(Paths.get(file));
     final CodeWordKey key = readKeyData(allLines.get(0));
-    final Integer[][] grid = readGridData(allLines.subList(1, allLines.size()));
-    return new CodeWord(key, 13, 13, grid, new Dictionary());
+    final List<String> dataRows = allLines.subList(1, allLines.size());
+    final int height = dataRows.size();
+    final int width = dataRows.stream().mapToInt(r -> r.split("\\|").length - 1).max().getAsInt();
+    final Integer[][] grid = readGridData(dataRows, height, width);
+    return new CodeWord(key, height, width, grid, new Dictionary());
   }
 
   private static CodeWordKey readKeyData(final String keyData) {
@@ -114,19 +125,12 @@ public class CodeWord {
     return new CodeWordKey(keyMap);
   }
 
-  private static Integer[][] readGridData(final List<String> gridData) {
-    Integer[][] codeWordPuzzle = null;
-    int rowIndex = 0;
-    for (final String line : gridData) {
-      final Integer[] row = Arrays.asList(line.split("\\|")).stream()
-                                            .skip(1)
-                                            .map(x -> toInt(x))
-                                            .toArray(Integer[]::new);
-      if (codeWordPuzzle == null) {
-        codeWordPuzzle = new Integer[gridData.size()][row.length];
-      }
-      codeWordPuzzle[rowIndex++] = row;
-    }
+  private static Integer[][] readGridData(final List<String> gridData, final int height, final int width) {
+    final Integer[][] codeWordPuzzle = new Integer[height][width];
+    PuzzleReader.read(gridData, (cell, coord) -> {
+      final Integer intValue = toInt(cell);
+      codeWordPuzzle[coord.getRow() - 1][coord.getCol() - 1] = intValue;
+    });
     return codeWordPuzzle;
   }
 
