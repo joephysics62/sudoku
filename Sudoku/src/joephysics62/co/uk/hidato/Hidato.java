@@ -7,21 +7,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
 import joephysics62.co.uk.grid.Coordinate;
-import joephysics62.co.uk.puzzle.Puzzle2DImpl;
-import joephysics62.co.uk.puzzle.PuzzleReader;
-import joephysics62.co.uk.puzzle.PuzzleSolution;
-import joephysics62.co.uk.puzzle.SolutionType;
+import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.impl.Puzzle2DImpl;
+import joephysics62.co.uk.puzzle.impl.Puzzle2DReaderImpl;
 import joephysics62.co.uk.xml.SvgBuilder;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class Hidato extends Puzzle2DImpl {
+public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
   private final Set<Coordinate> _grid;
   private final BiMap<Integer, Coordinate> _path;
   private final BiMap<Integer, Coordinate> _startClues;
@@ -38,14 +36,15 @@ public class Hidato extends Puzzle2DImpl {
   }
 
   @Override
-  public PuzzleSolution<Hidato> solve() {
+  protected List<BiMap<Integer, Coordinate>> solveForSolutionList() {
     final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
     recurse(_path.get(1), _path, solns);
-    if (solns.isEmpty()) {
-      return new PuzzleSolution<Hidato>(Optional.empty(), SolutionType.NONE);
-    }
-    return new PuzzleSolution<Hidato>(Optional.of(new Hidato(_grid, solns.get(0), _startClues)),
-                              solns.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
+    return solns;
+  }
+
+  @Override
+  protected Puzzle2D puzzleForSolution(final BiMap<Integer, Coordinate> soln) {
+    return new Hidato(_grid, soln, _startClues);
   }
 
   private void recurse(final Coordinate coord, final BiMap<Integer, Coordinate> current, final List<BiMap<Integer, Coordinate>> solns) {
@@ -72,22 +71,6 @@ public class Hidato extends Puzzle2DImpl {
            copy.put(nextValue, c);
            recurse(c, copy, solns);
          });
-  }
-
-  public static Hidato read(final Path file) throws IOException {
-    final Set<Coordinate> grid = new LinkedHashSet<>();
-    final BiMap<Integer, Coordinate> path = HashBiMap.create();
-    PuzzleReader.read(file, (cell, coord) -> {
-      if ("//".equals(cell)) {
-        return;
-      }
-      grid.add(coord);
-      if (cell.matches("[0-9]+")) {
-        final Integer intValue = Integer.valueOf(cell);
-        path.put(intValue, coord);
-      }
-    });
-    return new Hidato(grid, path, path);
   }
 
   @Override
@@ -143,5 +126,29 @@ public class Hidato extends Puzzle2DImpl {
       final int y = (coord.getRow() - 1) * cellSize;
       svg.addRectangle(cellSize, cellSize, x, y);
     }
+  }
+
+  public static class Reader extends Puzzle2DReaderImpl<Hidato> {
+
+    private Reader() {};
+    public static Reader create() { return new Reader(); }
+
+    @Override
+    public Hidato read(final Path file) throws IOException {
+      final Set<Coordinate> grid = new LinkedHashSet<>();
+      final BiMap<Integer, Coordinate> path = HashBiMap.create();
+      read(file, (cell, coord) -> {
+        if ("//".equals(cell)) {
+          return;
+        }
+        grid.add(coord);
+        if (cell.matches("[0-9]+")) {
+          final Integer intValue = Integer.valueOf(cell);
+          path.put(intValue, coord);
+        }
+      });
+      return new Hidato(grid, path, path);
+    }
+
   }
 }

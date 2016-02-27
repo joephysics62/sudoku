@@ -1,7 +1,5 @@
 package joephysics62.co.uk.codeword;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -19,13 +17,12 @@ import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 import joephysics62.co.uk.grid.Coordinate;
-import joephysics62.co.uk.puzzle.Puzzle2DImpl;
-import joephysics62.co.uk.puzzle.PuzzleReader;
-import joephysics62.co.uk.puzzle.PuzzleSolution;
-import joephysics62.co.uk.puzzle.SolutionType;
+import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.impl.Puzzle2DImpl;
+import joephysics62.co.uk.puzzle.impl.Puzzle2DReaderImpl;
 import joephysics62.co.uk.xml.SvgBuilder;
 
-public class CodeWord extends Puzzle2DImpl {
+public class CodeWord extends Puzzle2DImpl<CodeWordKey> {
 
   private static final int THRESHOLD = 25;
 
@@ -128,22 +125,6 @@ public class CodeWord extends Puzzle2DImpl {
     }
   }
 
-  public static CodeWord readFromFile(final String file) throws IOException, URISyntaxException {
-    final List<String> allLines = Files.readAllLines(Paths.get(file));
-    final CodeWordKey key = readKeyData(allLines.get(0));
-    final List<String> dataRows = allLines.subList(1, allLines.size());
-    final Map<Coordinate, Integer> grid = new LinkedHashMap<>();
-    PuzzleReader.read(dataRows, (cell, coord) -> {
-      final Integer intValue = toInt(cell);
-      if (intValue != null) {
-        grid.put(coord, intValue);
-      }
-    });
-    final int height = dimFind(grid, Coordinate::getRow);
-    final int width = dimFind(grid, Coordinate::getCol);
-    return new CodeWord(key, key, height, width, grid, new Dictionary());
-  }
-
   private static int dimFind(final Map<Coordinate, Integer> grid, final ToIntFunction<Coordinate> toIntFunction) {
     return grid.keySet().stream().mapToInt(toIntFunction).max().getAsInt();
   }
@@ -168,14 +149,15 @@ public class CodeWord extends Puzzle2DImpl {
   }
 
   @Override
-  public PuzzleSolution<CodeWord> solve() {
+  protected List<CodeWordKey> solveForSolutionList() {
     final List<CodeWordKey> solutions = new ArrayList<>();
     recurse(_key, solutions);
-    if (solutions.isEmpty()) {
-      return new PuzzleSolution<CodeWord>(Optional.empty(), SolutionType.NONE);
-    }
-    final CodeWord solvedCodeword = new CodeWord(solutions.get(0), _startKey, _height, _width, _grid, _dictionary);
-    return new PuzzleSolution<CodeWord>(Optional.of(solvedCodeword), solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
+    return solutions;
+  }
+
+  @Override
+  protected Puzzle2D puzzleForSolution(final CodeWordKey soln) {
+    return new CodeWord(soln, _startKey, _height, _width, _grid, _dictionary);
   }
 
   private void recurse(final CodeWordKey currentKey, final List<CodeWordKey> solutions) {
@@ -259,5 +241,28 @@ public class CodeWord extends Puzzle2DImpl {
       return null;
     }
     return matches.stream().filter(x -> key.isViableMatch(word, x)).collect(Collectors.toList());
+  }
+
+  public static class Reader extends Puzzle2DReaderImpl<CodeWord> {
+    private Reader() {};
+    public static Reader create() { return new Reader(); }
+
+    @Override
+    public CodeWord read(final Path file) throws Exception {
+      final List<String> allLines = Files.readAllLines(file);
+      final CodeWordKey key = readKeyData(allLines.get(0));
+      final List<String> dataRows = allLines.subList(1, allLines.size());
+      final Map<Coordinate, Integer> grid = new LinkedHashMap<>();
+      read(dataRows, (cell, coord) -> {
+        final Integer intValue = toInt(cell);
+        if (intValue != null) {
+          grid.put(coord, intValue);
+        }
+      });
+      final int height = dimFind(grid, Coordinate::getRow);
+      final int width = dimFind(grid, Coordinate::getCol);
+      return new CodeWord(key, key, height, width, grid, new Dictionary());
+    }
+
   }
 }

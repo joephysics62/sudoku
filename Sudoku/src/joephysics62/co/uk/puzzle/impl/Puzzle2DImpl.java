@@ -1,9 +1,11 @@
-package joephysics62.co.uk.puzzle;
+package joephysics62.co.uk.puzzle.impl;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -11,9 +13,12 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import joephysics62.co.uk.grid.Coordinate;
+import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.PuzzleSolution;
+import joephysics62.co.uk.puzzle.SolutionType;
 import joephysics62.co.uk.xml.SvgBuilder;
 
-public abstract class Puzzle2DImpl implements Puzzle2D {
+public abstract class Puzzle2DImpl<S> implements Puzzle2D {
 
   protected final int _height;
   protected final int _width;
@@ -38,6 +43,20 @@ public abstract class Puzzle2DImpl implements Puzzle2D {
       out.println("|");
     }
   }
+
+  @Override
+  public final PuzzleSolution<? extends Puzzle2D> solve() {
+    final List<S> solutions = solveForSolutionList();
+    if (solutions.isEmpty()) {
+      return new PuzzleSolution<Puzzle2D>(Optional.empty(), SolutionType.NONE);
+    }
+    final Puzzle2D solvedCodeword = puzzleForSolution(solutions.get(0));
+    return new PuzzleSolution<Puzzle2D>(Optional.of(solvedCodeword), solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
+  }
+
+  protected abstract List<S> solveForSolutionList();
+
+  protected abstract Puzzle2D puzzleForSolution(S soln);
 
   @Override
   public void writeAnswer(final PrintStream out) {

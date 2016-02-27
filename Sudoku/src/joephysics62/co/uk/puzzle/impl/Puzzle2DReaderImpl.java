@@ -1,4 +1,4 @@
-package joephysics62.co.uk.puzzle;
+package joephysics62.co.uk.puzzle.impl;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -8,13 +8,15 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 import joephysics62.co.uk.grid.Coordinate;
+import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.Puzzle2DReader;
 
-public interface PuzzleReader {
-  public static void read(final Path file, final BiConsumer<String, Coordinate> handler) throws IOException {
+public abstract class Puzzle2DReaderImpl<T extends Puzzle2D> implements Puzzle2DReader<T> {
+  protected void read(final Path file, final BiConsumer<String, Coordinate> handler) throws IOException {
     read(Files.readAllLines(file), handler);
   }
 
-  public static void read(final List<String> lines, final BiConsumer<String, Coordinate> handler) {
+  protected void read(final List<String> lines, final BiConsumer<String, Coordinate> handler) {
     for (int row = 1; row <= lines.size(); row++) {
       final String line = lines.get(row - 1);
       final String[] cells = line.split("\\|");
