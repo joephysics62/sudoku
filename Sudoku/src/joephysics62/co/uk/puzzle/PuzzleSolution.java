@@ -13,6 +13,10 @@ public class PuzzleSolution<T extends Puzzle2D> {
     _solutionType = solutionType;
   }
 
+  public Optional<T> getSolution() {
+    return _solution;
+  }
+
   public void write(final PrintStream out) {
     out.println("Solution Type: " + _solutionType);
     _solution.ifPresent(h -> h.write(out));

@@ -1,9 +1,11 @@
 package joephysics62.co.uk.codeword;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.puzzle.Puzzle2D;
 import joephysics62.co.uk.puzzle.PuzzleReader;
+import joephysics62.co.uk.puzzle.PuzzleRenderer;
 import joephysics62.co.uk.puzzle.PuzzleSolution;
 import joephysics62.co.uk.puzzle.PuzzleWriter;
 import joephysics62.co.uk.puzzle.SolutionType;
@@ -97,6 +100,33 @@ public class CodeWord implements Puzzle2D {
                   }
                   return character.toString();
                 });
+  }
+
+  @Override
+  public void render(final File htmlFile) throws Exception {
+    final Path templateFile = Paths.get("templates", "hidato.css");
+    final PuzzleRenderer renderer = PuzzleRenderer.newRenderer(templateFile, _height, _width);
+
+    final int cellSize = 30;
+    final int fontSize = 7 * cellSize / 12;
+
+    renderer.render(htmlFile, cellSize, (svg, coord) -> {
+      if (_grid.containsKey(coord)) {
+        final Integer value = _grid.get(coord);
+        final Character character = _key.get(value);
+        if (character != null) {
+          final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
+          final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
+          svg.addText(Character.toString(character), x, y, fontSize);
+        }
+      }
+      else {
+        final int x = (coord.getCol() - 1) * cellSize;
+        final int y = (coord.getRow() - 1) * cellSize;
+        svg.addRectangle(cellSize, cellSize, x, y);
+      }
+    });
+
   }
 
   public static CodeWord readFromFile(final String file) throws IOException, URISyntaxException {

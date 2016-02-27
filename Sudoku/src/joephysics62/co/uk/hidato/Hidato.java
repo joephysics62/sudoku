@@ -41,6 +41,7 @@ public class Hidato implements Puzzle2D {
     return grid.stream().map(func).max(Integer::compare).get();
   }
 
+  @Override
   public PuzzleSolution<Hidato> solve() {
     final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
     recurse(_path.get(1), _path, solns);
@@ -109,6 +110,7 @@ public class Hidato implements Puzzle2D {
                 });
   }
 
+  @Override
   public void render(final File htmlFile) throws Exception {
     final Path templateFile = Paths.get("templates", "hidato.css");
     final PuzzleRenderer renderer = PuzzleRenderer.newRenderer(templateFile, _height, _width);

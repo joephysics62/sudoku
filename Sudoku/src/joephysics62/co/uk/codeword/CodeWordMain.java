@@ -1,7 +1,8 @@
 package joephysics62.co.uk.codeword;
 
-import joephysics62.co.uk.puzzle.PuzzleSolution;
+import java.io.File;
 
+import joephysics62.co.uk.puzzle.PuzzleSolution;
 
 public class CodeWordMain {
 
@@ -12,6 +13,8 @@ public class CodeWordMain {
     final CodeWord puzzle = CodeWord.readFromFile(file);
     final PuzzleSolution<CodeWord> solved = puzzle.solve();
     solved.write(System.out);
+
+    solved.getSolution().get().render(new File("out2.html"));
   }
 
 }
