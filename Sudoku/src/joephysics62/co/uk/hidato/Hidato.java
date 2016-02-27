@@ -107,22 +107,22 @@ public class Hidato {
     final PuzzleRenderer renderer = PuzzleRenderer.newRenderer(templateFile, _height, _width);
 
     final int cellSize = 50;
-    final int fontSize = 7 * cellSize / 10;
-    final int verticalOffset = cellSize / 4;
+    final int fontSize = 7 * cellSize / 12;
 
     final BiMap<Coordinate, Integer> inverse = _path.inverse();
     renderer.render(htmlFile, cellSize, (svg, coord) -> {
       if (_grid.contains(coord)) {
         final Integer value = inverse.get(coord);
         if (value != null) {
-          final int horizontalOffset = value < 10 ? cellSize / 3 : cellSize / 8;
-          svg.addText(Integer.toString(value),
-                             (coord.getCol() - 1) * cellSize + horizontalOffset, coord.getRow() * cellSize - verticalOffset,
-                             fontSize);
+          final int x = (coord.getCol() - 1) * cellSize + cellSize / 2;
+          final int y = coord.getRow() * cellSize - (cellSize - fontSize) / 2;
+          svg.addText(Integer.toString(value), x, y, fontSize);
         }
       }
       else {
-        svg.addRectangle(cellSize, cellSize, (coord.getCol() - 1) * cellSize, (coord.getRow() - 1) * cellSize);
+        final int x = (coord.getCol() - 1) * cellSize;
+        final int y = (coord.getRow() - 1) * cellSize;
+        svg.addRectangle(cellSize, cellSize, x, y);
       }
     });
   }

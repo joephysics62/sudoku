@@ -11,4 +11,5 @@ svg {
 text {
  font-family: Arial;
  fill: black;
+ text-anchor: middle;
 }

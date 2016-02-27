@@ -61,7 +61,7 @@ public class SvgBuilder {
     text.setTextContent(textString);
     text.setAttribute("x", Integer.toString(x));
     text.setAttribute("y", Integer.toString(y));
-    text.setAttribute("font-size", Integer.toString(fontSize));
+    text.setAttribute("font-size", Integer.toString(fontSize) + "pt");
     _svg.appendChild(text);
     return this;
   }
