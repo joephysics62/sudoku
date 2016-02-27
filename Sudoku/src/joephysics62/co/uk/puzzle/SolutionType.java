@@ -1,4 +1,4 @@
-package joephysics62.co.uk.hidato;
+package joephysics62.co.uk.puzzle;
 
 public enum SolutionType {
   NONE,

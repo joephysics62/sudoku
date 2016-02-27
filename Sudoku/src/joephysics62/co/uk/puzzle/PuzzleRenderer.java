@@ -1,4 +1,4 @@
-package joephysics62.co.uk.hidato;
+package joephysics62.co.uk.puzzle;
 
 import java.io.File;
 import java.nio.file.Path;

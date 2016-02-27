@@ -14,11 +14,17 @@ import java.util.Set;
 import java.util.function.Function;
 
 import joephysics62.co.uk.grid.Coordinate;
+import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.PuzzleReader;
+import joephysics62.co.uk.puzzle.PuzzleRenderer;
+import joephysics62.co.uk.puzzle.PuzzleSolution;
+import joephysics62.co.uk.puzzle.PuzzleWriter;
+import joephysics62.co.uk.puzzle.SolutionType;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
-public class Hidato {
+public class Hidato implements Puzzle2D {
   private final Set<Coordinate> _grid;
   private final BiMap<Integer, Coordinate> _path;
   private final Integer _height;
@@ -35,13 +41,13 @@ public class Hidato {
     return grid.stream().map(func).max(Integer::compare).get();
   }
 
-  public HidatoSolution solve() {
+  public PuzzleSolution<Hidato> solve() {
     final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
     recurse(_path.get(1), _path, solns);
     if (solns.isEmpty()) {
-      return new HidatoSolution(Optional.empty(), SolutionType.NONE);
+      return new PuzzleSolution<Hidato>(Optional.empty(), SolutionType.NONE);
     }
-    return new HidatoSolution(Optional.of(new Hidato(_grid, solns.get(0))),
+    return new PuzzleSolution<Hidato>(Optional.of(new Hidato(_grid, solns.get(0))),
                               solns.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
   }
 
@@ -87,6 +93,7 @@ public class Hidato {
     return new Hidato(grid, path);
   }
 
+  @Override
   public void write(final PrintStream out) {
     final BiMap<Coordinate, Integer> inverse = _path.inverse();
     PuzzleWriter.newWriter(_height, _width)

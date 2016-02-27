@@ -11,13 +11,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
-import joephysics62.co.uk.hidato.PuzzleReader;
-import joephysics62.co.uk.hidato.PuzzleWriter;
+import joephysics62.co.uk.grid.Coordinate;
+import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.PuzzleReader;
+import joephysics62.co.uk.puzzle.PuzzleSolution;
+import joephysics62.co.uk.puzzle.PuzzleWriter;
+import joephysics62.co.uk.puzzle.SolutionType;
 
-public class CodeWord {
+public class CodeWord implements Puzzle2D {
 
   private static final int THRESHOLD = 25;
 
@@ -25,50 +32,36 @@ public class CodeWord {
 
   private final CodeWordKey _key;
 
-  private final Integer[][] _grid;
+  private final Map<Coordinate, Integer> _grid;
   private final List<Word> _horizontals;
   private final List<Word> _verticals;
 
   private final Integer _height;
   private final Integer _width;
 
-  private interface GridGetter {
-    Integer get(Integer[][] grid, int first, int second);
-  }
-
-  public CodeWord(final CodeWordKey key, final int height, final int width, final Integer[][] grid, final Dictionary dictionary) throws IOException, URISyntaxException {
+  public CodeWord(final CodeWordKey key, final int height, final int width, final Map<Coordinate, Integer> grid, final Dictionary dictionary) {
     _key = key;
     _height = height;
     _width = width;
     _grid = grid;
     _dictionary = dictionary;
-    _horizontals = findWords(new GridGetter() {
-      @Override
-      public Integer get(final Integer[][] grid, final int first, final int second) {
-        return grid[first][second];
-      }
-    });
-    _verticals = findWords(new GridGetter() {
-      @Override
-      public Integer get(final Integer[][] grid, final int first, final int second) {
-        return grid[second][first];
-      }
-    });
+    _horizontals = findWords((a, b) -> Coordinate.of(a, b));
+    _verticals = findWords((a, b) -> Coordinate.of(b, a));
   }
 
-  private List<Word> findWords(final GridGetter gridGetter) {
+  private List<Word> findWords(final BiFunction<Integer, Integer, Coordinate> coordGetter) {
     final List<Word> words = new ArrayList<>();
-    for (int firstIndex = 0; firstIndex < _height; firstIndex++) {
+    for (int firstIndex = 1; firstIndex <= _height; firstIndex++) {
       List<Integer> currentWord = null;
-      for (int secondIndex = 0; secondIndex < _width; secondIndex++) {
-        final Integer cell = gridGetter.get(_grid, firstIndex, secondIndex);
+      for (int secondIndex = 1; secondIndex <= _width; secondIndex++) {
+        final Integer cell = _grid.get(coordGetter.apply(firstIndex, secondIndex));
         if (cell != null) {
           if (currentWord == null) {
             currentWord = new ArrayList<Integer>();
           }
           currentWord.add(cell);
         }
-        if (currentWord != null && (cell == null || secondIndex == _width - 1)) {
+        if (currentWord != null && (cell == null || secondIndex == _width)) {
           if (currentWord.size() > 1) {
             words.add(new Word(currentWord));
           }
@@ -82,7 +75,7 @@ public class CodeWord {
   public void writePuzzle(final PrintStream out) {
     PuzzleWriter.newWriter(_height, _width)
                 .writeToStream(out, coord -> {
-                  final Integer integer = _grid[coord.getRow() - 1][coord.getCol() - 1];
+                  final Integer integer = _grid.get(coord);
                   if (integer == null) {
                     return "   ";
                   }
@@ -92,10 +85,12 @@ public class CodeWord {
                   return " " + integer.toString();
                 });
   }
-  public void writeAnswer(final PrintStream out) {
+
+  @Override
+  public void write(final PrintStream out) {
     PuzzleWriter.newWriter(_height, _width)
                 .writeToStream(out, coord -> {
-                  final Integer integer = _grid[coord.getRow() - 1][coord.getCol() - 1];
+                  final Integer integer = _grid.get(coord);
                   final Character character = _key.get(integer);
                   if (character == null) {
                     return " ";
@@ -108,10 +103,20 @@ public class CodeWord {
     final List<String> allLines = Files.readAllLines(Paths.get(file));
     final CodeWordKey key = readKeyData(allLines.get(0));
     final List<String> dataRows = allLines.subList(1, allLines.size());
-    final int height = dataRows.size();
-    final int width = dataRows.stream().mapToInt(r -> r.split("\\|").length - 1).max().getAsInt();
-    final Integer[][] grid = readGridData(dataRows, height, width);
+    final Map<Coordinate, Integer> grid = new LinkedHashMap<>();
+    PuzzleReader.read(dataRows, (cell, coord) -> {
+      final Integer intValue = toInt(cell);
+      if (intValue != null) {
+        grid.put(coord, intValue);
+      }
+    });
+    final int height = dimFind(grid, Coordinate::getRow);
+    final int width = dimFind(grid, Coordinate::getCol);
     return new CodeWord(key, height, width, grid, new Dictionary());
+  }
+
+  private static int dimFind(final Map<Coordinate, Integer> grid, final ToIntFunction<Coordinate> toIntFunction) {
+    return grid.keySet().stream().mapToInt(toIntFunction).max().getAsInt();
   }
 
   private static CodeWordKey readKeyData(final String keyData) {
@@ -125,15 +130,6 @@ public class CodeWord {
     return new CodeWordKey(keyMap);
   }
 
-  private static Integer[][] readGridData(final List<String> gridData, final int height, final int width) {
-    final Integer[][] codeWordPuzzle = new Integer[height][width];
-    PuzzleReader.read(gridData, (cell, coord) -> {
-      final Integer intValue = toInt(cell);
-      codeWordPuzzle[coord.getRow() - 1][coord.getCol() - 1] = intValue;
-    });
-    return codeWordPuzzle;
-  }
-
   private static Integer toInt(final String string) {
     final String trimmed = string.trim();
     if (trimmed.isEmpty()) {
@@ -142,13 +138,15 @@ public class CodeWord {
     return Integer.valueOf(trimmed);
   }
 
-  public CodeWord solve() throws Exception {
+  @Override
+  public PuzzleSolution<CodeWord> solve() {
     final List<CodeWordKey> solutions = new ArrayList<>();
     recurse(_key, solutions);
-    if (solutions.size() == 1) {
-      return new CodeWord(solutions.get(0), _height, _width, _grid, _dictionary);
+    if (solutions.isEmpty()) {
+      return new PuzzleSolution<CodeWord>(Optional.empty(), SolutionType.NONE);
     }
-    throw new RuntimeException();
+    final CodeWord solvedCodeword = new CodeWord(solutions.get(0), _height, _width, _grid, _dictionary);
+    return new PuzzleSolution<CodeWord>(Optional.of(solvedCodeword), solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE);
   }
 
   private void recurse(final CodeWordKey currentKey, final List<CodeWordKey> solutions) {

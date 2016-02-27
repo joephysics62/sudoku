@@ -4,13 +4,13 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import joephysics62.co.uk.hidato.SolutionType;
 import joephysics62.co.uk.old.constraints.Constraint;
 import joephysics62.co.uk.old.grid.Coord;
 import joephysics62.co.uk.old.grid.arrays.IntegerArrayGrid;
 import joephysics62.co.uk.old.sudoku.model.Cell;
 import joephysics62.co.uk.old.sudoku.model.Puzzle;
 import joephysics62.co.uk.old.sudoku.model.PuzzleLayout;
+import joephysics62.co.uk.puzzle.SolutionType;
 
 import org.apache.log4j.Logger;
 

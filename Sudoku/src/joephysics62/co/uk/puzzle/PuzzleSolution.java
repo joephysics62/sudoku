@@ -1,14 +1,14 @@
-package joephysics62.co.uk.hidato;
+package joephysics62.co.uk.puzzle;
 
 import java.io.PrintStream;
 import java.util.Optional;
 
-public class HidatoSolution {
+public class PuzzleSolution<T extends Puzzle2D> {
 
-  private final Optional<Hidato> _solution;
+  private final Optional<T> _solution;
   private final SolutionType _solutionType;
 
-  public HidatoSolution(final Optional<Hidato> solution, final SolutionType solutionType) {
+  public PuzzleSolution(final Optional<T> solution, final SolutionType solutionType) {
     _solution = solution;
     _solutionType = solutionType;
   }

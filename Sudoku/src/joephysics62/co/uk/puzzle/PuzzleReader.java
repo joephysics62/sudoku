@@ -1,4 +1,4 @@
-package joephysics62.co.uk.hidato;
+package joephysics62.co.uk.puzzle;
 
 import java.io.IOException;
 import java.nio.file.Files;
