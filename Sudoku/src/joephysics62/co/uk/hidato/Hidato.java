@@ -14,22 +14,12 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.Result;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import joephysics62.co.uk.grid.Coordinate;
-import joephysics62.co.uk.xml.Namespaces;
+import joephysics62.co.uk.xml.SvgBuilder;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import com.google.common.collect.BiMap;
@@ -120,35 +110,21 @@ public class Hidato {
   }
 
   public void render(final File htmlFile) throws SAXException, IOException, ParserConfigurationException, TransformerException {
-    final File templateFile = Paths.get("templates", "hidato.html").toFile();
-    final Document templateDoc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(templateFile);
+    final Path templateFile = Paths.get("templates", "hidato.css");
 
     final int cellSize = 50;
     final int gridHeight = _height * cellSize;
     final int gridWidth = _width * cellSize;
 
-    final NodeList bodyElements = templateDoc.getElementsByTagName("body");
-    final Element body = (Element) bodyElements.item(0);
-    final Element svg = templateDoc.createElementNS(Namespaces.XHTML_NS, "svg");
-    svg.setAttribute("width", Integer.toString(gridWidth + cellSize));
-    svg.setAttribute("height", Integer.toString(gridHeight + cellSize));
-    body.appendChild(svg);
+    final SvgBuilder svgBuilder = SvgBuilder.newBuilder();
+    svgBuilder.addSvg(gridWidth + cellSize, gridHeight + cellSize);
+    svgBuilder.addCss(templateFile);
 
     IntStream.rangeClosed(0, _height).forEach(x -> {
-      final Element rowLine = templateDoc.createElementNS(Namespaces.XHTML_NS, "line");
-      rowLine.setAttribute("x1", Integer.toString(0));
-      rowLine.setAttribute("y1", Integer.toString(x * cellSize));
-      rowLine.setAttribute("x2", Integer.toString(gridWidth));
-      rowLine.setAttribute("y2", Integer.toString(x * cellSize));
-      svg.appendChild(rowLine);
+      svgBuilder.addLine(0, x * cellSize, gridWidth, x * cellSize);
     });
     IntStream.rangeClosed(0, _width).forEach(x -> {
-      final Element colLine = templateDoc.createElementNS(Namespaces.XHTML_NS, "line");
-      colLine.setAttribute("x1", Integer.toString(x * cellSize));
-      colLine.setAttribute("y1", Integer.toString(0));
-      colLine.setAttribute("x2", Integer.toString(x * cellSize));
-      colLine.setAttribute("y2", Integer.toString(gridHeight));
-      svg.appendChild(colLine);
+      svgBuilder.addLine(x * cellSize, 0, x * cellSize, gridHeight);
     });
     final BiMap<Coordinate, Integer> inverse = _path.inverse();
     for (int row = 1; row <= _height; row++) {
@@ -160,29 +136,16 @@ public class Hidato {
             final int fontSize = 7 * cellSize / 10;
             final int verticalOffset = cellSize / 4;
             final int horizontalOffset = value < 10 ? cellSize / 3 : cellSize / 8;
-            final Element text = templateDoc.createElementNS(Namespaces.XHTML_NS, "text");
-            text.setTextContent(Integer.toString(value));
-            text.setAttribute("x", Integer.toString((col - 1) * cellSize + horizontalOffset));
-            text.setAttribute("y", Integer.toString(row * cellSize - verticalOffset));
-            text.setAttribute("font-size", Integer.toString(fontSize));
-            svg.appendChild(text);
+            svgBuilder.addText(Integer.toString(value),
+                               (col - 1) * cellSize + horizontalOffset, row * cellSize - verticalOffset,
+                               fontSize);
           }
         }
         else {
-          final Element nonGridSquare = templateDoc.createElementNS(Namespaces.XHTML_NS, "rect");
-          nonGridSquare.setAttribute("width", Integer.toString(cellSize));
-          nonGridSquare.setAttribute("height", Integer.toString(cellSize));
-          nonGridSquare.setAttribute("x", Integer.toString((col - 1) * cellSize));
-          nonGridSquare.setAttribute("y", Integer.toString((row - 1) * cellSize));
-          svg.appendChild(nonGridSquare);
+          svgBuilder.addRectangle(cellSize, cellSize, (col - 1) * cellSize, (row - 1) * cellSize);
         }
       }
     }
-
-    final Transformer transformer = TransformerFactory.newInstance().newTransformer();
-    final Result output = new StreamResult(htmlFile);
-    final Source input = new DOMSource(templateDoc);
-
-    transformer.transform(input, output);
+    svgBuilder.write(htmlFile);
   }
 }
