@@ -45,7 +45,7 @@ public abstract class Puzzle2DImpl<S> implements Puzzle2D {
   }
 
   @Override
-  public final PuzzleSolution<? extends Puzzle2D> solve() {
+  public final PuzzleSolution<Puzzle2D> solve() {
     final List<S> solutions = solveForSolutionList();
     if (solutions.isEmpty()) {
       return new PuzzleSolution<Puzzle2D>(Optional.empty(), SolutionType.NONE);

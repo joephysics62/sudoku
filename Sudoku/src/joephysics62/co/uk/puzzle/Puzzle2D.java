@@ -12,5 +12,5 @@ public interface Puzzle2D {
 
   void renderPuzzle(File htmlFile, int cellSize) throws Exception;
 
-  PuzzleSolution<? extends Puzzle2D> solve();
+  PuzzleSolution<Puzzle2D> solve();
 }

@@ -14,7 +14,7 @@ public class Main {
   public static void main(final String[] args) throws Exception {
     final Hidato puzzle = Hidato.Reader.create().read(EXAMPLE);
     puzzle.renderPuzzle(new File("out.html"), 50);
-    final PuzzleSolution<? extends Puzzle2D> solution = puzzle.solve();
+    final PuzzleSolution<Puzzle2D> solution = puzzle.solve();
     solution.write(System.out);
   }
 }

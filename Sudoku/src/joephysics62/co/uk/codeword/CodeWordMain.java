@@ -14,7 +14,7 @@ public class CodeWordMain {
   public static void main(final String[] args) throws Exception {
     final CodeWord puzzle = CodeWord.Reader.create().read(FILE);
     puzzle.renderPuzzle(new File("out.html"), 30);
-    final PuzzleSolution<? extends Puzzle2D> solved = puzzle.solve();
+    final PuzzleSolution<Puzzle2D> solved = puzzle.solve();
     solved.write(System.out);
 
     solved.getSolution().get().renderAnswer(new File("out2.html"), 30);
