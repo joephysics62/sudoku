@@ -20,6 +20,7 @@ import joephysics62.co.uk.xml.SvgBuilder;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Sets;
 
 public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
   private final Set<Coordinate> _grid;
@@ -130,6 +131,8 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
     }
   }
 
+  private static int BAILOUT = 200;
+
   public static Hidato create(final int height, final int width) {
     final Set<Coordinate> grid = new LinkedHashSet<>();
     for (int row = 1; row <= height; row++) {
@@ -142,6 +145,18 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
     }
     // choose random starting point.
     final Random random = new Random();
+    final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
+    while (solns.isEmpty()) {
+      solns.addAll(attemptToBuildPath(height, width, grid, random));
+    }
+    return new Hidato(grid, solns.get(0), solns.get(0));
+  }
+
+  private static int CALL_COUNT = 0;
+
+  private static List<BiMap<Integer, Coordinate>> attemptToBuildPath(final int height, final int width, final Set<Coordinate> grid, final Random random) {
+    CALL_COUNT = 0;
+    System.out.println("New attempt");
     final Coordinate start = randCoord(height, width, random);
     Coordinate end;
     do {
@@ -152,24 +167,39 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
     clues.put(grid.size(), end);
 
     final List<BiMap<Integer, Coordinate>> solns = new ArrayList<>();
-    recurseBuildFinished(random, 1, grid, clues, solns);
-    return new Hidato(grid, null, clues);
+    final int callCount = 1;
+    recurseBuildFinished(random, 1, grid, clues, solns, callCount);
+    return solns;
   }
 
-  private static void recurseBuildFinished(final Random random, final Integer currentStep, final Set<Coordinate> grid, final BiMap<Integer, Coordinate> currentClues, final List<BiMap<Integer, Coordinate>> solns) {
-    new Hidato(grid, currentClues, currentClues).writePuzzle(System.out);
-    if (!solns.isEmpty()) {
+  private static void recurseBuildFinished(final Random random, final Integer currentStep, final Set<Coordinate> grid, final BiMap<Integer, Coordinate> currentClues, final List<BiMap<Integer, Coordinate>> solns, final int callCount) {
+    CALL_COUNT++;
+    if (!solns.isEmpty() || CALL_COUNT > BAILOUT) {
       return;
     }
-    if (grid.size() == currentClues.size()) {
-      solns.add(currentClues);
-      return;
+    // check if grid is partitioned..
+    // Find remaining
+    final Set<Coordinate> remaining = Sets.difference(grid, currentClues.values());
+    if (remaining.size() > 1) {
+      final Set<Coordinate> remainingCopy = new LinkedHashSet<>(remaining);
+      recurseCheck(remainingCopy, grid, remainingCopy.iterator().next());
+      if (!remainingCopy.isEmpty()) {
+        // Is partitioned, prune tree
+        return;
+      }
     }
     final Coordinate coord = currentClues.get(currentStep);
     if (currentClues.containsKey(currentStep + 1)) {
       final boolean isValidStep = coord.arounds().anyMatch(c -> c.equals(currentClues.get(currentStep + 1)));
       if (isValidStep) {
-        recurseBuildFinished(random, currentStep + 1, grid, currentClues, solns);
+        if (grid.size() == currentClues.size()) {
+          System.out.println("Solution after call count " + CALL_COUNT);
+          solns.add(currentClues);
+          return;
+        }
+        else {
+          recurseBuildFinished(random, currentStep + 1, grid, currentClues, solns, callCount + 1);
+        }
       }
       return;
     }
@@ -181,17 +211,25 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
     }
     if (avaiableSpaces.size() == 1) {
       currentClues.put(currentStep + 1, avaiableSpaces.get(0));
-      recurseBuildFinished(random, currentStep + 1, grid, currentClues, solns);
+      recurseBuildFinished(random, currentStep + 1, grid, currentClues, solns, callCount + 1);
     }
     else {
       Collections.shuffle(avaiableSpaces);
       for (final Coordinate availableSpace : avaiableSpaces) {
         final BiMap<Integer, Coordinate> newCurrent = HashBiMap.create(currentClues);
         newCurrent.put(currentStep + 1, availableSpace);
-        recurseBuildFinished(random, currentStep + 1, grid, newCurrent, solns);
+        recurseBuildFinished(random, currentStep + 1, grid, newCurrent, solns, callCount + 1);
       }
     }
 
+  }
+
+  private static void recurseCheck(final Set<Coordinate> remainingCopy, final Set<Coordinate> grid, final Coordinate next) {
+    remainingCopy.remove(next);
+    next.arounds()
+        .filter(co -> grid.contains(co))
+        .filter(co -> remainingCopy.contains(co))
+        .forEach(co -> recurseCheck(remainingCopy, grid, co));
   }
 
   private static Coordinate randCoord(final int height, final int width, final Random random) {
