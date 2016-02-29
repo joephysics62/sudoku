@@ -149,7 +149,8 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
     while (solns.isEmpty()) {
       solns.addAll(attemptToBuildPath(height, width, grid, random));
     }
-    return new Hidato(grid, solns.get(0), solns.get(0));
+    final BiMap<Integer, Coordinate> path = solns.get(0);
+    return new Hidato(grid, path, path);
   }
 
   private static int CALL_COUNT = 0;

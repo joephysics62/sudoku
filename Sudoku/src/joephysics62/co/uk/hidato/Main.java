@@ -1,5 +1,6 @@
 package joephysics62.co.uk.hidato;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -14,6 +15,6 @@ public class Main {
 //    solution.write(System.out);
 
     final Hidato newHidato = Hidato.create(5, 7);
-    newHidato.writePuzzle(System.out);
+    newHidato.renderAnswer(new File("out.html"), 50);
   }
 }
