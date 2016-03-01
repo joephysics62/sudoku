@@ -9,7 +9,7 @@ import joephysics62.co.uk.puzzle.PuzzleSolution;
 
 public class CodeWordMain {
 
-  private static final Path FILE = Paths.get("examples", "codeword", "codeWordTimes2645.txt");
+  private static final Path FILE = Paths.get("examples", "codeword", "codeWordTimes2646.txt");
 
   public static void main(final String[] args) throws Exception {
     final CodeWord puzzle = CodeWord.Reader.create().read(FILE);
