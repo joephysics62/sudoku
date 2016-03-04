@@ -14,7 +14,12 @@ public class Main {
 //    final PuzzleSolution<Puzzle2D> solution = puzzle.solve();
 //    solution.write(System.out);
 
-    final Hidato newHidato = Hidato.create(5, 7);
+    final Hidato newHidato = Hidato.create(5, 7, 21);
+
+    System.out.println("New hidato!!!");
+    newHidato.writePuzzle(System.out);
+
+    System.out.println("soln type " + newHidato.solve().getSolutionType());
     newHidato.renderAnswer(new File("out.html"), 50);
   }
 }

@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.puzzle.Puzzle2D;
+import joephysics62.co.uk.puzzle.SolutionType;
 import joephysics62.co.uk.puzzle.impl.Puzzle2DImpl;
 import joephysics62.co.uk.puzzle.impl.Puzzle2DReaderImpl;
 import joephysics62.co.uk.xml.SvgBuilder;
@@ -133,7 +134,7 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
 
   private static int BAILOUT = 200;
 
-  public static Hidato create(final int height, final int width) {
+  public static Hidato create(final int height, final int width, final int numToRemove) {
     final Set<Coordinate> grid = new LinkedHashSet<>();
     for (int row = 1; row <= height; row++) {
       for (int col = 1; col <= width; col++) {
@@ -150,7 +151,34 @@ public class Hidato extends Puzzle2DImpl<BiMap<Integer, Coordinate>> {
       solns.addAll(attemptToBuildPath(height, width, grid, random));
     }
     final BiMap<Integer, Coordinate> path = solns.get(0);
-    return new Hidato(grid, path, path);
+    final HashBiMap<Integer, Coordinate> clues = HashBiMap.create(path);
+    final List<HashBiMap<Integer, Coordinate>> questionSolns = new ArrayList<>();
+    recurseRemove(clues, questionSolns, numToRemove, grid);
+    return new Hidato(grid, questionSolns.get(0), questionSolns.get(0));
+  }
+
+  private static void recurseRemove(final HashBiMap<Integer, Coordinate> clues,
+      final List<HashBiMap<Integer, Coordinate>> questionSolns, final int numToRemove, final Set<Coordinate> grid) {
+      if (!questionSolns.isEmpty()) {
+        return;
+      }
+      final Hidato hidato = new Hidato(grid, clues, clues);
+      if (SolutionType.UNIQUE != hidato.solve().getSolutionType()) {
+        return;
+      }
+      if (numToRemove < 1) {
+        questionSolns.add(clues);
+      }
+      final List<Integer> keys = clues.keySet().stream()
+                                      .filter(k -> k != 1 && k != grid.size())
+                                      .collect(Collectors.toList());
+      Collections.shuffle(keys);
+      for (final Integer key : keys) {
+        final HashBiMap<Integer, Coordinate> copy = HashBiMap.create(clues);
+        copy.remove(key);
+        recurseRemove(copy, questionSolns, numToRemove - 1, grid);
+      }
+
   }
 
   private static int CALL_COUNT = 0;

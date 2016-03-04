@@ -1,0 +1,15 @@
+line {
+ stroke-width: 2;
+ stroke: black;
+}
+rect {
+ fill: black;
+}
+svg {
+ padding: 10px;
+}
+text {
+ font-family: Arial;
+ fill: black;
+ text-anchor: middle;
+}
