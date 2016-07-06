@@ -8,56 +8,65 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BSudoku {
-  private static final int SUBGRID_SIZE = 3;
-  private static int SIZE = 9;
+  private final int[][] _puzzle;
+  private final int _size;
+  private final int _subsize;
+
+  public BSudoku(final int[][] puzzle, final int size, final int subsize) {
+    _puzzle = puzzle;
+    _size = size;
+    _subsize = subsize;
+  }
 
   public static void main(final String[] args) throws IOException {
     final Path inputFile = Paths.get("examples", "sudoku", "classic", "times-7999");
-    final int[][] puzzle = readPuzzle(inputFile);
-    solve(puzzle);
+    final BSudoku puzzle = readPuzzle(inputFile, 9, 3);
+    final long startTime = System.currentTimeMillis();
+    puzzle.solve();
+    System.out.println(System.currentTimeMillis() - startTime + "ms");
   }
 
-  private static void solve(final int[][] puzzle) {
-    final int[][] answer = new int[SIZE][SIZE];
-    for (int row = 0; row < SIZE; row++) {
-      answer[row] = puzzle[row].clone();
+  public void solve() {
+    final int[][] answer = new int[_size][_size];
+    for (int row = 0; row < _size; row++) {
+      answer[row] = _puzzle[row].clone();
     }
-    solveInner(puzzle, answer, 0);
+    solveInner(answer, 0);
   }
 
-  private static int iterations = 0;
+  private  int iterations = 0;
 
-  private static void solveInner(final int[][] puzzle, final int[][] answer, final int cellNum) {
+  private void solveInner(final int[][] answer, final int cellNum) {
     iterations++;
-    if (cellNum >= SIZE * SIZE) {
+    if (cellNum >= _size * _size) {
       System.out.println("FOUND ANSWER after " + iterations + " iterations");
       printGrid(answer);
       return;
     }
-    final int row = cellNum / SIZE;
-    final int col = cellNum % SIZE;
+    final int row = cellNum / _size;
+    final int col = cellNum % _size;
     if (answer[row][col] > 0) {
       // solved cell, continue;
-      solveInner(puzzle, answer, cellNum + 1);
+      solveInner(answer, cellNum + 1);
     }
     else {
       // not solved cell, try candidates
-      for (int candidate = 1; candidate <= SIZE; candidate++) {
+      for (int candidate = 1; candidate <= _size; candidate++) {
         if (isValidMove(candidate, row, col, answer)) {
           answer[row][col] = candidate;
-          solveInner(puzzle, answer, cellNum + 1);
+          solveInner(answer, cellNum + 1);
         }
       }
-      for (int i = cellNum; i < SIZE * SIZE; i++) {
-        final int row2 = i / SIZE;
-        final int col2 = i % SIZE;
-        answer[row2][col2] = puzzle[row2][col2];
+      for (int i = cellNum; i < _size * _size; i++) {
+        final int row2 = i / _size;
+        final int col2 = i % _size;
+        answer[row2][col2] = _puzzle[row2][col2];
       }
     }
   }
 
-  private static boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
-    for (int i = 0; i < SIZE; i++) {
+  private boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
+    for (int i = 0; i < _size; i++) {
       // compare row
       if (answer[row][i] == candidate) {
         return false;
@@ -67,10 +76,10 @@ public class BSudoku {
         return false;
       }
     }
-    final int subRowStart = row - row % SUBGRID_SIZE;
-    final int subColStart = col - col % SUBGRID_SIZE;
-    for (int subRow = subRowStart; subRow < subRowStart + SUBGRID_SIZE; subRow++) {
-      for (int subCol = subColStart; subCol < subColStart + SUBGRID_SIZE; subCol++) {
+    final int subRowStart = row - row % _subsize;
+    final int subColStart = col - col % _subsize;
+    for (int subRow = subRowStart; subRow < subRowStart + _subsize; subRow++) {
+      for (int subCol = subColStart; subCol < subColStart + _subsize; subCol++) {
         if (answer[subRow][subCol] == candidate) {
           return false;
         }
@@ -86,12 +95,12 @@ public class BSudoku {
     System.out.println();
   }
 
-  private static int[][] readPuzzle(final Path inputFile) throws IOException {
+  private static BSudoku readPuzzle(final Path inputFile, final int size, final int subsize) throws IOException {
     final List<String> lines = Files.readAllLines(inputFile);
 
-    final int[][] puzzle = new int[SIZE][SIZE];
+    final int[][] puzzle = new int[size][size];
 
-    for (int row = 0; row < SIZE; row++) {
+    for (int row = 0; row < size; row++) {
       final String[] rowArray = lines.get(row).split("\\|");
       puzzle[row] = Arrays.stream(rowArray)
                           .skip(1)
@@ -99,7 +108,7 @@ public class BSudoku {
                           .mapToInt(BSudoku::toInt)
                           .toArray();
     }
-    return puzzle;
+    return new BSudoku(puzzle, size, subsize);
   }
 
   private static int toInt(final String cellString) {
