@@ -15,6 +15,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import joephysics62.co.uk.grid.Coordinate;
 import joephysics62.co.uk.puzzle.Puzzle2D;
@@ -169,16 +170,13 @@ public class CodeWord extends Puzzle2DImpl<CodeWordKey> {
       return;
     }
     final Map<Word, List<String>> mapz = new LinkedHashMap<>();
-
-    for (final Word codeWordWord : getAllWords()) {
-      if (codeWordWord.isSolved(currentKey)) {
-        continue;
-      }
-      final List<String> matches = matches(codeWordWord, currentKey);
-      if (null != matches) {
-        mapz.put(codeWordWord, matches);
-      }
-    }
+    allWords().filter(w -> !w.isSolved(currentKey))
+                          .forEach(w -> {
+                            final List<String> matches = matches(w, currentKey);
+                            if (null != matches) {
+                              mapz.put(w, matches);
+                            }
+                          });
     if (mapz.isEmpty()) {
       System.err.println("Too many possibilies, not solvable");
       return;
@@ -216,22 +214,15 @@ public class CodeWord extends Puzzle2DImpl<CodeWordKey> {
 
   }
 
-  private List<Word> getAllWords() {
-    final List<Word> allWords = new ArrayList<Word>();
-    allWords.addAll(_horizontals);
-    allWords.addAll(_verticals);
-    return allWords;
+  private Stream<Word> allWords() {
+    return Stream.concat(_horizontals.stream(), _verticals.stream());
   }
 
   private boolean isValid(final CodeWordKey newKey) {
-    for (final Word word : getAllWords()) {
-      final String setAnswer = word.getRegex(newKey);
-      final List<String> matches = _dictionary.matches(setAnswer, word.size(), THRESHOLD);
-      if (matches != null && matches.isEmpty()) {
-        return false;
-      }
-    }
-    return true;
+    return allWords().allMatch(w -> {
+      final List<String> matches = _dictionary.matches(w.getRegex(newKey), w.size(), THRESHOLD);
+      return matches == null || !matches.isEmpty();
+    });
   }
 
   private List<String> matches(final Word word, final CodeWordKey key) {

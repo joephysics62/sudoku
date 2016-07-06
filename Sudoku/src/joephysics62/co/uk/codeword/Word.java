@@ -20,12 +20,7 @@ public class Word {
   }
 
   public boolean isSolved(final CodeWordKey key) {
-    for (final Integer integer : _cells) {
-      if (!key.isSolved(integer)) {
-        return false;
-      }
-    }
-    return true;
+    return _cells.stream().allMatch(key::isSolved);
   }
 
   public String getRegex(final CodeWordKey key) {

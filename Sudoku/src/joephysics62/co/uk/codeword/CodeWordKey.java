@@ -100,9 +100,7 @@ public class CodeWordKey {
   public String unknownsRegex() {
     final StringBuilder sb = new StringBuilder();
     sb.append('[');
-    for (final Character character : _remaining) {
-      sb.append(character);
-    }
+    _remaining.stream().forEach(sb::append);
     sb.append(']');
     return sb.toString();
   }
