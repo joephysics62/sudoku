@@ -1,6 +1,9 @@
 package joephysics62.co.uk.backtrackingsudoku;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -10,98 +13,64 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
-public class BFutoshiki {
-  private final int[][] _puzzle;
-  private final int _size;
+public class BFutoshiki extends NumericBacktrackPuzzle {
   private final SetMultimap<Coordinate, Coordinate> _gtConstraints;
   private final SetMultimap<Coordinate, Coordinate> _ltConstraints;
 
-  public static void main(final String[] args) {
-    final int size = 5;
-    final int[][] puzzle =
-        new int[][] {{0, 0, 0, 0 ,0},
-                     {0, 2, 0, 0, 0},
-                     {0, 0, 0, 1, 0},
-                     {0, 0, 0, 0, 0},
-                     {0, 0, 0, 0, 0}};
-
-    final HashMultimap<Coordinate, Coordinate> constraints = HashMultimap.<Coordinate, Coordinate>create();
-    constraints.put(Coordinate.of(0, 0), Coordinate.of(0, 1));
-    constraints.put(Coordinate.of(0, 2), Coordinate.of(1, 2));
-    constraints.put(Coordinate.of(1, 1), Coordinate.of(1, 0));
-    constraints.put(Coordinate.of(1, 4), Coordinate.of(2, 4));
-    constraints.put(Coordinate.of(3, 2), Coordinate.of(4, 2));
-    constraints.put(Coordinate.of(3, 4), Coordinate.of(3, 3));
-    constraints.put(Coordinate.of(4, 0), Coordinate.of(4, 1));
-
-    final List<int[][]> solve = new BFutoshiki(puzzle, constraints, size).solve();
+  public static void main(final String[] args) throws IOException {
+    final BFutoshiki bFutoshiki = readFile(Paths.get("examples", "futoshiki", "5by5", "times2601.txt"));
+    final List<int[][]> solve = bFutoshiki.solve();
     for (final int[][] is : solve) {
-      printGrid(is);
+      bFutoshiki.printGrid(is);
     }
   }
 
-  private static void printGrid(final int[][] answer) {
-    for (int i = 0; i < answer.length; i++) {
-      System.out.println(Arrays.toString(answer[i]));
+  public static BFutoshiki readFile(final Path inputFile) throws IOException {
+    final List<String> lines = Files.readAllLines(inputFile);
+    final int size = lines.size() / 2 + 1;
+    final int[][] puzzle = new int[size][size];
+
+    final HashMultimap<Coordinate, Coordinate> constraints = HashMultimap.<Coordinate, Coordinate>create();
+
+    for (int row = 0; row < lines.size(); row++) {
+      final String[] rowArray = Arrays.copyOfRange(lines.get(row).split("\\|"), 1, lines.size() + 1);
+      for (int col = 0; col < lines.size(); col++) {
+        if (row % 2 == 0 && col % 2 == 0) {
+          puzzle[row / 2][col / 2] = rowArray[col].trim().isEmpty() ? 0 : Integer.valueOf(rowArray[col]);
+        }
+        else if (row % 2 != col % 2) {
+          final Coordinate start = Coordinate.of(row / 2, col / 2);
+          switch (rowArray[col].trim()) {
+          case ">":
+            constraints.put(start, start.right());
+            break;
+          case "<":
+            constraints.put(start.right(), start);
+            break;
+          case "V":
+            constraints.put(start, start.down());
+            break;
+          case "^":
+            constraints.put(start.down(), start);
+            break;
+          default:
+            break;
+          }
+        }
+      }
     }
-    System.out.println();
+    return new BFutoshiki(puzzle, constraints, size);
   }
 
   public BFutoshiki(final int[][] puzzle, final SetMultimap<Coordinate, Coordinate> constraints, final int size) {
-    _puzzle = puzzle;
+    super(puzzle, size);
     _gtConstraints = constraints;
     _ltConstraints = Multimaps.invertFrom(_gtConstraints, HashMultimap.<Coordinate, Coordinate>create());
-    _size = size;
   }
 
-  public List<int[][]> solve() {
-    final int[][] current = gridClone(_puzzle);
-    final List<int[][]> solutions = new ArrayList<>();
-    solveInner(current, 0, solutions);
-    return solutions;
-  }
-
-  private int[][] gridClone(final int[][] grid) {
-    final int[][] clone = new int[_size][_size];
-    for (int row = 0; row < _size; row++) {
-      clone[row] = grid[row].clone();
-    }
-    return clone;
-  }
-
-  private int iterations = 0;
-
-  private void solveInner(final int[][] current, final int cellNum, final List<int[][]> solutions) {
-    iterations++;
-    if (cellNum >= _size * _size) {
-      System.out.println("FOUND ANSWER after " + iterations + " iterations");
-      solutions.add(gridClone(current));
-      return;
-    }
-    final int row = cellNum / _size;
-    final int col = cellNum % _size;
-    if (current[row][col] > 0) {
-      // solved cell, continue;
-      solveInner(current, cellNum + 1, solutions);
-    }
-    else {
-      // not solved cell, try candidates
-      for (int candidate = 1; candidate <= _size; candidate++) {
-        if (isValidMove(candidate, row, col, current)) {
-          current[row][col] = candidate;
-          solveInner(current, cellNum + 1, solutions);
-        }
-      }
-      for (int i = cellNum; i < _size * _size; i++) {
-        final int row2 = i / _size;
-        final int col2 = i % _size;
-        current[row2][col2] = _puzzle[row2][col2];
-      }
-    }
-  }
-
-  private boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
-    for (int i = 0; i < _size; i++) {
+  @Override
+  protected boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
+    for (int i = 0; i < getSize(); i++) {
       // compare row
       if (answer[row][i] == candidate) {
         return false;
