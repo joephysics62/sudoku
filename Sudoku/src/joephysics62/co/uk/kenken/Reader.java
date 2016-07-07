@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import joephysics62.co.uk.backtrackingsudoku.Operator;
 import joephysics62.co.uk.constraint.Constraint;
 import joephysics62.co.uk.constraint.UniqueConstraint;
 import joephysics62.co.uk.constraint.arithmetic.AdditionConstraint;
