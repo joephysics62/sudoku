@@ -3,7 +3,6 @@ package joephysics62.co.uk.sudoku;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,14 +15,6 @@ import com.google.common.collect.SetMultimap;
 public class Futoshiki extends NumericBacktrackPuzzle {
   private final SetMultimap<Coordinate, Coordinate> _gtConstraints;
   private final SetMultimap<Coordinate, Coordinate> _ltConstraints;
-
-  public static void main(final String[] args) throws IOException {
-    final Futoshiki bFutoshiki = readFile(Paths.get("examples", "futoshiki", "5by5", "times2601.txt"));
-    final List<int[][]> solve = bFutoshiki.solve();
-    for (final int[][] is : solve) {
-      bFutoshiki.printGrid(is);
-    }
-  }
 
   public static Futoshiki readFile(final Path inputFile) throws IOException {
     final List<String> lines = Files.readAllLines(inputFile);
