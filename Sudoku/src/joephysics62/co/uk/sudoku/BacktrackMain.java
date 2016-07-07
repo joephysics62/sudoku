@@ -1,4 +1,4 @@
-package joephysics62.co.uk.backtrackingsudoku;
+package joephysics62.co.uk.sudoku;
 
 import static joephysics62.co.uk.grid.Coordinate.of;
 
@@ -65,7 +65,7 @@ public class BacktrackMain {
         );
     //final Path inputFile = Paths.get("examples", "sudoku", "classic", "times-7999");
     //final BSudoku puzzle = BSudoku.readPuzzle(inputFile, 9, 3);
-    final BKenKen puzzle = new BKenKen(grid, 6, groups);
+    final KenKen puzzle = new KenKen(grid, 6, groups);
     final long startTime = System.currentTimeMillis();
     for (final int[][] is : puzzle.solve()) {
       puzzle.printGrid(is);

@@ -1,4 +1,4 @@
-package joephysics62.co.uk.backtrackingsudoku;
+package joephysics62.co.uk.sudoku;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,19 +13,19 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 
-public class BFutoshiki extends NumericBacktrackPuzzle {
+public class Futoshiki extends NumericBacktrackPuzzle {
   private final SetMultimap<Coordinate, Coordinate> _gtConstraints;
   private final SetMultimap<Coordinate, Coordinate> _ltConstraints;
 
   public static void main(final String[] args) throws IOException {
-    final BFutoshiki bFutoshiki = readFile(Paths.get("examples", "futoshiki", "5by5", "times2601.txt"));
+    final Futoshiki bFutoshiki = readFile(Paths.get("examples", "futoshiki", "5by5", "times2601.txt"));
     final List<int[][]> solve = bFutoshiki.solve();
     for (final int[][] is : solve) {
       bFutoshiki.printGrid(is);
     }
   }
 
-  public static BFutoshiki readFile(final Path inputFile) throws IOException {
+  public static Futoshiki readFile(final Path inputFile) throws IOException {
     final List<String> lines = Files.readAllLines(inputFile);
     final int size = lines.size() / 2 + 1;
     final int[][] puzzle = new int[size][size];
@@ -59,10 +59,10 @@ public class BFutoshiki extends NumericBacktrackPuzzle {
         }
       }
     }
-    return new BFutoshiki(puzzle, constraints, size);
+    return new Futoshiki(puzzle, constraints, size);
   }
 
-  public BFutoshiki(final int[][] puzzle, final SetMultimap<Coordinate, Coordinate> constraints, final int size) {
+  public Futoshiki(final int[][] puzzle, final SetMultimap<Coordinate, Coordinate> constraints, final int size) {
     super(puzzle, size);
     _gtConstraints = constraints;
     _ltConstraints = Multimaps.invertFrom(_gtConstraints, HashMultimap.<Coordinate, Coordinate>create());
@@ -71,11 +71,9 @@ public class BFutoshiki extends NumericBacktrackPuzzle {
   @Override
   protected boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
     for (int i = 0; i < getSize(); i++) {
-      // compare row
       if (answer[row][i] == candidate) {
         return false;
       }
-      // compare col
       if (answer[i][col] == candidate) {
         return false;
       }

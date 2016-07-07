@@ -1,4 +1,4 @@
-package joephysics62.co.uk.backtrackingsudoku;
+package joephysics62.co.uk.sudoku;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,10 +6,10 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
-public class BSudoku extends NumericBacktrackPuzzle {
+public class ClassicSudoku extends NumericBacktrackPuzzle {
   private final int _subsize;
 
-  public BSudoku(final int[][] puzzle, final int size, final int subsize) {
+  public ClassicSudoku(final int[][] puzzle, final int size, final int subsize) {
     super(puzzle, size);
     _subsize = subsize;
   }
@@ -17,11 +17,9 @@ public class BSudoku extends NumericBacktrackPuzzle {
   @Override
   protected boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
     for (int i = 0; i < getSize(); i++) {
-      // compare row
       if (answer[row][i] == candidate) {
         return false;
       }
-      // compare col
       if (answer[i][col] == candidate) {
         return false;
       }
@@ -38,7 +36,7 @@ public class BSudoku extends NumericBacktrackPuzzle {
     return true;
   }
 
-  public static BSudoku readPuzzle(final Path inputFile, final int size, final int subsize) throws IOException {
+  public static ClassicSudoku readPuzzle(final Path inputFile, final int size, final int subsize) throws IOException {
     final List<String> lines = Files.readAllLines(inputFile);
 
     final int[][] puzzle = new int[size][size];
@@ -48,10 +46,10 @@ public class BSudoku extends NumericBacktrackPuzzle {
       puzzle[row] = Arrays.stream(rowArray)
                           .skip(1)
                           .map(String::trim)
-                          .mapToInt(BSudoku::toInt)
+                          .mapToInt(ClassicSudoku::toInt)
                           .toArray();
     }
-    return new BSudoku(puzzle, size, subsize);
+    return new ClassicSudoku(puzzle, size, subsize);
   }
 
   private static int toInt(final String cellString) {

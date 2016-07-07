@@ -1,4 +1,4 @@
-package joephysics62.co.uk.backtrackingsudoku;
+package joephysics62.co.uk.sudoku;
 
 import java.util.List;
 

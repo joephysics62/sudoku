@@ -1,4 +1,4 @@
-package joephysics62.co.uk.backtrackingsudoku;
+package joephysics62.co.uk.sudoku;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -6,11 +6,11 @@ import java.util.Map;
 
 import joephysics62.co.uk.grid.Coordinate;
 
-public class BKenKen extends NumericBacktrackPuzzle {
+public class KenKen extends NumericBacktrackPuzzle {
 
   private final Map<Coordinate, ArithmeticGroup> _groupLookup;
 
-  public BKenKen(final int[][] puzzle, final int size, final List<ArithmeticGroup> groups) {
+  public KenKen(final int[][] puzzle, final int size, final List<ArithmeticGroup> groups) {
     super(puzzle, size);
     _groupLookup = new LinkedHashMap<>();
     for (final ArithmeticGroup kenKenGroup : groups) {
@@ -23,11 +23,9 @@ public class BKenKen extends NumericBacktrackPuzzle {
   @Override
   protected boolean isValidMove(final int candidate, final int row, final int col, final int[][] answer) {
     for (int i = 0; i < getSize(); i++) {
-      // compare row
       if (answer[row][i] == candidate) {
         return false;
       }
-      // compare col
       if (answer[i][col] == candidate) {
         return false;
       }
