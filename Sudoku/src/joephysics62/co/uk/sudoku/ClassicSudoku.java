@@ -36,7 +36,7 @@ public class ClassicSudoku extends NumericBacktrackPuzzle {
     return true;
   }
 
-  public static ClassicSudoku readPuzzle(final Path inputFile, final int size, final int subsize) throws IOException {
+  public static ClassicSudoku readFile(final Path inputFile, final int size, final int subsize) throws IOException {
     final List<String> lines = Files.readAllLines(inputFile);
 
     final int[][] puzzle = new int[size][size];
