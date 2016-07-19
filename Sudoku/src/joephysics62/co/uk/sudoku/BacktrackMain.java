@@ -14,6 +14,9 @@ public class BacktrackMain {
 
   private static void solve(final NumericBacktrackPuzzle puzzle) {
     final long startTime = System.currentTimeMillis();
+//    for (int i = 0; i < 1000000; i++) {
+//      puzzle.solve();
+//    }
     for (final int[][] is : puzzle.solve()) {
       puzzle.printGrid(is);
     }

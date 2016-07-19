@@ -64,12 +64,7 @@ public abstract class NumericBacktrackPuzzle {
         if (current[row][col] > 0) {
           continue;
         }
-        int currCount = 0;
-        for (int i = 1; i <= _size; i++) {
-          if (isValidMove(i, row, col, current)) {
-            currCount++;
-          }
-        }
+        final int currCount = moveCount(current, row, col);
         if (currCount < bestCount) {
           bestCount = currCount;
           best = Coordinate.of(row, col);
@@ -80,6 +75,16 @@ public abstract class NumericBacktrackPuzzle {
       }
     }
     return best;
+  }
+
+  private int moveCount(final int[][] current, final int row, final int col) {
+    int currCount = 0;
+    for (int i = 1; i <= _size; i++) {
+      if (isValidMove(i, row, col, current)) {
+        currCount++;
+      }
+    }
+    return currCount;
   }
 
   private int[][] gridClone(final int[][] grid) {
