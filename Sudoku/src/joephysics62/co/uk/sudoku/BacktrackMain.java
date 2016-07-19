@@ -7,7 +7,8 @@ public class BacktrackMain {
   public static void main(final String[] args) throws IOException {
     solve(ClassicSudoku.readFile(Paths.get("examples", "sudoku", "classic", "times-7999"), 9, 3));
 
-    //solve(KillerSudoku.readFile(Paths.get("examples", "killer", "times-4700.txt")));
+    //final KillerSudoku killerSudoku = KillerSudoku.readFile(Paths.get("examples", "killer", "times-4699.txt"));
+    //solve(killerSudoku);
 
   }
 

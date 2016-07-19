@@ -3,6 +3,9 @@ package joephysics62.co.uk.sudoku;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Stack;
+
+import joephysics62.co.uk.grid.Coordinate;
 
 public abstract class NumericBacktrackPuzzle {
 
@@ -17,8 +20,66 @@ public abstract class NumericBacktrackPuzzle {
   public final List<int[][]> solve() {
     final int[][] current = gridClone(_puzzle);
     final List<int[][]> solutions = new ArrayList<>();
-    solveInner(current, 0, solutions);
+    final Stack<Coordinate> coords = new Stack<Coordinate>();
+
+    boolean reachedEnd = false;
+    Coordinate curr = findBestUnsolved(current);
+    while (!reachedEnd && solutions.size() < 2) {
+      final int row = curr.getRow();
+      final int col = curr.getCol();
+      final int val = current[row][col];
+      //System.out.println("Candidate = " + (val + 1));
+      boolean seenValid = false;
+      for (int candidate = val + 1; candidate <= _size; candidate++) {
+        if (isValidMove(candidate, row, col, current)) {
+          current[row][col] = candidate;
+          coords.push(curr);
+          curr = findBestUnsolved(current);
+          seenValid = true;
+          if (curr == null) {
+            solutions.add(gridClone(current));
+          }
+          break;
+        }
+      }
+      if (!seenValid || curr == null) {
+        if (curr != null) {
+          current[row][col] = _puzzle[row][col];
+        }
+        curr = coords.pop();
+        if (coords.isEmpty()) {
+          reachedEnd = true;
+        }
+      }
+
+    }
     return solutions;
+  }
+
+  private Coordinate findBestUnsolved(final int[][] current) {
+    int bestCount = Integer.MAX_VALUE;
+    Coordinate best = null;
+    for (int row = 0; row < _size; row++) {
+      for (int col = 0; col < _size; col++) {
+        if (current[row][col] > 0) {
+          continue;
+        }
+        int currCount = 0;
+        for (int i = 1; i <= _size; i++) {
+          if (isValidMove(i, row, col, current)) {
+            currCount++;
+          }
+        }
+        if (currCount < bestCount) {
+          bestCount = currCount;
+          best = Coordinate.of(row, col);
+          if (bestCount < 2) {
+            return best;
+          }
+        }
+      }
+    }
+    return best;
   }
 
   private int[][] gridClone(final int[][] grid) {
@@ -27,37 +88,6 @@ public abstract class NumericBacktrackPuzzle {
       clone[row] = grid[row].clone();
     }
     return clone;
-  }
-
-  private int iterations = 0;
-
-  private void solveInner(final int[][] current, final int cellNum, final List<int[][]> solutions) {
-    iterations++;
-    if (cellNum >= _size * _size) {
-      System.out.println("FOUND ANSWER after " + iterations + " iterations");
-      solutions.add(gridClone(current));
-      return;
-    }
-    final int row = cellNum / _size;
-    final int col = cellNum % _size;
-    if (current[row][col] > 0) {
-      // solved cell, continue;
-      solveInner(current, cellNum + 1, solutions);
-    }
-    else {
-      // not solved cell, try candidates
-      for (int candidate = 1; candidate <= _size; candidate++) {
-        if (isValidMove(candidate, row, col, current)) {
-          current[row][col] = candidate;
-          solveInner(current, cellNum + 1, solutions);
-        }
-      }
-      for (int i = cellNum; i < _size * _size; i++) {
-        final int row2 = i / _size;
-        final int col2 = i % _size;
-        current[row2][col2] = _puzzle[row2][col2];
-      }
-    }
   }
 
   protected void printGrid(final int[][] answer) {
