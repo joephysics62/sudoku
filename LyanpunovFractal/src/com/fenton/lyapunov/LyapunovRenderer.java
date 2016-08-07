@@ -31,11 +31,6 @@ public class LyapunovRenderer implements Renderer<Double> {
   }
 
   private  int cycle(final double dataValue, final int phase) {
-    final int value = (int) (dataValue * _frequency);
-    final int cycled = Math.abs((value + phase) % (COLOR_MAX * 2));
-    if (cycled > COLOR_MAX) {
-      return COLOR_MAX * 2 - cycled;
-    }
-    return cycled;
+    return (int) (COLOR_MAX * (1 + Math.sin(dataValue * _frequency + phase)) / 2);
   }
 }

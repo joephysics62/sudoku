@@ -8,16 +8,16 @@ public class GenerationParameters implements Serializable {
 
   private String lyapunovString = "AB";
   private int maxIterations = 50;
-  private int frequency = 100;
+  private int frequency = 4;
   private double xmin = 2;
   private double xmax = 4;
   private double ymin = 2;
   private double ymax = 4;
   private double threshold = 2.5;
 
-  private int redPhase = 20;
+  private int redPhase = -1;
   private int greenPhase = 0;
-  private int bluePhase = 80;
+  private int bluePhase = 1;
 
   public byte[] getImageData() {
     final Plot plot = new Plot(500, 500, xmin, xmax, ymin, ymax);
