@@ -1,3 +1,6 @@
+.generator {
+	font-family: sans-serif;
+}
 .figure {
 	display: inline-block;
 	border-style: solid;
@@ -10,4 +13,9 @@
 	display: inline-block;
 	width: 200px;
 	vertical-align: top;
+}
+
+.form input {
+	display: block;
+    margin-bottom: 10px;
 }

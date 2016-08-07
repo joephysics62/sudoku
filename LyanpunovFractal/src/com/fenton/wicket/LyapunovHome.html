@@ -4,7 +4,7 @@
       <link rel="stylesheet" type="text/css" href="css/style.css"/>
     </wicket:link>
     </wicket:head>
-    <body>
+    <body class="generator">
       <h1><div wicket:id="title"/></h1>
       <img wicket:id="mmFigure" class="figure" />
 	  <form wicket:id="form" class="form">
@@ -12,8 +12,24 @@
         <input type="text" wicket:id="lyapunovString" id="lyapunovString" />
    	    <label for="maxIterations">Max Iterations</label>
         <input type="text" wicket:id="maxIterations" id="maxIterations"/>
+        <label for="xmin">X Min</label>
+        <input type="text" wicket:id="xmin" id="xmin" />
+        <label for="xmax">X Max</label>
+        <input type="text" wicket:id="xmax" id="xmax" />
+        <label for="ymin">Y Min</label>
+        <input type="text" wicket:id="ymin" id="ymin" />
+        <label for="ymax">Y Max</label>
+        <input type="text" wicket:id="ymax" id="ymax" />
         <label for="frequency">Frequency</label>
         <input type="text" wicket:id="frequency" id="frequency" />
+        <label for="threshold">Threshold</label>
+        <input type="text" wicket:id="threshold" id="threshold" />
+        <label for="redPhase">Red Phase</label>
+        <input type="text" wicket:id="redPhase" id="redPhase" />
+        <label for="greenPhase">Green Phase</label>
+        <input type="text" wicket:id="greenPhase" id="greenPhase" />
+        <label for="bluePhase">Blue Phase</label>
+        <input type="text" wicket:id="bluePhase" id="bluePhase" />
         <input type="submit" value="Generate" />
       </form>
     </body>
