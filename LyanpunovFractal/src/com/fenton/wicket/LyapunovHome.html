@@ -1,10 +1,20 @@
 <html>
-    <head>
-        <title>Wicket Hello World</title>
-    </head>
+    <wicket:head>
+    <wicket:link>
+      <link rel="stylesheet" type="text/css" href="css/style.css"/>
+    </wicket:link>
+    </wicket:head>
     <body>
-	  <h1>
-        <span wicket:id="message">message will be replace later</span>
-	  </h1>
+      <h1><div wicket:id="title"/></h1>
+      <img wicket:id="mmFigure" class="figure" />
+	  <form wicket:id="form" class="form">
+	    <label for="lyapunovString">Lyapunov Sequence</label>
+        <input type="text" wicket:id="lyapunovString" id="lyapunovString" />
+   	    <label for="maxIterations">Max Iterations</label>
+        <input type="text" wicket:id="maxIterations" id="maxIterations"/>
+        <label for="frequency">Frequency</label>
+        <input type="text" wicket:id="frequency" id="frequency" />
+        <input type="submit" value="Generate" />
+      </form>
     </body>
 </html>
