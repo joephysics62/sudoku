@@ -4,24 +4,34 @@ public class LyapunovGenerator implements PlotGenerator {
 
   private final int _maxIterations;
   private final char[] _lyapunovString;
+  private final double _threshold;
+  private final double _startValue;
 
-  public LyapunovGenerator(final String lyapunovString, final int maxIterations) {
+  public LyapunovGenerator(final String lyapunovString,
+                           final double startValue,
+                           final int maxIterations,
+                           final double threshold) {
+    _startValue = startValue;
     _maxIterations = maxIterations;
+    _threshold = threshold;
     _lyapunovString = lyapunovString.toCharArray();
   }
 
   @Override
   public double generate(final double x, final double y) {
-    double val = 0.5;
+    double val = _startValue;
     double sum = 0;
     for (int i = 1; i <= _maxIterations; i++) {
       final double rValue = rFunction(x, y, i - 1);
       val =  iterateNext(val, rValue);
       final double logArgand = doArgand(x, y, val, i);
       if (logArgand == 0) {
-        return Integer.MIN_VALUE;
+        return sum;
       }
-      sum += doLog(logArgand) / _maxIterations;
+      sum += doLog(logArgand);
+      if (Math.abs(sum) > _threshold) {
+        return sum;
+      }
     }
     return sum;
   }
@@ -35,7 +45,7 @@ public class LyapunovGenerator implements PlotGenerator {
   }
 
   private double doLog(final double logArgand) {
-    return Math.log(logArgand);
+    return Math.log(logArgand) / _maxIterations;
   }
 
   private double rFunction(final double x, final double y, final int iteration) {

@@ -25,6 +25,8 @@ public class LyapunovHome extends WebPage {
     final Form<?> form = new Form<Void>("form");
 
     form.add(new TextField<>("lyapunovString", new PropertyModel<>(params, "lyapunovString")));
+    form.add(new TextField<>("startValue", new PropertyModel<>(params, "startValue")));
+
     form.add(new TextField<>("maxIterations", new PropertyModel<>(params, "maxIterations")));
     form.add(new TextField<>("frequency", new PropertyModel<>(params, "frequency")));
     form.add(new TextField<>("xmin", new PropertyModel<>(params, "xmin")));

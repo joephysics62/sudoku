@@ -8,29 +8,55 @@
       <h1><div wicket:id="title"/></h1>
       <img wicket:id="mmFigure" class="figure" />
 	  <form wicket:id="form" class="form">
-	    <label for="lyapunovString">Lyapunov Sequence</label>
-        <input type="text" wicket:id="lyapunovString" id="lyapunovString" />
-   	    <label for="maxIterations">Max Iterations</label>
-        <input type="text" wicket:id="maxIterations" id="maxIterations"/>
-        <label for="xmin">X Min</label>
-        <input type="text" wicket:id="xmin" id="xmin" />
-        <label for="xmax">X Max</label>
-        <input type="text" wicket:id="xmax" id="xmax" />
-        <label for="ymin">Y Min</label>
-        <input type="text" wicket:id="ymin" id="ymin" />
-        <label for="ymax">Y Max</label>
-        <input type="text" wicket:id="ymax" id="ymax" />
-        <label for="frequency">Frequency</label>
-        <input type="text" wicket:id="frequency" id="frequency" />
-        <label for="threshold">Threshold</label>
-        <input type="text" wicket:id="threshold" id="threshold" />
-        <label for="redPhase">Red Phase</label>
-        <input type="text" wicket:id="redPhase" id="redPhase" />
-        <label for="greenPhase">Green Phase</label>
-        <input type="text" wicket:id="greenPhase" id="greenPhase" />
-        <label for="bluePhase">Blue Phase</label>
-        <input type="text" wicket:id="bluePhase" id="bluePhase" />
-        <input type="submit" value="Generate" />
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="lyapunovString" id="lyapunovString" />
+	      <label for="lyapunovString">Lyapunov Sequence</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="startValue" id="startValue" />
+          <label for="startValue">Start Value</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="maxIterations" id="maxIterations"/>
+    	    <label for="maxIterations">Max Iterations</label>
+   	    </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="xmin" id="xmin" />
+          <label for="xmin">X Min</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="xmax" id="xmax" />
+          <label for="xmax">X Max</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="ymin" id="ymin" />
+          <label for="ymin">Y Min</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="ymax" id="ymax" />
+          <label for="ymax">Y Max</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="frequency" id="frequency" />
+          <label for="frequency">Frequency</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="threshold" id="threshold" />
+          <label for="threshold">Threshold</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="redPhase" id="redPhase" />
+          <label for="redPhase">Red Phase</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="greenPhase" id="greenPhase" />
+          <label for="greenPhase">Green Phase</label>
+        </div>
+        <div class="labelFieldPair">
+          <input type="text" wicket:id="bluePhase" id="bluePhase" />
+          <label for="bluePhase">Blue Phase</label>
+        </div>
+        <input type="submit" value="Generate" class="submit" />
       </form>
     </body>
 </html>

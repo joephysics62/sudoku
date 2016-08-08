@@ -7,15 +7,29 @@
     min-height: 500px;
     min-width: 500px;
     border-width: 1px;
+    margin-right: 10px;
 }
 
 .form {
 	display: inline-block;
-	width: 200px;
+	width: 250px;
 	vertical-align: top;
 }
 
-.form input {
-	display: block;
+.labelFieldPair input {
+	display: inline-block;
     margin-bottom: 10px;
+    width: 100px;
+}
+
+.labelFieldPair label {
+	display: inline-block;
+}
+
+.submit {
+	width: 120px;
+}
+
+.labelFieldPair {
+	display: block;
 }

@@ -7,6 +7,7 @@ public class GenerationParameters implements Serializable {
   private static final long serialVersionUID = 5671858909961417148L;
 
   private String lyapunovString = "AB";
+  private double startValue = 0.5;
   private int maxIterations = 50;
   private int frequency = 4;
   private double xmin = 2;
@@ -21,11 +22,11 @@ public class GenerationParameters implements Serializable {
 
   public byte[] getImageData() {
     final Plot plot = new Plot(500, 500, xmin, xmax, ymin, ymax);
-    final LyapunovGenerator lyapunovGenerator = new LyapunovGenerator(lyapunovString, maxIterations);
+    final LyapunovGenerator lyapunovGenerator = new LyapunovGenerator(lyapunovString, startValue,
+                                                                      maxIterations, threshold);
     plot.generateData(lyapunovGenerator);
     final LyapunovRenderer renderer = new LyapunovRenderer(
         frequency,
-        threshold,
         redPhase,
         greenPhase,
         bluePhase);
@@ -43,6 +44,14 @@ public class GenerationParameters implements Serializable {
   public void setLyapunovString(final String lyapunovString) {
     this.lyapunovString = lyapunovString;
   }
+
+  public double getStartValue() {
+    return startValue;
+  }
+  public void setStartValue(final double startValue) {
+    this.startValue = startValue;
+  }
+
   public int getMaxIterations() {
     return maxIterations;
   }
