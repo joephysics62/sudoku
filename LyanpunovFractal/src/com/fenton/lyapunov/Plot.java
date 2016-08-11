@@ -1,8 +1,8 @@
 package com.fenton.lyapunov;
 
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
@@ -38,7 +38,7 @@ public class Plot {
     }
   }
 
-  public byte[] writeToBytes(final Renderer<Double> renderer) throws IOException {
+  public void write(final Renderer<Double> renderer, final OutputStream outStream) throws IOException {
     final BufferedImage bImg = new BufferedImage(_imageWidth, _imageHeight, BufferedImage.TYPE_INT_RGB);
 
     for (int imageX = 0; imageX < _imageWidth; imageX++) {
@@ -46,10 +46,7 @@ public class Plot {
         bImg.setRGB(imageX, _imageHeight - imageY - 1, renderer.toColor(_data[imageX][imageY]).getRGB());
       }
     }
-    try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-      ImageIO.write(bImg, "png", baos);
-      return baos.toByteArray();
-    }
+    ImageIO.write(bImg, "png", outStream);
   }
 
 }

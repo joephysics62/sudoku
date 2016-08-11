@@ -1,5 +1,8 @@
 package com.fenton.wicket;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -49,7 +52,13 @@ public class LyapunovHome extends WebPage {
           private static final long serialVersionUID = 8045959870591042005L;
 
           @Override protected byte[] getImageData(final Attributes attributes) {
-            return params.getObject().getImageData();
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+              params.getObject().writeImageData(baos);
+              return baos.toByteArray();
+            }
+            catch (final IOException e) {
+              throw new RuntimeException(e);
+            }
           }
         };
         dir.setFormat("image/png");

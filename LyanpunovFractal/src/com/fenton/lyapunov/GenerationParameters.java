@@ -1,6 +1,7 @@
 package com.fenton.lyapunov;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.Serializable;
 
 public class GenerationParameters implements Serializable {
@@ -20,7 +21,7 @@ public class GenerationParameters implements Serializable {
   private int greenPhase = 0;
   private int bluePhase = 1;
 
-  public byte[] getImageData() {
+  public void writeImageData(final OutputStream outStream) throws IOException {
     final Plot plot = new Plot(500, 500, xmin, xmax, ymin, ymax);
     final LyapunovGenerator lyapunovGenerator = new LyapunovGenerator(lyapunovString, startValue,
                                                                       maxIterations, threshold);
@@ -30,12 +31,7 @@ public class GenerationParameters implements Serializable {
         redPhase,
         greenPhase,
         bluePhase);
-    try {
-      return plot.writeToBytes(renderer);
-    }
-    catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
+    plot.write(renderer, outStream);
   }
 
   public String getLyapunovString() {
