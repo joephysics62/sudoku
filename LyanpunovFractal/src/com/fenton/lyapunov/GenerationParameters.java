@@ -11,6 +11,9 @@ public class GenerationParameters implements Serializable {
   private double startValue = 0.5;
   private int maxIterations = 50;
   private int frequency = 4;
+
+  private int imageWidth = 500;
+  private int imageHeight = 500;
   private double xmin = 2;
   private double xmax = 4;
   private double ymin = 2;
@@ -22,7 +25,7 @@ public class GenerationParameters implements Serializable {
   private int bluePhase = 1;
 
   public void writeImageData(final OutputStream outStream) throws IOException {
-    final Plot plot = new Plot(500, 500, xmin, xmax, ymin, ymax);
+    final Plot plot = new Plot(imageWidth, imageHeight, xmin, xmax, ymin, ymax);
     final LyapunovGenerator lyapunovGenerator = new LyapunovGenerator(lyapunovString, startValue,
                                                                       maxIterations, threshold);
     plot.generateData(lyapunovGenerator);
@@ -31,6 +34,7 @@ public class GenerationParameters implements Serializable {
         redPhase,
         greenPhase,
         bluePhase);
+
     plot.write(renderer, outStream);
   }
 
@@ -59,6 +63,18 @@ public class GenerationParameters implements Serializable {
   }
   public void setFrequency(final int frequency) {
     this.frequency = frequency;
+  }
+  public int getImageWidth() {
+    return imageWidth;
+  }
+  public void setImageWidth(final int imageWidth) {
+    this.imageWidth = imageWidth;
+  }
+  public int getImageHeight() {
+    return imageHeight;
+  }
+  public void setImageHeight(final int imageHeight) {
+    this.imageHeight = imageHeight;
   }
   public double getXmin() {
     return xmin;

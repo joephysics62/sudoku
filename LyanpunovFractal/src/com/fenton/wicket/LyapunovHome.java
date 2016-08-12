@@ -3,6 +3,7 @@ package com.fenton.wicket;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,6 +33,8 @@ public class LyapunovHome extends WebPage {
 
     form.add(new TextField<>("maxIterations", new PropertyModel<>(params, "maxIterations")));
     form.add(new TextField<>("frequency", new PropertyModel<>(params, "frequency")));
+    form.add(new TextField<>("imageWidth", new PropertyModel<Integer>(params, "imageWidth")));
+    form.add(new TextField<>("imageHeight", new PropertyModel<Integer>(params, "imageHeight")));
     form.add(new TextField<>("xmin", new PropertyModel<>(params, "xmin")));
     form.add(new TextField<>("xmax", new PropertyModel<>(params, "xmax")));
     form.add(new TextField<>("ymin", new PropertyModel<>(params, "ymin")));
@@ -44,7 +47,7 @@ public class LyapunovHome extends WebPage {
 
     add(form);
 
-    add(new NonCachingImage("mmFigure", new AbstractReadOnlyModel<DynamicImageResource>(){
+    final NonCachingImage imagePanel = new NonCachingImage("mmFigure", new AbstractReadOnlyModel<DynamicImageResource>(){
       private static final long serialVersionUID = -5506990275775097377L;
 
       @Override public DynamicImageResource getObject() {
@@ -64,7 +67,19 @@ public class LyapunovHome extends WebPage {
         dir.setFormat("image/png");
         return dir;
       }
+    });
+    imagePanel.add(new AttributeModifier("style", new AbstractReadOnlyModel<String>() {
+      private static final long serialVersionUID = -8386528292510676463L;
+
+      @Override
+      public String getObject() {
+        final GenerationParameters paramObj = params.getObject();
+        return "width=" + paramObj.getImageWidth() + "; height=" + paramObj.getImageHeight();
+      }
+
+
     }));
+    add(imagePanel);
 
   }
 

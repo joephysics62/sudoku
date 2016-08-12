@@ -10,5 +10,8 @@
 
   <dependencies>
     <dependency org="org.apache.wicket" name="wicket-core" rev="7.4.0" conf="compile->default"/>
+    <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+    <dependency org="log4j" name="log4j" rev="1.2.17" conf="compile->default;"/>
+    
   </dependencies>
 </ivy-module>

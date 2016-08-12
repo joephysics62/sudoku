@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 
 public class Plot {
-  private final double[][] _data;
+  private double[][] _data;
   private final int _imageHeight;
   private final int _imageWidth;
   private final double _xMin;
@@ -24,16 +24,17 @@ public class Plot {
     _xMax = xMax;
     _yMin = yMin;
     _yMax = yMax;
-    _data = new double[imageHeight][imageWidth];
+
   }
 
   public void generateData(final PlotGenerator generator) {
+    _data = new double[_imageHeight][_imageWidth];
     final double xStep = (_xMax - _xMin) / _imageWidth;
     final double yStep = (_yMax - _yMin) / _imageHeight;
 
     for (int imageX = 0; imageX < _imageWidth; imageX++) {
       for (int imageY = 0; imageY < _imageHeight; imageY++) {
-        _data[imageX][imageY] = generator.generate(_xMin + xStep * imageX, _yMin + yStep * imageY);
+        _data[imageY][imageX] = generator.generate(_xMin + xStep * imageX, _yMin + yStep * imageY);
       }
     }
   }
@@ -43,7 +44,7 @@ public class Plot {
 
     for (int imageX = 0; imageX < _imageWidth; imageX++) {
       for (int imageY = 0; imageY < _imageHeight; imageY++) {
-        bImg.setRGB(imageX, _imageHeight - imageY - 1, renderer.toColor(_data[imageX][imageY]).getRGB());
+        bImg.setRGB(imageX, _imageHeight - imageY - 1, renderer.toColor(_data[imageY][imageX]).getRGB());
       }
     }
     ImageIO.write(bImg, "png", outStream);

@@ -4,8 +4,6 @@
 .figure {
 	display: inline-block;
 	border-style: solid;
-    min-height: 500px;
-    min-width: 500px;
     border-width: 1px;
     margin-right: 10px;
 }
