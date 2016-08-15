@@ -1,4 +1,4 @@
-package com.fenton.lyapunov;
+package com.fenton;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -6,8 +6,8 @@ import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
-public class Plot {
-  private double[][] _data;
+public class Plot<T> {
+  private T[][] _data;
   private final int _imageHeight;
   private final int _imageWidth;
   private final double _xMin;
@@ -27,8 +27,9 @@ public class Plot {
 
   }
 
-  public void generateData(final PlotGenerator generator) {
-    _data = new double[_imageHeight][_imageWidth];
+  @SuppressWarnings("unchecked")
+  public void generateData(final PlotGenerator<T> generator) {
+    _data = (T[][]) new Object[_imageHeight][_imageWidth];
     final double xStep = (_xMax - _xMin) / _imageWidth;
     final double yStep = (_yMax - _yMin) / _imageHeight;
 
@@ -39,7 +40,7 @@ public class Plot {
     }
   }
 
-  public void write(final Renderer<Double> renderer, final OutputStream outStream) throws IOException {
+  public void write(final Renderer<T> renderer, final OutputStream outStream) throws IOException {
     final BufferedImage bImg = new BufferedImage(_imageWidth, _imageHeight, BufferedImage.TYPE_INT_RGB);
 
     for (int imageX = 0; imageX < _imageWidth; imageX++) {

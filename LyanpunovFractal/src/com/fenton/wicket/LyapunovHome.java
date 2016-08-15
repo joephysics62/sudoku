@@ -16,12 +16,12 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.DynamicImageResource;
 
-import com.fenton.lyapunov.GenerationParameters;
+import com.fenton.lyapunov.LyapunovBuilder;
 
 public class LyapunovHome extends WebPage {
   private static final long serialVersionUID = -2160699419531791694L;
 
-  protected IModel<GenerationParameters> params = Model.of(new GenerationParameters());
+  protected IModel<LyapunovBuilder> params = Model.of(new LyapunovBuilder());
 
   public LyapunovHome(final PageParameters parameters) {
     add(new Label("title", "Lyapunov Generator"));
@@ -73,7 +73,7 @@ public class LyapunovHome extends WebPage {
 
       @Override
       public String getObject() {
-        final GenerationParameters paramObj = params.getObject();
+        final LyapunovBuilder paramObj = params.getObject();
         return "width=" + paramObj.getImageWidth() + "; height=" + paramObj.getImageHeight();
       }
 

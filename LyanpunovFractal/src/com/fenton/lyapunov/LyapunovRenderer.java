@@ -2,6 +2,8 @@ package com.fenton.lyapunov;
 
 import java.awt.Color;
 
+import com.fenton.Renderer;
+
 public class LyapunovRenderer implements Renderer<Double> {
 
   private static final int COLOR_MAX = 255;

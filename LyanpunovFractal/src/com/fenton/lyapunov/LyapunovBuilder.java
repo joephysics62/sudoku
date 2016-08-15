@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 
-public class GenerationParameters implements Serializable {
+import com.fenton.Plot;
+
+public class LyapunovBuilder implements Serializable {
   private static final long serialVersionUID = 5671858909961417148L;
 
   private String lyapunovString = "AB";
@@ -25,17 +27,27 @@ public class GenerationParameters implements Serializable {
   private int bluePhase = 1;
 
   public void writeImageData(final OutputStream outStream) throws IOException {
-    final Plot plot = new Plot(imageWidth, imageHeight, xmin, xmax, ymin, ymax);
-    final LyapunovGenerator lyapunovGenerator = new LyapunovGenerator(lyapunovString, startValue,
-                                                                      maxIterations, threshold);
+    final Plot<Double> plot = newPlot();
+    final LyapunovGenerator lyapunovGenerator = newGenerator();
     plot.generateData(lyapunovGenerator);
-    final LyapunovRenderer renderer = new LyapunovRenderer(
+    final LyapunovRenderer renderer = newRenderer();
+    plot.write(renderer, outStream);
+  }
+
+  private LyapunovRenderer newRenderer() {
+    return new LyapunovRenderer(
         frequency,
         redPhase,
         greenPhase,
         bluePhase);
+  }
 
-    plot.write(renderer, outStream);
+  private LyapunovGenerator newGenerator() {
+    return new LyapunovGenerator(lyapunovString, startValue, maxIterations, threshold);
+  }
+
+  private Plot<Double> newPlot() {
+    return new Plot<>(imageWidth, imageHeight, xmin, xmax, ymin, ymax);
   }
 
   public String getLyapunovString() {

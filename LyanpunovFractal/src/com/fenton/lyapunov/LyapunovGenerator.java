@@ -1,6 +1,8 @@
 package com.fenton.lyapunov;
 
-public class LyapunovGenerator implements PlotGenerator {
+import com.fenton.PlotGenerator;
+
+public class LyapunovGenerator implements PlotGenerator<Double> {
 
   private final int _maxIterations;
   private final char[] _lyapunovString;
@@ -18,7 +20,7 @@ public class LyapunovGenerator implements PlotGenerator {
   }
 
   @Override
-  public double generate(final double x, final double y) {
+  public Double generate(final double x, final double y) {
     double val = _startValue;
     double sum = 0;
     for (int i = 1; i <= _maxIterations; i++) {
