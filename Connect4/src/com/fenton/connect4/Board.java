@@ -1,8 +1,6 @@
 package com.fenton.connect4;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -11,39 +9,36 @@ public class Board {
   private final int LINE_SIZE_TO_WIN = 4;
   private final int _width;
   private final int _height;
-  private final List<List<Player>> _pieces;
+  private final Player[][] _pieces;
+  private final int[] _currHeights;
 
   public Board(final int width, final int height) {
     _width = width;
     _height = height;
-    _pieces = init(width);
+    _pieces = new Player[height][width];
+    _currHeights = new int[width];
   }
 
   public boolean addToColumn(final Player player, final int column) {
     if (column < 0 || column > _width - 1) {
       return false;
     }
-    final List<Player> columnPieces = _pieces.get(column);
-    if (columnPieces.size() >= _height) {
+    if (_currHeights[column] >= _height) {
       return false;
     }
-    columnPieces.add(player);
+    _pieces[_currHeights[column]][column] = player;
+    _currHeights[column]++;
     return true;
   }
 
   public void printBoard(final PrintStream pstream) {
     IntStream
       .range(0, _height)
-      .map(r -> _height - r)
+      .map(r -> _height - r - 1)
       .forEach(rowf -> {
         final Stream<String> rowVals = IntStream.range(0, _width)
-                                          .mapToObj(_pieces::get)
-                                          .map(col -> {
-                                            if (col.size() < rowf) {
-                                              return " ";
-                                            }
-                                            return col.get(rowf - 1).getIcon();
-                                          });
+                                          .mapToObj(c -> _pieces[rowf][c])
+                                          .map(v -> v == null ? " " : v.getIcon());
         printRow(rowVals, pstream);
       });
     printRow(IntStream.rangeClosed(1, _width).mapToObj(Integer::valueOf), pstream);
@@ -56,17 +51,8 @@ public class Board {
     pstream.println();
   }
 
-  private List<List<Player>> init(final int width) {
-    final List<List<Player>> pieces = new ArrayList<>(width);
-    for (int col = 0; col < width; col++) {
-      pieces.add(new ArrayList<>());
-    }
-    return pieces;
-  }
-
   public boolean hasPlayedWinningMove(final Player curr, final int newPieceCol) {
-    final List<Player> columnList = _pieces.get(newPieceCol);
-    final int newPieceRow = columnList.size() - 1;
+    final int newPieceRow = _currHeights[newPieceCol] - 1;
     // check vertical
     int lineSize = 1;
     int row = newPieceRow;
@@ -96,7 +82,7 @@ public class Board {
   }
 
   private boolean isPlayersPiece(final Player player, final int row, final int col) {
-    return _pieces.get(col).size() > row && player == _pieces.get(col).get(row);
+    return _pieces[row][col] == player;
   }
 
 }
