@@ -1,6 +1,7 @@
 package com.fenton.connect4;
 
 import java.io.PrintStream;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -53,35 +54,64 @@ public class Board {
 
   public boolean hasPlayedWinningMove(final Player curr, final int newPieceCol) {
     final int newPieceRow = _currHeights[newPieceCol] - 1;
-    // check vertical
-    int lineSize = 1;
-    int row = newPieceRow;
-    while (--row >= 0 && isPlayersPiece(curr, row, newPieceCol)) {
-      if (++lineSize >= LINE_SIZE_TO_WIN) {
-        return true;
-      }
-    }
-    // check horizontal
-    lineSize = 1;
-    row = newPieceRow;
-    int col = newPieceCol;
-    while (--col >= 0 && isPlayersPiece(curr, newPieceRow, col)) {
-      if (++lineSize >= LINE_SIZE_TO_WIN) {
-        return true;
-      }
-    }
-    col = newPieceCol;
-    while (++col < _width && isPlayersPiece(curr, newPieceRow, col)) {
-      if (++lineSize >= LINE_SIZE_TO_WIN) {
-        return true;
-      }
-    }
-    // check asc diagonal
 
-    return false;
+    return isVerticalWin(curr, newPieceRow, newPieceCol)
+        || isHorizontalWin(curr, newPieceRow, newPieceCol)
+        || isDiagonalAscWin(curr, newPieceRow, newPieceCol)
+        || isDiagonalDescWin(curr, newPieceRow, newPieceCol);
+  }
+
+  private int lineSizeInDirection(final int initialLineSize, final int newPieceRow, final int newPieceCol,
+                                  final Player curr, final IntFunction<Integer> rowFunc, final IntFunction<Integer> colFunc) {
+    int lineSize = initialLineSize;
+    int row = newPieceRow;
+    int col = newPieceCol;
+    while(true) {
+      row = rowFunc.apply(row);
+      col = colFunc.apply(col);
+      if (isPlayersPiece(curr, row, col)) {
+        lineSize++;
+      }
+      else {
+        break;
+      }
+    }
+    return lineSize;
+  }
+
+  private boolean isVerticalWin(final Player curr, final int newPieceRow, final int newPieceCol) {
+    final int lineSize = lineSizeInDirection(1, newPieceRow, newPieceCol, curr, r -> r - 1, c -> c);
+    return lineSize >= LINE_SIZE_TO_WIN;
+  }
+
+  private boolean isHorizontalWin(final Player curr, final int row, final int col) {
+    final int lineSize = lineSizeInDirection(1, row, col, curr, r -> r, c -> c - 1);
+    if (lineSize >= LINE_SIZE_TO_WIN) {
+      return true;
+    }
+    return lineSizeInDirection(lineSize, row, col, curr, r -> r, c -> c + 1) >= LINE_SIZE_TO_WIN;
+  }
+
+  private boolean isDiagonalAscWin(final Player curr, final int row, final int col) {
+    final int lineSize = lineSizeInDirection(1, row, col, curr, r -> r + 1, c -> c + 1);
+    if (lineSize >= LINE_SIZE_TO_WIN) {
+      return true;
+    }
+    return lineSizeInDirection(lineSize, row, col, curr, r -> r - 1, c -> c - 1) >= LINE_SIZE_TO_WIN;
+  }
+
+  private boolean isDiagonalDescWin(final Player curr, final int row, final int col) {
+    final int lineSize = lineSizeInDirection(1, row, col, curr, r -> r - 1, c -> c + 1);
+    if (lineSize >= LINE_SIZE_TO_WIN) {
+      return true;
+    }
+    return lineSizeInDirection(lineSize, row, col, curr, r -> r + 1, c -> c - 1) >= LINE_SIZE_TO_WIN;
   }
 
   private boolean isPlayersPiece(final Player player, final int row, final int col) {
+    if (row < 0 || col < 0 || row >= _height || col >= _width) {
+      return false;
+    }
     return _pieces[row][col] == player;
   }
 
