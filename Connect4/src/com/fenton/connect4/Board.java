@@ -1,6 +1,7 @@
 package com.fenton.connect4;
 
 import java.io.PrintStream;
+import java.util.Random;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -12,6 +13,7 @@ public class Board {
   private final int _height;
   private final Player[][] _pieces;
   private final int[] _currHeights;
+  private int _movesCount;
 
   public Board(final int width, final int height) {
     _width = width;
@@ -20,16 +22,18 @@ public class Board {
     _currHeights = new int[width];
   }
 
-  public boolean addToColumn(final Player player, final int column) {
-    if (column < 0 || column > _width - 1) {
-      return false;
-    }
-    if (_currHeights[column] >= _height) {
-      return false;
-    }
+  public boolean hasMovesRemaining() {
+    return _movesCount < _width * _height;
+  }
+
+  public boolean isValidMove(final int column) {
+    return column >= 0 && column < _width && _currHeights[column] < _height;
+  }
+
+  public void makeMove(final Player player, final int column) {
     _pieces[_currHeights[column]][column] = player;
     _currHeights[column]++;
-    return true;
+    _movesCount++;
   }
 
   public void printBoard(final PrintStream pstream) {
@@ -52,7 +56,7 @@ public class Board {
     pstream.println();
   }
 
-  public boolean hasPlayedWinningMove(final Player curr, final int newPieceCol) {
+  public boolean isWinningMove(final Player curr, final int newPieceCol) {
     final int newPieceRow = _currHeights[newPieceCol] - 1;
 
     return isVerticalWin(curr, newPieceRow, newPieceCol)
@@ -113,6 +117,12 @@ public class Board {
       return false;
     }
     return _pieces[row][col] == player;
+  }
+
+  private final Random _random = new Random();
+
+  public int calculateBestMove() {
+    return _random.nextInt(_width);
   }
 
 }

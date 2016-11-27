@@ -8,18 +8,31 @@ public class Connect4Main {
     final Board connect4Board = new Board(7, 6);
 
     Player curr = Player.RED;
-    boolean gameInPlay = true;
-    while (gameInPlay) {
+    while (true) {
       connect4Board.printBoard(System.out);
-      final int column = waitForInt() - 1;
-      if (connect4Board.addToColumn(curr, column)) {
-        if (connect4Board.hasPlayedWinningMove(curr, column)) {
+      System.out.println("Player " + curr + " (" + curr.getIcon() + ") turn:");
+      final int column;
+      if (curr.isHuman()) {
+        column = waitForInt() - 1;
+      }
+      else {
+        Thread.sleep(500);
+        column = connect4Board.calculateBestMove();
+      }
+      if (connect4Board.isValidMove(column)) {
+        connect4Board.makeMove(curr, column);
+        if (connect4Board.isWinningMove(curr, column)) {
           System.out.println("Player " + curr + " wins!");
           connect4Board.printBoard(System.out);
-          gameInPlay = false;
+          return;
+        }
+        else if (connect4Board.hasMovesRemaining()) {
+          curr = Player.RED == curr ? Player.YELLOW : Player.RED;
         }
         else {
-          curr = Player.RED == curr ? Player.YELLOW : Player.RED;
+          System.out.println("A DRAW!");
+          connect4Board.printBoard(System.out);
+          return;
         }
       }
     }
