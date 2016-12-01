@@ -19,4 +19,9 @@ public enum Player {
   public boolean isHuman() {
     return _isHuman;
   }
+
+  public Player nextPlayer() {
+    return values() [(ordinal() + 1) % values().length];
+  }
+
 }

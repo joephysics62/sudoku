@@ -17,7 +17,7 @@ public class Connect4Main {
       }
       else {
         Thread.sleep(500);
-        column = connect4Board.calculateBestMove();
+        column = connect4Board.minMax(connect4Board, curr, curr, 6).getMove();
       }
       if (connect4Board.isValidMove(column)) {
         connect4Board.makeMove(curr, column);
