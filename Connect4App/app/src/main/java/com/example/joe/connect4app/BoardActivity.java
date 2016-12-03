@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
+import android.os.SystemClock;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -26,6 +27,7 @@ public class BoardActivity extends AppCompatActivity {
     public static final int WIDTH = 7;
 
     private final Board _board = new Board(WIDTH, HEIGHT);
+    private long mLastClickTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,10 @@ public class BoardActivity extends AppCompatActivity {
 
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                if (SystemClock.elapsedRealtime() - mLastClickTime < 1000){
+                    return true;
+                }
+                mLastClickTime = SystemClock.elapsedRealtime();
                 if (_board.isClosed()) {
                     return true;
                 }
@@ -80,10 +86,10 @@ public class BoardActivity extends AppCompatActivity {
                             checkGameStatus(Player.YELLOW, compMove.getMove());
                             boardView.invalidate();
                         }
-                        break;
+                        return true;
                     }
                 }
-                return true;
+                return false;
             }
         });
 
