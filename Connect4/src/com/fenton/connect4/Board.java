@@ -1,6 +1,8 @@
 package com.fenton.connect4;
 
 import java.io.PrintStream;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -184,126 +186,24 @@ public class Board {
   }
 
 
-  private int boardStrengthForPlayer(final Player maximisingPlayer) {
+  private int boardStrengthForPlayer(final Player player) {
     // search horizontals
     int weighting = 0;
-    for (int row = 0; row < _height; row++) {
-      int lineCount = 0;
-      for (int col = 0; col < _width; col++) {
-        if (maximisingPlayer == _pieces[row][col]) {
-          lineCount++;
-        }
-        else {
-          if (lineCount > 1) {
-            weighting += Math.pow(10, lineCount);
-          }
-          lineCount = 0;
-        }
-      }
-      if (lineCount > 1) {
-        weighting += Math.pow(10, lineCount);
-      }
-    }
-    // search verticals
-    for (int col = 0; col < _width; col++) {
-      int lineCount = 0;
-      for (int row = 0; row < _height; row++) {
-        if (maximisingPlayer == _pieces[row][col]) {
-          lineCount++;
-        }
-        else {
-          if (lineCount > 1) {
-            weighting += Math.pow(10, lineCount);
-          }
-          lineCount = 0;
-        }
-      }
-      if (lineCount > 1) {
-        weighting += Math.pow(10, lineCount);
-      }
-    }
 
-    // search ascending diagonals
-    for (int c = - (_width - 1); c < _height; c++) {
-      int lineCount = 0;
-      for (int col = 0; col < _width; col++) {
-        final int row = col + c;
-        if (row >= 0 && row < _height) {
-          if (maximisingPlayer == _pieces[row][col]) {
-            lineCount++;
-          }
-          else {
-            if (lineCount > 1) {
-              weighting += Math.pow(10, lineCount);
-            }
-            lineCount = 0;
-          }
-        }
-      }
-      if (lineCount > 1) {
-        weighting += Math.pow(10, lineCount);
-      }
+    weighting += calculateWeight(GridUtils.horizontalLineCount(_pieces, player));
+    weighting += calculateWeight(GridUtils.verticalLineCount(_pieces, player));
+    weighting += calculateWeight(GridUtils.diagonalAscLineCount(_pieces, player));
+    weighting += calculateWeight(GridUtils.diagonalDescLineCount(_pieces, player));
+    return weighting;
+  }
+
+  private int calculateWeight(final Map<Integer, Integer> horizontalLineCount) {
+    int weighting = 0;
+    for (final Entry<Integer, Integer> entry : horizontalLineCount.entrySet()) {
+      final Integer lineSize = entry.getKey();
+      final Integer occurs = entry.getValue();
+      weighting += occurs * Math.pow(10, lineSize);
     }
-
-    // search descending diagonals
-    for (int c = 0; c < _height + _width - 1; c++) {
-      int lineCount = 0;
-      for (int col = 0; col < _width; col++) {
-        final int row = c - col;
-        if (row >= 0 && row < _height) {
-          if (maximisingPlayer == _pieces[row][col]) {
-            lineCount++;
-          }
-          else {
-            if (lineCount > 1) {
-              weighting += Math.pow(10, lineCount);
-            }
-            lineCount = 0;
-          }
-        }
-      }
-      if (lineCount > 1) {
-        weighting += Math.pow(10, lineCount);
-      }
-    }
-
-    /*
-     * x o x x
-     * o x o o
-     * x x x x
-     *
-     * height H
-     * width W
-     *
-     * first line (only 1)
-     *
-     * y = x + (H - 1)
-     * to
-     * y = x - (W - 1)
-     *
-     * for c in (-(W-1) .. H - 1):
-     *  line is y = x + c
-     *  for (x in 0..W-1)
-     *    y = x + c
-     *    if (y > 0 && y < H)
-     *      is in box
-     *
-     * asc lines y - x = c
-     * des lines y + x = c
-     *
-     * descL
-     *
-     * for c in 0 ..(H + W - 2):
-     *   line is y = -x + c
-     *   for (x in 0..W-1)
-     *     if (y > 0 && y < H)
-     *       y = c - x
-     *
-     * first line y = -x
-     * line line y = (H-1) when x = W - 1  y = -x + D
-     * D = x + y = H + W - 2
-     */
-
     return weighting;
   }
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<ivy-module version='2.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+  <info module="connect4" organisation='joephysics62.co.uk' />
+  <configurations>
+    <conf name='compile' description="doit" />
+    <conf name='test' description="do" />
+  </configurations>
+
+  <dependencies>
+    <dependency name='junit' conf='test->default' org='junit' rev='4.10' />
+    <dependency org="com.google.guava" name="guava" rev="18.0" conf="compile->default" />
+  </dependencies>
+</ivy-module>
