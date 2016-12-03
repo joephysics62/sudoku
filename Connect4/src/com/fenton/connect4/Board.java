@@ -162,7 +162,7 @@ public class Board {
         final boolean winningMove = clonedBoard.isWinningMove(player, col);
         final int eval;
         if (winningMove) {
-          eval = parity * (int) Math.pow(10, LINE_SIZE_TO_WIN);
+          eval = parity * (int) (Math.pow(10, LINE_SIZE_TO_WIN) + lookAheadCount);
         }
         else if (lookAheadCount <= 1) {
           eval = parity * clonedBoard.boardStrengthForPlayer(player);
