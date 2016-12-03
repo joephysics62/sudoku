@@ -50,6 +50,16 @@ public class Board {
         _movesCount++;
     }
 
+    private boolean _isClosed = false;
+
+    public void setClosed() {
+        _isClosed = true;
+    }
+    public boolean isClosed() {
+        return _isClosed;
+    }
+
+
     public boolean isWinningMove(final Player curr, final int newPieceCol) {
         final int newPieceRow = _currHeights[newPieceCol] - 1;
 
@@ -57,6 +67,10 @@ public class Board {
                 || isHorizontalWin(curr, newPieceRow, newPieceCol)
                 || isDiagonalAscWin(curr, newPieceRow, newPieceCol)
                 || isDiagonalDescWin(curr, newPieceRow, newPieceCol);
+    }
+
+    public Player playerAt(int row, int col) {
+        return _pieces[row][col];
     }
 
     private int lineSizeInDirection(final int initialLineSize, final int newPieceRow, final int newPieceCol,

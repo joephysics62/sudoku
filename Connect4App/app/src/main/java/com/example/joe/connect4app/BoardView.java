@@ -7,7 +7,11 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import com.example.joe.connect4app.game.Board;
 import com.example.joe.connect4app.game.Player;
+
+import static com.example.joe.connect4app.BoardActivity.HEIGHT;
+import static com.example.joe.connect4app.BoardActivity.WIDTH;
 
 public class BoardView extends ImageView {
 
@@ -15,10 +19,7 @@ public class BoardView extends ImageView {
     private final Paint _yellowPlayerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint _gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private static int HEIGHT = 6;
-    private static int WIDTH = 7;
-
-    private Player[][] _grid = new Player[HEIGHT][WIDTH];
+    private Board _board;
 
     public BoardView(Context context, AttributeSet attrSet) {
         super(context, attrSet);
@@ -35,52 +36,34 @@ public class BoardView extends ImageView {
         _gridPaint.setColor(Color.BLACK);
     }
 
-    public boolean makeMove(int col, Player player) {
-        if (col < WIDTH) {
-            int row = rowEntry(col);
-            if (row < HEIGHT) {
-                _grid[row][col] = player;
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int rowEntry(int col) {
-        for (int i = 0; i < HEIGHT; i++) {
-            if(_grid[i][col] == null) {
-                return i;
-            }
-        }
-        return HEIGHT;
+    public void setBoard(Board board) {
+        _board = board;
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        int margin = 15;
         int pieceSize = 30;
-        int cellSize = 70;
 
         // verticals
         for (int col = 0; col <= WIDTH; col++) {
-            int startX = margin + col * cellSize;
-            canvas.drawLine(startX, margin, startX, margin + HEIGHT * cellSize, _gridPaint);
+            int startX = BoardActivity.MARGIN + col * BoardActivity.CELL_SIZE;
+            canvas.drawLine(startX, BoardActivity.MARGIN, startX, BoardActivity.MARGIN + HEIGHT * BoardActivity.CELL_SIZE, _gridPaint);
         }
 
         // horizontals
         for (int row = 0; row <= HEIGHT; row++) {
-            int startY = margin + row * cellSize;
-            canvas.drawLine(margin, startY, margin + WIDTH * cellSize, startY, _gridPaint);
+            int startY = BoardActivity.MARGIN + row * BoardActivity.CELL_SIZE;
+            canvas.drawLine(BoardActivity.MARGIN, startY, BoardActivity.MARGIN + WIDTH * BoardActivity.CELL_SIZE, startY, _gridPaint);
         }
 
         for (int row = 0; row < HEIGHT; row++) {
-            int y = margin + cellSize / 2 + row * cellSize;
+            int y = BoardActivity.MARGIN + BoardActivity.CELL_SIZE / 2 + row * BoardActivity.CELL_SIZE;
             for (int col = 0; col < WIDTH; col++) {
-                Player player = _grid[HEIGHT - 1 - row][col];
+                Player player = _board.playerAt(HEIGHT - 1 - row, col);
                 if (player != null) {
-                    int x = margin + cellSize / 2 + col * cellSize;
+                    int x = BoardActivity.MARGIN + BoardActivity.CELL_SIZE / 2 + col * BoardActivity.CELL_SIZE;
                     canvas.drawCircle(x, y, pieceSize, Player.RED == player ? _redPlayerPaint : _yellowPlayerPaint);
                 }
             }
