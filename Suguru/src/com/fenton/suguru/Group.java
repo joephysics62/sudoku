@@ -15,6 +15,10 @@ public class Group {
     return _coords.size();
   }
 
+  public Set<Coord> getCoords() {
+    return _coords;
+  }
+
   @Override
   public String toString() {
     return String.format("Group(%s)", _coords);

@@ -31,7 +31,42 @@ public class Suguru {
   }
 
   public Solution<Integer> solve() {
+    final Grid<Integer> workingGrid = _initialGrid.clone();
+    Coord.overGrid(_width, _height)
+         .forEach(from -> from.surroundsWithDiagonals(_width, _height)
+                              .forEach(to -> applyConstraint(from, to, workingGrid)));
+
+    workingGrid.traverse(new ConsolePrintingVisitor<>(System.out));
+
+    for (final Group group : _groupByCoord.values()) {
+      for (final Coord from : group.getCoords()) {
+        for (final Coord to : group.getCoords()) {
+          if (!from.equals(to)) {
+            applyConstraint(from, to, workingGrid);
+          }
+        }
+      }
+    }
+    workingGrid.traverse(new ConsolePrintingVisitor<>(System.out));
+
     return new Solution<>(SolutionType.NONE, Optional.<Grid<Integer>>empty());
+  }
+
+  public void applyConstraint(final Coord from, final Coord to, final Grid<Integer> grid) {
+    final Set<Integer> fromValues = grid.values(from);
+    if (fromValues.size() > 1) {
+      return;
+    }
+    if (fromValues.size() == 0) {
+      // bad soln
+      return;
+    }
+    final Integer fromValueFixed = fromValues.iterator().next();
+    grid.removeValue(to, fromValueFixed);
+  }
+
+  public Grid<Integer> getInitialGrid() {
+    return _initialGrid;
   }
 
   private Map<Coord, Group> readGroups(final String[][] groups) {

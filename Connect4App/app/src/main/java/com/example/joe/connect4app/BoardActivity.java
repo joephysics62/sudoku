@@ -8,21 +8,41 @@ import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-public class BoardActivity extends AppCompatActivity {
+import com.example.joe.connect4app.game.Player;
 
-    private void addListenerOnButton() {
-        ImageView image = (ImageView) findViewById(R.id.imageView1);
-    };
+public class BoardActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
-        addListenerOnButton();
+
+        final BoardView boardView = (BoardView) findViewById(R.id.imageView1);
+
+        boardView.setOnTouchListener(new View.OnTouchListener() {
+            private Player player = Player.RED;
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: {
+                        int col = (int) event.getX() / 90;
+                        if (boardView.makeMove(col, player)) {
+                            player = player.nextPlayer();
+                            boardView.invalidate();
+                        }
+                        break;
+                    }
+                }
+                return true;
+            }
+        });
+
+
     }
 }

@@ -10,7 +10,11 @@ public class SuguruMain {
   public static void main(final String[] args) throws IOException, URISyntaxException {
     final Path suguruFile = Paths.get(SuguruMain.class.getResource("suguru.txt").toURI());
     final Suguru suguru = Suguru.fromFile(suguruFile);
-    System.out.println(suguru);
+
+    suguru.getInitialGrid().traverse(new ConsolePrintingVisitor<Integer>(System.out));
+
+    System.out.println();
+    suguru.solve();
   }
 
 }

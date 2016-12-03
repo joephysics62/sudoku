@@ -15,7 +15,10 @@ public class BoardView extends ImageView {
     private final Paint _yellowPlayerPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint _gridPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private final Player[][] _grid;
+    private static int HEIGHT = 6;
+    private static int WIDTH = 7;
+
+    private Player[][] _grid = new Player[HEIGHT][WIDTH];
 
     public BoardView(Context context, AttributeSet attrSet) {
         super(context, attrSet);
@@ -30,15 +33,26 @@ public class BoardView extends ImageView {
         _gridPaint.setStyle(Paint.Style.STROKE);
         _gridPaint.setStrokeWidth(2);
         _gridPaint.setColor(Color.BLACK);
+    }
 
-        _grid = new Player[][] {
-                {Player.YELLOW, Player.RED, null, null, Player.RED, null, Player.YELLOW},
-                {Player.YELLOW, null, null, null, Player.RED, null, null},
-                {Player.YELLOW, null, null, null, Player.RED, null, null},
-                {Player.RED, null, null, null, Player.YELLOW, null, null},
-                {Player.RED, null, null, null, Player.YELLOW, null, null},
-                {Player.RED, null, null, null, Player.YELLOW, null, null}
-        };
+    public boolean makeMove(int col, Player player) {
+        if (col < WIDTH) {
+            int row = rowEntry(col);
+            if (row < HEIGHT) {
+                _grid[row][col] = player;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int rowEntry(int col) {
+        for (int i = 0; i < HEIGHT; i++) {
+            if(_grid[i][col] == null) {
+                return i;
+            }
+        }
+        return HEIGHT;
     }
 
     @Override
@@ -48,25 +62,23 @@ public class BoardView extends ImageView {
         int margin = 15;
         int pieceSize = 30;
         int cellSize = 70;
-        int height = _grid.length;
-        int width = _grid[0].length;
 
         // verticals
-        for (int col = 0; col <= width; col++) {
+        for (int col = 0; col <= WIDTH; col++) {
             int startX = margin + col * cellSize;
-            canvas.drawLine(startX, margin, startX, margin + height * cellSize, _gridPaint);
+            canvas.drawLine(startX, margin, startX, margin + HEIGHT * cellSize, _gridPaint);
         }
 
         // horizontals
-        for (int row = 0; row <= height; row++) {
+        for (int row = 0; row <= HEIGHT; row++) {
             int startY = margin + row * cellSize;
-            canvas.drawLine(margin, startY, margin + width * cellSize, startY, _gridPaint);
+            canvas.drawLine(margin, startY, margin + WIDTH * cellSize, startY, _gridPaint);
         }
 
-        for (int row = 0; row < height; row++) {
+        for (int row = 0; row < HEIGHT; row++) {
             int y = margin + cellSize / 2 + row * cellSize;
-            for (int col = 0; col < width; col++) {
-                Player player = _grid[height - 1 - row][col];
+            for (int col = 0; col < WIDTH; col++) {
+                Player player = _grid[HEIGHT - 1 - row][col];
                 if (player != null) {
                     int x = margin + cellSize / 2 + col * cellSize;
                     canvas.drawCircle(x, y, pieceSize, Player.RED == player ? _redPlayerPaint : _yellowPlayerPaint);
