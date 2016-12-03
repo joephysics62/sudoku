@@ -25,6 +25,8 @@ public class BoardActivity extends AppCompatActivity {
     public static final int HEIGHT = 6;
     public static final int WIDTH = 7;
 
+    private final Board _board = new Board(WIDTH, HEIGHT);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,28 +34,27 @@ public class BoardActivity extends AppCompatActivity {
 
         final BoardView boardView = (BoardView) findViewById(R.id.imageView1);
 
-        final Board board = new Board(WIDTH, HEIGHT);
-        boardView.setBoard(board);
+        boardView.setBoard(_board);
 
         boardView.setOnTouchListener(new View.OnTouchListener() {
 
             private void checkGameStatus(Player curr, int column) {
                 final TextView textView = (TextView) findViewById(R.id.text);
-                if (board.isWinningMove(curr, column)) {
+                if (_board.isWinningMove(curr, column)) {
                     textView.setText(curr + " WINS!");
-                    board.setClosed();
+                    _board.setClosed();
                     boardView.invalidate();
                 }
-                else if (!board.hasMovesRemaining()) {
+                else if (!_board.hasMovesRemaining()) {
                     textView.setText("A DRAW!");
-                    board.setClosed();
+                    _board.setClosed();
                     boardView.invalidate();
                 }
             }
 
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                if (board.isClosed()) {
+                if (_board.isClosed()) {
                     return true;
                 }
                 switch (event.getAction()) {
@@ -69,13 +70,13 @@ public class BoardActivity extends AppCompatActivity {
                         if (viewY > MARGIN + HEIGHT * CELL_SIZE) {
                             return true;
                         }
-                        if (board.isValidMove(col)) {
-                            board.makeMove(Player.RED, col);
+                        if (_board.isValidMove(col)) {
+                            _board.makeMove(Player.RED, col);
                             checkGameStatus(Player.RED, col);
                             boardView.invalidate();
 
-                            Board.ScoreMove compMove = board.minMax(board, Player.YELLOW, Player.YELLOW, 4);
-                            board.makeMove(Player.YELLOW, compMove.getMove());
+                            Board.ScoreMove compMove = _board.minMax(_board, Player.YELLOW, Player.YELLOW, 4);
+                            _board.makeMove(Player.YELLOW, compMove.getMove());
                             checkGameStatus(Player.YELLOW, compMove.getMove());
                             boardView.invalidate();
                         }
@@ -87,5 +88,15 @@ public class BoardActivity extends AppCompatActivity {
         });
 
 
+    }
+
+
+    public void restart(View view) {
+        final TextView textView = (TextView) findViewById(R.id.text);
+        textView.setText("");
+        _board.reset();
+        final BoardView boardView = (BoardView) findViewById(R.id.imageView1);
+        boardView.invalidate();
+        textView.invalidate();
     }
 }

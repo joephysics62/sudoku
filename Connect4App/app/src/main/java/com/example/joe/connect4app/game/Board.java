@@ -1,5 +1,6 @@
 package com.example.joe.connect4app.game;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -17,6 +18,15 @@ public class Board {
         _height = height;
         _pieces = new Player[height][width];
         _currHeights = new int[width];
+    }
+
+    public void reset() {
+        Arrays.fill(_currHeights, 0);
+        _movesCount = 0;
+        for (int row = 0; row < _height; row++) {
+            Arrays.fill(_pieces[row], null);
+        }
+        _isClosed = false;
     }
 
     private Board(final int width, final int height, final Player[][] pieces, final int[] currHeights, final int movesCount) {
