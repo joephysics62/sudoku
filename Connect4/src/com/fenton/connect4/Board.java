@@ -3,6 +3,7 @@ package com.fenton.connect4;
 import java.io.PrintStream;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -151,7 +152,9 @@ public class Board {
 
   public ScoreMove minMax(final Board board, final Player maximisingPlayer, final Player player, final int lookAheadCount) {
     Integer bestMove = null;
-    int bestVal = ((maximisingPlayer == player) ? -1 : 1) * (int) Math.pow(10, LINE_SIZE_TO_WIN + 1);
+
+    final int parity = Objects.equals(maximisingPlayer, player) ? 1 : -1;
+    int bestVal = -parity * (int) Math.pow(10, LINE_SIZE_TO_WIN + 1);
     for (int col = 0; col < _width; col++) {
       if (board.isValidMove(col)) {
         final Board clonedBoard = board.cloneBoard();
@@ -159,16 +162,16 @@ public class Board {
         final boolean winningMove = clonedBoard.isWinningMove(player, col);
         final int eval;
         if (winningMove) {
-          eval = ((maximisingPlayer == player) ? 1 : -1) * (int) Math.pow(10, LINE_SIZE_TO_WIN);
+          eval = parity * (int) Math.pow(10, LINE_SIZE_TO_WIN);
         }
         else if (lookAheadCount <= 1) {
-          eval = ((maximisingPlayer == player) ? 1 : -1) * clonedBoard.boardStrengthForPlayer(player);
+          eval = parity * clonedBoard.boardStrengthForPlayer(player);
         }
         else {
           eval = minMax(clonedBoard, maximisingPlayer, player.nextPlayer(), lookAheadCount - 1).getScore();
         }
 
-        if (maximisingPlayer == player) {
+        if (Objects.equals(maximisingPlayer, player)) {
           if (eval > bestVal) {
             bestVal = eval;
             bestMove = col;
