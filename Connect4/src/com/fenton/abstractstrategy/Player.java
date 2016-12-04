@@ -1,4 +1,4 @@
-package com.fenton.connect4;
+package com.fenton.abstractstrategy;
 
 public enum Player {
   RED("X", true),

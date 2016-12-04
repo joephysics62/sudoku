@@ -2,14 +2,17 @@ package com.fenton.connect4;
 
 import java.io.IOException;
 
+import com.fenton.abstractstrategy.MiniMax;
+import com.fenton.abstractstrategy.Player;
+
 public class Connect4Main {
 
   public static void main(final String[] args) throws IOException, InterruptedException {
-    final Board connect4Board = new Board(7, 6);
+    final Connect4 connect4 = new Connect4(7, 6);
 
     Player curr = Player.RED;
     while (true) {
-      connect4Board.printBoard(System.out);
+      connect4.print(System.out);
       System.out.println("Player " + curr + " (" + curr.getIcon() + ") turn:");
       final int column;
       if (curr.isHuman()) {
@@ -17,21 +20,21 @@ public class Connect4Main {
       }
       else {
         Thread.sleep(500);
-        column = connect4Board.minMax(connect4Board, curr, curr, 6).getMove();
+        column = MiniMax.findBestMove(connect4, curr, 6);
       }
-      if (connect4Board.isValidMove(column)) {
-        connect4Board.makeMove(curr, column);
-        if (connect4Board.isWinningMove(curr, column)) {
+      if (connect4.isValidMove(column)) {
+        connect4.makeMove(column, curr);
+        if (connect4.isWinningMove(column, curr)) {
           System.out.println("Player " + curr + " wins!");
-          connect4Board.printBoard(System.out);
+          connect4.print(System.out);
           return;
         }
-        else if (connect4Board.hasMovesRemaining()) {
+        else if (connect4.hasMovesRemaining()) {
           curr = Player.RED == curr ? Player.YELLOW : Player.RED;
         }
         else {
           System.out.println("A DRAW!");
-          connect4Board.printBoard(System.out);
+          connect4.print(System.out);
           return;
         }
       }
