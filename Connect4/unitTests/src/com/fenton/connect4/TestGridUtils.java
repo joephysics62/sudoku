@@ -1,17 +1,10 @@
 package com.fenton.connect4;
 
-import java.util.Collections;
-
-import org.junit.Test;
-
-import com.google.common.collect.ImmutableMap;
-
-import junit.framework.Assert;
-
 public class TestGridUtils {
 
   private final Integer X = null;
 
+  /**
   @Test
   public void testLineCounts() {
     final Integer[][] grid =
@@ -62,5 +55,5 @@ public class TestGridUtils {
         Collections.emptyMap(),
         GridUtils.diagonalAscLineCount(grid, 0));
   }
-
+**/
 }

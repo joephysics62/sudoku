@@ -3,8 +3,6 @@ package com.fenton.connect4;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -141,21 +139,10 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   @Override
   public int boardVal(final Player player) {
     int weighting = 0;
-
-    weighting += calculateWeight(GridUtils.horizontalLineCount(_pieces, player));
-    weighting += calculateWeight(GridUtils.verticalLineCount(_pieces, player));
-    weighting += calculateWeight(GridUtils.diagonalAscLineCount(_pieces, player));
-    weighting += calculateWeight(GridUtils.diagonalDescLineCount(_pieces, player));
-    return weighting;
-  }
-
-  private int calculateWeight(final Map<Integer, Integer> horizontalLineCount) {
-    int weighting = 0;
-    for (final Entry<Integer, Integer> entry : horizontalLineCount.entrySet()) {
-      final Integer lineSize = entry.getKey();
-      final Integer occurs = entry.getValue();
-      weighting += occurs * Math.pow(10, lineSize);
-    }
+    weighting += GridUtils.horizontalWeight(_pieces, player, LINE_SIZE_TO_WIN);
+    weighting += GridUtils.verticalWeight(_pieces, player, LINE_SIZE_TO_WIN);
+    weighting += GridUtils.diagonalAscWeight(_pieces, player, LINE_SIZE_TO_WIN);
+    weighting += GridUtils.diagonalDescWeight(_pieces, player, LINE_SIZE_TO_WIN);
     return weighting;
   }
 
