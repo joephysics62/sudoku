@@ -147,16 +147,6 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   }
 
   @Override
-  public int winVal(final int lookahead) {
-    return (int) Math.pow(10, LINE_SIZE_TO_WIN) + lookahead;
-  }
-
-  @Override
-  public int startVal() {
-    return (int) Math.pow(10, LINE_SIZE_TO_WIN + 1);
-  }
-
-  @Override
   public void print(final PrintStream pstream) {
     IntStream
     .range(0, _height)

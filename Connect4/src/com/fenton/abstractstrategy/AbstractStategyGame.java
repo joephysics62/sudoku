@@ -17,10 +17,6 @@ public interface AbstractStategyGame<M> {
 
   int boardVal(Player player);
 
-  int winVal(int lookahead);
-
-  int startVal();
-
   void print(final PrintStream pstream);
 
 }

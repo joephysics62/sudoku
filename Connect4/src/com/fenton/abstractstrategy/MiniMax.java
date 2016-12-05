@@ -1,30 +1,28 @@
 package com.fenton.abstractstrategy;
 
-import java.util.Objects;
-
 public class MiniMax {
 
   private static <M> ScoreMove<M> miniMax(final AbstractStategyGame<M> game, final Player maximisingPlayer, final Player player, final int lookAheadCount) {
     M bestMove = null;
 
-    final int parity = Objects.equals(maximisingPlayer, player) ? 1 : -1;
-    int bestVal = -parity * game.startVal();
+    final boolean isMax = maximisingPlayer == player;
+    int bestVal = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
     for (final M move : game.validMoves()) {
       final AbstractStategyGame<M> clonedGame = game.clone();
       clonedGame.makeMove(move, player);
       final boolean winningMove = clonedGame.isWinningMove(move, player);
       final int eval;
       if (winningMove) {
-        eval = parity * clonedGame.winVal(lookAheadCount);
+        eval = isMax ? Integer.MAX_VALUE : Integer.MIN_VALUE;
       }
       else if (lookAheadCount <= 1) {
-        eval = parity * clonedGame.boardVal(player);
+        eval = clonedGame.boardVal(maximisingPlayer);
       }
       else {
         eval = miniMax(clonedGame, maximisingPlayer, player.nextPlayer(), lookAheadCount - 1).getScore();
       }
 
-      if (Objects.equals(maximisingPlayer, player)) {
+      if (isMax) {
         if (eval > bestVal) {
           bestVal = eval;
           bestMove = move;

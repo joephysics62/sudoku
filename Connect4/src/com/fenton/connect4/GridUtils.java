@@ -7,7 +7,7 @@ import com.fenton.abstractstrategy.Player;
 
 public class GridUtils {
 
-  public static int diagonalDescWeight(final Player[][] grid, final Player player, final int winSize) {
+  public static int diagonalDescWeight(final Player[][] grid, final Player max, final int winSize) {
     final int height = grid.length;
     final int width = grid[0].length;
     int weight = 0;
@@ -19,7 +19,7 @@ public class GridUtils {
 
       while (col < width && row >= 0) {
         final Player piece = grid[row][col];
-        weight += weightForSection(section, piece, player, winSize);
+        weight += weightForSection(section, piece, max, winSize);
         col++;
         row--;
       }
@@ -32,7 +32,7 @@ public class GridUtils {
 
       while (col < width && row >= 0) {
         final Player piece = grid[row][col];
-        weight += weightForSection(section, piece, player, winSize);
+        weight += weightForSection(section, piece, max, winSize);
         col++;
         row--;
       }
@@ -43,7 +43,7 @@ public class GridUtils {
 
   }
 
-  public static int diagonalAscWeight(final Player[][] grid, final Player player, final int winSize) {
+  public static int diagonalAscWeight(final Player[][] grid, final Player max, final int winSize) {
     final int height = grid.length;
     final int width = grid[0].length;
 
@@ -55,7 +55,7 @@ public class GridUtils {
 
       while (col < width && row < height) {
         final Player piece = grid[row][col];
-        weight += weightForSection(section, piece, player, winSize);
+        weight += weightForSection(section, piece, max, winSize);
         col++;
         row++;
       }
@@ -68,7 +68,7 @@ public class GridUtils {
 
       while (col < width && row < height) {
         final Player piece = grid[row][col];
-        weight += weightForSection(section, piece, player, winSize);
+        weight += weightForSection(section, piece, max, winSize);
         col++;
         row++;
       }
@@ -78,17 +78,31 @@ public class GridUtils {
     return weight;
   }
 
-  private static int weightForSection(final List<Player> section, final Player piece, final Player player, final int winSize) {
+  private static final int[] POWERS_10 = new int[] {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000};
+
+  private static int weightForSection(final List<Player> section, final Player piece, final Player max, final int winSize) {
     if (section.size() < winSize) {
       section.add(piece);
       return 0;
     }
     int weight = 0;
-    if (!section.contains(player.nextPlayer())) {
-      final long playerMatches = section.stream().filter(player::equals).count();
-      if (playerMatches >= 2) {
-        weight = (int) Math.pow(10, playerMatches);
+
+    int maxCount = 0;
+    int minCount = 0;
+    for (final Player sectionPiece : section) {
+      if (sectionPiece == max) {
+        maxCount++;
       }
+      else if (sectionPiece != null) {
+        minCount++;
+      }
+    }
+
+    if (minCount == 0 && maxCount >= 2) {
+      weight = POWERS_10[maxCount];
+    }
+    else if (maxCount == 0 && minCount >= 2) {
+      weight = -POWERS_10[minCount];
     }
     // do stats on section
     // then
@@ -97,7 +111,7 @@ public class GridUtils {
     return weight;
   }
 
-  public static int horizontalWeight(final Player[][] grid, final Player player, final int winSize) {
+  public static int horizontalWeight(final Player[][] grid, final Player max, final int winSize) {
     final int height = grid.length;
     final int width = grid[0].length;
 
@@ -107,7 +121,7 @@ public class GridUtils {
       int linepos = 0;
       while (linepos < width) {
         final Player piece = grid[row][linepos];
-        weight += weightForSection(section, piece, player, winSize);
+        weight += weightForSection(section, piece, max, winSize);
         linepos++;
       }
       section.clear();
@@ -115,7 +129,7 @@ public class GridUtils {
     return weight;
   }
 
-  public static int verticalWeight(final Player[][] grid, final Player player, final int winSize) {
+  public static int verticalWeight(final Player[][] grid, final Player max, final int winSize) {
     final int height = grid.length;
     final int width = grid[0].length;
     int weight = 0;
@@ -124,7 +138,7 @@ public class GridUtils {
       int linepos = 0;
       while (linepos < height) {
         final Player piece = grid[linepos][col];
-        weight += weightForSection(section, piece, player, winSize);
+        weight += weightForSection(section, piece, max, winSize);
         linepos++;
       }
       section.clear();

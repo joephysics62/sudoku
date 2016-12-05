@@ -20,7 +20,7 @@ public class Connect4Main {
       }
       else {
         Thread.sleep(500);
-        column = MiniMax.findBestMove(connect4, curr, 6);
+        column = MiniMax.findBestMove(connect4, curr, 4);
       }
       if (connect4.isValidMove(column)) {
         connect4.makeMove(column, curr);
