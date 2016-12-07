@@ -3,6 +3,7 @@ package com.fenton.connect4;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -19,19 +20,47 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   private final int[] _currHeights;
   private int _movesCount;
 
+  private final long[][] _zobristRed;
+  private final long[][] _zobristYellow;
+
+  private long _hash;
+
   public Connect4(final int width, final int height) {
     _width = width;
     _height = height;
     _pieces = new Player[height][width];
     _currHeights = new int[width];
+    final Random r = new Random(123l);
+    _hash = r.nextLong();
+    _zobristRed = initZobrist(width, height, r);
+    _zobristYellow = initZobrist(width, height, r);
   }
 
-  private Connect4(final int width, final int height, final Player[][] pieces, final int[] currHeights, final int movesCount) {
+  private long[][] initZobrist(final int width, final int height, final Random random) {
+    final long[][] zobrist = new long[height][width];
+    for (int r = 0; r < height; r++) {
+      for (int c = 0; c < width; c++) {
+        zobrist[r][c] = random.nextLong();
+      }
+    }
+    return zobrist;
+  }
+
+  @Override
+  public long hash() {
+    return _hash;
+  }
+
+  private Connect4(final int width, final int height, final Player[][] pieces, final int[] currHeights,
+                   final int movesCount, final long[][] zobristRed, final long[][] zobristYellow, final long hash) {
     _width = width;
     _height = height;
     _pieces = pieces;
     _currHeights = currHeights;
     _movesCount = movesCount;
+    _zobristRed = zobristRed;
+    _zobristYellow = zobristYellow;
+    _hash = hash;
   }
 
   @Override
@@ -40,7 +69,7 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     for (int row = 0; row < _height; row++) {
       pieces[row] = _pieces[row].clone();
     }
-    return new Connect4(_width, _height, pieces, _currHeights.clone(), _movesCount);
+    return new Connect4(_width, _height, pieces, _currHeights.clone(), _movesCount, _zobristRed, _zobristYellow, _hash);
   }
 
   @Override
@@ -70,6 +99,12 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     _pieces[heightAtCol][move] = player;
     _currHeights[move]++;
     _movesCount++;
+    if (player == Player.RED) {
+      _hash ^= _zobristRed[heightAtCol][move];
+    }
+    else if (player == Player.YELLOW) {
+      _hash ^= _zobristYellow[heightAtCol][move];
+    }
   }
 
   @Override

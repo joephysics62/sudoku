@@ -19,4 +19,6 @@ public interface AbstractStategyGame<M> {
 
   void print(final PrintStream pstream);
 
+  long hash();
+
 }
