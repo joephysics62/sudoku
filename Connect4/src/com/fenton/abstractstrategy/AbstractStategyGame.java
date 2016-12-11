@@ -1,5 +1,6 @@
 package com.fenton.abstractstrategy;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.List;
 
@@ -20,5 +21,7 @@ public interface AbstractStategyGame<M> {
   void print(final PrintStream pstream);
 
   long hash();
+
+  M waitForUserMove() throws IOException;
 
 }

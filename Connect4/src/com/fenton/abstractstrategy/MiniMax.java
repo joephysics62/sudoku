@@ -43,10 +43,6 @@ public class MiniMax {
       else if (eval == bestVal) {
         bestMoves.add(move);
       }
-
-      if (lookAheadCount == 8) {
-        System.out.println("MOVE " + move + " val = " + eval);
-      }
     }
 
     final M bestMove = bestMoves.get(bestMoves.size() == 1 ? 0 : R.nextInt(bestMoves.size()));
@@ -71,9 +67,7 @@ public class MiniMax {
   }
 
   public static <M> M findBestMove(final AbstractStategyGame<M> game, final Player player, final int lookAheadCount) {
-    final M move = miniMax(game, player, player, lookAheadCount).getMove();
-    System.out.println("CACHE SIZE = " + VALUES.size());
-    return move;
+    return miniMax(game, player, player, lookAheadCount).getMove();
   }
 
 

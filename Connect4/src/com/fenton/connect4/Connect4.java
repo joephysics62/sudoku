@@ -1,5 +1,6 @@
 package com.fenton.connect4;
 
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -200,6 +201,18 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     pstream.print("|");
     rowObjs.map(o -> o + "|").forEach(pstream::print);
     pstream.println();
+  }
+
+  @Override
+  public Integer waitForUserMove() throws IOException {
+    while (true) {
+      final int readByte = System.in.read();
+      final char readChar = (char) readByte;
+      final String readString = String.valueOf(readChar);
+      if (readString.matches("[1-" + _width + "]")) {
+        return Integer.valueOf(readString) - 1;
+      }
+    }
   }
 
 }
