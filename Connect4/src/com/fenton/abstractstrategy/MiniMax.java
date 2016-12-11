@@ -1,21 +1,29 @@
 package com.fenton.abstractstrategy;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class MiniMax {
 
   private static final Map<Long, Integer> VALUES = new LinkedHashMap<>();
+  private static final int WIN_VAL = (int) Math.pow(10, 8);
+
+  private static final Random R = new Random();
 
   private static <M> ScoreMove<M> miniMax(final AbstractStategyGame<M> game, final Player maximisingPlayer, final Player player, final int lookAheadCount) {
-    M bestMove = null;
-
+    final List<M> bestMoves = new ArrayList<>();
     final boolean isMax = maximisingPlayer == player;
     int bestVal = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
     for (final M move : game.validMoves()) {
       final AbstractStategyGame<M> clonedGame = game.clone();
       clonedGame.makeMove(move, player);
 
+      if (bestMoves.isEmpty()) {
+        bestMoves.add(move); // ensure a move is counted
+      }
       final long hash = clonedGame.hash();
 
       final int eval;
@@ -27,19 +35,21 @@ public class MiniMax {
         VALUES.put(hash, eval);
       }
 
-      if (isMax) {
-        if (eval > bestVal) {
-          bestVal = eval;
-          bestMove = move;
-        }
+      if (isMax && eval > bestVal || !isMax && eval < bestVal) {
+        bestVal = eval;
+        bestMoves.clear();
+        bestMoves.add(move);
       }
-      else {
-        if (eval < bestVal) {
-          bestVal = eval;
-          bestMove = move;
-        }
+      else if (eval == bestVal) {
+        bestMoves.add(move);
+      }
+
+      if (lookAheadCount == 8) {
+        System.out.println("MOVE " + move + " val = " + eval);
       }
     }
+
+    final M bestMove = bestMoves.get(bestMoves.size() == 1 ? 0 : R.nextInt(bestMoves.size()));
     return new ScoreMove<>(bestVal, bestMove);
   }
 
@@ -49,7 +59,7 @@ public class MiniMax {
     final int eval;
     final boolean winningMove = clonedGame.isWinningMove(move, player);
     if (winningMove) {
-      eval = isMax ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+      eval = (WIN_VAL + lookAheadCount) * (isMax ? 1 : - 1);
     }
     else if (lookAheadCount <= 1) {
       eval = clonedGame.boardVal(maximisingPlayer);

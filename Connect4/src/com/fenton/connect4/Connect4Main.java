@@ -1,16 +1,19 @@
 package com.fenton.connect4;
 
 import java.io.IOException;
+import java.util.Random;
 
 import com.fenton.abstractstrategy.MiniMax;
 import com.fenton.abstractstrategy.Player;
 
 public class Connect4Main {
 
+  private static final Random R = new Random();
+
   public static void main(final String[] args) throws IOException, InterruptedException {
     final Connect4 connect4 = new Connect4(7, 6);
 
-    Player curr = Player.RED;
+    Player curr = Player.values()[R.nextInt(Player.values().length)];
     while (true) {
       connect4.print(System.out);
       System.out.println("Player " + curr + " (" + curr.getIcon() + ") turn:");
@@ -30,7 +33,7 @@ public class Connect4Main {
           return;
         }
         else if (connect4.hasMovesRemaining()) {
-          curr = Player.RED == curr ? Player.YELLOW : Player.RED;
+          curr = curr.nextPlayer();
         }
         else {
           System.out.println("A DRAW!");
