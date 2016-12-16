@@ -23,7 +23,7 @@ public class MiniMax {
     final List<M> bestMoves = new ArrayList<>();
     for (final M move : validMoves) {
       final AbstractStategyGame<M> clonedGame = game.clone();
-      clonedGame.makeMove(move, player);
+      final boolean isWinningMove = clonedGame.makeMove(move, player);
 
       final long hash = clonedGame.hash();
 
@@ -31,8 +31,12 @@ public class MiniMax {
       if (VALUES.containsKey(hash)) {
         eval = VALUES.get(hash);
       }
+      else if (isWinningMove) {
+        eval = (WIN_VAL + lookAheadCount) * (isMax ? 1 : - 1);
+        VALUES.put(hash, eval);
+      }
       else {
-        eval = calculateValue(maximisingPlayer, player, lookAheadCount, isMax, move, clonedGame);
+        eval = calculateValue(maximisingPlayer, player, lookAheadCount, clonedGame);
         VALUES.put(hash, eval);
       }
 
@@ -50,21 +54,13 @@ public class MiniMax {
     return new ScoreMove<>(bestVal, bestMove);
   }
 
-  private static <M> int calculateValue(final Player maximisingPlayer,
-      final Player player, final int lookAheadCount, final boolean isMax,
-      final M move, final AbstractStategyGame<M> clonedGame) {
-    final int eval;
-    final boolean winningMove = clonedGame.isWinningMove(move, player);
-    if (winningMove) {
-      eval = (WIN_VAL + lookAheadCount) * (isMax ? 1 : - 1);
-    }
-    else if (lookAheadCount <= 1) {
-      eval = clonedGame.boardVal(maximisingPlayer);
+  private static <M> int calculateValue(final Player maximisingPlayer, final Player player, final int lookAheadCount, final AbstractStategyGame<M> clonedGame) {
+    if (lookAheadCount <= 1) {
+      return clonedGame.boardVal(maximisingPlayer);
     }
     else {
-      eval = miniMax(clonedGame, maximisingPlayer, player.nextPlayer(), lookAheadCount - 1).getScore();
+      return miniMax(clonedGame, maximisingPlayer, player.nextPlayer(), lookAheadCount - 1).getScore();
     }
-    return eval;
   }
 
   public static <M> M findBestMove(final AbstractStategyGame<M> game, final Player player, final int lookAheadCount) {

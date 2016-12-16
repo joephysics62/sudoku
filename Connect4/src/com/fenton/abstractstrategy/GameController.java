@@ -21,8 +21,7 @@ public class GameController {
         column = MiniMax.findBestMove(game, curr, difficulty);
       }
       if (game.isValidMove(column)) {
-        game.makeMove(column, curr);
-        if (game.isWinningMove(column, curr)) {
+        if (game.makeMove(column, curr)) {
           System.out.println("Player " + curr + " wins!");
           game.print(System.out);
           return;

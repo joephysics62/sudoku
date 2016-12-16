@@ -12,9 +12,7 @@ public interface AbstractStategyGame<M> {
   boolean isValidMove(M move);
   List<M> validMoves();
 
-  void makeMove(M move, Player player);
-
-  boolean isWinningMove(M move, Player player);
+  boolean makeMove(M move, Player player);
 
   int boardVal(Player player);
 

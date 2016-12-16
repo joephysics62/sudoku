@@ -107,22 +107,17 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   }
 
   @Override
-  public void makeMove(final Integer move, final Player player) {
+  public boolean makeMove(final Integer move, final Player player) {
     final int heightAtCol = _currHeights[move];
     _pieces[heightAtCol][move] = player;
     _currHeights[move]++;
     _movesCount++;
     _hash ^= _zobrist[heightAtCol][move][player.ordinal()];
-  }
 
-  @Override
-  public boolean isWinningMove(final Integer move, final Player player) {
-    final int newPieceRow = _currHeights[move] - 1;
-
-    return isVerticalWin(player, newPieceRow, move)
-        || isHorizontalWin(player, newPieceRow, move)
-        || isDiagonalAscWin(player, newPieceRow, move)
-        || isDiagonalDescWin(player, newPieceRow, move);
+    return isVerticalWin(player, heightAtCol, move)
+        || isHorizontalWin(player, heightAtCol, move)
+        || isDiagonalAscWin(player, heightAtCol, move)
+        || isDiagonalDescWin(player, heightAtCol, move);
   }
 
   private int lineSizeInDirection(final int initialLineSize, final int newPieceRow, final int newPieceCol, final Player curr, final IntFunction<Integer> rowFunc, final IntFunction<Integer> colFunc) {
