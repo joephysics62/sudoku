@@ -21,10 +21,22 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   private final int[] _currHeights;
   private int _movesCount;
 
-  private final long[][] _zobristRed;
-  private final long[][] _zobristYellow;
+  private final long[][][] _zobrist;
 
   private long _hash;
+
+  /**
+   * |X|O|O|X|O| | |
+     |O|X|X|X|O|X|X|
+     |X|O|X|X|X|O|O|
+     |X|X|X|O|O|O|X|
+     |O|X|O|O|X|O|O|
+     |O|O|X|X|O|X|O|
+
+     causes error O to play next
+   * @param width
+   * @param height
+   */
 
   public Connect4(final int width, final int height) {
     _width = width;
@@ -33,15 +45,16 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     _currHeights = new int[width];
     final Random r = new Random(123l);
     _hash = r.nextLong();
-    _zobristRed = initZobrist(width, height, r);
-    _zobristYellow = initZobrist(width, height, r);
+    _zobrist = initZobrist(width, height, r);
   }
 
-  private long[][] initZobrist(final int width, final int height, final Random random) {
-    final long[][] zobrist = new long[height][width];
+  private long[][][] initZobrist(final int width, final int height, final Random random) {
+    final long[][][] zobrist = new long[height][width][Player.values().length];
     for (int r = 0; r < height; r++) {
       for (int c = 0; c < width; c++) {
-        zobrist[r][c] = random.nextLong();
+        for (final Player player : Player.values()) {
+          zobrist[r][c][player.ordinal()] = random.nextLong();
+        }
       }
     }
     return zobrist;
@@ -53,14 +66,13 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   }
 
   private Connect4(final int width, final int height, final Player[][] pieces, final int[] currHeights,
-                   final int movesCount, final long[][] zobristRed, final long[][] zobristYellow, final long hash) {
+                   final int movesCount, final long[][][] zobrist, final long hash) {
     _width = width;
     _height = height;
     _pieces = pieces;
     _currHeights = currHeights;
     _movesCount = movesCount;
-    _zobristRed = zobristRed;
-    _zobristYellow = zobristYellow;
+    _zobrist = zobrist;
     _hash = hash;
   }
 
@@ -70,7 +82,7 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     for (int row = 0; row < _height; row++) {
       pieces[row] = _pieces[row].clone();
     }
-    return new Connect4(_width, _height, pieces, _currHeights.clone(), _movesCount, _zobristRed, _zobristYellow, _hash);
+    return new Connect4(_width, _height, pieces, _currHeights.clone(), _movesCount, _zobrist, _hash);
   }
 
   @Override
@@ -100,12 +112,7 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     _pieces[heightAtCol][move] = player;
     _currHeights[move]++;
     _movesCount++;
-    if (player == Player.RED) {
-      _hash ^= _zobristRed[heightAtCol][move];
-    }
-    else if (player == Player.YELLOW) {
-      _hash ^= _zobristYellow[heightAtCol][move];
-    }
+    _hash ^= _zobrist[heightAtCol][move][player.ordinal()];
   }
 
   @Override

@@ -14,16 +14,17 @@ public class MiniMax {
   private static final Random R = new Random();
 
   private static <M> ScoreMove<M> miniMax(final AbstractStategyGame<M> game, final Player maximisingPlayer, final Player player, final int lookAheadCount) {
-    final List<M> bestMoves = new ArrayList<>();
+    final List<M> validMoves = game.validMoves();
+    if (validMoves.isEmpty()) {
+      return new ScoreMove<>(0, null);
+    }
     final boolean isMax = maximisingPlayer == player;
     int bestVal = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-    for (final M move : game.validMoves()) {
+    final List<M> bestMoves = new ArrayList<>();
+    for (final M move : validMoves) {
       final AbstractStategyGame<M> clonedGame = game.clone();
       clonedGame.makeMove(move, player);
 
-      if (bestMoves.isEmpty()) {
-        bestMoves.add(move); // ensure a move is counted
-      }
       final long hash = clonedGame.hash();
 
       final int eval;
