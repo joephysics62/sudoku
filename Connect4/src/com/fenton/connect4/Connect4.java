@@ -3,9 +3,13 @@ package com.fenton.connect4;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
-import java.util.function.IntFunction;
+import java.util.Set;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -24,6 +28,8 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   private final long[][][] _zobrist;
 
   private long _hash;
+
+  private final EnumMap<Player, Integer> _playerWeights;
 
   /**
    * |X|O|O|X|O| | |
@@ -46,6 +52,11 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     final Random r = new Random(123l);
     _hash = r.nextLong();
     _zobrist = initZobrist(width, height, r);
+
+    _playerWeights = new EnumMap<>(Player.class);
+    for (final Player player : Player.values()) {
+      _playerWeights.put(player, 0);
+    }
   }
 
   private long[][][] initZobrist(final int width, final int height, final Random random) {
@@ -66,7 +77,7 @@ public class Connect4 implements AbstractStategyGame<Integer> {
   }
 
   private Connect4(final int width, final int height, final Player[][] pieces, final int[] currHeights,
-                   final int movesCount, final long[][][] zobrist, final long hash) {
+                   final int movesCount, final long[][][] zobrist, final long hash, final EnumMap<Player, Integer> weights) {
     _width = width;
     _height = height;
     _pieces = pieces;
@@ -74,6 +85,7 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     _movesCount = movesCount;
     _zobrist = zobrist;
     _hash = hash;
+    _playerWeights = weights;
   }
 
   @Override
@@ -82,7 +94,7 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     for (int row = 0; row < _height; row++) {
       pieces[row] = _pieces[row].clone();
     }
-    return new Connect4(_width, _height, pieces, _currHeights.clone(), _movesCount, _zobrist, _hash);
+    return new Connect4(_width, _height, pieces, _currHeights.clone(), _movesCount, _zobrist, _hash, new EnumMap<>(_playerWeights));
   }
 
   @Override
@@ -106,6 +118,9 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     return moves;
   }
 
+  private static final int[] WEIGHTS_FOR_LENGTH = new int[] {0, 0, 10, 100, 1000, 10000, 100000, 1000000};
+  //                                                         0, 1, 2,  3,   4,    5,     6,      7
+
   @Override
   public boolean makeMove(final Integer move, final Player player) {
     final int heightAtCol = _currHeights[move];
@@ -114,73 +129,95 @@ public class Connect4 implements AbstractStategyGame<Integer> {
     _movesCount++;
     _hash ^= _zobrist[heightAtCol][move][player.ordinal()];
 
-    return isVerticalWin(player, heightAtCol, move)
-        || isHorizontalWin(player, heightAtCol, move)
-        || isDiagonalAscWin(player, heightAtCol, move)
-        || isDiagonalDescWin(player, heightAtCol, move);
+    int weightForPlayer = _playerWeights.get(player);
+
+    for (final GridDirection gridDirection : GridDirection.values()) {
+      if (isWinInDirection(heightAtCol, move, player, gridDirection)) {
+        return true;
+      }
+      final Map<Integer, Integer> strengthsInDirection = strengthsInDirection(heightAtCol, move, player, gridDirection);
+      for (final Entry<Integer, Integer> entry : strengthsInDirection.entrySet()) {
+        final Integer strength = entry.getKey();
+        final Integer count = entry.getValue();
+        weightForPlayer += count * WEIGHTS_FOR_LENGTH[strength];
+      }
+    }
+    _playerWeights.put(player, weightForPlayer);
+    return false;
   }
 
-  private int lineSizeInDirection(final int initialLineSize, final int newPieceRow, final int newPieceCol, final Player curr, final IntFunction<Integer> rowFunc, final IntFunction<Integer> colFunc) {
-    int lineSize = initialLineSize;
+  private Map<Integer, Integer> strengthsInDirection(final int row, final int col, final Player player, final GridDirection gridDirection) {
+    final Map<Integer, Integer> out = new LinkedHashMap<>();
+    for (int setStart = -(LINE_SIZE_TO_WIN - 1); setStart <= 0; setStart++) {
+      final int rowStart = row + setStart * gridDirection.rowStep();
+      final int colStart = col + setStart * gridDirection.colStep();
+      if (!isInBounds(rowStart, colStart)) {
+        continue;
+      }
+      final int rowEnd = rowStart + (LINE_SIZE_TO_WIN - 1) * gridDirection.rowStep();
+      final int colEnd = colStart + (LINE_SIZE_TO_WIN - 1) * gridDirection.colStep();
+      if (!isInBounds(rowEnd, colEnd)) {
+        continue;
+      }
+      int pieceCount = 0;
+      boolean seenOpposition = false;
+      for (int i = 0; i < LINE_SIZE_TO_WIN; i++) {
+        final int rowInner = rowStart + i * gridDirection.rowStep();
+        final int colInner = colStart + i * gridDirection.colStep();
+        final Player pieceInner = _pieces[rowInner][colInner];
+        if (pieceInner == null) {
+          continue;
+        }
+        else if (pieceInner == player) {
+          pieceCount++;
+        }
+        else {
+          seenOpposition = true;
+          break;
+        }
+      }
+      if (!seenOpposition && pieceCount > 1) {
+        out.put(pieceCount, 1 + (out.containsKey(pieceCount) ? out.get(pieceCount) : 0));
+      }
+    }
+    return out;
+  }
+
+  private boolean isWinInDirection(final int newPieceRow, final int newPieceCol, final Player player, final GridDirection direction) {
+    int lineSize = 0;
     int row = newPieceRow;
     int col = newPieceCol;
-    while(true) {
-      row = rowFunc.apply(row);
-      col = colFunc.apply(col);
-      if (isPlayersPiece(curr, row, col)) {
-        lineSize++;
-      }
-      else {
-        break;
-      }
+    while(lineSize < LINE_SIZE_TO_WIN && isInBounds(row, col) && _pieces[row][col] == player) {
+      row += direction.rowStep();
+      col += direction.colStep();
+      lineSize++;
     }
-    return lineSize;
-  }
-
-  private boolean isPlayersPiece(final Player player, final int row, final int col) {
-    if (row < 0 || col < 0 || row >= _height || col >= _width) {
-      return false;
+    row = newPieceRow - direction.rowStep();
+    col = newPieceCol - direction.colStep();
+    while(lineSize < LINE_SIZE_TO_WIN && isInBounds(row, col) && _pieces[row][col] == player) {
+      row -= direction.rowStep();
+      col -= direction.colStep();
+      lineSize++;
     }
-    return _pieces[row][col] == player;
-  }
-
-
-  private boolean isVerticalWin(final Player curr, final int newPieceRow, final int newPieceCol) {
-    final int lineSize = lineSizeInDirection(1, newPieceRow, newPieceCol, curr, r -> r - 1, c -> c);
     return lineSize >= LINE_SIZE_TO_WIN;
   }
 
-  private boolean isHorizontalWin(final Player curr, final int row, final int col) {
-    final int lineSize = lineSizeInDirection(1, row, col, curr, r -> r, c -> c - 1);
-    if (lineSize >= LINE_SIZE_TO_WIN) {
-      return true;
-    }
-    return lineSizeInDirection(lineSize, row, col, curr, r -> r, c -> c + 1) >= LINE_SIZE_TO_WIN;
-  }
-
-  private boolean isDiagonalAscWin(final Player curr, final int row, final int col) {
-    final int lineSize = lineSizeInDirection(1, row, col, curr, r -> r + 1, c -> c + 1);
-    if (lineSize >= LINE_SIZE_TO_WIN) {
-      return true;
-    }
-    return lineSizeInDirection(lineSize, row, col, curr, r -> r - 1, c -> c - 1) >= LINE_SIZE_TO_WIN;
-  }
-
-  private boolean isDiagonalDescWin(final Player curr, final int row, final int col) {
-    final int lineSize = lineSizeInDirection(1, row, col, curr, r -> r - 1, c -> c + 1);
-    if (lineSize >= LINE_SIZE_TO_WIN) {
-      return true;
-    }
-    return lineSizeInDirection(lineSize, row, col, curr, r -> r + 1, c -> c - 1) >= LINE_SIZE_TO_WIN;
+  private boolean isInBounds(final int row, final int col) {
+    return row >= 0 && col >= 0 && row < _height && col < _width;
   }
 
   @Override
   public int boardVal(final Player player) {
     int weighting = 0;
-    weighting += GridUtils.horizontalWeight(_pieces, player, LINE_SIZE_TO_WIN);
-    weighting += GridUtils.verticalWeight(_pieces, player, LINE_SIZE_TO_WIN);
-    weighting += GridUtils.diagonalAscWeight(_pieces, player, LINE_SIZE_TO_WIN);
-    weighting += GridUtils.diagonalDescWeight(_pieces, player, LINE_SIZE_TO_WIN);
+    final Set<Entry<Player, Integer>> entrySet = _playerWeights.entrySet();
+    for (final Entry<Player, Integer> entry : entrySet) {
+      if (player == entry.getKey()) {
+        weighting += entry.getValue();
+      }
+      else {
+        weighting -= entry.getValue();
+      }
+    }
     return weighting;
   }
 
