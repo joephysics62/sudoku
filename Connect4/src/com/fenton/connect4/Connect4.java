@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
@@ -135,19 +133,14 @@ public class Connect4 implements AbstractStategyGame<Integer> {
       if (isWinInDirection(heightAtCol, move, player, gridDirection)) {
         return true;
       }
-      final Map<Integer, Integer> strengthsInDirection = strengthsInDirection(heightAtCol, move, player, gridDirection);
-      for (final Entry<Integer, Integer> entry : strengthsInDirection.entrySet()) {
-        final Integer strength = entry.getKey();
-        final Integer count = entry.getValue();
-        weightForPlayer += count * WEIGHTS_FOR_LENGTH[strength];
-      }
+      weightForPlayer += strengthsInDirection(heightAtCol, move, player, gridDirection);
     }
     _playerWeights.put(player, weightForPlayer);
     return false;
   }
 
-  private Map<Integer, Integer> strengthsInDirection(final int row, final int col, final Player player, final GridDirection gridDirection) {
-    final Map<Integer, Integer> out = new LinkedHashMap<>();
+  private int strengthsInDirection(final int row, final int col, final Player player, final GridDirection gridDirection) {
+    int strength = 0;
     for (int setStart = -(LINE_SIZE_TO_WIN - 1); setStart <= 0; setStart++) {
       final int rowStart = row + setStart * gridDirection.rowStep();
       final int colStart = col + setStart * gridDirection.colStep();
@@ -165,22 +158,19 @@ public class Connect4 implements AbstractStategyGame<Integer> {
         final int rowInner = rowStart + i * gridDirection.rowStep();
         final int colInner = colStart + i * gridDirection.colStep();
         final Player pieceInner = _pieces[rowInner][colInner];
-        if (pieceInner == null) {
-          continue;
-        }
-        else if (pieceInner == player) {
+        if (pieceInner == player) {
           pieceCount++;
         }
-        else {
+        else if (pieceInner != null) {
           seenOpposition = true;
           break;
         }
       }
-      if (!seenOpposition && pieceCount > 1) {
-        out.put(pieceCount, 1 + (out.containsKey(pieceCount) ? out.get(pieceCount) : 0));
+      if (!seenOpposition) {
+        strength += WEIGHTS_FOR_LENGTH[pieceCount];
       }
     }
-    return out;
+    return strength;
   }
 
   private boolean isWinInDirection(final int newPieceRow, final int newPieceCol, final Player player, final GridDirection direction) {
