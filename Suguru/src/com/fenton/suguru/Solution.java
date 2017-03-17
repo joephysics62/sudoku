@@ -2,18 +2,16 @@ package com.fenton.suguru;
 
 import java.util.Optional;
 
-import com.fenton.puzzle.PuzzleState;
-
 public class Solution {
   private final SolutionType _type;
-  private final Optional<PuzzleState> _grid;
+  private final Optional<int[][]> _grid;
 
-  public Solution(final SolutionType type, final Optional<PuzzleState> grid) {
+  public Solution(final SolutionType type, final Optional<int[][]> grid) {
     _type = type;
     _grid = grid;
   }
 
-  public Optional<PuzzleState> getGrid() {
+  public Optional<int[][]> getGrid() {
     return _grid;
   }
   public SolutionType getType() {

@@ -1,27 +1,24 @@
 package com.fenton.puzzle.constraint;
 
-import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Set;
+
+import com.fenton.puzzle.grid.RectangularCoord;
 
 public class Group {
 
-  private int[][] _coords = {};
+  private final Set<RectangularCoord> _coords = new LinkedHashSet<>();
 
   public void addCell(final int row, final int col) {
-    _coords = concat(_coords, new int[][] {{row, col}});
+    _coords.add(RectangularCoord.of(row, col));
   }
 
   public int size() {
-    return _coords.length;
+    return _coords.size();
   }
 
-  public int[][] getCoords() {
+  public Set<RectangularCoord> coords() {
     return _coords;
-  }
-
-  public static <T> T[] concat(final T[] first, final T[] second) {
-    final T[] result = Arrays.copyOf(first, first.length + second.length);
-    System.arraycopy(second, 0, result, first.length, second.length);
-    return result;
   }
 
 }

@@ -39,6 +39,11 @@ public class RectangularCoord implements Coord {
         && Objects.equals(row, other.row);
   }
 
+  @Override
+  public String toString() {
+    return String.format("Coord(%s, %s)", row, col);
+  }
+
 
 
 }

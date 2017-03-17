@@ -1,12 +1,16 @@
 package com.fenton.suguru;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.function.Predicate;
 
 import com.fenton.puzzle.constraint.Group;
+import com.fenton.puzzle.grid.RectangularCoord;
 
 public class Suguru {
 
@@ -42,10 +46,8 @@ public class Suguru {
   }
 
   private void setFromGivens(final int[][] state) {
-    final int height = state.length;
-    final int width = state[0].length;
-    for (int row = 0; row < height; row++) {
-      for (int col = 0; col < width; col++) {
+    for (int row = 0; row < _height; row++) {
+      for (int col = 0; col < _width; col++) {
         final int given = _givens[row][col];
         state[row][col] = given > 0 ? (1 << (given - 1)) : (1 << (_groupByCell[row][col].size())) - 1;
       }
@@ -54,36 +56,80 @@ public class Suguru {
 
   public Solution solve() {
     final int[][] currentState = ArrayUtils.clone(initState);
-    printState(currentState);
+    final List<int[][]> solutions = new ArrayList<>();
 
-    boolean continueElim = true;
-    while (continueElim) {
-      final EliminationResult eliminationResult = eliminate(currentState);
-      continueElim = eliminationResult == EliminationResult.UNSOLVED_UPDATED;
-      printState(currentState);
+    solveInner(solutions, currentState);
+
+    if (solutions.isEmpty()) {
+      return new Solution(SolutionType.NONE, Optional.empty());
     }
-    return new Solution(SolutionType.NONE, Optional.empty());
+    final int[][] solution = solutions.get(0);
+    return new Solution(solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE, Optional.of(solution));
   }
 
-  private void printState(final int[][] currentState) {
-    for (final int[] row : currentState) {
-      final String rowStr = Arrays.stream(row).boxed()
-            .map(Integer::toBinaryString)
-            .map(s -> String.format("%1$6s", s))
-            .collect(Collectors.joining(", "));
-      System.out.println(rowStr);
+  private void solveInner(final List<int[][]> solutions, final int[][] currentState) {
+    if (solutions.size() > 1) {
+      return; // stop when found multiple solns
     }
-    System.out.println();
+    EliminationResult result = null;
+    while (result == null || result == EliminationResult.UNSOLVED_UPDATED) {
+      result = eliminate(currentState);
+      if (result == EliminationResult.SOLVED) {
+        solutions.add(currentState);
+      }
+      else if (result == EliminationResult.UNSOLVED) {
+        final RectangularCoord bestUnsolved = findBestUnsolved(currentState);
+        final int unsolvedBitVal = currentState[bestUnsolved.row][bestUnsolved.col];
+        for (final int guessedBitValue : decomposed(unsolvedBitVal)) {
+          final int[][] cloned = ArrayUtils.clone(currentState);
+          cloned[bestUnsolved.row][bestUnsolved.col] = guessedBitValue;
+          solveInner(solutions, cloned);
+        }
+      }
+    }
+  }
+
+  private List<Integer> decomposed(final int bitValue) {
+    final List<Integer> powers = new ArrayList<>();
+    int n = bitValue; // something > 0
+    int power = 0;
+    while (n != 0) {
+        if ((n & 1) != 0) {
+            powers.add(1 << power);
+        }
+        ++power;
+        n >>>= 1;
+    }
+    return powers;
+  }
+
+  private RectangularCoord findBestUnsolved(final int[][] currentState) {
+    int bestBitcount = Integer.MAX_VALUE;
+    RectangularCoord bestCoord = null;
+    for (int row = 0; row < _height; row++) {
+      for (int col = 0; col < _width; col++) {
+        final int bitCount = Integer.bitCount(currentState[row][col]);
+        if (bitCount < 2) {
+          continue;
+        }
+        if (bitCount < bestBitcount) {
+          bestCoord = RectangularCoord.of(row, col);
+          if (bitCount == 2) {
+            return bestCoord;
+          }
+          bestBitcount = bitCount;
+        }
+      }
+    }
+    return bestCoord;
   }
 
   public EliminationResult eliminate(final int[][] state) {
-    final int height = state.length;
-    final int width = state[0].length;
     boolean stateChanged = false;
     boolean allSolved = true;
 
-    for (int row = 0; row < height; row++) {
-      for (int col = 0; col < width; col++) {
+    for (int row = 0; row < _height; row++) {
+      for (int col = 0; col < _width; col++) {
         final Integer bitValue = state[row][col];
         final int bitCount = Integer.bitCount(bitValue);
         if (bitCount == 0) {
@@ -93,30 +139,28 @@ public class Suguru {
           allSolved = false;
           continue;
         }
+        final RectangularCoord current = RectangularCoord.of(row, col);
+
         // Eliminate adjacents
-        for (int r = Math.max(0, row - 1); r <= Math.min(height - 1, row + 1); r++) {
-          for (int c = Math.max(0, col - 1); c <= Math.min(width - 1, col + 1); c++) {
-            if (r == row && c == col) {
-              continue;
-            }
-            final int maskChange = state[r][c] & bitValue;
-            if (maskChange > 0) {
-              state[r][c] -= maskChange;
-              stateChanged = true;
-            }
+        final Set<RectangularCoord> coordsToApplyElimination = new LinkedHashSet<>();
+
+        // Add surrounds
+        for (int r = Math.max(0, row - 1); r <= Math.min(_height - 1, row + 1); r++) {
+          for (int c = Math.max(0, col - 1); c <= Math.min(_width - 1, col + 1); c++) {
+            coordsToApplyElimination.add(RectangularCoord.of(r, c));
           }
         }
         // Eliminate by group
         final Group group = _groupByCell[row][col];
-        for (final int[] coord : group.getCoords()) {
-          final int r = coord[0];
-          final int c = coord[1];
-          if (r == row && c == col) {
+        coordsToApplyElimination.addAll(group.coords());
+
+        for (final RectangularCoord coord : coordsToApplyElimination) {
+          if (coord.equals(current)) {
             continue;
           }
-          final int maskChange = state[r][c] & bitValue;
+          final int maskChange = state[coord.row][coord.col] & bitValue;
           if (maskChange > 0) {
-            state[r][c] -= maskChange;
+            state[coord.row][coord.col] -= maskChange;
             stateChanged = true;
           }
         }
@@ -125,7 +169,11 @@ public class Suguru {
     if (allSolved) {
       return EliminationResult.SOLVED;
     }
-    return stateChanged ? EliminationResult.UNSOLVED_UPDATED : EliminationResult.SOLVED;
+    return stateChanged ? EliminationResult.UNSOLVED_UPDATED : EliminationResult.UNSOLVED;
+  }
+
+  public static <T> Predicate<T> not(final Predicate<T> t) {
+    return t.negate();
   }
 
   public int getWidth() {
