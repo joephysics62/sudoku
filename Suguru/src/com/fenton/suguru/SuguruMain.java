@@ -1,20 +1,12 @@
 package com.fenton.suguru;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public class SuguruMain {
 
-  public static void main(final String[] args) throws IOException, URISyntaxException {
-    final Path suguruFile = Paths.get(SuguruMain.class.getResource("suguru.txt").toURI());
-    final Suguru suguru = Suguru.fromFile(suguruFile);
-
-    suguru.getInitialGrid().traverse(new ConsolePrintingVisitor<Integer>(System.out));
-
-    System.out.println();
+  public static void main(final String[] args) throws Exception {
+    System.out.println(1 << 0);
+    final Suguru suguru = SuguruExamples.EXAMPLE_ONE;
     suguru.solve();
   }
+
 
 }

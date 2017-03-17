@@ -1,135 +1,139 @@
 package com.fenton.suguru;
 
-import static java.util.function.Function.identity;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
+import com.fenton.puzzle.constraint.Group;
 
 public class Suguru {
 
-  private final int _width;
   private final int _height;
-  private final Map<Coord, Group> _groupByCoord;
-  private final Grid<Integer> _initialGrid;
+  private final int _width;
+  private final int[][] initState;
+  private final int[][] _givens;
+  private final Group[][] _groupByCell;
 
-  public Suguru(final int width, final int height, final int[][] clues, final String[][] groups) {
-    _width = width;
-    _height = height;
-    _groupByCoord = readGroups(groups);
-    _initialGrid = calculateInitialGrid(clues, _groupByCoord);
+  public Suguru(final int[][] givens, final int[][] groups) {
+    _givens = givens;
+    _height = _givens.length;
+    _width = _givens[0].length;
+    _groupByCell = new Group[_height][_width];
+    buildGroups(groups);
+    initState = new int[_height][_width];
+    setFromGivens(initState);
   }
 
-  public Solution<Integer> solve() {
-    final Grid<Integer> workingGrid = _initialGrid.clone();
-    Coord.overGrid(_width, _height)
-         .forEach(from -> from.surroundsWithDiagonals(_width, _height)
-                              .forEach(to -> applyConstraint(from, to, workingGrid)));
+  private void buildGroups(final int[][] groupIds) {
+    final Map<Integer, Group> groupMap = new LinkedHashMap<>();
+    for (int row = 0; row < _height; row++) {
+      for (int col = 0; col < _width; col++) {
+        final int groupId = groupIds[row][col];
+        if (!groupMap.containsKey(groupId)) {
+          groupMap.put(groupId, new Group());
+        }
+        final Group group = groupMap.get(groupId);
+        group.addCell(row, col);
+        _groupByCell[row][col] = group;
+      }
+    }
+  }
 
-    workingGrid.traverse(new ConsolePrintingVisitor<>(System.out));
+  private void setFromGivens(final int[][] state) {
+    final int height = state.length;
+    final int width = state[0].length;
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        final int given = _givens[row][col];
+        state[row][col] = given > 0 ? (1 << (given - 1)) : (1 << (_groupByCell[row][col].size())) - 1;
+      }
+    }
+  }
 
-    for (final Group group : _groupByCoord.values()) {
-      for (final Coord from : group.getCoords()) {
-        for (final Coord to : group.getCoords()) {
-          if (!from.equals(to)) {
-            applyConstraint(from, to, workingGrid);
+  public Solution solve() {
+    final int[][] currentState = ArrayUtils.clone(initState);
+    printState(currentState);
+
+    boolean continueElim = true;
+    while (continueElim) {
+      final EliminationResult eliminationResult = eliminate(currentState);
+      continueElim = eliminationResult == EliminationResult.UNSOLVED_UPDATED;
+      printState(currentState);
+    }
+    return new Solution(SolutionType.NONE, Optional.empty());
+  }
+
+  private void printState(final int[][] currentState) {
+    for (final int[] row : currentState) {
+      final String rowStr = Arrays.stream(row).boxed()
+            .map(Integer::toBinaryString)
+            .map(s -> String.format("%1$6s", s))
+            .collect(Collectors.joining(", "));
+      System.out.println(rowStr);
+    }
+    System.out.println();
+  }
+
+  public EliminationResult eliminate(final int[][] state) {
+    final int height = state.length;
+    final int width = state[0].length;
+    boolean stateChanged = false;
+    boolean allSolved = true;
+
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        final Integer bitValue = state[row][col];
+        final int bitCount = Integer.bitCount(bitValue);
+        if (bitCount == 0) {
+          return EliminationResult.INCONSISTENT;
+        }
+        if (bitCount != 1) {
+          allSolved = false;
+          continue;
+        }
+        // Eliminate adjacents
+        for (int r = Math.max(0, row - 1); r <= Math.min(height - 1, row + 1); r++) {
+          for (int c = Math.max(0, col - 1); c <= Math.min(width - 1, col + 1); c++) {
+            if (r == row && c == col) {
+              continue;
+            }
+            final int maskChange = state[r][c] & bitValue;
+            if (maskChange > 0) {
+              state[r][c] -= maskChange;
+              stateChanged = true;
+            }
+          }
+        }
+        // Eliminate by group
+        final Group group = _groupByCell[row][col];
+        for (final int[] coord : group.getCoords()) {
+          final int r = coord[0];
+          final int c = coord[1];
+          if (r == row && c == col) {
+            continue;
+          }
+          final int maskChange = state[r][c] & bitValue;
+          if (maskChange > 0) {
+            state[r][c] -= maskChange;
+            stateChanged = true;
           }
         }
       }
     }
-    workingGrid.traverse(new ConsolePrintingVisitor<>(System.out));
-
-    return new Solution<>(SolutionType.NONE, Optional.<Grid<Integer>>empty());
-  }
-
-  public void applyConstraint(final Coord from, final Coord to, final Grid<Integer> grid) {
-    final Set<Integer> fromValues = grid.values(from);
-    if (fromValues.size() > 1) {
-      return;
+    if (allSolved) {
+      return EliminationResult.SOLVED;
     }
-    if (fromValues.size() == 0) {
-      // bad soln
-      return;
-    }
-    final Integer fromValueFixed = fromValues.iterator().next();
-    grid.removeValue(to, fromValueFixed);
+    return stateChanged ? EliminationResult.UNSOLVED_UPDATED : EliminationResult.SOLVED;
   }
 
-  public Grid<Integer> getInitialGrid() {
-    return _initialGrid;
+  public int getWidth() {
+    return _width;
   }
 
-  private Map<Coord, Group> readGroups(final String[][] groups) {
-    final Map<Coord, Group> groupByCoord = new LinkedHashMap<>();
-
-    final Map<String, Group> groupDefs = new LinkedHashMap<>();
-    Coord.overGrid(_width, _height).forEach(coord -> {
-      final String groupString = coord.fromArray(groups);
-      if (!groupDefs.containsKey(groupString)) {
-        groupDefs.put(groupString, new Group());
-      }
-      final Group group = groupDefs.get(groupString);
-      group.addToGroup(coord);
-
-      groupByCoord.put(coord, group);
-    });
-    return groupByCoord;
-  }
-
-  private Grid<Integer> calculateInitialGrid(final int[][] clues, final Map<Coord, Group> groupByCoord) {
-    final Map<Coord, Set<Integer>> grid =
-        Coord.overGrid(_width, _height)
-             .collect(Collectors.toMap(identity(), coord -> {
-               final int given = coord.fromIntArray(clues);
-               final Group group = groupByCoord.get(coord);
-               return given > 0 ? Collections.<Integer>singleton(given) : intSet(group.size());
-     }));
-    return new Grid<>(grid, _width, _height);
-  }
-
-  private Set<Integer> intSet(final int size) {
-    return IntStream.rangeClosed(1, size)
-                    .mapToObj(Integer::valueOf)
-                    .collect(Collectors.toSet());
-  }
-
-  public static Suguru fromFile(final Path suguruFile) throws IOException {
-    final List<String> lines = Files.readAllLines(suguruFile);
-    final int width = lines.get(0).split("\\|").length - 1;
-    final int height = lines.indexOf("");
-
-    final int[][] clues = new int[height][width];
-    final String[][] groups = new String[height][width];
-
-    for (int row = 0; row < height; row++) {
-      final String clueString = lines.get(row);
-      final String groupString = lines.get(1 + height + row);
-      clues[row] = streamRow(clueString).mapToInt(Suguru::fromClue).toArray();
-      groups[row] = streamRow(groupString).toArray(String[]::new);
-    }
-    return new Suguru(width, height, clues, groups);
-  }
-
-  private static Stream<String> streamRow(final String rowString) {
-    return Arrays.stream(rowString.split("\\|"))
-                 .skip(1).map(String::trim);
-  }
-
-  private static int fromClue(final String clueString) {
-    if (clueString.isEmpty()) {
-      return 0;
-    }
-    return Integer.valueOf(clueString);
+  public int getHeight() {
+    return _height;
   }
 
 }
