@@ -70,6 +70,28 @@ public class PuzzleState {
     return false;
   }
 
+
+  public RectangularCoord findBestUnsolved() {
+    int bestBitcount = Integer.MAX_VALUE;
+    RectangularCoord bestCoord = null;
+    for (int row = 0; row < _height; row++) {
+      for (int col = 0; col < _width; col++) {
+        final int possiblesCount = possiblesCount(RectangularCoord.of(row, col));
+        if (possiblesCount < 2) {
+          continue;
+        }
+        if (possiblesCount < bestBitcount) {
+          bestCoord = RectangularCoord.of(row, col);
+          if (possiblesCount == 2) {
+            return bestCoord;
+          }
+          bestBitcount = possiblesCount;
+        }
+      }
+    }
+    return bestCoord;
+  }
+
   public String asPossiblesString() {
     final StringBuilder sb = new StringBuilder();
     for (int row = 0; row < _height; row++) {

@@ -91,7 +91,7 @@ public class Suguru {
         solutions.add(currentState);
       }
       else if (result == EliminationResult.UNSOLVED) {
-        final RectangularCoord bestUnsolved = findBestUnsolved(currentState);
+        final RectangularCoord bestUnsolved = currentState.findBestUnsolved();
         for (final Integer possible : currentState.possibles(bestUnsolved)) {
           final PuzzleState cloned = currentState.clone();
           cloned.setGiven(bestUnsolved, possible);
@@ -99,27 +99,6 @@ public class Suguru {
         }
       }
     }
-  }
-
-  private RectangularCoord findBestUnsolved(final PuzzleState currentState) {
-    int bestBitcount = Integer.MAX_VALUE;
-    RectangularCoord bestCoord = null;
-    for (int row = 0; row < _height; row++) {
-      for (int col = 0; col < _width; col++) {
-        final int possiblesCount = currentState.possiblesCount(RectangularCoord.of(row, col));
-        if (possiblesCount < 2) {
-          continue;
-        }
-        if (possiblesCount < bestBitcount) {
-          bestCoord = RectangularCoord.of(row, col);
-          if (possiblesCount == 2) {
-            return bestCoord;
-          }
-          bestBitcount = possiblesCount;
-        }
-      }
-    }
-    return bestCoord;
   }
 
   private Set<RectangularCoord> forCoord(final RectangularCoord current) {
