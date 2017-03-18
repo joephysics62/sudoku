@@ -9,6 +9,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import com.fenton.puzzle.EliminationResult;
+import com.fenton.puzzle.PuzzleState;
+import com.fenton.puzzle.Solution;
+import com.fenton.puzzle.SolutionType;
 import com.fenton.puzzle.constraint.Group;
 import com.fenton.puzzle.grid.RectangularCoord;
 
@@ -16,9 +20,9 @@ public class Suguru {
 
   private final int _height;
   private final int _width;
-  private final int[][] initState;
   private final int[][] _givens;
   private final Group[][] _groupByCell;
+  private final PuzzleState _initState;
 
   public Suguru(final int[][] givens, final int[][] groups) {
     _givens = givens;
@@ -26,8 +30,19 @@ public class Suguru {
     _width = _givens[0].length;
     _groupByCell = new Group[_height][_width];
     buildGroups(groups);
-    initState = new int[_height][_width];
-    setFromGivens(initState);
+    _initState = new PuzzleState(_height, _width);
+    for (int row = 0; row < _height; row++) {
+      for (int col = 0; col < _width; col++) {
+        final RectangularCoord coord = RectangularCoord.of(row, col);
+        final int given = _givens[row][col];
+        if (given > 0) {
+          _initState.setGiven(coord, given);
+        }
+        else {
+          _initState.initializeBitmask(coord, _groupByCell[row][col].size());
+        }
+      }
+    }
   }
 
   private void buildGroups(final int[][] groupIds) {
@@ -45,32 +60,30 @@ public class Suguru {
     }
   }
 
-  private void setFromGivens(final int[][] state) {
-    for (int row = 0; row < _height; row++) {
-      for (int col = 0; col < _width; col++) {
-        final int given = _givens[row][col];
-        state[row][col] = given > 0 ? (1 << (given - 1)) : (1 << (_groupByCell[row][col].size())) - 1;
-      }
-    }
-  }
+  private int _recurseCount = 0;
 
   public Solution solve() {
-    final int[][] currentState = ArrayUtils.clone(initState);
-    final List<int[][]> solutions = new ArrayList<>();
+    final PuzzleState currentState = _initState.clone();
+    final List<PuzzleState> solutions = new ArrayList<>();
 
+    _recurseCount = 0;
     solveInner(solutions, currentState);
 
     if (solutions.isEmpty()) {
-      return new Solution(SolutionType.NONE, Optional.empty());
+      return new Solution(SolutionType.NONE, Optional.empty(), _recurseCount);
     }
-    final int[][] solution = solutions.get(0);
-    return new Solution(solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE, Optional.of(solution));
+    final PuzzleState solution = solutions.get(0);
+    return new Solution(
+        solutions.size() > 1 ? SolutionType.MULTIPLE : SolutionType.UNIQUE,
+        Optional.of(solution),
+        _recurseCount);
   }
 
-  private void solveInner(final List<int[][]> solutions, final int[][] currentState) {
+  private void solveInner(final List<PuzzleState> solutions, final PuzzleState currentState) {
     if (solutions.size() > 1) {
       return; // stop when found multiple solns
     }
+    _recurseCount++;
     EliminationResult result = null;
     while (result == null || result == EliminationResult.UNSOLVED_UPDATED) {
       result = eliminate(currentState);
@@ -79,90 +92,73 @@ public class Suguru {
       }
       else if (result == EliminationResult.UNSOLVED) {
         final RectangularCoord bestUnsolved = findBestUnsolved(currentState);
-        final int unsolvedBitVal = currentState[bestUnsolved.row][bestUnsolved.col];
-        for (final int guessedBitValue : decomposed(unsolvedBitVal)) {
-          final int[][] cloned = ArrayUtils.clone(currentState);
-          cloned[bestUnsolved.row][bestUnsolved.col] = guessedBitValue;
+        for (final Integer possible : currentState.possibles(bestUnsolved)) {
+          final PuzzleState cloned = currentState.clone();
+          cloned.setGiven(bestUnsolved, possible);
           solveInner(solutions, cloned);
         }
       }
     }
   }
 
-  private List<Integer> decomposed(final int bitValue) {
-    final List<Integer> powers = new ArrayList<>();
-    int n = bitValue; // something > 0
-    int power = 0;
-    while (n != 0) {
-        if ((n & 1) != 0) {
-            powers.add(1 << power);
-        }
-        ++power;
-        n >>>= 1;
-    }
-    return powers;
-  }
-
-  private RectangularCoord findBestUnsolved(final int[][] currentState) {
+  private RectangularCoord findBestUnsolved(final PuzzleState currentState) {
     int bestBitcount = Integer.MAX_VALUE;
     RectangularCoord bestCoord = null;
     for (int row = 0; row < _height; row++) {
       for (int col = 0; col < _width; col++) {
-        final int bitCount = Integer.bitCount(currentState[row][col]);
-        if (bitCount < 2) {
+        final int possiblesCount = currentState.possiblesCount(RectangularCoord.of(row, col));
+        if (possiblesCount < 2) {
           continue;
         }
-        if (bitCount < bestBitcount) {
+        if (possiblesCount < bestBitcount) {
           bestCoord = RectangularCoord.of(row, col);
-          if (bitCount == 2) {
+          if (possiblesCount == 2) {
             return bestCoord;
           }
-          bestBitcount = bitCount;
+          bestBitcount = possiblesCount;
         }
       }
     }
     return bestCoord;
   }
 
-  public EliminationResult eliminate(final int[][] state) {
+  private Set<RectangularCoord> forCoord(final RectangularCoord current) {
+    // Eliminate adjacents
+    final Set<RectangularCoord> coordsToApplyElimination = new LinkedHashSet<>();
+
+    // Add surrounds
+    for (int r = Math.max(0, current.row - 1); r <= Math.min(_height - 1, current.row + 1); r++) {
+      for (int c = Math.max(0, current.col - 1); c <= Math.min(_width - 1, current.col + 1); c++) {
+        coordsToApplyElimination.add(RectangularCoord.of(r, c));
+      }
+    }
+    // Eliminate by group
+    final Group group = _groupByCell[current.row][current.col];
+    coordsToApplyElimination.addAll(group.coords());
+    return coordsToApplyElimination;
+  }
+
+  public EliminationResult eliminate(final PuzzleState state) {
     boolean stateChanged = false;
     boolean allSolved = true;
 
     for (int row = 0; row < _height; row++) {
       for (int col = 0; col < _width; col++) {
-        final Integer bitValue = state[row][col];
-        final int bitCount = Integer.bitCount(bitValue);
-        if (bitCount == 0) {
+        final RectangularCoord fromCoord = RectangularCoord.of(row, col);
+        final int possiblesCount = state.possiblesCount(fromCoord);
+        if (possiblesCount == 0) {
           return EliminationResult.INCONSISTENT;
         }
-        if (bitCount != 1) {
+        if (possiblesCount != 1) {
           allSolved = false;
           continue;
         }
-        final RectangularCoord current = RectangularCoord.of(row, col);
 
-        // Eliminate adjacents
-        final Set<RectangularCoord> coordsToApplyElimination = new LinkedHashSet<>();
-
-        // Add surrounds
-        for (int r = Math.max(0, row - 1); r <= Math.min(_height - 1, row + 1); r++) {
-          for (int c = Math.max(0, col - 1); c <= Math.min(_width - 1, col + 1); c++) {
-            coordsToApplyElimination.add(RectangularCoord.of(r, c));
-          }
-        }
-        // Eliminate by group
-        final Group group = _groupByCell[row][col];
-        coordsToApplyElimination.addAll(group.coords());
-
-        for (final RectangularCoord coord : coordsToApplyElimination) {
-          if (coord.equals(current)) {
+        for (final RectangularCoord toCoord : forCoord(fromCoord)) {
+          if (toCoord.equals(fromCoord)) {
             continue;
           }
-          final int maskChange = state[coord.row][coord.col] & bitValue;
-          if (maskChange > 0) {
-            state[coord.row][coord.col] -= maskChange;
-            stateChanged = true;
-          }
+          stateChanged |= state.applyFilter(fromCoord, toCoord);
         }
       }
     }

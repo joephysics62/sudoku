@@ -3,8 +3,6 @@ package com.fenton.puzzle.grid;
 import java.util.Arrays;
 import java.util.Objects;
 
-import com.fenton.puzzle.Coord;
-
 public class RectangularCoord implements Coord {
 
   public final int row;

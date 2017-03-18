@@ -1,4 +1,4 @@
-package com.fenton.puzzle;
+package com.fenton.puzzle.grid;
 
 public interface Coord {
 

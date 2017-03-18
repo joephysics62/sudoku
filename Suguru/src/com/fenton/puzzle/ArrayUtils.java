@@ -1,4 +1,4 @@
-package com.fenton.suguru;
+package com.fenton.puzzle;
 
 import java.util.Arrays;
 
