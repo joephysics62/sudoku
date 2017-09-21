@@ -12,7 +12,7 @@ public class Connect4Main {
     final Connect4 connect4 = new Connect4(7, 6);
 
     final GameController gameController = new GameController();
-    gameController.startGame(connect4, 8);
+    gameController.startGame(connect4, 2);
     }
   }
 

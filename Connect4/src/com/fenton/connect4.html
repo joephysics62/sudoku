@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+.thickGrid {
+  stroke-width: 2px;
+  fill: none;
+  stroke: black;
+}
+
+.thinGrid {
+  stroke-width: 1px;
+  fill: none;
+  stroke: black;
+}
+
+.valueText {
+  font-family: Verdana;
+  fill: black;
+}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
+    <script type="text/javascript">
+var app = angular.module('SuguruApp', []);
+
+app.controller('AppCtrl', ['$scope', '$document', '$filter', function($scope, $document, $filter) {
+	$scope.cellSize = 50;
+	$scope.numRows = 6;
+	$scope.numCols = 7;
+	
+	$scope.range = function(min, max, step) {
+	    step = step || 1;
+	    var input = [];
+	    for (var i = min; i <= max; i += step) {
+	        input.push(i);
+	    }
+	    return input;
+	};
+	
+	$scope.clicked = function(event) {
+		var e = document.getElementById("boundingRectangle");
+	    var dim = e.getBoundingClientRect();
+	    var x = event.clientX - dim.left;
+	    var y = event.clientY - dim.top;
+	    if (x < 0 || y < 0 || x > $scope.numCols * $scope.cellSize || y > $scope.numRows * $scope.cellSize) {
+	    	return;
+	    }	    
+	    $scope.selectedCoord = {
+            row: Math.floor(y / $scope.cellSize),
+            col: Math.floor(x / $scope.cellSize)
+        };
+	};
+	
+	$scope.unselectCoord = function() {
+		$scope.selectedCoord = null;
+	};
+	
+	var red = 'Red';
+	var yellow = 'Yellow';
+	
+	$scope.player = red;
+	
+	$scope.pieces = [];
+	
+	$scope.addToCol = function(colNum) {
+		var newRow = 1 + Math.max(maxFor($scope.pieces, colNum));
+		if (newRow > $scope.numRows) {
+			return;
+		}
+        $scope.pieces.push({x: colNum, y: newRow, p: $scope.player});
+        if ($scope.player == red) {
+        	$scope.player = yellow;
+        }
+        else {
+        	$scope.player = red;
+        }
+	};
+	
+	function maxFor(arr, colNum) {
+		var redYs = arr
+            .filter(function(value) { return value.x == colNum})
+            .map(function(value) { return value.y});
+        return redYs.length > 0 ? Math.max.apply(null, redYs) : 0;
+	}
+	
+}]);
+
+    </script>
+  </head>
+  <body ng-app="SuguruApp" ng-cloak>
+  <div ng-controller="AppCtrl">
+  <div style="width: {{ cellSize * numCols }}px;height: {{ cellSize * numRows }}px; margin-left: 10px; margin-top: 10px">
+  <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+    <rect id="boundingRectangle"
+          ng-attr-x="0" ng-attr-y="0" 
+          ng-attr-width="{{ cellSize * numCols }}" 
+          ng-attr-height="{{ cellSize * numRows }}" 
+          class="thickGrid" />
+    <path ng-repeat="r in range(1, numRows - 1, 1)"
+          ng-attr-d="M 0 {{ r * cellSize }} L {{ cellSize * numCols }} {{ r * cellSize }}"
+          class="thinGrid" />
+    <path ng-repeat="r in range(1, numCols - 1, 1)"
+          ng-attr-d="M {{ r * cellSize }} 0 L {{ r * cellSize }} {{ numRows * cellSize }}" 
+          class="thinGrid" />
+    <circle ng-repeat="piece in pieces"
+            ng-attr-cx="{{ (piece.x - 0.5) * cellSize }}" 
+            ng-attr-cy="{{ (numRows - piece.y + 0.5) * cellSize }}" 
+            ng-attr-r="{{ cellSize / 2.5 }}" stroke="none" fill="{{ piece.p == 'Red' ? 'red' : 'yellow' }}" />
+  </svg>
+  <button ng-repeat="r in range(1, numCols, 1)"
+          ng-click="addToCol(r)"
+          style="width: {{ cellSize }}px">^</button>
+  </div>
+  </div>
+  </body>
+</html>
