@@ -13,17 +13,12 @@
   fill: none;
   stroke: black;
 }
-
-.valueText {
-  font-family: Verdana;
-  fill: black;
-}
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.6/angular.min.js"></script>
     <script type="text/javascript">
-var app = angular.module('SuguruApp', []);
+var app = angular.module('Connect4App', []);
 
-app.controller('AppCtrl', ['$scope', '$document', '$filter', function($scope, $document, $filter) {
+app.controller('AppCtrl', ['$scope', '$document', function($scope, $document) {
 	$scope.cellSize = 50;
 	$scope.numRows = 6;
 	$scope.numCols = 7;
@@ -37,44 +32,48 @@ app.controller('AppCtrl', ['$scope', '$document', '$filter', function($scope, $d
 	    return input;
 	};
 	
-	$scope.clicked = function(event) {
-		var e = document.getElementById("boundingRectangle");
-	    var dim = e.getBoundingClientRect();
-	    var x = event.clientX - dim.left;
-	    var y = event.clientY - dim.top;
-	    if (x < 0 || y < 0 || x > $scope.numCols * $scope.cellSize || y > $scope.numRows * $scope.cellSize) {
-	    	return;
-	    }	    
-	    $scope.selectedCoord = {
-            row: Math.floor(y / $scope.cellSize),
-            col: Math.floor(x / $scope.cellSize)
-        };
+	$scope.players = [{name: 'Mr. Red', color: 'red'}, {name: 'Mr. Yellow', color: 'yellow'}];
+	
+	$scope.startGame = function() {
+		$scope.player = 0;
+		$scope.pieces = [];
+		$scope.colButtons = initColButtons();
 	};
 	
-	$scope.unselectCoord = function() {
-		$scope.selectedCoord = null;
+	function initColButtons() {
+		var out = [];
+		for (i = 0; i < $scope.numCols; i++) {
+			out.push(true);
+		}
+		return out;
 	};
-	
-	var red = 'Red';
-	var yellow = 'Yellow';
-	
-	$scope.player = red;
-	
-	$scope.pieces = [];
 	
 	$scope.addToCol = function(colNum) {
 		var newRow = 1 + Math.max(maxFor($scope.pieces, colNum));
 		if (newRow > $scope.numRows) {
 			return;
 		}
-        $scope.pieces.push({x: colNum, y: newRow, p: $scope.player});
-        if ($scope.player == red) {
-        	$scope.player = yellow;
+        $scope.pieces.push({x: colNum, y: newRow, p: $scope.players[$scope.player]});
+        var winner = findWinner($scope.pieces);
+        if (winner) {
+        	for (i = 0; i < $scope.numCols; i++) {
+    			out[i] = false;
+    		}
         }
         else {
-        	$scope.player = red;
+          $scope.colButtons[colNum - 1] = newRow < $scope.numRows;
+          $scope.player = ($scope.player + 1) % $scope.players.length;
         }
 	};
+	
+	$scope.startGame();
+	
+	function findWinner(pieces) {
+		if (pieces.length < 4) {
+			return null;
+		}
+		return null;
+	}
 	
 	function maxFor(arr, colNum) {
 		var redYs = arr
@@ -87,30 +86,35 @@ app.controller('AppCtrl', ['$scope', '$document', '$filter', function($scope, $d
 
     </script>
   </head>
-  <body ng-app="SuguruApp" ng-cloak>
-  <div ng-controller="AppCtrl">
-  <div style="width: {{ cellSize * numCols }}px;height: {{ cellSize * numRows }}px; margin-left: 10px; margin-top: 10px">
-  <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-    <rect id="boundingRectangle"
-          ng-attr-x="0" ng-attr-y="0" 
-          ng-attr-width="{{ cellSize * numCols }}" 
-          ng-attr-height="{{ cellSize * numRows }}" 
-          class="thickGrid" />
-    <path ng-repeat="r in range(1, numRows - 1, 1)"
-          ng-attr-d="M 0 {{ r * cellSize }} L {{ cellSize * numCols }} {{ r * cellSize }}"
-          class="thinGrid" />
-    <path ng-repeat="r in range(1, numCols - 1, 1)"
-          ng-attr-d="M {{ r * cellSize }} 0 L {{ r * cellSize }} {{ numRows * cellSize }}" 
-          class="thinGrid" />
-    <circle ng-repeat="piece in pieces"
-            ng-attr-cx="{{ (piece.x - 0.5) * cellSize }}" 
-            ng-attr-cy="{{ (numRows - piece.y + 0.5) * cellSize }}" 
-            ng-attr-r="{{ cellSize / 2.5 }}" stroke="none" fill="{{ piece.p == 'Red' ? 'red' : 'yellow' }}" />
-  </svg>
-  <button ng-repeat="r in range(1, numCols, 1)"
-          ng-click="addToCol(r)"
-          style="width: {{ cellSize }}px">^</button>
-  </div>
-  </div>
+  <body ng-app="Connect4App" ng-cloak>
+    <div ng-controller="AppCtrl">
+      <div style="width: {{ cellSize * numCols }}px;height: {{ cellSize * numRows }}px; margin-left: 10px; margin-top: 10px">
+      <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <rect id="boundingRectangle"
+              ng-attr-x="0" ng-attr-y="0" 
+              ng-attr-width="{{cellSize * numCols}}" 
+              ng-attr-height="{{cellSize * numRows}}" 
+              class="thickGrid" />
+        <path ng-repeat="r in range(1, numRows - 1, 1)"
+              ng-attr-d="M 0 {{r * cellSize}} L {{cellSize * numCols}} {{r * cellSize}}"
+              class="thinGrid" />
+        <path ng-repeat="r in range(1, numCols - 1, 1)"
+              ng-attr-d="M {{r * cellSize}} 0 L {{r * cellSize}} {{numRows * cellSize}}" 
+              class="thinGrid" />
+        <circle ng-repeat="piece in pieces"
+                ng-attr-cx="{{(piece.x - 0.5) * cellSize}}" 
+                ng-attr-cy="{{(numRows - piece.y + 0.5) * cellSize}}" 
+                ng-attr-r="{{cellSize / 2.5}}" stroke="none" 
+                fill="{{piece.p.color}}" />
+      </svg>
+      <button ng-repeat="r in range(1, numCols, 1)"
+              ng-click="addToCol(r)"
+              ng-disabled="!colButtons[r - 1]"
+              style="width: {{ cellSize }}px">^</button>
+      <p><span style="font-weight: bold; color: {{ players[player].color }}">{{ players[player].name }}</span> to play...</p>
+      <p></p>
+      <button ng-click="startGame">Restart</button>
+      </div>
+    </div>
   </body>
 </html>
