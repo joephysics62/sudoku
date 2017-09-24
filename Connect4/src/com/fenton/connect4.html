@@ -32,11 +32,12 @@ app.controller('AppCtrl', ['$scope', '$document', function($scope, $document) {
 	    return input;
 	};
 	
-	$scope.players = [{name: 'Mr. Red', color: 'red'}, {name: 'Mr. Yellow', color: 'yellow'}];
+	$scope.players = [{id: 1, name: 'Mr. Red', color: 'red'}, 
+	                  {id: 2, name: 'Mr. Yellow', color: 'yellow'}];
 	
 	$scope.startGame = function() {
 		$scope.player = 0;
-		$scope.pieces = [];
+		$scope.pieces = {};
 		$scope.colButtons = initColButtons();
 	};
 	
@@ -48,38 +49,110 @@ app.controller('AppCtrl', ['$scope', '$document', function($scope, $document) {
 		return out;
 	};
 	
+	function toIndex(row, col) {
+		return row * $scope.numCols + col;
+	}
+	
+	$scope.asRow = function(index) {
+		return (index / $scope.numCols) >> 0;
+	}
+	
+	$scope.asCol = function(index) {
+		return index % $scope.numCols;
+	}
+	
+	function playerAt(row, col) {
+		return $scope.pieces[toIndex(row, col)];
+	}
+	
+	function setAsCurrentPlayer(row, col) {
+		$scope.pieces[toIndex(row, col)] = $scope.players[$scope.player];
+	}
+	
 	$scope.addToCol = function(colNum) {
-		var newRow = 1 + Math.max(maxFor($scope.pieces, colNum));
-		if (newRow > $scope.numRows) {
+		var newRow = maxRow(colNum);
+		if (newRow >= $scope.numRows) {
 			return;
 		}
-        $scope.pieces.push({x: colNum, y: newRow, p: $scope.players[$scope.player]});
-        var winner = findWinner($scope.pieces);
+		setAsCurrentPlayer(newRow, colNum);
+        $scope.colButtons[colNum] = newRow < ($scope.numRows - 1);
+        var winner = findWinner(newRow, colNum);
         if (winner) {
         	for (i = 0; i < $scope.numCols; i++) {
-    			out[i] = false;
+        		$scope.colButtons[i] = false;
     		}
+        	setTimeout(function() { alert(winner.name + " WINS!!!"); }, 1000);
         }
         else {
-          $scope.colButtons[colNum - 1] = newRow < $scope.numRows;
           $scope.player = ($scope.player + 1) % $scope.players.length;
         }
 	};
 	
 	$scope.startGame();
 	
-	function findWinner(pieces) {
-		if (pieces.length < 4) {
-			return null;
+	function findWinner(newRow, newCol) {
+		var directions = [
+		  {rStep: 1, cStep: 0},
+		  {rStep: 0, cStep: 1},
+		  {rStep: 1, cStep: 1},
+		  {rStep: 1, cStep: -1}
+		];
+		for (var i = 0; i < directions.length; i++) {
+			var winner = findDirectionWinner(newRow, newCol, directions[i]);
+			if (winner) {
+				return winner;
+			}
 		}
 		return null;
 	}
 	
-	function maxFor(arr, colNum) {
-		var redYs = arr
-            .filter(function(value) { return value.x == colNum})
-            .map(function(value) { return value.y});
-        return redYs.length > 0 ? Math.max.apply(null, redYs) : 0;
+	function findDirectionWinner(newRow, newCol, direction) {
+		var index = toIndex(newRow, newCol);
+		var newPiecePlayer = $scope.pieces[index];
+		
+		var count = 1;
+		var parities  = [1, -1];
+		for (var i = 0; i < parities.length; i++) {
+			var winner = semiDirection(newRow, newCol, count, direction, parities[i], newPiecePlayer);
+			if (winner) {
+				return winner;
+			}
+		}
+		return null;
+	}
+	
+	function semiDirection(newRow, newCol, count, direction, parity, player) {
+		var countRow = newRow + parity * direction.rStep;
+		var countCol = newCol + parity * direction.cStep;
+		while(countRow >= 0 
+		   && countRow < $scope.numRows
+		   && countCol >= 0
+		   && countCol < $scope.numCols
+		   && isPlayerPiece(player, countRow, countCol)) {
+			countRow = countRow + parity * direction.rStep;
+			countCol = countCol + parity * direction.cStep;
+			count++;
+			if (count >= 4) {
+				return player;
+			}
+		};
+		return null;
+	}
+	
+	function isPlayerPiece(player, row, col) {
+		var other = $scope.pieces[toIndex(row, col)];
+		if (other == null) {
+			return false;
+		}
+		return player.id == other.id;
+	}
+	
+	function maxRow(colIndex) {
+		var row = 0;
+		while (playerAt(row, colIndex) != null) {
+			row++;
+		}
+		return row;
 	}
 	
 }]);
@@ -101,19 +174,20 @@ app.controller('AppCtrl', ['$scope', '$document', function($scope, $document) {
         <path ng-repeat="r in range(1, numCols - 1, 1)"
               ng-attr-d="M {{r * cellSize}} 0 L {{r * cellSize}} {{numRows * cellSize}}" 
               class="thinGrid" />
-        <circle ng-repeat="piece in pieces"
-                ng-attr-cx="{{(piece.x - 0.5) * cellSize}}" 
-                ng-attr-cy="{{(numRows - piece.y + 0.5) * cellSize}}" 
+        <circle ng-repeat="(index, p) in pieces"
+                ng-if="p"
+                ng-attr-cx="{{(asCol(index) + 0.5) * cellSize}}" 
+                ng-attr-cy="{{(numRows - asRow(index) - 0.5) * cellSize}}" 
                 ng-attr-r="{{cellSize / 2.5}}" stroke="none" 
-                fill="{{piece.p.color}}" />
+                fill="{{p.color}}" />
       </svg>
-      <button ng-repeat="r in range(1, numCols, 1)"
+      <button ng-repeat="r in range(0, numCols - 1, 1)"
               ng-click="addToCol(r)"
-              ng-disabled="!colButtons[r - 1]"
+              ng-disabled="!colButtons[r]"
               style="width: {{ cellSize }}px">^</button>
       <p><span style="font-weight: bold; color: {{ players[player].color }}">{{ players[player].name }}</span> to play...</p>
       <p></p>
-      <button ng-click="startGame">Restart</button>
+      <button ng-click="startGame()">Restart</button>
       </div>
     </div>
   </body>
